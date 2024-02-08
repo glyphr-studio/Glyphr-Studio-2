@@ -1,5 +1,5 @@
-import { deg, strSan } from '../common/functions.js';
-import { makeTransformedGlyph } from '../project_editor/cross_item_actions.js';
+import { deg, rad, strSan } from '../common/functions.js';
+import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 import { GlyphElement } from './glyph_element.js';
 
 /**
@@ -114,7 +114,7 @@ export class ComponentInstance extends GlyphElement {
 	}
 
 	// --------------------------------------------------------------
-	// Get / Set Transformed Glyph
+	// Get / Make Transformed Glyph
 	// --------------------------------------------------------------
 	/**
 	 * Component Instances are basically links to other Glyphs, plus some transformations.
@@ -123,14 +123,82 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {Glyph}
 	 */
 	get transformedGlyph() {
-		// if (this?.cache?.transformedGlyph) return this.cache.transformedGlyph;
-		// return false;
-		if (!this?.cache?.transformedGlyph) this.cache.transformedGlyph = makeTransformedGlyph(this);
+		if (!this.cache.transformedGlyph) {
+			this.cache.transformedGlyph = this.makeTransformedGlyph();
+		}
 		return this.cache.transformedGlyph;
 	}
 
-	set transformedGlyph(newItem) {
-		this.cache.transformedGlyph = newItem;
+	makeTransformedGlyph() {
+		// log('makeTransformedGlyph', 'start');
+		// log(`name: ${this.name}`);
+		// log(`link: ${this.link}`);
+		// log(`\n⮟this⮟`);
+		// log(this);
+
+		const linkedGlyph = this.getCrossLinkedItem();
+		if (!linkedGlyph) {
+			console.warn(
+				`Tried to get Component: ${this.link} but it doesn't exist - bad usedIn array maintenance.`
+			);
+			// log('makeTransformedGlyph', 'end');
+			return false;
+		}
+
+		const newGlyph = makeGlyphWithResolvedLinks(linkedGlyph);
+		// log(`\n⮟newGlyph⮟`);
+		// log(newGlyph);
+		// log(`translateX: ${this.translateX}`);
+		// log(`translateY: ${this.translateY}`);
+		// log(`resizeWidth: ${this.resizeWidth}`);
+		// log(`resizeHeight: ${this.resizeHeight}`);
+		// log(`flipEW: ${this.isFlippedEW}`);
+		// log(`flipNS: ${this.isFlippedNS}`);
+		// log(`reverseWinding: ${this.reverseWinding}`);
+		// log(`rotation: ${this.rotation}`);
+
+		if (
+			this.translateX ||
+			this.translateY ||
+			this.resizeWidth ||
+			this.resizeHeight ||
+			this.isFlippedEW ||
+			this.isFlippedNS ||
+			this.reverseWinding ||
+			this.rotation
+		) {
+			// log('Modifying w ' + this.resizeWidth + ' h ' + this.resizeHeight);
+			// log(`before maxes ${this.maxes.print()}`);
+			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation * -1), newGlyph.maxes.center);
+			if (this.isFlippedEW) newGlyph.flipEW();
+			if (this.isFlippedNS) newGlyph.flipNS();
+			newGlyph.updateGlyphPosition(this.translateX, this.translateY, true);
+			newGlyph.updateGlyphSize({width: this.resizeWidth, height: this.resizeHeight});
+			if (this.reverseWinding) newGlyph.reverseWinding();
+			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation * -1), newGlyph.maxes.center);
+			// log(`afters maxes ${this.maxes.print()}`);
+		} else {
+			// log('Not changing, no deltas');
+		}
+
+		// log(`\n⮟newGlyph⮟`);
+		// log(newGlyph);
+		// log('makeTransformedGlyph', 'end');
+
+		return newGlyph;
+	}
+
+	getCrossLinkedItem() {
+		// log(`ComponentInstance.getCrossLinkedItem`, 'start');
+		let project = this?.parent?.parent;
+		// log(`\n⮟project⮟`);
+		// log(project);
+		let item;
+		if (project && project.getItem) item = project.getItem(this.link);
+		// log(`\n⮟item⮟`);
+		// log(item);
+		// log(`ComponentInstance.getCrossLinkedItem`, 'end');
+		return item;
 	}
 
 	// --------------------------------------------------------------

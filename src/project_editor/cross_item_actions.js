@@ -1,6 +1,8 @@
-import { getCurrentProject } from '../app/main.js';
-import { duplicates, rad } from '../common/functions.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { duplicates } from '../common/functions.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { copyShapesFromTo } from '../panels/actions.js';
+import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 /**
@@ -75,7 +77,7 @@ export function makeGlyphSVGforExport(glyph) {
  * @returns {String} - PostScript path data
  */
 export function makeGlyphPostScript(glyph, lastX, lastY) {
-	const g = getTransformedGlyph(glyph);
+	const g = glyph.transformedGlyph;
 	let re;
 	let part;
 	g.shapes.forEach((shape) => {
@@ -89,6 +91,48 @@ export function makeGlyphPostScript(glyph, lastX, lastY) {
 		lastX: lastX,
 		lastY: lastY,
 	};
+}
+
+// --------------------------------------------------------------
+// Components
+// --------------------------------------------------------------
+
+// This is used for Global Actions - do not update History, it's handled over there
+export function insertComponentInstance(sourceID, destinationID, updateAdvanceWidth = false) {
+	// log(`insertComponentInstance`, 'start');
+	// log('sourceID: ' + sourceID + ' destinationID: ' + destinationID);
+	const editor = getCurrentProjectEditor();
+	const project = getCurrentProject();
+
+	let select = !destinationID;
+	destinationID = destinationID || editor.selectedItemID;
+	let destinationGlyph = project.getItem(destinationID, true);
+
+	if (canAddComponentInstance(destinationGlyph, sourceID)) {
+		// log(`destinationGlyph`);
+		// log(destinationGlyph);
+		let sourceItem = project.getItem(sourceID, true);
+		let name = `Instance of ${sourceItem.name}`;
+		let newComponentInstance = new ComponentInstance({ link: sourceID, name: name });
+
+		// log('INSERT COMPONENT - JSON: \t' + JSON.stringify(newComponentInstance));
+		destinationGlyph.addOneShape(newComponentInstance);
+		glyphChanged(destinationGlyph);
+		if (select) {
+			editor.multiSelect.shapes.select(newComponentInstance);
+			editor.publish('whatShapeIsSelected', editor.multiSelect.shapes.singleton());
+		}
+
+		addLinkToUsedIn(sourceItem, destinationID);
+
+		if (updateAdvanceWidth) destinationGlyph.advanceWidth = sourceItem.advanceWidth;
+		// log(`insertComponentInstance`, 'end');
+		return true;
+	} else {
+		showToast("A circular link was found, components can't include links to themselves.");
+		// log(`insertComponentInstance`, 'end');
+		return false;
+	}
 }
 
 // --------------------------------------------------------------
@@ -114,7 +158,7 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 		if (shape.objType === 'Path') {
 			newPaths.push(new Path(shape));
 		} else if (shape.objType === 'ComponentInstance') {
-			const transformedGlyph = getTransformedGlyph(shape);
+			const transformedGlyph = shape.transformedGlyph;
 			if (transformedGlyph && transformedGlyph.shapes) {
 				const resolvedGlyph = makeGlyphWithResolvedLinks(transformedGlyph);
 				newPaths = newPaths.concat(resolvedGlyph.shapes);
@@ -128,75 +172,6 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 	// log(resolvedGlyph);
 	// log(`makeGlyphWithResolvedLinks`, 'end');
 	return resolvedGlyph;
-}
-
-export function getTransformedGlyph(instance) {
-	if (!instance.transformedGlyph) instance.transformedGlyph = makeTransformedGlyph(instance);
-	return instance.transformedGlyph;
-}
-
-export function makeTransformedGlyph(instance) {
-	// log('makeTransformedGlyph', 'start');
-	// log(`name: ${instance.name}`);
-	// log(`link: ${instance.link}`);
-	// log(`\n⮟instance⮟`);
-	// log(instance);
-
-	let linkedGlyph = false;
-	let project = instance?.parent?.parent;
-	// log(`\n⮟project⮟`);
-	// log(project);
-	if (project && project.getItem) linkedGlyph = project.getItem(instance.link);
-
-	if (!linkedGlyph) {
-		console.warn(
-			`Tried to get Component: ${instance.link} but it doesn't exist - bad usedIn array maintenance.`
-		);
-		// log('makeTransformedGlyph', 'end');
-		return false;
-	}
-
-	const newGlyph = makeGlyphWithResolvedLinks(linkedGlyph);
-	// log(`\n⮟newGlyph⮟`);
-	// log(newGlyph);
-	// log(`translateX: ${instance.translateX}`);
-	// log(`translateY: ${instance.translateY}`);
-	// log(`resizeWidth: ${instance.resizeWidth}`);
-	// log(`resizeHeight: ${instance.resizeHeight}`);
-	// log(`flipEW: ${instance.isFlippedEW}`);
-	// log(`flipNS: ${instance.isFlippedNS}`);
-	// log(`reverseWinding: ${instance.reverseWinding}`);
-	// log(`rotation: ${instance.rotation}`);
-
-	if (
-		instance.translateX ||
-		instance.translateY ||
-		instance.resizeWidth ||
-		instance.resizeHeight ||
-		instance.isFlippedEW ||
-		instance.isFlippedNS ||
-		instance.reverseWinding ||
-		instance.rotation
-	) {
-		// log('Modifying w ' + instance.resizeWidth + ' h ' + instance.resizeHeight);
-		// log(`before maxes ${instance.maxes.print()}`);
-		if (instance.rotateFirst) newGlyph.rotate(rad(instance.rotation * -1), newGlyph.maxes.center);
-		if (instance.isFlippedEW) newGlyph.flipEW();
-		if (instance.isFlippedNS) newGlyph.flipNS();
-		newGlyph.updateGlyphPosition(instance.translateX, instance.translateY, true);
-		newGlyph.updateGlyphSize({ width: instance.resizeWidth, height: instance.resizeHeight });
-		if (instance.reverseWinding) newGlyph.reverseWinding();
-		if (!instance.rotateFirst) newGlyph.rotate(rad(instance.rotation * -1), newGlyph.maxes.center);
-		// log(`afters maxes ${instance.maxes.print()}`);
-	} else {
-		// log('Not changing, no deltas');
-	}
-
-	// log(`\n⮟newGlyph⮟`);
-	// log(newGlyph);
-	// log('makeTransformedGlyph', 'end');
-
-	return newGlyph;
 }
 
 /**
@@ -303,10 +278,10 @@ export function resolveItemLinks(item, unlinkComponentInstances = false) {
 				if (shape.objType === 'ComponentInstance' && shape.link === item.id) {
 					if (unlinkComponentInstances) {
 						// const sourceItem = editor.project.getItem(shape.link);
-						copyShapesFromTo(getTransformedGlyph(shape), upstreamGlyph);
+						copyShapesFromTo(shape.transformedGlyph, upstreamGlyph)
 					}
-					upstreamGlyph.shapes.splice(u, 1);
-					u--;
+						upstreamGlyph.shapes.splice(u, 1);
+						u--;
 				}
 			}
 		}
