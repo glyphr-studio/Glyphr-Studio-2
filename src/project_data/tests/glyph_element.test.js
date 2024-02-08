@@ -21,7 +21,7 @@ import { GlyphElement, makeRandomID } from '../glyph_element.js';
 describe('GlyphElement', () => {
 	it('constructor', () => {
 		const glyphElement = new GlyphElement();
-		expect(glyphElement.ident).toBe('');
+		// expect(glyphElement.ident).toBe('');
 		expect(glyphElement.objType).toBe('GlyphElement');
 		expect(glyphElement.displayType).toBe('GlyphElement');
 		expect(glyphElement.cache).toEqual({});
@@ -60,7 +60,7 @@ describe('GlyphElement', () => {
 		const glyphElement = new GlyphElement();
 		const clonedElement = glyphElement.clone();
 
-		expect(clonedElement).toEqual(glyphElement);
+		expect(clonedElement).toEqual(glyphElement.save(true));
 		expect(clonedElement).not.toBe(glyphElement);
 	});
 

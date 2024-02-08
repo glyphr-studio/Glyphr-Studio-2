@@ -21,8 +21,6 @@ export class Coord extends GlyphElement {
 		this.y = y;
 
 		this.objType = 'Coord';
-		this._x = 0;
-		this._y = 0;
 	}
 
 	// --------------------------------------------------------------

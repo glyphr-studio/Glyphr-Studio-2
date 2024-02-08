@@ -44,7 +44,7 @@ export class Path extends GlyphElement {
 		name = 'Path',
 		objType = 'Path',
 		pathPoints = [],
-		winding = 0,
+		winding,
 		xLock = false,
 		yLock = false,
 		wLock = false,
