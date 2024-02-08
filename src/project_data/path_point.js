@@ -160,8 +160,12 @@ export class PathPoint extends GlyphElement {
 	 * @param {ControlPoint | undefined} newPoint
 	 */
 	set h1(newPoint) {
-		if (!newPoint) newPoint = new ControlPoint();
-		if (!newPoint.coord) {
+		let needToInitialize = false;
+		if (!newPoint) {
+			newPoint = new ControlPoint();
+			needToInitialize = true;
+		}
+		if (!newPoint.coord || needToInitialize) {
 			newPoint.coord = new Coord({ x: this.p.x - 50, y: this.p.y });
 			newPoint.use = false;
 		}
@@ -175,8 +179,12 @@ export class PathPoint extends GlyphElement {
 	 * @param {ControlPoint | undefined} newPoint
 	 */
 	set h2(newPoint) {
-		if (!newPoint) newPoint = new ControlPoint();
-		if (!newPoint.coord) {
+		let needToInitialize = false;
+		if (!newPoint) {
+			newPoint = new ControlPoint();
+			needToInitialize = true;
+		}
+		if (!newPoint.coord || needToInitialize) {
 			newPoint.coord = new Coord({ x: this.p.x + 50, y: this.p.y });
 			newPoint.use = false;
 		}

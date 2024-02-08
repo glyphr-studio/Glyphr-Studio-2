@@ -161,7 +161,11 @@ export class ControlPoint extends GlyphElement {
 			let dx = position - this.x;
 			// log(`dx: ${dx}`);
 
-			this.parent.updatePathPointPosition('p', dx, 0);
+			if(this.parent) {
+				this.parent.updatePathPointPosition('p', dx, 0);
+			} else {
+				this.coord.x = position;
+			}
 		} else {
 			// log(`this is a H control point`);
 			this.coord.x = position;
@@ -179,7 +183,11 @@ export class ControlPoint extends GlyphElement {
 	set y(position) {
 		if (this.type === 'p') {
 			let dy = position - this.y;
-			this.parent.updatePathPointPosition('p', 0, dy);
+			if(this.parent) {
+				this.parent.updatePathPointPosition('p', 0, dy);
+			} else {
+				this.coord.y = position;
+			}
 		} else {
 			this.coord.y = position;
 			// Maybe we can move it without using it?
