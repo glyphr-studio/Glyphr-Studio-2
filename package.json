@@ -7,10 +7,10 @@
 	"description": "Glyphr Studio v2 is a web-based font editor, optimized for typeface design beginners or hobbyists.",
 	"type": "module",
 	"scripts": {
-		"dev": "vite serve ./src/",
-		"build": "vite build ./src/ --emptyOutDir --base=/app/",
-		"stage": "vite build ./src/ --emptyOutDir --base=/staged/",
-		"test": "vitest watch --dom --silent=true",
+		"dev": "run-func scripts.js dev && vite serve ./src/",
+		"build": "run-func scripts.js build  && vite build ./src/ --emptyOutDir --base=/app/",
+		"stage": "run-func scripts.js build  && vite build ./src/ --emptyOutDir --base=/staged/",
+		"test": "vitest watch --dom",
 		"coverage": "vitest watch --dom --silent=true --coverage",
 		"lint": "eslint src",
 		"fix": "eslint src --fix"
@@ -22,8 +22,10 @@
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-prettier": "^4.2.1",
 		"happy-dom": "^9.9.2",
+		"paper": "^0.12.17",
 		"prettier": "^2.7.1",
-		"vite": "^5.0.12",
+		"run-func": "^3.0.0",
+		"vite": ">=5.0.12",
 		"vitest": "^0.34.6"
 	},
 	"bugs": {

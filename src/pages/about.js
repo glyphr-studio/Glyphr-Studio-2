@@ -88,7 +88,19 @@ function makeLicenseInfo() {
 			under a
 			<a href="https://raw.github.com/opentypejs/opentype.js/master/LICENSE" target="_blank">MIT License</a>.
 			<br><br>
-			Copyright © 2020 Frederik De Bleser
+			Copyright © 2020, Frederik De Bleser
+		</div>
+
+		<div class="page__card">
+			<h3>Paper.js</h3>
+			<a href="http://paperjs.org/" target="_blank">paperjs.org</a>
+			<br><br>
+			Available on
+			<a href="https://github.com/paperjs/paper.js" target="_blank">GitHub</a>
+			under a
+			<a href='https://raw.githubusercontent.com/paperjs/paper.js/develop/LICENSE.txt' target='_blank'>MIT license</a>.
+			<br><br>
+			Copyright © 2011, Juerg Lehni & Jonathan Puckey
 		</div>
 
 		<div class="page__card">
@@ -98,7 +110,7 @@ function makeLicenseInfo() {
 			Licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
 			<br><br>
-			Copyright © 2024 Matthew LaGrandeur
+			Copyright © 2024, Matthew LaGrandeur
 		</div>
 
 		<div class="page__card">
@@ -108,8 +120,9 @@ function makeLicenseInfo() {
 			Licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
 			<br><br>
-			Copyright © 2024 Matthew LaGrandeur
+			Copyright © 2024, Matthew LaGrandeur
 		</div>
+
 
 		<br>
 		<br>
@@ -186,7 +199,7 @@ export function makeReleaseNote(showLogo = false) {
 		<h3>Transition from v1 to v2</h3>
 		<p>
 			On January 15th, 2024, the default experience for Glyphr Studio was switched from v1 to v2.
-			This change affected the app itself, and also supporting materials like the blog, the main site, and the help and tutorial sites. 
+			This change affected the app itself, and also supporting materials like the blog, the main site, and the help and tutorial sites.
 			<br>
 			<a href="https://www.glyphrstudio.com/blog/?p=372" target="_blank" style="font-size: 1.2em;">Glyphr Studio Blog: V1 to V2 transition plan</a>
 		</p>

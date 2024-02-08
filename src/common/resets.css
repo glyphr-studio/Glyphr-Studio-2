@@ -114,6 +114,16 @@ a:hover {
 	cursor: pointer;
 }
 
+a[danger],
+a[danger]:visited {
+	color: var(--darkRed);
+}
+
+a[danger]:hover,
+a[danger]:focus {
+	color: var(--red);
+}
+
 p {
 	display: block;
 }

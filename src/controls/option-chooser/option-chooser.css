@@ -72,14 +72,23 @@
 	border-width: 1px;
 	text-align: center;
 	height: 24px;
-	line-height: 24px;
-	color: var(--enabled-restingLight-fill);
 	border-radius: 4px;
 	grid-column: 2;
 	vertical-align: middle;
 }
 
-.wrapper:hover .downArrow,
-.wrapper[deployed] .downArrow {
-	color: var(--enabled-focus-fill);
+.downArrow svg {
+	fill: var(--enabled-restingLight-fill);
+}
+
+.wrapper:hover .downArrow svg,
+.wrapper[deployed] .downArrow svg {
+	fill: var(--enabled-focus-fill);
+}
+
+.wrapper[disabled] .downArrow svg,
+.wrapper:hover[disabled] .downArrow svg,
+.wrapper:focus[disabled] .downArrow svg,
+.wrapper:active[disabled] .downArrow svg {
+	fill: var(--disabled-fill);
 }

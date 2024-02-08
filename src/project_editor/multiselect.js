@@ -5,7 +5,8 @@ import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-import { combineAllPaths } from './boolean_combine.js';
+// import { combinePaths } from './boolean_combine.js';
+import { combinePaths } from './boolean_combine.js';
 import {
 	glyphChanged,
 	makeGlyphWithResolvedLinks,
@@ -396,11 +397,11 @@ export class MultiSelectShapes extends MultiSelect {
 		return false;
 	}
 
-	combine() {
+	combine(operation = 'unite') {
 		// log('MultiSelectShapes.combine', 'start');
 		let success = true;
 		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph);
-		const combineResult = combineAllPaths(newGlyph.shapes);
+		const combineResult = combinePaths(newGlyph.shapes, operation);
 		// log(`\n⮟combineResult⮟`);
 		// log(combineResult);
 
@@ -408,7 +409,7 @@ export class MultiSelectShapes extends MultiSelect {
 		if (Array.isArray(combineResult)) {
 			this.deleteShapes();
 			combineResult.forEach((shape) => addPathToCurrentItem(shape));
-			showToast(`Combine shapes complete!`, 2000);
+			showToast(`Combine shapes: ${operation} complete!`, 2000);
 		} else {
 			success = false;
 			showToast(`Combine shapes error:<br>${combineResult}`, 2000);

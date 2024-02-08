@@ -138,6 +138,8 @@ export function xyPointsAreClose(c1, c2, threshold = 1) {
 	// log(`c2: ${c2.x}, ${c2.y}`);
 	// log('threshold ' + threshold);
 
+	if (isNaN(c1.x) || isNaN(c1.y) || isNaN(c2.x) || isNaN(c2.y)) return false;
+
 	if (c1.x === c2.x && c1.y === c2.y) {
 		// log('exact match');
 		// log('xyPointsAreClose', 'end');
@@ -163,6 +165,7 @@ export function xyPointsAreClose(c1, c2, threshold = 1) {
  * @param {Number} threshold - wiggle room
  */
 export function valuesAreClose(v1, v2, threshold = 1) {
+	if (isNaN(v1) || isNaN(v2)) return false;
 	if (v1 === v2) return true;
 	if (Math.abs(v1 - v2) <= threshold) return true;
 	return false;
