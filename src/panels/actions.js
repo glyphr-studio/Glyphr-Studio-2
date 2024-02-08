@@ -22,6 +22,7 @@ import { Path } from '../project_data/path.js';
 import {
 	addLinkToUsedIn,
 	canAddComponentInstance,
+	getTransformedGlyph,
 	makeGlyphSVGforExport,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
@@ -322,7 +323,7 @@ export function getActionData(name) {
 						if (shape.objType === 'ComponentInstance') {
 							const sourceItem = editor.project.getItem(shape.link);
 							newShapes = newShapes.concat(
-								copyShapesFromTo(shape.transformedGlyph, editor.selectedItem)
+								copyShapesFromTo(getTransformedGlyph(shape), editor.selectedItem)
 							);
 							removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
 						}

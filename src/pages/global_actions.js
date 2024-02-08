@@ -14,8 +14,8 @@ import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import {
 	getComponentInstancesFromRoot,
+	getTransformedGlyph,
 	glyphChanged,
-	insertComponentInstance,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
@@ -148,7 +148,9 @@ function glyphIterator(oa) {
 		} else {
 			showToast(title + '<br>Done!', 1000);
 			if (failures.length) {
-				showError(`Some items were skipped due to errors. Check the browser console for more information.`);
+				showError(
+					`Some items were skipped due to errors. Check the browser console for more information.`
+				);
 				console.warn(`\n⮟Global Action failures⮟`);
 				console.warn(failures);
 			}
@@ -493,7 +495,7 @@ function makeCard_Flatten() {
 				workingItem.shapes.forEach((shape) => {
 					if (shape.objType === 'ComponentInstance') {
 						const rootItem = editor.project.getItem(shape.link);
-						copyShapesFromTo(shape.transformedGlyph, newShapes);
+						copyShapesFromTo(getTransformedGlyph(shape), newShapes);
 						removeLinkFromUsedIn(rootItem, workingItem.id);
 					} else {
 						newShapes.addOneShape(new Path(shape));
@@ -695,6 +697,48 @@ function makeCard_Monospace() {
 	card.appendChild(button);
 
 	return card;
+}
+
+// --------------------------------------------------------------
+// Insert component instance for global actions
+// --------------------------------------------------------------
+
+// This is used for Global Actions - do not update History, it's handled over there
+export function insertComponentInstance(sourceID, destinationID, updateAdvanceWidth = false) {
+	// log(`insertComponentInstance`, 'start');
+	// log('sourceID: ' + sourceID + ' destinationID: ' + destinationID);
+	const editor = getCurrentProjectEditor();
+	const project = getCurrentProject();
+
+	let select = !destinationID;
+	destinationID = destinationID || editor.selectedItemID;
+	let destinationGlyph = project.getItem(destinationID, true);
+
+	if (canAddComponentInstance(destinationGlyph, sourceID)) {
+		// log(`destinationGlyph`);
+		// log(destinationGlyph);
+		let sourceItem = project.getItem(sourceID, true);
+		let name = `Instance of ${sourceItem.name}`;
+		let newComponentInstance = new ComponentInstance({ link: sourceID, name: name });
+
+		// log('INSERT COMPONENT - JSON: \t' + JSON.stringify(newComponentInstance));
+		destinationGlyph.addOneShape(newComponentInstance);
+		glyphChanged(destinationGlyph);
+		if (select) {
+			editor.multiSelect.shapes.select(newComponentInstance);
+			editor.publish('whatShapeIsSelected', editor.multiSelect.shapes.singleton());
+		}
+
+		addLinkToUsedIn(sourceItem, destinationID);
+
+		if (updateAdvanceWidth) destinationGlyph.advanceWidth = sourceItem.advanceWidth;
+		// log(`insertComponentInstance`, 'end');
+		return true;
+	} else {
+		showToast("A circular link was found, components can't include links to themselves.");
+		// log(`insertComponentInstance`, 'end');
+		return false;
+	}
 }
 
 // --------------------------------------------------------------
