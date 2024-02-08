@@ -347,13 +347,14 @@ export function dimSplitElement() {
 // 'direct' controls that don't use pub/sub
 // --------------------------------------------------------------
 
-export function makeDirectCheckbox(item, property, callback) {
+export function makeDirectCheckbox(item, property, callback, id=false) {
 	let newCheckbox = makeElement({
 		tag: 'input',
 		attributes: { type: 'checkbox' },
 	});
 	if (item[property]) newCheckbox.setAttribute('checked', '');
-
+	if (id) newCheckbox.setAttribute('id', id);
+	
 	newCheckbox.addEventListener('change', (event) => {
 		let newValue = event.target.checked;
 		item[property] = !!newValue;

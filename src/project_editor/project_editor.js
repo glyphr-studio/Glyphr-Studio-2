@@ -4,11 +4,16 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
+import { findCharacterRange } from '../pages/settings_project.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
-import { deleteLinks, kernGroupDisplayWidth, kernGroupSideMaxWidth } from './cross_item_actions.js';
+import {
+	kernGroupDisplayWidth,
+	kernGroupSideMaxWidth,
+	resolveItemLinks,
+} from './cross_item_actions.js';
 import { saveTextFile } from './file_io.js';
 import { History } from './history.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
@@ -336,19 +341,37 @@ export class ProjectEditor {
 		// log('currently selected');
 		// log(this._selectedCharacterRange);
 
-		if (!this._selectedCharacterRange || !this._selectedCharacterRange.isValid) {
+		if (
+			!this._selectedCharacterRange ||
+			!this._selectedCharacterRange?.isValid ||
+			!this._selectedCharacterRange?.enabled
+		) {
 			// log('detected none selected');
 			if (ranges.length) {
-				// log('was false, returning first range');
-				this._selectedCharacterRange = new CharacterRange(ranges[0]);
-			} else {
-				// log('was false, and no ranges, returning default');
-				this._selectedCharacterRange = new CharacterRange({
-					begin: 0x20,
-					end: 0x7e,
-					name: 'Basic Latin (default)',
-				});
+				let basicRange = findCharacterRange({ begin: 0x20, end: 0x7f }, ranges);
+				if (basicRange) {
+					// If Basic Latin is a range, select it
+					basicRange.enabled = true;
+					this._selectedCharacterRange = basicRange;
+				} else {
+					// Otherwise, just select the first range
+					for (let r = 0; r < ranges.length; r++) {
+						if (ranges[r].enabled) {
+							this._selectedCharacterRange = new CharacterRange(ranges[r]);
+							break;
+						}
+					}
+				}
 			}
+		}
+
+		if (!this._selectedCharacterRange) {
+			// If there is still no ranges, create one
+			this._selectedCharacterRange = new CharacterRange({
+				begin: 0x20,
+				end: 0x7f,
+				name: 'Basic Latin (default)',
+			});
 		}
 
 		// log(`returning`);
@@ -539,19 +562,20 @@ export class ProjectEditor {
 		// log(`itemPageName: ${itemPageName}`);
 
 		let id;
+		const unlinkComponentInstances = this.project.settings.app.unlinkComponentInstances;
 
 		if (itemPageName === 'Characters') {
 			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
-			this.deleteItem(id, this.project.glyphs);
+			this.deleteItem(id, this.project.glyphs, unlinkComponentInstances);
 		} else if (itemPageName === 'Components') {
 			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
 			id = this.selectedComponentID;
-			this.deleteItem(id, this.project.components);
+			this.deleteItem(id, this.project.components, unlinkComponentInstances);
 		} else if (itemPageName === 'Ligatures') {
 			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
 			id = this.selectedLigatureID;
-			this.deleteItem(id, this.project.ligatures);
+			this.deleteItem(id, this.project.ligatures, unlinkComponentInstances);
 		} else if (itemPageName === 'Kerning') {
 			// log(`deleting selectedKernGroupID: ${this.selectedKernGroupID}`);
 			id = this.selectedKernGroupID;
@@ -567,12 +591,18 @@ export class ProjectEditor {
 		// log(`deleteSelectedItemFromProject`, 'end');
 	}
 
-	deleteItem(itemID, projectGroup) {
+	deleteItem(itemID, projectGroup, unlinkComponentInstances = false) {
 		const item = this.project.getItem(itemID);
-		const historyTitle = `Deleted ${item.displayType} ${itemID} : ${item.name}`;
-		this.history.addState(historyTitle, true);
-		deleteLinks(item);
+		let historyTitle = `Deleted ${item.displayType} ${itemID} : ${item.name}`;
+		if (item?.usedIn?.length) {
+			historyTitle += ', and unlinked instances where it was used as a component.';
+			this.history.addWholeProjectChangePreState(historyTitle);
+		} else {
+			this.history.addState(historyTitle, true);
+		}
+		resolveItemLinks(item, unlinkComponentInstances);
 		delete projectGroup[itemID];
+		if (item?.usedIn?.length) this.history.addWholeProjectChangePostState();
 	}
 
 	/**

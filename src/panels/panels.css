@@ -31,6 +31,45 @@
 	padding: 10px 0px 15px 0px;
 }
 
+.thumbnail-button {
+	line-height: 24px;
+}
+
+.thumbnail-button svg {
+	background-color: white;
+	border: 1px solid var(--enabled-restingLight-border);
+	fill: var(--enabled-resting-fill);
+	border-radius: 4px;
+	width: 24px;
+	height: 24px;
+	margin-bottom: -7px;
+}
+
+.thumbnail-button span {
+	display: inline-block;
+}
+
+.button-left svg {
+	margin-left: -4px;
+}
+
+.button-left span {
+	margin: 0px 0px 0px 10px;
+}
+
+.button-right svg {
+	margin-right: -4px;
+}
+
+.button-right span {
+	margin: 0px 10px 0px 0px;
+}
+
+.thumbnail-button:hover svg,
+.thumbnail-button:active svg {
+	fill: var(--enabled-resting-text);
+}
+
 .panel__card.full-width,
 .pre-checkbox {
 	grid-column: 1 / -1;
@@ -231,7 +270,7 @@
 .panel__actions-area {
 	grid-column: 1 / -1;
 	display: grid;
-	grid-template-columns: repeat(10, var(--action-icon-size));
+	grid-template-columns: repeat(11, var(--action-icon-size));
 	grid-template-rows: var(--action-icon-size);
 	gap: 10px;
 	margin-bottom: 6px;

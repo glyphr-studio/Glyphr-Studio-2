@@ -114,11 +114,13 @@ export function animateRemove(element, animationLength = 120, scale = 0.98, tran
  */
 export function showToast(message = '0_o', duration = 3000, fancy = false) {
 	// log(`showToast`, 'start');
-
+	// log(`message: ${message}`);
+	// log(`duration: ${duration}`);
 	let element = document.getElementById('toast');
 
 	// remove any current context menu, or create one if it doesn't exist
 	if (element) {
+		// log(`Element detected!!!!!`);
 		// animateRemove(element);
 		// element.style.display = 'none';
 		// element.innerHTML = '';
@@ -135,7 +137,10 @@ export function showToast(message = '0_o', duration = 3000, fancy = false) {
 
 	element.innerHTML = message;
 	element.style.display = 'block';
-	window.setTimeout(() => animateRemove(element), duration);
+	window.setTimeout(() => {
+		// log(`showToast - timeout animateRemove`);
+		animateRemove(element);
+	}, duration);
 	// log(`showToast`, 'end');
 }
 

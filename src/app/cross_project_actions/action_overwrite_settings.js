@@ -81,13 +81,16 @@ function makeRows(parent) {
 
 	makeOneRow('project', 'name');
 	makeOneRow('app', 'stopPageNavigation');
-	makeOneRow('app', 'autoSave');
-	makeOneRow('app', 'showNonCharPoints');
 	makeOneRow('app', 'formatSaveFile');
-	makeOneRow('app', 'moveShapesOnSVGDragDrop');
 	makeOneRow('app', 'saveLivePreviews');
+	makeOneRow('app', 'autoSave');
+	makeOneRow('app', 'unlinkComponentInstances');
+	makeOneRow('app', 'showNonCharPoints');
+	makeOneRow('app', 'itemChooserPageSize');
 	makeOneRow('app', 'previewText');
-	makeOneRow('font', 'previewText');
+	makeOneRow('app', 'exportLigatures');
+	makeOneRow('app', 'exportKerning');
+	makeOneRow('app', 'moveShapesOnSVGDragDrop');
 	makeOneRow('font', 'family');
 	makeOneRow('font', 'style');
 	makeOneRow('font', 'version');

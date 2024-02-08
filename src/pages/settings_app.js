@@ -19,15 +19,27 @@ export function makeSettingsTabContentApp() {
 		textToNode('<h3>Saving</h3>'),
 		makeOneSettingsRow('app', 'stopPageNavigation', updateWindowUnloadEvent),
 		makeOneSettingsRow('app', 'formatSaveFile'),
+		makeOneSettingsRow('app', 'saveLivePreviews'),
 		makeOneSettingsRow('app', 'autoSave'),
 		textToNode('<span class="settings__label">Delete all auto-saved backups:</span>'),
-		makeElement({ tag: 'info-bubble', content: `Glyphr Studio uses your browser's local storage to keep auto-saved backups. If you use Glyphr Studio from a different browser, or on a different computer, you'll have to go there to restore or delete backups.` }),
 		makeElement({
-			tag: 'fancy-button', attributes: { 'danger': '', style: 'height: 24px;' }, innerHTML: 'Delete', onClick: () => {
+			tag: 'info-bubble',
+			content: `Glyphr Studio uses your browser's local storage to keep auto-saved backups. If you use Glyphr Studio from a different browser, or on a different computer, you'll have to go there to restore or delete backups.`,
+		}),
+		makeElement({
+			tag: 'fancy-button',
+			attributes: { danger: '', style: 'height: 24px;' },
+			innerHTML: 'Delete',
+			onClick: () => {
 				getGlyphrStudioApp().setLocalStorage('autoSaves', {});
 				showToast('Auto-saved backups were deleted for this browser.');
-		}}),
+			},
+		}),
 		textToNode('<span></span>'),
+		textToNode('<br>'),
+		textToNode('<br>'),
+		textToNode('<h3>Behavior</h3>'),
+		makeOneSettingsRow('app', 'unlinkComponentInstances'),
 		textToNode('<br>'),
 		textToNode('<br>'),
 		textToNode('<h3>Visibility</h3>'),
@@ -36,7 +48,9 @@ export function makeSettingsTabContentApp() {
 		makeOneSettingsRow('app', 'previewText'),
 		textToNode('<br>'),
 		textToNode('<br>'),
-		textToNode('<h3>Importing</h3>'),
+		textToNode('<h3>Importing & exporting</h3>'),
+		makeOneSettingsRow('app', 'exportLigatures'),
+		makeOneSettingsRow('app', 'exportKerning'),
 		makeOneSettingsRow('app', 'moveShapesOnSVGDragDrop'),
 	]);
 

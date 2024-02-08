@@ -36,12 +36,17 @@ export class GlyphrStudioProject {
 				characterRanges: [],
 			},
 			app: {
-				savePreferences: false,
 				stopPageNavigation: true,
+				formatSaveFile: false,
+				saveLivePreviews: true,
 				autoSave: true,
+				savePreferences: false,
+				unlinkComponentInstances: true,
 				showNonCharPoints: false,
 				itemChooserPageSize: 256,
-				formatSaveFile: false,
+				previewText: false,
+				exportLigatures: true,
+				exportKerning: true,
 				moveShapesOnSVGDragDrop: false,
 				guides: {
 					drawGuidesOnTop: false,
@@ -60,9 +65,7 @@ export class GlyphrStudioProject {
 					showGuides: true,
 					guidesTransparency: 70,
 				},
-				saveLivePreviews: true,
 				livePreviews: [],
-				previewText: false,
 			},
 			font: {
 				family: 'My Font',
@@ -408,12 +411,15 @@ export class GlyphrStudioProject {
 	createRangeForHex(id, createAsHidden = false) {
 		// log(`createRangeForHex`, 'start');
 		// log(`id: ${id}`);
+
 		const projectRanges = this.settings.project.characterRanges;
 		const newParentRange = new CharacterRange(getParentRange(id));
 		newParentRange.count = 1;
 		if (createAsHidden) newParentRange.enabled = false;
 		projectRanges.push(newParentRange);
+
 		if (unicodeNonCharPointNames[id]) this.settings.app.showNonCharPoints = true;
+
 		// log(`createRangeForHex`, 'end');
 	}
 
@@ -498,13 +504,13 @@ export class GlyphrStudioProject {
 	/**
 	 * Makes an SVG Thumbnail
 	 * @param {Object} item - Glyph, Path, or ComponentInstance to make the thumbnail of
+	 * @param {Number} size - how big the square is
 	 * @returns {String} - SVG icon
 	 */
-	makeItemThumbnail(item) {
+	makeItemThumbnail(item, size = 50) {
 		// log('GlyphrStudioProject.makeItemThumbnail', 'start');
 		// log(item);
-		const size = 50;
-		const padding = 5;
+		const padding = round(size / 10);
 		const scale = (size - padding * 2) / this.totalVertical;
 		const itemHeight = this.totalVertical;
 		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;

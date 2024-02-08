@@ -21,9 +21,19 @@ export default {
 		},
 	},
 	app: {
-		savePreferences: {
-			label: `Save app preferences locally`,
-			description: `App preferences can be saved locally to your computer, then loaded automatically when you come back to this project.`,
+		stopPageNavigation: {
+			label: `Warn about unsaved changes on window close`,
+			description: `This will stop closing the window or tab with an "Are you sure?" message if you have unsaved changes.`,
+			type: `Boolean`,
+		},
+		formatSaveFile: {
+			label: `Format project file for reading`,
+			description: `Glyphr Studio Project files (.gs2) are text files in JSON format. By default, this file is saved to optimize for smaller file size. Setting this option to true formats the file to be more easily read by a human, but could increase the file size by 2x or more.`,
+			type: `Boolean`,
+		},
+		saveLivePreviews: {
+			label: `Save live previews`,
+			description: `Save the text blocks that you have defined for your Live Previews (both the page, and the 2nd window). These could be long, so you may want to turn them off for file size reasons.`,
 			type: `Boolean`,
 		},
 		autoSave: {
@@ -31,9 +41,14 @@ export default {
 			description: `When enabled, this option will use your browser's local storage to keep backups. These backups can be restored from the Open Projects page. Your browser's local storage is confined to this browser on this computer. If you use Glyphr Studio from another browser or on another computer, those backups will be available from there.`,
 			type: `Boolean`,
 		},
-		stopPageNavigation: {
-			label: `Warn about unsaved changes on window close`,
-			description: `This will stop closing the window or tab with an "Are you sure?" message if you have unsaved changes.`,
+		savePreferences: {
+			label: `Save app preferences locally`,
+			description: `App preferences can be saved locally to your computer, then loaded automatically when you come back to this project.`,
+			type: `Boolean`,
+		},
+		unlinkComponentInstances: {
+			label: `Unlink component instances when deleting their root`,
+			description: `When selected, this option will unlink component instances and turn them into normal paths if their component root is deleted (the glyph will look the same, but some component instances will end up as stand-alone path objects).<br>If this option is unselected, component instances will be deleted when their component root is deleted (the glyph will look different because it will have less shapes).`,
 			type: `Boolean`,
 		},
 		showNonCharPoints: {
@@ -46,9 +61,14 @@ export default {
 			description: `For Ligatures, Components, and Kern Groups, this is how many items to show in the chooser menu. For projects with large numbers of items, splitting the items apart into pages can help the UI perform better.`,
 			type: `Number`,
 		},
-		formatSaveFile: {
-			label: `Format project file for reading`,
-			description: `Glyphr Studio Project files (.gs2) are text files in JSON format. By default, this file is saved to optimize for smaller file size. Setting this option to true formats the file to be more easily read by a human, but could increase the file size by 2x or more.`,
+		exportLigatures: {
+			label: `Export Ligatures to fonts (.otf and .svg)`,
+			description: `Uncheck this option if don't want ligature data exported to fonts.`,
+			type: `Boolean`,
+		},
+		exportKerning: {
+			label: `Export Kern information to fonts (.svg only)`,
+			description: `Uncheck this option if don't want kern data exported to fonts.`,
 			type: `Boolean`,
 		},
 		moveShapesOnSVGDragDrop: {
