@@ -123,5 +123,6 @@
 		"xmlns",
 		"ylock"
 	],
-	"vitest.commandLine": "npx vitest watch --environment=jsdom"
+	"vitest.commandLine": "npx vitest watch --environment=jsdom",
+	"testing.automaticallyOpenPeekView": "never"
 }
