@@ -185,11 +185,11 @@ export function parseColorString(c) {
 		val.g = parseInt(c.substring(2, 4), 16);
 		val.b = parseInt(c.substring(4, 6), 16);
 	} else if (c.substring(0, 4) === 'rgb(') {
-		c = c.split('(')[1].split(')')[0].split(',');
-		val.r = parseInt(c[0], 10);
-		val.g = parseInt(c[1], 10);
-		val.b = parseInt(c[2], 10);
-		val.a = parseInt(c[3], 10) || 1;
+		let cSplit = c.split('(')[1].split(')')[0].split(',');
+		val.r = parseInt(cSplit[0], 10);
+		val.g = parseInt(cSplit[1], 10);
+		val.b = parseInt(cSplit[2], 10);
+		val.a = parseInt(cSplit[3], 10) || 1;
 	}
 
 	return val;
@@ -272,7 +272,7 @@ export function getColorFromRGBA(rgb, alpha) {
 
 /**
  * Converts Transparency to Alpha, invert and change scale
- * @param {Number} transparency - 0=opaque, 100=transparent
+ * @param {String} transparency - 0=opaque, 100=transparent
  * @returns {Number}
  */
 export function transparencyToAlpha(transparency) {
@@ -285,7 +285,7 @@ export function transparencyToAlpha(transparency) {
 	if (t > 100) return 0;
 	if (t < 0) return 1;
 
-	const result = (100 - transparency) / 100;
+	const result = (100 - t) / 100;
 	// log(`result: ${result}`);
 	// log(`transparencyToAlpha`, 'end');
 	return result;

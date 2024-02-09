@@ -691,7 +691,7 @@ export class Path extends GlyphElement {
 	/**
 	 * Looks for a point in the path that matches a given point
 	 * @param {XYPoint} point - Point to test for
-	 * @param {Boolean} wantSecond - return the second result, not the first
+	 * @param {Boolean =} wantSecond - return the second result, not the first
 	 * @returns {PathPoint | Boolean}
 	 */
 	containsPoint(point, wantSecond) {
@@ -1173,11 +1173,11 @@ export class Path extends GlyphElement {
 
 	/**
 	 * Get an X/Y value from a curve split
-	 * @param {Number} t - decimal from 0 to 1 how far along the curve to split
-	 * @param {Number} pointNumber - after which point to split
+	 * @param {Number =} t - decimal from 0 to 1 how far along the curve to split
+	 * @param {Number =} pointNumber - after which point to split
 	 * @returns {XYPoint}
 	 */
-	findXYPointFromSplit(t, pointNumber = 0) {
+	findXYPointFromSplit(t = 0.5, pointNumber = 0) {
 		if (this.pathPoints.length > 1) {
 			const seg = this.makeSegment(pointNumber);
 			return seg.findXYPointFromSplit(t);

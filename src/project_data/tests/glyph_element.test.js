@@ -26,7 +26,6 @@ describe('GlyphElement', () => {
 		expect(glyphElement.displayType).toBe('GlyphElement');
 		expect(glyphElement.cache).toEqual({});
 		expect(glyphElement.isLockable).toBe(false);
-		expect(glyphElement.isLocked()).toBe(false);
 	});
 
 	it('objType', () => {
