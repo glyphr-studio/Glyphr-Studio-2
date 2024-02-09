@@ -305,16 +305,25 @@ function importFontMetadata(font, project) {
 }
 
 function getTableValue(val) {
+	// log(`getTableValue`, 'start');
+	// log(`val: ${val}`);
 	try {
-		// fixes #238 .ttf import from Google Fonts
-		if (typeof val === 'object' && typeof val.en === 'string') {
-			return val.en;
+		let tableValue = false;
+		if (Array.isArray(val)) {
+			tableValue = val.join(' ');
+		} else if (typeof val === 'object' && typeof val.en === 'string') {
+			// fixes #238 .ttf import from Google Fonts
+			tableValue = val.en;
+		} else if (typeof val === 'string' || typeof val === 'number') {
+			tableValue = val;
 		}
 
-		if (Object.prototype.toString.call(val) === '[object Array]') {
-			return val.join(' ');
-		}
+		// log(`tableValue: ${tableValue}`);
+		// log(`getTableValue`, 'end');
+		return tableValue;
 	} catch (err) {
-		return 0;
+		// log(`Error, returning false`);
+		// log(`getTableValue`, 'end');
+		return false;
 	}
 }
