@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { ComponentInstance } from '../component_instance.js';
-
 // --------------------------------------------------------------
 // CHECKLIST
 // >> depends on root glyph
