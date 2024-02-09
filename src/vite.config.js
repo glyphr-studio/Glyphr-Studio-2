@@ -10,5 +10,5 @@ export default defineConfig({
 		rollupOptions: {
 			treeshake: 'recommended',
 		},
-	},
+	}
 });
