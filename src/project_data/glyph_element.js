@@ -185,21 +185,21 @@ export class GlyphElement {
 	 * By default, properties are all unlocked.
 	 * @returns {Boolean}
 	 */
-	isLocked() {
-		return false;
-	}
+	// isLocked() {
+	// 	return false;
+	// }
 
 	/**
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to lock properties.
 	 */
-	lock() {}
+	// lock() {}
 
 	/**
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to lock properties.
 	 */
-	unlock() {}
+	// unlock() {}
 }
 
 /**

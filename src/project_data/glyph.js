@@ -84,7 +84,7 @@ export class Glyph extends GlyphElement {
 	 */
 	save(verbose = false) {
 		const re = {
-			id: this._id,
+			id: this.id,
 		};
 
 		if (this.advanceWidth !== 0) re.advanceWidth = this.advanceWidth;
@@ -153,14 +153,6 @@ export class Glyph extends GlyphElement {
 	// --------------------------------------------------------------
 	// Getters
 	// --------------------------------------------------------------
-
-	/**
-	 * get id
-	 * @returns {String}
-	 */
-	get id() {
-		return this._id || '';
-	}
 
 	/**
 	 * get shapes
@@ -372,18 +364,6 @@ export class Glyph extends GlyphElement {
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------
-
-	/**
-	 * set id
-	 * @param {String} newID
-	 */
-	set id(newID) {
-		// log(`Glyph SET id`, 'start');
-		// log(`passed newID: ${newID}`);
-		this._id = newID;
-		// log(`this._id: ${this._id}`);
-		// log(`Glyph SET id`, 'end');
-	}
 
 	/**
 	 * set paths
