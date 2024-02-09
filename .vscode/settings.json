@@ -123,5 +123,5 @@
 		"xmlns",
 		"ylock"
 	],
-	"vitest.commandLine": "npx vitest watch --dom"
+	"vitest.commandLine": "npx vitest watch --environment=jsdom"
 }
