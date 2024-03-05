@@ -1,8 +1,12 @@
-import { getGlyphrStudioApp, getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
+import {
+	getGlyphrStudioApp,
+	getProjectEditorImportTarget,
+	setCurrentProjectEditor,
+} from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { countItems, pause } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
-import { getUnicodeBlockByName, isControlChar } from '../lib/unicode/unicode_blocks.js';
+import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { Glyph } from '../project_data/glyph.js';
@@ -19,14 +23,13 @@ let finalLigatures = {};
 let finalKerns = {};
 let importItemCounter = 0;
 let importItemTotal = 0;
-// let maxChar = 0;
-// let minChar = 0xffff;
 
 export async function ioFont_importFont(importedFont) {
 	// log('ioFont_importFont', 'start');
 	// log(importedFont);
 	const editor = getProjectEditorImportTarget();
 	const project = editor.project;
+
 	const fontGlyphs = importedFont.glyphs.glyphs;
 	// log(`\nfontGlyphs:`);
 	// log(fontGlyphs);
@@ -74,16 +77,14 @@ export async function ioFont_importFont(importedFont) {
 	project.ligatures = finalLigatures;
 	project.kerning = finalKerns;
 
-	// log(project);
+	// log(editor);
 
 	setCurrentProjectEditor(editor);
-	editor.selectedCharacterRange = getUnicodeBlockByName('Basic Latin');
 	editor.nav.page = 'Overview';
 
 	const app = getGlyphrStudioApp();
 	app.selectedProjectEditor = editor;
 	app.selectedProjectEditor.navigate();
-
 
 	// log('ioFont_importFont', 'end');
 }
@@ -111,15 +112,15 @@ function importOneGlyph(otfGlyph, project) {
 	// log(`otfGlyph.advanceWidth: ${otfGlyph.advanceWidth}`);
 	// log(otfGlyph);
 
-	const uni = decToHex(otfGlyph.unicode || 0);
-
-	if (uni === false) {
+	if (isNaN(otfGlyph.unicode)) {
 		// log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
 		importItemTotal--;
 		// log('importOneGlyph', 'end');
 		return;
 	}
 
+	const uni = decToHex(otfGlyph.unicode || 0);
+	// log(`uni: ${uni}`);
 	const importedGlyph = makeGlyphrStudioGlyphObject(otfGlyph);
 
 	if (!importedGlyph) {
@@ -138,9 +139,9 @@ function importOneGlyph(otfGlyph, project) {
 	importedGlyph.id = glyphID;
 	finalGlyphs[glyphID] = importedGlyph;
 
-	if (isControlChar(uni)) {
+	if (isControlChar(uni) && uni !== '0x0') {
+		console.warn(`CONTROL CHAR FOUND ${uni}`);
 		project.settings.app.showNonCharPoints = true;
-		// console.warn(`CONTROL CHAR FOUND ${uni}`);
 		// log(otfGlyph);
 	}
 
@@ -270,8 +271,8 @@ function importOneKern(members, value) {
 // --------------------------------------------------------------
 
 function importFontMetadata(font, project) {
-	log('importFontMetadata', 'start');
-	log(font);
+	// log('importFontMetadata', 'start');
+	// log(font);
 	const fontSettings = project.settings.font;
 	const os2 = font.tables.os2;
 	const familyName = getTableValue(font.names.fontFamily) || 'My Font';
@@ -312,8 +313,8 @@ function importFontMetadata(font, project) {
 	fontSettings.licenseURL = getTableValue(font.tables.name.licenseURL) || '';
 	fontSettings.description = getTableValue(font.tables.name.description) || '';
 
-	log(fontSettings);
-	log('importFontMetadata', 'end');
+	// log(fontSettings);
+	// log('importFontMetadata', 'end');
 }
 
 function getTableValue(val) {

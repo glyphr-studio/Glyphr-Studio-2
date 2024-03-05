@@ -666,10 +666,15 @@ function enableRangesForOrphanedItems() {
 }
 
 function hideCharacterRange(range) {
+	// log(`hideCharacterRange`, 'start');
+	// log(`\n⮟range⮟`);
+	// log(range);
+
 	const editor = getCurrentProjectEditor();
 	if (areCharacterRangesEqual(range, editor.selectedCharacterRange)) {
 		editor.selectedCharacterRange = false;
 	}
+
 	range.enabled = false;
 
 	if (range.getMemberIDs().indexOf(editor.selectedGlyphID.substring(6)) > -1) {
@@ -679,6 +684,10 @@ function hideCharacterRange(range) {
 	updateRangesTables();
 	closeEveryTypeOfDialog();
 	showToast(`Hid character range:<br>${range.name}`);
+
+	// log(`\n⮟range⮟`);
+	// log(range);
+	// log(`hideCharacterRange`, 'end');
 }
 
 function enableCharacterRange(range) {
@@ -822,7 +831,7 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 }
 
 export function findCharacterRange(range, ranges = false) {
-	if(!ranges) ranges = getCurrentProject().settings.project.characterRanges;
+	if (!ranges) ranges = getCurrentProject().settings.project.characterRanges;
 
 	for (let r = 0; r < ranges.length; r++) {
 		if (ranges[r].begin === range.begin && ranges[r].end === range.end) return ranges[r];

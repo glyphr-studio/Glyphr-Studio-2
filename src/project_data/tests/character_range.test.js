@@ -46,9 +46,11 @@ describe('CharacterRange', () => {
 	it('isValid', () => {
 		const validRange = new CharacterRange({ begin: 65, end: 90, name: 'Valid Range' });
 		const invalidRange = new CharacterRange({ begin: 0, end: 0, name: '' });
+		const beginRange = new CharacterRange({ begin: 0, end: 0x04f, name: 'Some Name' });
 
 		expect(validRange.isValid).toBe(true);
 		expect(invalidRange.isValid).toBe(false);
+		expect(beginRange.isValid).toBe(true);
 	});
 
 	// Test the save method
