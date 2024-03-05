@@ -60,9 +60,14 @@ export async function ioFont_exportFont() {
 			font.substitution.addLigature('liga', sub);
 		});
 	}
-	// log('Font object:');
-	// log(font);
-	// log(font.toTables());
+
+	// TODO investigate advanced table values
+	/*
+	font.tables.os2.ySuperscriptYSize = 1234;
+	log('Font object:');
+	log(font);
+	log(font.toTables());
+	*/
 
 	font.download();
 	await pause();
@@ -221,7 +226,7 @@ function addNotdefToExport(options) {
 	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
 	let thisAdvance = notdef.advanceWidth;
 	if (thisAdvance === 0) thisAdvance = 0.000001;
-	else thisAdvance = round(thisAdvance);// TODO investigate zero advance width
+	else thisAdvance = round(thisAdvance); // TODO investigate zero advance width
 
 	options.glyphs.push(
 		new openTypeJS.Glyph({

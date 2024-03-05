@@ -20,11 +20,12 @@ Glyphr Studio v2 is a web-based font editor, optimized for typeface design begin
 So, here at Glyphr Studio, we've always had a very strong DIY attitude - this means:
 
 - The only external library we will use _for the UI_ is OpenType.js, for importing and
-  exporting OTF files
+  exporting OTF files.
   - This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js
-- The whole app will still concat down to HTML, CSS, and JavaScript files:
-  - Continuing the ability to run on a local server (or online) without a back-end
-  - Build process using Vite for modules
+    (except for shape combine actions).
+- The app build will output HTML, JavaScript, CSS, and asset files files:
+  - Continuing the ability to run on a local server (or online) without a back-end.
+  - Build process using Vite for modules.
 
 ## Timeline
 
