@@ -99,6 +99,7 @@ export class Navigator {
 		// log(`this.panel: ${this.panel}`);
 		// log(`editor.selectedItemID: ${getCurrentProjectEditor().selectedItemID}`);
 
+		closeEveryTypeOfDialog();
 		const wrapper = document.getElementById('app__wrapper');
 
 		// log(`wrapper before:`);

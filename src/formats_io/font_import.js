@@ -1,4 +1,4 @@
-import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
+import { getGlyphrStudioApp, getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { countItems, pause } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
@@ -14,9 +14,9 @@ import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 	Using OpenType.js to read in a font file
 	and convert it to a Glyphr Studio Project.
 **/
-const finalGlyphs = {};
-const finalLigatures = {};
-const finalKerns = {};
+let finalGlyphs = {};
+let finalLigatures = {};
+let finalKerns = {};
 let importItemCounter = 0;
 let importItemTotal = 0;
 // let maxChar = 0;
@@ -30,6 +30,14 @@ export async function ioFont_importFont(importedFont) {
 	const fontGlyphs = importedFont.glyphs.glyphs;
 	// log(`\nfontGlyphs:`);
 	// log(fontGlyphs);
+
+	// Reset module data
+	finalGlyphs = {};
+	finalLigatures = {};
+	finalKerns = {};
+	importItemCounter = 0;
+	importItemTotal = 0;
+
 	const fontLigatures = importedFont.substitution.getLigatures('liga');
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
@@ -71,7 +79,11 @@ export async function ioFont_importFont(importedFont) {
 	setCurrentProjectEditor(editor);
 	editor.selectedCharacterRange = getUnicodeBlockByName('Basic Latin');
 	editor.nav.page = 'Overview';
-	editor.navigate();
+
+	const app = getGlyphrStudioApp();
+	app.selectedProjectEditor = editor;
+	app.selectedProjectEditor.navigate();
+
 
 	// log('ioFont_importFont', 'end');
 }
@@ -258,8 +270,8 @@ function importOneKern(members, value) {
 // --------------------------------------------------------------
 
 function importFontMetadata(font, project) {
-	// log('importFontMetadata', 'start');
-	// log(font);
+	log('importFontMetadata', 'start');
+	log(font);
 	const fontSettings = project.settings.font;
 	const os2 = font.tables.os2;
 	const familyName = getTableValue(font.names.fontFamily) || 'My Font';
@@ -300,8 +312,8 @@ function importFontMetadata(font, project) {
 	fontSettings.licenseURL = getTableValue(font.tables.name.licenseURL) || '';
 	fontSettings.description = getTableValue(font.tables.name.description) || '';
 
-	// log(fontSettings);
-	// log('importFontMetadata', 'end');
+	log(fontSettings);
+	log('importFontMetadata', 'end');
 }
 
 function getTableValue(val) {
