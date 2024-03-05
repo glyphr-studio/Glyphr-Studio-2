@@ -396,9 +396,12 @@ export class GlyphrStudioProject {
 			if (range.isWithinRange(hex)) {
 				hasParent = true;
 				range.count++;
+				// log(`Range ${range.name} now has count ${range.count}`);
 			}
 		}
-		if (!hasParent) this.createRangeForHex(hex);
+		if (!hasParent) {
+			this.createRangeForHex(hex, hex === '0x0');
+		}
 
 		// log(`GlyphrStudioProject.incrementRangeCountFor`, 'end');
 	}
@@ -411,12 +414,14 @@ export class GlyphrStudioProject {
 	createRangeForHex(hex, createAsHidden = false) {
 		// log(`createRangeForHex`, 'start');
 		// log(`hex: ${hex}`);
+		// log(`createAsHidden: ${createAsHidden}`);
 		const projectRanges = this.settings.project.characterRanges;
 		const newParentRange = new CharacterRange(getParentRange(hex));
+		// log(newParentRange);
 		newParentRange.count = 1;
 		if (createAsHidden) newParentRange.enabled = false;
 		projectRanges.push(newParentRange);
-		if (unicodeNonCharPointNames[hex]) this.settings.app.showNonCharPoints = true;
+		if (unicodeNonCharPointNames[hex] && hex !== '0x0') this.settings.app.showNonCharPoints = true;
 		// log(`createRangeForHex`, 'end');
 	}
 

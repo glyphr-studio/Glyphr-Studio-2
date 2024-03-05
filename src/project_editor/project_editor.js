@@ -334,7 +334,7 @@ export class ProjectEditor {
 	 * @returns {Object}
 	 */
 	get selectedCharacterRange() {
-		// log(`ProjectEditor.selectedCharacterRange`, 'start');
+		// log(`ProjectEditor GET selectedCharacterRange`, 'start');
 		// log('current ranges');
 		const ranges = this.project.settings.project.characterRanges;
 		// log(ranges);
@@ -346,12 +346,11 @@ export class ProjectEditor {
 			!this._selectedCharacterRange?.isValid ||
 			!this._selectedCharacterRange?.enabled
 		) {
-			// log('detected none selected');
+			// log('detected none selected:');
 			if (ranges.length) {
 				let basicRange = findCharacterRange({ begin: 0x20, end: 0x7f }, ranges);
-				if (basicRange) {
+				if (basicRange && basicRange.enabled) {
 					// If Basic Latin is a range, select it
-					basicRange.enabled = true;
 					this._selectedCharacterRange = basicRange;
 				} else {
 					// Otherwise, just select the first range
@@ -376,7 +375,7 @@ export class ProjectEditor {
 
 		// log(`returning`);
 		// log(this._selectedCharacterRange);
-		// log(`ProjectEditor.selectedCharacterRange`, 'end');
+		// log(`ProjectEditor GET selectedCharacterRange`, 'end');
 		return this._selectedCharacterRange;
 	}
 
@@ -547,7 +546,13 @@ export class ProjectEditor {
 	 * @param {Object} newRange - range object
 	 */
 	set selectedCharacterRange(newRange) {
+		// log(`ProjectEditor SET selectedCharacterRange`, 'start');
+		// log(`\n⮟newRange⮟`);
+		// log(newRange);
 		this._selectedCharacterRange = new CharacterRange(newRange);
+		// log(`\n⮟this._selectedCharacterRange⮟`);
+		// log(this._selectedCharacterRange);
+		// log(`ProjectEditor SET selectedCharacterRange`, 'end');
 	}
 
 	// --------------------------------------------------------------
