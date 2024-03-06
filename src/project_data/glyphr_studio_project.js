@@ -80,6 +80,7 @@ export class GlyphrStudioProject {
 				xHeight: 1100,
 				overshoot: 30,
 				lineGap: 58,
+				weight: 400,
 				italicAngle: 0,
 				designer: '',
 				designerURL: '',
@@ -91,7 +92,6 @@ export class GlyphrStudioProject {
 				trademark: '',
 				// SVG Font properties
 				variant: 'normal',
-				weight: 400,
 				stretch: 'normal',
 				stemv: 0,
 				stemh: 0,
