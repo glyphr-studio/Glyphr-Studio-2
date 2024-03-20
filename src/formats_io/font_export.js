@@ -316,7 +316,7 @@ async function generateOneLigature(currentExportItem) {
 	// log(`thisIndex: ${thisIndex}`);
 
 	const glyphInfo = {
-		name: liga.name.replace('Ligature ', 'liga-'),
+		name: generateLigatureExportName(liga),
 		index: thisIndex,
 		advanceWidth: round(liga.advanceWidth || 1), // has to be non-zero
 		path: thisPath,
@@ -335,6 +335,18 @@ async function generateOneLigature(currentExportItem) {
 	await pause();
 	// log(`generateOneLigature`, 'end');
 	return new openTypeJS.Glyph(glyphInfo);
+}
+
+function generateLigatureExportName(lig) {
+	let result = 'lig';
+
+	lig.gsub.forEach((char) => {
+		let shortName = getUnicodeShortName(decToHex(char));
+		if (!shortName || shortName === '[name not found]') shortName = '?';
+		result += '.' + shortName;
+	});
+
+	return result;
 }
 
 let currentIndex = 0;
