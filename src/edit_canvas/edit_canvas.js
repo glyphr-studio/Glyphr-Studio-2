@@ -76,7 +76,14 @@ export class EditCanvas extends HTMLElement {
 					border: 0;
 					border-image: none;
 					outline: 0;
-				}`,
+				}
+				[contenteditable='true'] {
+					caret-color: transparent;
+				}
+				::selection {
+					background-color: transparent;
+				}
+				`,
 		});
 		shadow.appendChild(styles);
 
