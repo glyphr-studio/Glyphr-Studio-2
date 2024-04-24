@@ -20,6 +20,10 @@ export class DisplayCanvas extends HTMLElement {
 	constructor(attributes = {}) {
 		// log(`DisplayCanvas.constructor`, 'start');
 		super();
+		// log(`this.constructor.name: ${this.constructor.name}`);
+		this.isSetUp = false;
+
+		// Initialize attributes
 		// log('attributes');
 		// log(attributes);
 		this.textBlockOptions = new TextBlockOptions();
@@ -36,8 +40,8 @@ export class DisplayCanvas extends HTMLElement {
 				this.setAttribute('text', this.textBlockOptions.text);
 			}
 		});
-		this.isSetUp = false;
-		// log(this);
+
+		// log(`this.constructor.name: ${this.constructor.name}`);
 		// log(`DisplayCanvas.constructor`, 'end');
 	}
 
@@ -46,6 +50,8 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	connectedCallback() {
 		// log(`DisplayCanvas.connectedCallback`, 'start');
+		// log(`this.constructor.name: ${this.constructor.name}`);
+
 		// Put it all together
 		const shadow = this.attachShadow({ mode: 'open' });
 		const styles = makeElement({ tag: 'style', innerHTML: style });
@@ -59,14 +65,21 @@ export class DisplayCanvas extends HTMLElement {
 
 		// Finish
 		this.isSetUp = true;
-		this.resizeAndRedraw();
+		if (this.resizeAndRedraw) this.resizeAndRedraw();
+		else {
+			console.warn(`${this.constructor.name}: Methods not available on connectedCallback`);
+		}
+		this.setAttribute('changed-on', '' + Date.now());
+
+		// log(`this.constructor.name: ${this.constructor.name}`);
 		// log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
 	resizeAndRedraw() {
 		// log(`DisplayCanvas.resizeAndRedraw`, 'start');
 		if (!this.isSetUp) {
-			// log('DisplayCanvas.redraw', 'end');
+			// log('not set up!');
+			// log('DisplayCanvas.resizeAndRedraw', 'end');
 			return;
 		}
 		this.updateTextBlock();
@@ -194,6 +207,7 @@ export class DisplayCanvas extends HTMLElement {
 			'show-character-extras',
 			'show-placeholder-message',
 			'width-adjustment',
+			'changed-on',
 		];
 	}
 
@@ -207,6 +221,8 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`DisplayCanvas.attributeChangeCallback`, 'start');
 		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 		// log(this);
+
+		if (this.constructor.name !== 'DisplayCanvas') return;
 
 		if (attributeName === 'text') {
 			this.textBlockOptions.text = newValue;
@@ -250,6 +266,10 @@ export class DisplayCanvas extends HTMLElement {
 
 		if (attributeName === 'width-adjustment') {
 			this.widthAdjustment = parseInt(newValue);
+			this.resizeAndRedraw();
+		}
+
+		if (attributeName === 'changed-on') {
 			this.resizeAndRedraw();
 		}
 
