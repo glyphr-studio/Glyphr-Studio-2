@@ -19,7 +19,6 @@ const codePointGlyphIndexTable = {};
 
 export async function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'start');
-
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
 	// Add .notdef
@@ -64,9 +63,9 @@ export async function ioFont_exportFont() {
 	// TODO investigate advanced table values
 	/*
 	font.tables.os2.ySuperscriptYSize = 1234;
-	log('Font object:');
-	log(font);
-	log(font.toTables());
+	// log('Font object:');
+	// log(font);
+	// log(font.toTables());
 	*/
 
 	font.download();
@@ -116,6 +115,19 @@ function createOptionsObject() {
 	// log('createOptionsObject', 'end');
 }
 
+const ligatureToCodepoint = {
+	ae: '0xE6',
+	AE: '0xC6',
+	ff: '0xFB00',
+	fi: '0xFB01',
+	fl: '0xFB02',
+	oe: '0x153',
+	OE: '0x152',
+	st: '0xFB06',
+	ffi: '0xFB03',
+	ffl: '0xFB04',
+};
+
 function populateExportList() {
 	// log('populateExportList', 'start');
 	const project = getCurrentProject();
@@ -151,16 +163,37 @@ function populateExportList() {
 				// log(`\t adding ligature "${thisLigature.name}"`);
 				exportLigatures.push({ xg: thisLigature, xc: key, chars: thisLigature.chars });
 
-				// TODO Add Ligatures to ligature code points
-				// ligWithCodePoint = doesLigatureHaveCodePoint(l);
-				// if (ligWithCodePoint) {
-				// 	// log(`\t LIGATURE WITH CODE POINT FOUND for ${l} at ${ligWithCodePoint.point}`);
-				// 	const dupe = new Glyph(
-				// 		clone(_GP.ligatures[l], 'ioOTF export.populateExportLists - ligature with code point')
-				// 	);
-				// 	exportGlyphs.push({ xg: dupe, xc: ligWithCodePoint.point });
-				// 	if (parseInt(l) >= 0xe000) privateUseArea.push(parseInt(l));
-				// }
+				/*
+					When exporting to OTF, if a ligature depends on certain
+					characters, and one or more of those characters do not
+					exist in the font, it causes an error.
+					This will check to see if Glyph objects exist for all
+					Ligature source characters, and if some are missing, it
+					will create blank Glyphs for them.
+				 */
+				project.ligatures[key].gsub.forEach((charID) => {
+					const hexID = '' + decToHex(charID);
+					const id = `glyph-${hexID}`;
+					if (!project.glyphs[id]) {
+						// log(`No glyph found for charID ${charID} id ${id}`);
+						const newGlyph = project.addItemByType(new Glyph({ id: id }), 'Glyph', id);
+						if (!checklist.includes(hexID)) {
+							exportGlyphs.push({ xg: newGlyph, xc: hexID });
+							checklist.push(hexID);
+						}
+					}
+				});
+
+				/*
+					Some Latin ligatures have Unicode code points. Check to see if
+					this ligature is one of those, and if so, also put it in that
+					code point
+				*/
+				const ligaHexID = ligatureToCodepoint[thisLigature.chars];
+				if (ligaHexID) {
+					exportGlyphs.push({ xg: thisLigature, xc: ligaHexID });
+					checklist.push(ligaHexID);
+				}
 			} else {
 				console.warn(`
 				Skipped exporting ligature ${project.ligatures[key].name}.
