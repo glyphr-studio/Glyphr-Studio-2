@@ -344,11 +344,15 @@ function makeKernGroupChooserList(editor = getCurrentProjectEditor()) {
 	const sortedKernGroups = editor.project.sortedKernGroups;
 	const pagedComponents = getItemsFromPage(sortedKernGroups, editor.chooserPage.kerning, editor);
 
+	// log(`\n⮟pagedComponents⮟`);
+	// log(pagedComponents);
+
 	if (sortedKernGroups.length > pagedComponents.length) {
 		kernGroupRows.appendChild(makePageControl('kerning', sortedKernGroups, editor));
 	}
 
 	pagedComponents.forEach((kernGroup) => {
+		// log(kernGroup);
 		let oneRow = makeOneKernGroupRow(kernGroup.id);
 		if (editor.selectedKernGroupID === kernGroup.id) oneRow.setAttribute('selected', '');
 

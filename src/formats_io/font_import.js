@@ -259,6 +259,7 @@ function importOneKern(members, value) {
 		value: value,
 	});
 	const newKernID = makeKernGroupID(finalKerns);
+	importedKern.id = newKernID;
 
 	// Finish up
 	finalKerns[newKernID] = importedKern;

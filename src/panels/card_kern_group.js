@@ -53,6 +53,6 @@ export function makeCard_otherKernGroupActions() {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	addChildActions(actionsArea, getActionData('otherKernGroupActions'));
 	actionsCard.appendChild(actionsArea);
-	
+
 	return actionsCard;
 }

@@ -64,8 +64,8 @@ export function ioSVG_importSVGfont(font) {
 	 *
 	 */
 	function importMissingGlyph(missingGlyph) {
-		log(`\n⮟missingGlyph⮟`);
-		log(missingGlyph);
+		// log(`\n⮟missingGlyph⮟`);
+		// log(missingGlyph);
 		const glyphSVG = `<svg><glyph d="${missingGlyph.d}"/></svg>`;
 		const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG, false);
 		const advanceWidth = parseInt(missingGlyph['horiz-adv-x']);
@@ -73,8 +73,8 @@ export function ioSVG_importSVGfont(font) {
 		project.incrementRangeCountFor('0x0');
 		newGlyph.id = `glyph-0x0`;
 		finalGlyphs[`glyph-0x0`] = newGlyph;
-		log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
-		log(finalGlyphs[`glyph-0x0`]);
+		// log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
+		// log(finalGlyphs[`glyph-0x0`]);
 	}
 
 	/*
@@ -215,6 +215,7 @@ export function ioSVG_importSVGfont(font) {
 				leftGroup: leftGroup,
 				rightGroup: rightGroup,
 				value: kernValue,
+				id: newID,
 			});
 			// log('Made the new kern successfully.');
 			kernCount++;
