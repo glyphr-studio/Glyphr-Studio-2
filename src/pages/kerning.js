@@ -232,8 +232,10 @@ export function makeKernGroupID(kernGroups = getCurrentProject().kerning) {
 	// log(`makeKernGroupID`, 'start');
 	let counter = countItems(kernGroups);
 	while (kernGroups[`kern-${counter}`]) counter++;
+	const newID = `kern-${counter}`;
+	// log(`newID: ${newID}`);
 	// log(`makeKernGroupID`, 'end');
-	return `kern-${counter}`;
+	return newID;
 }
 
 export function showAddEditKernGroupDialog(kernGroup = false) {
