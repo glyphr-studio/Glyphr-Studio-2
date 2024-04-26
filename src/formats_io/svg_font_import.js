@@ -85,7 +85,7 @@ export function ioSVG_importSVGfont(font) {
 	function importOneGlyph() {
 		// log(`importOneGlyph`, 'start');
 		updateProgressIndicator(`
-			Importing glyph:
+			Importing ${uni.length === 1 ? 'character' : 'ligature'}:
 			<span class="progress-indicator__counter">${charCounter}</span>
 			 of
 			<span class="progress-indicator__counter">${chars.length}</span>
@@ -187,7 +187,7 @@ export function ioSVG_importSVGfont(font) {
 			return;
 		}
 
-		updateProgressIndicator('Importing Kern Pair ' + kernCount + ' of ' + kerns.length);
+		updateProgressIndicator('Importing kern pair ' + kernCount + ' of ' + kerns.length);
 
 		// log('Kern Import - START ' + kernCount + '/' + kerns.length);
 		leftGroup = [];
@@ -215,8 +215,8 @@ export function ioSVG_importSVGfont(font) {
 				leftGroup: leftGroup,
 				rightGroup: rightGroup,
 				value: kernValue,
-				id: newID,
 			});
+			finalKerns[newID].id = newID;
 			// log('Made the new kern successfully.');
 			kernCount++;
 		} else {
