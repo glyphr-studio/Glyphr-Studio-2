@@ -122,12 +122,12 @@ function glyphIterator(oa) {
 	// Functions
 
 	function processOneItem() {
-		log(`glyphIterator>processOneItem`, 'start');
+		// log(`glyphIterator>processOneItem`, 'start');
 		let failures = [];
-		log(`itemNumber: ${itemNumber}`);
+		// log(`itemNumber: ${itemNumber}`);
 		currentItemID = listOfItemIDs[itemNumber];
 		currentItem = project.getItem(currentItemID, true);
-		log(`Got glyph: ${currentItem.name}`);
+		// log(`Got glyph: ${currentItem.name}`);
 
 		showToast(title + '<br>' + currentItem.name, 10000);
 
@@ -157,7 +157,7 @@ function glyphIterator(oa) {
 			);
 			if (callback) callback();
 		}
-		log(`glyphIterator>processOneItem`, 'end');
+		// log(`glyphIterator>processOneItem`, 'end');
 	}
 
 	function makeItemList() {

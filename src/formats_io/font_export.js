@@ -2,7 +2,7 @@ import { getCurrentProject } from '../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../common/character_ids.js';
 import { pause, round } from '../common/functions.js';
 import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
-import openTypeJS from '../lib/opentype/opentypejs_1-3-1.js';
+import openTypeJS from '../lib/opentype.js-1.3.4/opentype.module.js';
 import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { Glyph } from '../project_data/glyph.js';
 import { sortLigatures } from '../project_data/glyphr_studio_project.js';
