@@ -43,19 +43,29 @@ export async function ioFont_importFont(importedFont) {
 	const fontLigatures = importedFont.substitution.getLigatures('liga');
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
-	const fontKerns = importedFont.kerningPairs;
-	// log(`\nfontKerns:`);
-	// log(fontKerns);
 
-	importItemTotal = countItems(fontGlyphs) + fontLigatures.length + countItems(fontKerns);
+	// Get Kern Info
+	const kernTables = importedFont.position.getKerningTables();
+	let gposPairs = [];
+	let gposCoverage = {};
+	let kernPairCount = 0;
+	if (kernTables[0] && kernTables[0].lookupType === 2) {
+		gposPairs = kernTables[0]?.subtables[0]?.pairSets || [];
+		gposCoverage = kernTables[0]?.subtables[0]?.coverage?.ranges || {};
+	}
+	gposPairs.forEach((base) => (kernPairCount += base.length));
+	// log(`kernPairCount: ${kernPairCount}`);
+
+	// Start import
+	importItemTotal = countItems(fontGlyphs) + fontLigatures.length + kernPairCount;
 
 	for (const key of Object.keys(fontGlyphs)) {
-		await updateFontImportProgressIndicator();
+		await updateFontImportProgressIndicator('character');
 		importOneGlyph(fontGlyphs[key], project);
 	}
 
 	for (const liga of fontLigatures) {
-		await updateFontImportProgressIndicator();
+		await updateFontImportProgressIndicator('ligature');
 		let thisLigature = false;
 		try {
 			thisLigature = importedFont.glyphs.get(liga.by);
@@ -65,9 +75,37 @@ export async function ioFont_importFont(importedFont) {
 		importOneLigature({ glyph: thisLigature, gsub: liga.sub }, importedFont);
 	}
 
-	for (const key of Object.keys(fontKerns)) {
-		await updateFontImportProgressIndicator();
-		importOneKern(key, fontKerns[key], project);
+	// gposPairs.forEach(async (pairSet, leftID) => {
+	// 	pairSet.forEach(async (right) => {
+	for (let leftID = 0; leftID < gposPairs.length; leftID++) {
+		const pairSet = gposPairs[leftID];
+		for (let p = 0; p < pairSet.length; p++) {
+			const right = pairSet[p];
+			const rightID = right.secondGlyph;
+			const kernValue = right.value1.xAdvance;
+			const leftGlyph = kernCoverageIDToGlyph(leftID);
+			const rightGlyph = importedFont.glyphs.glyphs[rightID];
+			// log(`${leftGlyph.name} : ${rightGlyph.name} = ${kernValue}`);
+			await updateFontImportProgressIndicator('kern pair');
+			importOneKern(leftGlyph, rightGlyph, kernValue);
+		}
+	}
+
+	function kernCoverageIDToGlyph(coverageID) {
+		let range = gposCoverage[0];
+
+		for (let i = gposCoverage.length - 1; i >= 0; i--) {
+			if (coverageID >= gposCoverage[i].index) {
+				range = gposCoverage[i];
+				break;
+			}
+		}
+
+		const delta = coverageID - range.index;
+		const glyphIndex = range.start + delta;
+		// log(`Coverage ID ${coverageID} -> ${glyphIndex}`);
+		const glyph = importedFont.glyphs.glyphs[glyphIndex];
+		return glyph;
 	}
 
 	importFontMetadata(importedFont, project);
@@ -88,9 +126,9 @@ export async function ioFont_importFont(importedFont) {
 	// log('ioFont_importFont', 'end');
 }
 
-async function updateFontImportProgressIndicator() {
+async function updateFontImportProgressIndicator(type) {
 	updateProgressIndicator(`
-			Importing glyph:
+			Importing ${type}:
 			<span class="progress-indicator__counter">${importItemCounter}</span>
 			 of
 			<span class="progress-indicator__counter">${importItemTotal}</span>
@@ -130,18 +168,12 @@ function importOneGlyph(otfGlyph, project) {
 		return;
 	}
 
-	// Get some range data
-	// minChar = Math.min(minChar, uni);
-	// maxChar = Math.max(maxChar, uni);
-
 	const glyphID = `glyph-${uni}`;
 	importedGlyph.id = glyphID;
 	finalGlyphs[glyphID] = importedGlyph;
 
 	if (isControlChar(uni) && uni !== '0x0') {
-		console.warn(`CONTROL CHAR FOUND ${uni}`);
 		project.settings.app.showNonCharPoints = true;
-		// log(otfGlyph);
 	}
 
 	project.incrementRangeCountFor(uni);
@@ -238,23 +270,24 @@ function importOneLigature(otfLigature, otfFont) {
 // Kerning
 // --------------------------------------------------------------
 
-function importOneKern(members, value) {
+function importOneKern(leftGlyph, rightGlyph, value) {
 	// log(`importOneKern`, 'start');
-	members = members.split(',');
-	let left = decToHex(members[0]);
-	let right = decToHex(members[1]);
+	// log(`leftGlyph.unicode: ${leftGlyph.unicode}`);
+	// log(`rightGlyph.unicode: ${rightGlyph.unicode}`);
 
-	if (members.length !== 2) {
+	if (!leftGlyph || !rightGlyph) {
 		console.warn(
-			`Something went wrong with importing this kern pair: ${JSON.stringify(members)} | ${value} `
+			`Something went wrong with importing this kern pair:
+			${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `
 		);
 		importItemCounter--;
 		// log(`importOneKern`, 'end');
 		return;
 	}
+
 	const importedKern = new KernGroup({
-		leftGroup: [left],
-		rightGroup: [right],
+		leftGroup: [decToHex(leftGlyph.unicode)],
+		rightGroup: [decToHex(rightGlyph.unicode)],
 		value: value,
 	});
 	const newKernID = makeKernGroupID(finalKerns);
@@ -263,6 +296,9 @@ function importOneKern(members, value) {
 	// Finish up
 	finalKerns[newKernID] = importedKern;
 	importItemCounter++;
+
+	// log(`newKernID: ${newKernID}`);
+	// log(importedKern);
 	// log(`importOneKern`, 'end');
 }
 
