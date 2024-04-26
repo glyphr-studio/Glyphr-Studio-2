@@ -20,7 +20,7 @@ export class DisplayCanvas extends HTMLElement {
 	constructor(attributes = {}) {
 		// log(`DisplayCanvas.constructor`, 'start');
 		super();
-		// log(`this.constructor.name: ${this.constructor.name}`);
+
 		this.isSetUp = false;
 
 		// Initialize attributes
@@ -41,7 +41,6 @@ export class DisplayCanvas extends HTMLElement {
 			}
 		});
 
-		// log(`this.constructor.name: ${this.constructor.name}`);
 		// log(`DisplayCanvas.constructor`, 'end');
 	}
 
@@ -50,7 +49,11 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	connectedCallback() {
 		// log(`DisplayCanvas.connectedCallback`, 'start');
-		// log(`this.constructor.name: ${this.constructor.name}`);
+
+		// Firefox bug, custom element's prototype is lost when used across frames
+		if (this.constructor.name !== 'DisplayCanvas') {
+			this.__proto__ = customElements.get('display-canvas').prototype;
+		}
 
 		// Put it all together
 		const shadow = this.attachShadow({ mode: 'open' });
@@ -71,7 +74,6 @@ export class DisplayCanvas extends HTMLElement {
 		}
 		this.setAttribute('changed-on', '' + Date.now());
 
-		// log(`this.constructor.name: ${this.constructor.name}`);
 		// log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 

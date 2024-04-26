@@ -39,7 +39,7 @@ export function openPopOutWindow() {
 	popDoc.body.appendChild(
 		makeElement({
 			tag: 'div',
-			id: 'pop-out__wrapper'
+			id: 'pop-out__wrapper',
 		})
 	);
 
@@ -71,24 +71,17 @@ export function updatePopOutWindowContent() {
 	const popWrapper = popDoc.querySelector('#pop-out__wrapper');
 	popWrapper.innerHTML = '';
 
-	// editor.livePreviews.forEach((options, index) => {
-	for (let i = 1; i < editor.livePreviews.length; i++) {
+	editor.livePreviews.forEach((options, index) => {
 		// index 0 is for the Live Previews Page
 		// the rest are for the Pop Out Window
-		// if (index !== 0) {
-		const options = editor.livePreviews[i];
-		// log(`appending new display canvas`);
-		// log(options);
-		options.widthAdjustment = -20;
-		const newCanvas = new DisplayCanvas(options);
-		// log(`PRE APPEND newCanvas.constructor.name: ${newCanvas.constructor.name}`);
-		// log(`newCanvas.isConnected: ${newCanvas.isConnected}`);
-		popWrapper.appendChild(newCanvas);
-		// log(`POST APPEND newCanvas.constructor.name: ${newCanvas.constructor.name}`);
-		// log(`newCanvas.isConnected: ${newCanvas.isConnected}`);
-		// }
-		// });
-	}
+		if (index !== 0) {
+			// log(`appending new display canvas`);
+			// log(options);
+			options.widthAdjustment = -20;
+			const newCanvas = new DisplayCanvas(options);
+			popWrapper.appendChild(newCanvas);
+		}
+	});
 
 	// Preview controls
 	const footer = makeElement({ tag: 'div', className: 'pop-out__footer' });
