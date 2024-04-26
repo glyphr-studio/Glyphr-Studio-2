@@ -258,8 +258,8 @@ function addNotdefToExport(options) {
 	// Add it to the export
 	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
 	let thisAdvance = notdef.advanceWidth;
-	if (thisAdvance === 0) thisAdvance = 0.000001;
-	else thisAdvance = round(thisAdvance); // TODO investigate zero advance width
+	// if (thisAdvance === 0) thisAdvance = 0.000001;
+	// else thisAdvance = round(thisAdvance); // TODO investigate zero advance width
 
 	options.glyphs.push(
 		new openTypeJS.Glyph({
@@ -307,22 +307,21 @@ async function generateOneGlyph(currentExportItem) {
 	// log(`decToHex(num): ${decToHex(num)}`);
 	// log(`thisName: ${thisName}`);
 
-	// Advance width
-	let thisAdvance = glyph.advanceWidth;
-	if (thisAdvance === 0) thisAdvance = 0.000001; // TODO investigate zero advance width
-
 	// Create OTF.js Glyph
 	const thisGlyph = new openTypeJS.Glyph({
 		name: thisName,
 		unicode: thisUnicode,
 		index: thisIndex,
-		advanceWidth: thisAdvance,
 		xMin: round(maxes.xMin),
 		xMax: round(maxes.xMax),
 		yMin: round(maxes.yMin),
 		yMax: round(maxes.yMax),
 		path: thisPath,
 	});
+
+	// Opentype.js Glyph constructor removes Advance Width of zero.
+	// So, incase we need it to be zero, we add it here.
+	thisGlyph.advanceWidth = glyph.advanceWidth;
 
 	// Add this finished glyph
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
@@ -348,26 +347,29 @@ async function generateOneLigature(currentExportItem) {
 	const thisIndex = getNextGlyphIndexNumber();
 	// log(`thisIndex: ${thisIndex}`);
 
-	const glyphInfo = {
+	const thisLigature = new openTypeJS.Glyph({
 		name: generateLigatureExportName(liga),
 		index: thisIndex,
-		advanceWidth: round(liga.advanceWidth || 1), // has to be non-zero
 		path: thisPath,
 		xMin: round(maxes.xMin),
 		xMax: round(maxes.xMax),
 		yMin: round(maxes.yMin),
 		yMax: round(maxes.yMax),
-	};
+	});
+
+	// Opentype.js Glyph constructor removes Advance Width of zero.
+	// So, incase we need it to be zero, we add it here.
+	thisLigature.advanceWidth =  liga.advanceWidth;
 
 	// Add substitution info to font
 	const indexList = liga.gsub.map((v) => codePointGlyphIndexTable[decToHex(v)]);
 	// log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex}}`);
 	ligatureSubstitutions.push({ sub: indexList, by: thisIndex });
-	// log(glyphInfo);
+	// log(thisLigature);
 
 	await pause();
 	// log(`generateOneLigature`, 'end');
-	return new openTypeJS.Glyph(glyphInfo);
+	return thisLigature;
 }
 
 function generateLigatureExportName(lig) {
