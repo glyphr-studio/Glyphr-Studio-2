@@ -29,7 +29,6 @@ export async function ioFont_importFont(importedFont) {
 	// log(importedFont);
 	const editor = getProjectEditorImportTarget();
 	const project = editor.project;
-
 	const fontGlyphs = importedFont.glyphs.glyphs;
 	// log(`\nfontGlyphs:`);
 	// log(fontGlyphs);
