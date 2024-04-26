@@ -176,15 +176,15 @@ function makeVersionInfo() {
 }
 
 export function makeReleaseNote(showLogo = false) {
-	let logo = '';
+	let gsLogo = '';
 	if (showLogo) {
-		logo = `<div class="about-page__logo">
+		gsLogo = `<div class="about-page__logo">
 		${logoVertical}
 		</div><br><br>`;
 	}
 	const content = makeElement({
 		innerHTML: `
-		${logo}
+		${gsLogo}
 		<h2>Welcome to Version 2!</h2>
 		<p>
 			It's been a long road, but Glyphr Studio Version 2 is finally complete! I'm sure we will continue to find bugs and think of new feature improvements.

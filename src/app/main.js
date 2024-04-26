@@ -203,8 +203,8 @@ export function addProjectEditorAndSetAsImportTarget() {
  * @param {Boolean} type - 'start' or 'end'
  */
 
-let logColors = {};
-let logCount = 0;
+let colors = {};
+let depth = 0;
 export function log(message, type) {
 	let dev = GSApp.settings.dev;
 	// if (!dev.mode) return;
@@ -215,8 +215,8 @@ export function log(message, type) {
 			message = message.replace(/&gt;/gi, '>');
 
 			if (type === 'start') {
-				if (!logColors[message])
-					logColors[message] = `hsl(${Math.floor(Math.random() * 210 + 150)}, 90%, 20%)`;
+				if (!colors[message])
+					colors[message] = `hsl(${Math.floor(Math.random() * 210 + 150)}, 90%, 20%)`;
 			}
 
 			const common = `
@@ -224,7 +224,7 @@ export function log(message, type) {
 				position: relative;
 				left: -20px;
 				color: white;
-				background-color: ${logColors[message]};
+				background-color: ${colors[message]};
 				padding: 6px 0px 6px 0px;
 				margin: 0px;
 			`;
@@ -288,28 +288,28 @@ export function log(message, type) {
 
 				if (type === 'start') {
 					console.log(
-						`%c${ch.repeat(logCount)}%cSTART %c${message1}%c${message2}`,
+						`%c${ch.repeat(depth)}%cSTART %c${message1}%c${message2}`,
 						indent,
 						startLeft,
 						startMid,
 						startRight
 					);
-					logCount++;
+					depth++;
 				} else if (type === 'end') {
-					logCount--;
-					logCount = Math.max(logCount, 0);
+					depth--;
+					depth = Math.max(depth, 0);
 					console.log(
-						`%c${ch.repeat(logCount)}%cEND   %c${message1}%c${message2}`,
+						`%c${ch.repeat(depth)}%cEND   %c${message1}%c${message2}`,
 						indent,
 						endLeft,
 						endMid,
 						endRight
 					);
-					delete logColors[message];
+					delete colors[message];
 				}
 			} else {
 				console.log(
-					`%c${ch.repeat(logCount)}%c${message}`,
+					`%c${ch.repeat(depth)}%c${message}`,
 					indent,
 					'color: default; border-radius: 4px;'
 				);
