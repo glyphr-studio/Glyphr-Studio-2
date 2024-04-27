@@ -115,19 +115,6 @@ function createOptionsObject() {
 	// log('createOptionsObject', 'end');
 }
 
-const ligatureToCodepoint = {
-	ae: '0xE6',
-	AE: '0xC6',
-	ff: '0xFB00',
-	fi: '0xFB01',
-	fl: '0xFB02',
-	oe: '0x153',
-	OE: '0x152',
-	st: '0xFB06',
-	ffi: '0xFB03',
-	ffl: '0xFB04',
-};
-
 function populateExportList() {
 	// log('populateExportList', 'start');
 	const project = getCurrentProject();
@@ -183,17 +170,6 @@ function populateExportList() {
 						}
 					}
 				});
-
-				/*
-					Some Latin ligatures have Unicode code points. Check to see if
-					this ligature is one of those, and if so, also put it in that
-					code point
-				*/
-				const ligaHexID = ligatureToCodepoint[thisLigature.chars];
-				if (ligaHexID) {
-					exportGlyphs.push({ xg: thisLigature, xc: ligaHexID });
-					checklist.push(ligaHexID);
-				}
 			} else {
 				console.warn(`
 				Skipped exporting ligature ${project.ligatures[key].name}.
