@@ -1,5 +1,10 @@
-import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
-import { hexesToChars, hexesToHexArray, parseCharsInputAsHex } from '../common/character_ids.js';
+import { getProjectEditorImportTarget, log, setCurrentProjectEditor } from '../app/main.js';
+import {
+	hexesToChars,
+	hexesToHexArray,
+	parseCharsInputAsHex,
+	validateAsHex,
+} from '../common/character_ids.js';
 import { generateNewID } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
@@ -13,14 +18,14 @@ import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 	Studio Objects.  Relies heavily on
 	IO > Import > SVG Outline
 **/
+let glyphTags;
+let kernTags;
 
 export function ioSVG_importSVGfont(font) {
 	// log('ioSVG_importSVGfont', 'start');
 
 	const editor = getProjectEditorImportTarget();
 	const project = editor.project;
-	let chars;
-	let kerns;
 
 	setTimeout(setupFontImport, 10);
 
@@ -29,22 +34,17 @@ export function ioSVG_importSVGfont(font) {
 		updateProgressIndicator('Reading font data...');
 
 		// Get Kerns
-		kerns = getTagsByName(font, 'hkern');
+		kernTags = getTagsByName(font, 'hkern');
 
 		// Get Glyphs
-		chars = getTagsByName(font, 'glyph');
+		glyphTags = getTagsByName(font, 'glyph');
 
 		// Get Notdef
 		let missingGlyph = getTagsByName(font, 'missing-glyph');
 		if (missingGlyph.length) importMissingGlyph(missingGlyph[0].attributes);
 
 		// Start it up
-		updateProgressIndicator(`
-			Importing glyph:
-			<span class="progress-indicator__counter">1</span>
-			 of
-			<span class="progress-indicator__counter">${chars.length}</span>
-		`);
+		updateSVGImportProgressIndicator('character', 1);
 		setTimeout(importOneGlyph, 10);
 		// log('setupFontImport', 'end');
 	}
@@ -84,14 +84,8 @@ export function ioSVG_importSVGfont(font) {
 	 */
 	function importOneGlyph() {
 		// log(`importOneGlyph`, 'start');
-		updateProgressIndicator(`
-			Importing ${uni.length === 1 ? 'character' : 'ligature'}:
-			<span class="progress-indicator__counter">${charCounter}</span>
-			 of
-			<span class="progress-indicator__counter">${chars.length}</span>
-		`);
 
-		if (charCounter >= chars.length) {
+		if (charCounter >= glyphTags.length) {
 			setTimeout(importOneKern, 10);
 			updateProgressIndicator('Finalizing the imported font...');
 			// setTimeout(startFinalizeFontImport, 10);
@@ -100,31 +94,38 @@ export function ioSVG_importSVGfont(font) {
 		}
 
 		// One Glyph or Ligature in the font
-		const attributes = chars[charCounter].attributes;
-		// log('chars[charCounter]');
-		// log(chars[charCounter]);
-
-		// Get the appropriate unicode decimal for this char
-		// log('starting  unicode \t' + attributes.unicode + ' \t ' + attributes['glyph-name']);
+		const attributes = glyphTags[charCounter].attributes;
+		const glyphName = attributes['glyph-name'];
+		// log('glyphTags[charCounter]');
+		// log(glyphTags[charCounter]);
 
 		let uni = parseCharsInputAsHex(attributes.unicode);
-		if (attributes.unicode === ' ') uni = ['0x20'];
-		// log(`attributes.unicode: ${attributes.unicode}`);
-		// log(`\n⮟uni⮟`);
-		// log(uni);
+		if (attributes.unicode === ' ' || glyphName.toLowerCase() === 'space') {
+			uni = ['0x20'];
+		}
+
+		if (!attributes.unicode && glyphName.startsWith('uni')) {
+			const hex = validateAsHex(`0x${glyphName.substring(3)}`);
+			log(`UNI detected ${glyphName} hex is ${hex}`);
+			if (hex) {
+				uni = [hex];
+				project.settings.app.showNonCharPoints = true;
+			}
+		}
+		// log(`attributes.unicode: |${attributes.unicode}| parsed as ${uni}`);
 
 		if (uni === false || uni === '0x0') {
 			// Check for .notdef
-			// log('!!! Skipping '+attributes['glyph-name']+' NO UNICODE !!!');
-			chars.splice(charCounter, 1);
+			// log('!!! Skipping '+glyphName+' NO UNICODE !!!');
+			glyphTags.splice(charCounter, 1);
 		} else {
-			// log('GLYPH ' + charCounter + '/'+chars.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(attributes));
+			// log('GLYPH ' + charCounter + '/'+glyphTags.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(attributes));
 			/*
 			 *
 			 *  GLYPH OR LIGATURE IMPORT
 			 *
 			 */
-			const glyphSVG = `<svg><glyph d="${chars[charCounter].attributes.d}"/></svg>`;
+			const glyphSVG = `<svg><glyph d="${glyphTags[charCounter].attributes.d}"/></svg>`;
 			const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG, false);
 
 			// Get Advance Width
@@ -135,6 +136,7 @@ export function ioSVG_importSVGfont(font) {
 
 			if (uni.length === 1) {
 				// It's a GLYPH
+				updateSVGImportProgressIndicator('character', charCounter);
 				// log(`Detected Glyph`);
 				uni = uni[0];
 				project.incrementRangeCountFor(uni);
@@ -146,6 +148,7 @@ export function ioSVG_importSVGfont(font) {
 				}
 			} else {
 				// It's a LIGATURE
+				updateSVGImportProgressIndicator('ligature', charCounter);
 				// log(`Detected Ligature`);
 				uni = uni.join('');
 				// log(`uni: ${uni}`);
@@ -181,29 +184,29 @@ export function ioSVG_importSVGfont(font) {
 	let kernCount = 0;
 
 	function importOneKern() {
-		if (kernCount >= kerns.length) {
+		if (kernCount >= kernTags.length) {
 			updateProgressIndicator('Finalizing the imported font...');
 			setTimeout(startFinalizeFontImport, 10);
 			return;
 		}
 
-		updateProgressIndicator('Importing kern pair ' + kernCount + ' of ' + kerns.length);
+		updateSVGImportProgressIndicator('kern pair', kernCount + glyphTags.length);
 
-		// log('Kern Import - START ' + kernCount + '/' + kerns.length);
+		// log('Kern Import - START ' + kernCount + '/' + kernTags.length);
 		leftGroup = [];
 		rightGroup = [];
-		thisKern = kerns[kernCount];
+		thisKern = kernTags[kernCount];
 		// log('Kern Attributes: ' + json(thisKern.attributes, true));
 
 		// Get members by name
-		leftGroup = getKernMembersByName(thisKern.attributes.g1, chars, leftGroup);
-		rightGroup = getKernMembersByName(thisKern.attributes.g2, chars, rightGroup);
+		leftGroup = getKernMembersByName(thisKern.attributes.g1, glyphTags, leftGroup);
+		rightGroup = getKernMembersByName(thisKern.attributes.g2, glyphTags, rightGroup);
 
 		// log('kern groups by name ' + json(leftGroup, true) + ' ' + json(rightGroup, true));
 
 		// Get members by Unicode
-		leftGroup = getKernMembersByUnicodeID(thisKern.attributes.u1, chars, leftGroup);
-		rightGroup = getKernMembersByUnicodeID(thisKern.attributes.u2, chars, rightGroup);
+		leftGroup = getKernMembersByUnicodeID(thisKern.attributes.u1, glyphTags, leftGroup);
+		rightGroup = getKernMembersByUnicodeID(thisKern.attributes.u2, glyphTags, rightGroup);
 
 		// log('kern groups parsed as ' + json(leftGroup, true) + ' ' + json(rightGroup, true));
 
@@ -220,7 +223,7 @@ export function ioSVG_importSVGfont(font) {
 			// log('Made the new kern successfully.');
 			kernCount++;
 		} else {
-			kerns.splice(kernCount, 1);
+			kernTags.splice(kernCount, 1);
 			// log('Kern ' + json(thisKern.attributes, true) + ' returned an empty group.');
 		}
 
@@ -282,6 +285,16 @@ export function ioSVG_importSVGfont(font) {
 		// log('ioSVG_importSVGfont', 'end');
 	}
 	// log('ioSVG_importSVGfont', 'end');
+}
+
+function updateSVGImportProgressIndicator(type, counter) {
+	const total = glyphTags.length + kernTags.length;
+	updateProgressIndicator(`
+			Importing ${type}:
+			<span class="progress-indicator__counter">${counter}</span>
+			 of
+			<span class="progress-indicator__counter">${total}</span>
+		`);
 }
 
 /**
