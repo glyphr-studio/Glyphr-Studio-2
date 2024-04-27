@@ -29,9 +29,6 @@ export async function ioFont_importFont(importedFont) {
 	// log(importedFont);
 	const editor = getProjectEditorImportTarget();
 	const project = editor.project;
-	const fontGlyphs = importedFont.glyphs.glyphs;
-	// log(`\nfontGlyphs:`);
-	// log(fontGlyphs);
 
 	// Reset module data
 	finalGlyphs = {};
@@ -40,12 +37,25 @@ export async function ioFont_importFont(importedFont) {
 	importItemCounter = 0;
 	importItemTotal = 0;
 
+	// --------------------------------------------------------------
+	// Set up import groups
+	// --------------------------------------------------------------
+
+	const fontGlyphs = importedFont.glyphs.glyphs;
+	// log(`\nfontGlyphs:`);
+	// log(fontGlyphs);
 	const fontLigatures = importedFont.substitution.getLigatures('liga');
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
+	const kernTables = importedFont.position.getKerningTables();
+	// log(`\n⮟kernTables⮟`);
+	// log(kernTables);
+
+	// --------------------------------------------------------------
+	// Count items and set up progress indicator
+	// --------------------------------------------------------------
 
 	// Get Kern Info
-	const kernTables = importedFont.position.getKerningTables();
 	let gposPairs = [];
 	let gposCoverage = {};
 	let kernPairCount = 0;
@@ -56,13 +66,20 @@ export async function ioFont_importFont(importedFont) {
 	gposPairs.forEach((base) => (kernPairCount += base.length));
 	// log(`kernPairCount: ${kernPairCount}`);
 
-	// Start import
 	importItemTotal = countItems(fontGlyphs) + fontLigatures.length + kernPairCount;
+
+	// --------------------------------------------------------------
+	// Import Characters
+	// --------------------------------------------------------------
 
 	for (const key of Object.keys(fontGlyphs)) {
 		await updateFontImportProgressIndicator('character');
 		importOneGlyph(fontGlyphs[key], project);
 	}
+
+	// --------------------------------------------------------------
+	// Import Ligatures
+	// --------------------------------------------------------------
 
 	for (const liga of fontLigatures) {
 		await updateFontImportProgressIndicator('ligature');
@@ -75,8 +92,10 @@ export async function ioFont_importFont(importedFont) {
 		importOneLigature({ glyph: thisLigature, gsub: liga.sub }, importedFont);
 	}
 
-	// gposPairs.forEach(async (pairSet, leftID) => {
-	// 	pairSet.forEach(async (right) => {
+	// --------------------------------------------------------------
+	// Import Kern Pairs
+	// --------------------------------------------------------------
+
 	for (let leftID = 0; leftID < gposPairs.length; leftID++) {
 		const pairSet = gposPairs[leftID];
 		for (let p = 0; p < pairSet.length; p++) {
@@ -107,6 +126,10 @@ export async function ioFont_importFont(importedFont) {
 		const glyph = importedFont.glyphs.glyphs[glyphIndex];
 		return glyph;
 	}
+
+	// --------------------------------------------------------------
+	// Import metadata, and finishing steps
+	// --------------------------------------------------------------
 
 	importFontMetadata(importedFont, project);
 
