@@ -81,6 +81,7 @@ export class ProjectEditor {
 
 		// Navigation
 		this.nav = new Navigator();
+		this.showPageTransitions = true;
 
 		// Canvas
 		this.editCanvas = false;
