@@ -58,6 +58,8 @@ export function makePage_Components() {
 	`,
 	});
 
+	if (editor.showPageTransitions) content.classList.add('app__page-animation');
+	
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {

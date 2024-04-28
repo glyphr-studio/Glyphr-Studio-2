@@ -31,11 +31,10 @@
 	width: 100%;
 	min-height: 100%;
 	min-width: 100%;
-	animation: var(--animate-fade-in);
 }
 
-.animate-fade-everything {
-	/* animation: var(--animate-fade-in); */
+.app__page-animation {
+	animation: var(--animate-fade-in);
 }
 
 .top-bar__logo {

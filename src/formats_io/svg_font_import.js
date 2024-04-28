@@ -106,7 +106,7 @@ export function ioSVG_importSVGfont(font) {
 
 		if (!attributes.unicode && glyphName.startsWith('uni')) {
 			const hex = validateAsHex(`0x${glyphName.substring(3)}`);
-			log(`UNI detected ${glyphName} hex is ${hex}`);
+			// log(`UNI detected ${glyphName} hex is ${hex}`);
 			if (hex) {
 				uni = [hex];
 				project.settings.app.showNonCharPoints = true;

@@ -148,7 +148,9 @@ function glyphIterator(oa) {
 		} else {
 			showToast(title + '<br>Done!', 1000);
 			if (failures.length) {
-				showError(`Some items were skipped due to errors. Check the browser console for more information.`);
+				showError(
+					`Some items were skipped due to errors. Check the browser console for more information.`
+				);
 				console.warn(`\n⮟Global Action failures⮟`);
 				console.warn(failures);
 			}
