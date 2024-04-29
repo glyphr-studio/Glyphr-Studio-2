@@ -234,22 +234,20 @@ function addNotdefToExport(options) {
 	// Add it to the export
 	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
 	let thisAdvance = notdef.advanceWidth;
-	// if (thisAdvance === 0) thisAdvance = 0.000001;
-	// else thisAdvance = round(thisAdvance); // TODO investigate zero advance width
 
-	options.glyphs.push(
-		new openTypeJS.Glyph({
-			name: 'null',
-			unicode: 0,
-			index: 0,
-			advanceWidth: thisAdvance,
-			xMin: round(notdef.maxes.xMin),
-			xMax: round(notdef.maxes.xMax),
-			yMin: round(notdef.maxes.yMin),
-			yMax: round(notdef.maxes.yMax),
-			path: notdefPath,
-		})
-	);
+	const notdefGlyph = new openTypeJS.Glyph({
+		name: 'null',
+		unicode: 0,
+		index: 0,
+		xMin: round(notdef.maxes.xMin),
+		xMax: round(notdef.maxes.xMax),
+		yMin: round(notdef.maxes.yMin),
+		yMax: round(notdef.maxes.yMax),
+		path: notdefPath,
+	});
+	notdefGlyph.advanceWidth = thisAdvance;
+
+	options.glyphs.push(notdefGlyph);
 
 	codePointGlyphIndexTable['0x0'] = 0;
 }
@@ -335,7 +333,7 @@ async function generateOneLigature(currentExportItem) {
 
 	// Opentype.js Glyph constructor removes Advance Width of zero.
 	// So, incase we need it to be zero, we add it here.
-	thisLigature.advanceWidth =  liga.advanceWidth;
+	thisLigature.advanceWidth = liga.advanceWidth;
 
 	// Add substitution info to font
 	const indexList = liga.gsub.map((v) => codePointGlyphIndexTable[decToHex(v)]);

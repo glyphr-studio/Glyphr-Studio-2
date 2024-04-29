@@ -201,7 +201,6 @@ function importOneGlyph(otfGlyph, project) {
 
 	project.incrementRangeCountFor(uni);
 
-	log(`${uni}\t${importedGlyph.pointCount}`);
 	// Successful loop, advance importItemCounter
 	importItemCounter++;
 	// log(importedGlyph);
