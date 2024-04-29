@@ -7,6 +7,7 @@ import { makePanel_ContextCharacters } from './context_characters.js';
 import { makePanel_Guides } from './guides.js';
 import { makePanel_History } from './history.js';
 import { makePanel_Layers } from './layers.js';
+import { handlePanelsKeyPress, handlePanelsKeyUp } from './panel_events.js';
 
 /**
  * Assembles the correct panel based on the current
@@ -20,6 +21,11 @@ export function makePanel() {
 	let content = makeElement();
 	let panel = editor.nav.panel;
 	// log(`panel: ${panel}`);
+
+	if (panel !== 'Layers') {
+		document.removeEventListener('keydown', handlePanelsKeyPress, false);
+		document.removeEventListener('keyup', handlePanelsKeyUp, false);
+	}
 
 	if (editor.nav.page === 'Components' && countItems(editor.project.components) <= 0) {
 		return content;
@@ -46,6 +52,8 @@ export function makePanel() {
 		editor.unsubscribe({ idToRemove: 'guidesPanel' });
 		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
 		addAsChildren(content, makePanel_Layers());
+		document.addEventListener('keydown', handlePanelsKeyPress, false);
+		document.addEventListener('keyup', handlePanelsKeyUp, false);
 	} else if (panel === 'Context characters') {
 		editor.unsubscribe({ idToRemove: 'attributesPanel' });
 		editor.unsubscribe({ idToRemove: 'layersPanel' });

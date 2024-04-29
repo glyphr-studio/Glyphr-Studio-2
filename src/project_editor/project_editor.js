@@ -109,7 +109,7 @@ export class ProjectEditor {
 		// The rest are for the Pop Out Window
 		this.livePreviews = false;
 
-		// Canvas Event handlers
+		// Event handlers
 		this.eventHandlers = {};
 		this.selectedTool = 'resize';
 

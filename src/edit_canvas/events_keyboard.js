@@ -187,7 +187,7 @@ export function handleKeyPress(event) {
 	// log('handleKeyPress', 'end');
 }
 
-function getKeyFromEvent(event) {
+export function getKeyFromEvent(event) {
 	// log(`getKeyFromEvent`, 'start');
 	// log(`event.keyCode: ${event.keyCode}`);
 	// log(`event.which: ${event.which}`);

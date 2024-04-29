@@ -468,7 +468,13 @@ nav .item-chooser__wrapper {
 
 .layer-panel__path-row {
 	border-color: var(--blue-l90);
-	background-color: var(--blue-l95);
+	background-color: var(--blue-l98);
+}
+
+.layer-panel__path-row.layer-panel__selected {
+	border-color: var(--blue-l70);
+	background-color: var(--blue-l90);
+	border-right-width: 8px;
 }
 
 .layer-panel__component-row {
@@ -476,7 +482,9 @@ nav .item-chooser__wrapper {
 	background-color: var(--green-l98);
 }
 
-.layer-panel__selected {
+.layer-panel__component-row.layer-panel__selected {
+	border-color: var(--green-l70);
+	background-color: var(--green-l90);
 	border-right-width: 8px;
 }
 
@@ -484,12 +492,14 @@ nav .item-chooser__wrapper {
 .layer-panel__path-row:active {
 	border-color: var(--blue-l85);
 	cursor: pointer;
+	border-right-width: 8px;
 }
 
 .layer-panel__component-row:hover,
 .layer-panel__component-row:active {
 	border-color: var(--green-l85);
 	cursor: pointer;
+	border-right-width: 8px;
 }
 
 .layer-panel__component-row .item-link__subtitle {
