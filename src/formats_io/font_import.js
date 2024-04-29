@@ -59,7 +59,7 @@ export async function ioFont_importFont(importedFont) {
 	let gposPairs = [];
 	let gposCoverage = {};
 	let kernPairCount = 0;
-	if (kernTables[0] && kernTables[0].lookupType === 2) {
+	if (kernTables && kernTables[0] && kernTables[0].lookupType === 2) {
 		gposPairs = kernTables[0]?.subtables[0]?.pairSets || [];
 		gposCoverage = kernTables[0]?.subtables[0]?.coverage?.ranges || {};
 	}
@@ -201,6 +201,7 @@ function importOneGlyph(otfGlyph, project) {
 
 	project.incrementRangeCountFor(uni);
 
+	log(`${uni}\t${importedGlyph.pointCount}`);
 	// Successful loop, advance importItemCounter
 	importItemCounter++;
 	// log(importedGlyph);
