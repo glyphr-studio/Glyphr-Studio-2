@@ -7,11 +7,7 @@ import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 // import { combinePaths } from './boolean_combine.js';
 import { combinePaths } from './boolean_combine.js';
-import {
-	glyphChanged,
-	makeGlyphWithResolvedLinks,
-	removeLinkFromUsedIn,
-} from './cross_item_actions.js';
+import { makeGlyphWithResolvedLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 
 /**
 		Multi-Select
@@ -199,7 +195,7 @@ export class MultiSelectPoints extends MultiSelect {
 	changed() {
 		this.members.forEach((member) => {
 			member.changed();
-			glyphChanged(member.parent.parent);
+			// glyphChanged(member.parent.parent);
 		});
 	}
 
@@ -359,7 +355,7 @@ export class MultiSelectShapes extends MultiSelect {
 	changed() {
 		this.members.forEach((member) => {
 			member.changed();
-			glyphChanged(member.parent);
+			// glyphChanged(member.parent);
 		});
 		// this.virtualGlyph.changed();
 	}
