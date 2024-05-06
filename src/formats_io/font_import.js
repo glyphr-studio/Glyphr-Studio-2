@@ -48,8 +48,8 @@ export async function ioFont_importFont(importedFont) {
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
 	const kernTables = importedFont.position.getKerningTables();
-	// log(`\n⮟kernTables⮟`);
-	// log(kernTables);
+	log(`\n⮟kernTables⮟`);
+	log(kernTables);
 
 	// --------------------------------------------------------------
 	// Count items and set up progress indicator
@@ -145,14 +145,16 @@ export async function ioFont_importFont(importedFont) {
 	for (let t = 0; t < gposKernTables.length; t++) {
 		const pairSets = gposKernTables[t].pairSets;
 		const glyphList = gposKernTables[t].glyphList;
-		for (let leftID = 0; leftID < pairSets.length; leftID++) {
-			const pairSet = pairSets[leftID];
-			const glyphIndex = glyphList[leftID];
-			const leftGlyph = importedFont.glyphs.glyphs[glyphIndex];
+		for (let leftPairID = 0; leftPairID < pairSets.length; leftPairID++) {
+			const pairSet = pairSets[leftPairID];
+			const leftID = glyphList[leftPairID];
+			const leftGlyph = importedFont.glyphs.glyphs[leftID];
 			for (let p = 0; p < pairSet.length; p++) {
-				const right = pairSet[p];
-				const rightID = right.secondGlyph;
-				const kernValue = right.value1.xAdvance;
+				const pair = pairSet[p];
+				const rightID = pair.secondGlyph;
+				// GS Kerns are relative to the left hand glyph,
+				// So we need to invert this data from the right hand glyph
+				const kernValue = pair.value1.xAdvance * -1;
 				const rightGlyph = importedFont.glyphs.glyphs[rightID];
 				// log(`${leftGlyph.name} : ${rightGlyph.name} = ${kernValue}`);
 				await updateFontImportProgressIndicator('kern pair');
