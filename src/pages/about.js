@@ -185,28 +185,16 @@ export function makeReleaseNote(showLogo = false) {
 	const content = makeElement({
 		innerHTML: `
 		${gsLogo}
-		<h2>Welcome to Version 2!</h2>
+		<h2>Welcome to Glyphr Studio!</h2>
 		<p>
-			It's been a long road, but Glyphr Studio Version 2 is finally complete! I'm sure we will continue to find bugs and think of new feature improvements.
-			Even since v2 Beta 2.1 (the previous release) there was a lot of updates. You can read
-			about recent and cumulative v2 updates over at the blog:
-			<br>
-			<a href="https://www.glyphrstudio.com/blog/?p=371" target="_blank" style="font-size: 1.2em;">
-				Glyphr Studio Blog: Version 2 is here!
-			</a>
-		</p>
-		<br>
-		<h3>Transition from v1 to v2</h3>
-		<p>
-			On January 15th, 2024, the default experience for Glyphr Studio was switched from v1 to v2.
-			This change affected the app itself, and also supporting materials like the blog, the main site, and the help and tutorial sites.
-			<br>
-			<a href="https://www.glyphrstudio.com/blog/?p=372" target="_blank" style="font-size: 1.2em;">Glyphr Studio Blog: V1 to V2 transition plan</a>
-		</p>
-		<br>
-
-		<p>
-			If you find any bugs, or have an suggestions about functionality, please email us!
+			You can stay up to date on the latest news over at the
+			<a href="https://www.glyphrstudio.com/blog" target="_blank">Glyphr Studio Blog</a>.
+			We also have a
+			<a href="https://www.glyphrstudio.com/help/tutorial" target="_blank">tutorial</a>
+			over on the Help and Docs site that will help you walk through some of the key steps
+			to designing your first font.
+			<br><br>
+			As always, if you find any bugs, or have an suggestions about functionality, please email us!
 			${emailLink()}
 		</p>
 	`,
@@ -228,7 +216,7 @@ export function makeContributeContent() {
 		tag: 'div',
 		attributes: { style: 'margin: 20px;' },
 		innerHTML: `
-			<h3>Contribute!</h3>
+			<h2>Contribute!</h2>
 			If you want to give back to Glyphr Studio, there are two huge ways you can make it better!
 			<br>
 			<ul>

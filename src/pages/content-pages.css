@@ -50,6 +50,10 @@
 	padding: 20px;
 }
 
+.content-page__right-area display-canvas {
+	display: inline-block;
+}
+
 .about-page__logo {
 	/* fill: url(#logoGradient); */
 	width: 300px;
