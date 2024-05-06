@@ -48,8 +48,8 @@ export async function ioFont_importFont(importedFont) {
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
 	const kernTables = importedFont.position.getKerningTables();
-	log(`\n⮟kernTables⮟`);
-	log(kernTables);
+	// log(`\n⮟kernTables⮟`);
+	// log(kernTables);
 
 	// --------------------------------------------------------------
 	// Count items and set up progress indicator
@@ -58,10 +58,6 @@ export async function ioFont_importFont(importedFont) {
 	// Get Kern Info
 	let kernPairCount = 0;
 	const gposKernTables = [];
-
-	// --------------------------------------------------------------
-	// One Table
-	// --------------------------------------------------------------
 
 	function loadOneKernTable(table) {
 		let pairSets = [];
