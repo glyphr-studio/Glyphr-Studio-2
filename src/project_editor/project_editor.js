@@ -324,10 +324,16 @@ export class ProjectEditor {
 	 * @returns {String}
 	 */
 	get selectedKernGroupID() {
+		// log(`ProjectEditor GET selectedKernGroupID`, 'start');
+		// log(`\n⮟this.project.kerning⮟`);
+		// log(this.project.kerning);
 		if (!this._selectedKernGroupID) {
 			this._selectedKernGroupID = getFirstID(this.project.kerning);
 		}
-		return this._selectedKernGroupID;
+		const result = this._selectedKernGroupID;
+		// log(`result: ${result}`);
+		// log(`ProjectEditor GET selectedKernGroupID`, 'end');
+		return result;
 	}
 
 	/**
