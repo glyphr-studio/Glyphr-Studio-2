@@ -66,16 +66,11 @@ export async function ioFont_importFont(importedFont) {
 	function loadOneKernTable(table) {
 		let pairSets = [];
 		let glyphList = [];
-		if (table.lookupType === 2) {
+		if (table.lookupType === 1) {
+			// TODO support kern table lookup type 1?
+		} else if (table.lookupType === 2) {
 			pairSets = table?.subtables[0]?.pairSets || [];
-			if (table.lookupFlag === 4) {
-				// log(`FLAG TYPE 4`);
-				const coverage = table?.subtables[0]?.coverage?.ranges || {};
-				glyphList = convertFlagTypeFourToGlyphIDs(coverage);
-			} else if (table.lookupFlag === 8) {
-				// log(`FLAG TYPE 8`);
-				glyphList = table?.subtables[0]?.coverage?.glyphs || [];
-			}
+			glyphList = coverageTableToGlyphList(table?.subtables[0]?.coverage);
 		}
 		// log(`\n⮟pairSets⮟`);
 		// log(pairSets);
@@ -86,9 +81,33 @@ export async function ioFont_importFont(importedFont) {
 		return { pairSets: pairSets, glyphList: glyphList };
 	}
 
+	/**
+	 * Normalizes different coverage table data structures
+	 * to a simple array of font glyph IDs
+	 * @param {Object} coverage - glyph id data
+	 * @returns Array
+	 */
+	function coverageTableToGlyphList(coverage) {
+		if (!coverage) return [];
+		let result = [];
+		const coverageFormat = coverage.format;
+		if (coverageFormat === 1) {
+			result = coverage?.glyphs || [];
+		} else if (coverageFormat === 2) {
+			const coverage = coverage?.ranges || {};
+			for (let i = 0; i < coverage.length; i++) {
+				const range = coverage[i];
+				for (let j = range.start; j <= range.end; j++) {
+					result.push(j);
+				}
+			}
+		}
+		return result;
+	}
+
 	// log(`\n⮟kernTables⮟`);
 	// log(kernTables);
-	kernTables.forEach(table => gposKernTables.push(loadOneKernTable(table)));
+	kernTables.forEach((table) => gposKernTables.push(loadOneKernTable(table)));
 	// log(`\n⮟gposKernTables⮟`);
 	// log(gposKernTables);
 
@@ -140,18 +159,6 @@ export async function ioFont_importFont(importedFont) {
 				importOneKern(leftGlyph, rightGlyph, kernValue);
 			}
 		}
-	}
-
-	function convertFlagTypeFourToGlyphIDs(gposCoverageTypeFour = []) {
-		const result = [];
-		for (let i = 0; i < gposCoverageTypeFour.length; i++) {
-			const range = gposCoverageTypeFour[i];
-			for (let j = range.start; j <= range.end; j++) {
-				result.push(j);
-			}
-		}
-
-		return result;
 	}
 
 	// --------------------------------------------------------------
@@ -327,8 +334,7 @@ function importOneKern(leftGlyph, rightGlyph, value) {
 
 	if (!leftGlyph || !rightGlyph) {
 		console.warn(`Something went wrong with importing this kern pair:
-${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `
-		);
+${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 		importItemCounter--;
 		// log(`importOneKern`, 'end');
 		return;
@@ -336,8 +342,7 @@ ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `
 
 	if (!leftGlyph.unicode || !rightGlyph.unicode) {
 		console.warn(`Only kern values containing characters with Unicode Code Points can be imported (can't kern ligatures) :
-${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `
-		);
+${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 		importItemCounter--;
 		// log(`importOneKern`, 'end');
 		return;
