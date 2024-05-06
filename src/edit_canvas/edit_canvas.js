@@ -144,7 +144,8 @@ export class EditCanvas extends HTMLElement {
 		const width = this.width;
 		const height = this.height;
 		const currentItemID = this.editingItemID;
-		const advanceWidth = project.getItem(currentItemID).advanceWidth;
+		// log(`currentItemID: ${currentItemID}`);
+		const advanceWidth = project.getItem(currentItemID)?.advanceWidth || 0;
 
 		if (currentItemID.startsWith('kern-')) {
 			if (requestAnimationFrame) requestAnimationFrame(redrawKernEdit);
