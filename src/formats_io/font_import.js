@@ -103,7 +103,7 @@ export async function ioFont_importFont(importedFont) {
 
 	// log(`\n⮟kernTables⮟`);
 	// log(kernTables);
-	kernTables.forEach((table) => gposKernTables.push(loadOneKernTable(table)));
+	if (kernTables) kernTables.forEach((table) => gposKernTables.push(loadOneKernTable(table)));
 	// log(`\n⮟gposKernTables⮟`);
 	// log(gposKernTables);
 
