@@ -20,6 +20,26 @@ Glyphr Studio: ${config.version}`);
 		}
 	});
 }
+/**
+ * Updates app_config.json for stage
+ */
+export function stage() {
+	const path = './src/app/app_config.json';
+	const config = readConfig();
+	config.devMode = true;
+
+	console.log(`
+============================================================
+Glyphr Studio: ${config.version}`);
+	config.versionDate = 'STAGED BUILD';
+	console.log(`============================================================\n\n`);
+	writeFile(path, JSON.stringify(config, null, 2), (error) => {
+		if (error) {
+			console.log('An error has occurred ', error);
+			return;
+		}
+	});
+}
 
 /**
  * Updates app_config.json for development
