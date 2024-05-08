@@ -60,6 +60,7 @@ export function makePage_Overview() {
 			title: 'You can customize the the project preview text from the Settings > App page.',
 		})
 	);
+
 	rightArea.appendChild(makeElement({ tag: 'hr', style: 'margin: 10px 0px 20px 0px;' }));
 	rightArea.appendChild(makeElement({ tag: 'br' }));
 	rightArea.appendChild(itemsContent);
