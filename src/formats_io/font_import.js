@@ -26,7 +26,7 @@ let importItemTotal = 0;
 
 export async function ioFont_importFont(importedFont) {
 	// log('ioFont_importFont', 'start');
-	// log(importedFont);
+	log(importedFont);
 	const editor = getProjectEditorImportTarget();
 	const project = editor.project;
 
@@ -60,21 +60,34 @@ export async function ioFont_importFont(importedFont) {
 	const gposKernTables = [];
 
 	function loadOneKernTable(table) {
-		let pairSets = [];
-		let glyphList = [];
-		if (table.lookupType === 1) {
-			// TODO support kern table lookup type 1?
-		} else if (table.lookupType === 2) {
-			pairSets = table?.subtables[0]?.pairSets || [];
-			glyphList = coverageTableToGlyphList(table?.subtables[0]?.coverage);
+		// log(`loadOneKernTable`, 'start');
+		// log(table);
+		const subtables = [];
+		if (table.lookupType === 2) {
+			table?.subtables.forEach((subtable) => {
+				if(subtable.posFormat === 1) {
+					// log(`\n⮟subtable⮟`);
+					// log(subtable);
+					const pairSets = subtable?.pairSets || [];
+					const glyphList = coverageTableToGlyphList(subtable?.coverage);
+					// log(`\n⮟pairSets⮟`);
+					// log(pairSets);
+					// log(`\n⮟glyphList⮟`);
+					// log(glyphList);
+					pairSets.forEach((base) => (kernPairCount += base.length));
+					subtables.push({ pairSets: pairSets, glyphList: glyphList });
+				} else if (subtable.posFormat === 2) {
+					// TODO support position format 2
+					console.warn(`In a GPOS table: Lookup Type 2, found a subtable with Pair Position: Format 2. Can only import Format 1.`);
+				}
+			});
+		} else {
+			// TODO support other Lookup types
+			console.warn(`Found a GPOS table: Lookup Type ${table.lookupType}. Only Lookup Type 2 is supported.`);
 		}
-		// log(`\n⮟pairSets⮟`);
-		// log(pairSets);
-		// log(`\n⮟glyphList⮟`);
-		// log(glyphList);
 
-		pairSets.forEach((base) => (kernPairCount += base.length));
-		return { pairSets: pairSets, glyphList: glyphList };
+		// log(`loadOneKernTable`, 'end');
+		return subtables;
 	}
 
 	/**
@@ -90,9 +103,9 @@ export async function ioFont_importFont(importedFont) {
 		if (coverageFormat === 1) {
 			result = coverage?.glyphs || [];
 		} else if (coverageFormat === 2) {
-			const coverage = coverage?.ranges || {};
-			for (let i = 0; i < coverage.length; i++) {
-				const range = coverage[i];
+			const typeTwoCoverage = coverage?.ranges || [];
+			for (let i = 0; i < typeTwoCoverage.length; i++) {
+				const range = typeTwoCoverage[i];
 				for (let j = range.start; j <= range.end; j++) {
 					result.push(j);
 				}
@@ -139,22 +152,24 @@ export async function ioFont_importFont(importedFont) {
 	// --------------------------------------------------------------
 
 	for (let t = 0; t < gposKernTables.length; t++) {
-		const pairSets = gposKernTables[t].pairSets;
-		const glyphList = gposKernTables[t].glyphList;
-		for (let leftPairID = 0; leftPairID < pairSets.length; leftPairID++) {
-			const pairSet = pairSets[leftPairID];
-			const leftID = glyphList[leftPairID];
-			const leftGlyph = importedFont.glyphs.glyphs[leftID];
-			for (let p = 0; p < pairSet.length; p++) {
-				const pair = pairSet[p];
-				const rightID = pair.secondGlyph;
-				// GS Kerns are relative to the left hand glyph,
-				// So we need to invert this data from the right hand glyph
-				const kernValue = pair.value1.xAdvance * -1;
-				const rightGlyph = importedFont.glyphs.glyphs[rightID];
-				// log(`${leftGlyph.name} : ${rightGlyph.name} = ${kernValue}`);
-				await updateFontImportProgressIndicator('kern pair');
-				importOneKern(leftGlyph, rightGlyph, kernValue);
+		for (let s = 0; s < gposKernTables[t].length; s++) {
+			const pairSets = gposKernTables[t][s].pairSets;
+			const glyphList = gposKernTables[t][s].glyphList;
+			for (let leftPairID = 0; leftPairID < pairSets.length; leftPairID++) {
+				const pairSet = pairSets[leftPairID];
+				const leftID = glyphList[leftPairID];
+				const leftGlyph = importedFont.glyphs.glyphs[leftID];
+				for (let p = 0; p < pairSet.length; p++) {
+					const pair = pairSet[p];
+					const rightID = pair.secondGlyph;
+					// GS Kerns are relative to the left hand glyph,
+					// So we need to invert this data from the right hand glyph
+					const kernValue = pair.value1.xAdvance * -1;
+					const rightGlyph = importedFont.glyphs.glyphs[rightID];
+					// log(`${leftGlyph.name} : ${rightGlyph.name} = ${kernValue}`);
+					await updateFontImportProgressIndicator('kern pair');
+					importOneKern(leftGlyph, rightGlyph, kernValue);
+				}
 			}
 		}
 	}
