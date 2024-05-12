@@ -41,13 +41,13 @@ export async function ioFont_importFont(importedFont) {
 	// Set up import groups
 	// --------------------------------------------------------------
 
-	const fontGlyphs = importedFont.glyphs.glyphs;
+	const fontGlyphs = importedFont.glyphs.glyphs || {};
 	// log(`\nfontGlyphs:`);
 	// log(fontGlyphs);
-	const fontLigatures = importedFont.substitution.getLigatures('liga');
+	const fontLigatures = importedFont.substitution.getLigatures('liga') || [];
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
-	const kernTables = importedFont.position.getKerningTables();
+	const kernTables = importedFont.position.getKerningTables() || [];
 	// log(`\n⮟kernTables⮟`);
 	// log(kernTables);
 
