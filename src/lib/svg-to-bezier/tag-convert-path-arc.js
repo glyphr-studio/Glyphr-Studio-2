@@ -1,3 +1,5 @@
+import { roundAndSanitize } from './svg-to-bezier.js';
+
 /**
  * Converts a curve in Arc notation to Cubic Bezier Curve notation.
  * This is recursive, as it may take more than one Bezier curve to describe
@@ -34,14 +36,7 @@ export function convertArcToCommandToBezier(
 
 	// Short circuit for straight-line edge cases
 	if ((startX === endX && startY === endY) || !radiusX || !radiusY) {
-		return [
-			startPoint.x,
-			startPoint.y,
-			endPoint.x,
-			endPoint.y,
-			endPoint.x,
-			endPoint.y,
-		];
+		return [startPoint.x, startPoint.y, endPoint.x, endPoint.y, endPoint.x, endPoint.y];
 	}
 
 	let rotationRadians = rad(rotationDegrees);
@@ -71,9 +66,7 @@ export function convertArcToCommandToBezier(
 		let halfHeight = (startPoint.y - endPoint.y) / 2;
 		let halfHeightSquared = halfHeight * halfHeight;
 		let halfWidthSquared = halfWidth * halfWidth;
-		let hyp =
-			halfWidthSquared / (radiusX * radiusX) +
-			halfHeightSquared / (radiusY * radiusY);
+		let hyp = halfWidthSquared / (radiusX * radiusX) + halfHeightSquared / (radiusY * radiusY);
 
 		if (hyp > 1) {
 			hyp = Math.sqrt(hyp);
@@ -90,16 +83,12 @@ export function convertArcToCommandToBezier(
 				(radiusXSquared * radiusYSquared -
 					radiusXSquared * halfHeightSquared -
 					radiusYSquared * halfWidthSquared) /
-					(radiusXSquared * halfHeightSquared +
-						radiusYSquared * halfWidthSquared)
+					(radiusXSquared * halfHeightSquared + radiusYSquared * halfWidthSquared)
 			)
 		);
 
-		center.x =
-			(sign * radiusX * halfHeight) / radiusY + (startPoint.x + endPoint.x) / 2;
-		center.y =
-			(sign * -1 * radiusY * halfWidth) / radiusX +
-			(startPoint.y + endPoint.y) / 2;
+		center.x = (sign * radiusX * halfHeight) / radiusY + (startPoint.x + endPoint.x) / 2;
+		center.y = (sign * -1 * radiusY * halfWidth) / radiusX + (startPoint.y + endPoint.y) / 2;
 		angleStart = Math.asin((startPoint.y - center.y) / radiusY);
 		angleEnd = Math.asin((endPoint.y - center.y) / radiusY);
 
@@ -123,8 +112,7 @@ export function convertArcToCommandToBezier(
 		let angleEndOld = angleEnd;
 		let endPointXOld = endPoint.x;
 		let endPointYOld = endPoint.y;
-		angleEnd =
-			angleStart + threshold * (sweepFlag && angleEnd > angleStart ? 1 : -1);
+		angleEnd = angleStart + threshold * (sweepFlag && angleEnd > angleStart ? 1 : -1);
 		endPoint.x = center.x + radiusX * Math.cos(angleEnd);
 		endPoint.y = center.y + radiusY * Math.sin(angleEnd);
 		result = convertArcToCommandToBezier(
@@ -174,23 +162,19 @@ export function convertArcToCommandToBezier(
 
 	result = [p2.x, p2.y, p3.x, p3.y, p4.x, p4.y].concat(result);
 
-	if (subPath) return result;
-	else {
+	if (subPath) {
+		return result;
+	} else {
 		let finalResult = [];
 
 		// Rotate the bezier points back to their original rotated angle
 		for (let i = 0; i < result.length; i++) {
 			if (i % 2) {
-				finalResult[i] = rotate(
-					{ x: result[i - 1], y: result[i] },
-					rotationRadians
-				).y;
+				finalResult[i] = rotate({ x: result[i - 1], y: result[i] }, rotationRadians).y;
 			} else {
-				finalResult[i] = rotate(
-					{ x: result[i], y: result[i + 1] },
-					rotationRadians
-				).x;
+				finalResult[i] = rotate({ x: result[i], y: result[i + 1] }, rotationRadians).x;
 			}
+			finalResult[i] = roundAndSanitize(finalResult[i]);
 		}
 
 		return finalResult;
@@ -200,30 +184,37 @@ export function convertArcToCommandToBezier(
 /*
  * Helper Functions
  */
-// Convert between degrees and radians
-// 0rad = 0deg, PIrad = 180deg
+
+/**
+ * Converts degrees to radians
+ * 0rad = 0deg, PIrad = 180deg
+ * @param {Number} deg - degrees in 360 format
+ * @returns {Number} - degrees in radians
+ */
 function rad(deg) {
 	return deg * (Math.PI / 180);
 }
 
-// Rotate a coordinate point a certain number of Radians
-// Optionally about a different coordinate point
-function rotate(coord, deltaRad, about) {
-	if (!coord) return;
-	if (deltaRad === 0) return coord;
+/**
+ * Rotates a point a certain number of degrees around another point
+ * @param {Object} point - x/y point to rotate
+ * @param {Number} deltaRad - Angle to rotate in radians
+ * @param {Object} about - x/y point to rotate around (default is 0,0)
+ * @returns {Object} - x/y point
+ */
+function rotate(point, deltaRad, about) {
+	if (!point) return;
+	if (deltaRad === 0) return point;
 
 	about = about || {};
 	about.x = about.x || 0;
 	about.y = about.y || 0;
 
-	coord.x -= about.x;
-	coord.y -= about.y;
+	const newPoint = { x: 0, y: 0 };
+	newPoint.x =
+		Math.cos(deltaRad) * (point.x - about.x) - Math.sin(deltaRad) * (point.y - about.y) + about.x;
+	newPoint.y =
+		Math.sin(deltaRad) * (point.x - about.x) + Math.cos(deltaRad) * (point.y - about.y) + about.y;
 
-	let newX = coord.x * Math.cos(deltaRad) - coord.y * Math.sin(deltaRad);
-	let newY = coord.x * Math.sin(deltaRad) + coord.y * Math.cos(deltaRad);
-
-	coord.x = newX + about.x;
-	coord.y = newY + about.y;
-
-	return coord;
+	return newPoint;
 }

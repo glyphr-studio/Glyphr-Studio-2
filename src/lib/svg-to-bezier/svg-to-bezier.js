@@ -1,36 +1,19 @@
 /*
 	SVG to Bezier
 	For more details, see: https://github.com/mattlag/SVG-to-Bezier
-	Version: 1.1.0
-
-	=================================================================
-
-	"Bezier Data Format"
-
-	- Point
-		{x: Number, y: Number}            // simple x/y object
-
-	- Bezier curve (Collection of 2 or 4 points)
-		[point0, point1, point2, point3]  // 'Regular' Bezier curve notation
-		or
-		[point0, false, false, point3]    // straight lines have no point1 or point2
-
-	- Path (collection of Bezier curves)
-		[bezier1, bezier2, ...]           // where point3 of bezier(n) should equal point0 of bezier(n+1)
-
-	- Bezier Paths (collection of Paths)
-		[path1, path2, ...]
-
-	=================================================================
+	Also, more info on our 'Bezier Data Format' in bezier-data-format.md in this folder
+	Version: 2.0.0
 */
 
 import { tagConvertCircleEllipse } from './tag-convert-circle-ellipse.js';
-import { tagConvertPolygonPolyline } from './tag-convert-polygon-polyline.js';
 import { tagConvertPath } from './tag-convert-path.js';
+import { tagConvertPolygonPolyline } from './tag-convert-polygon-polyline.js';
 import { tagConvertRect } from './tag-convert-rect.js';
+import { applyTransformData, getTransformData } from './transforms.js';
 import { XMLtoJSON } from './xml-to-json.js';
 
-const enableConsoleLogging = false;
+export const enableConsoleLogging = false;
+export const roundToDecimalPrecision = false;
 
 /**
  * Takes an input SVG document in string format, and converts it to
@@ -39,111 +22,74 @@ const enableConsoleLogging = false;
  * @returns {Array} - collection of Paths in Bezier Data Format
  */
 export function SVGtoBezier(inputSVG) {
-	// log(`\n\n========================\nSVGtoBezier`);
-	// log(inputSVG);
+	log(`\n\n========================\n========================\nSVGtoBezier`);
+	log(inputSVG);
 	let svgDocumentData = XMLtoJSON(inputSVG);
-	// log(`JSON DATA`);
-	// log(svgDocumentData);
+	log(`JSON DATA`);
+	log(svgDocumentData);
 	let bezierPaths = convertTags(svgDocumentData);
-	// log(bezierPaths);
-	// log(`\nSVGtoBezier\n========================\n\n`);
+	log(bezierPaths);
+	log(`SVGtoBezier\n========================\n========================\n\n`);
 	return bezierPaths;
 }
 
 /**
  * Recursively look through the SVG data and convert individual tags
  * @param {Object} tagData - XML to JSON format of a SVG Tag, it's attributes, and content
- * @param {Object} parentTransformData - Object with transforms to apply from parent tag
  * @returns {Array} - collection of Paths in Bezier Data Format
  */
-function convertTags(tagData, parentTransformData = false) {
-	// log(`\n\nCONVERT TAGS for ${tagData.name}`);
-	let result = [];
-	let transformData = false;
+function convertTags(tagData) {
+	log(`\n\nCONVERT TAGS - START ${tagData.name}`);
+	log('tagData');
+	log(tagData);
 	if (!tagData?.content) return [];
-	if (tagData.attributes.transform) {
-		console.warn('Transform data is not supported!');
-		// transformData = getTransformData(tagData);
-	}
-	if (parentTransformData) {
-		// TODO update current transform data
-	}
+
+	let resultBezierPaths = [];
 
 	tagData.content.forEach((tag) => {
-		let name = tag.name.toLowerCase();
-		// log(`Starting conversion for ${tag.name} - result.length = ${result.length}`);
-		if (name === 'circle' || name === 'ellipse') {
-			// log(`MATCHED ${name} as CIRCLE or ELLIPSE`);
-			result = result.concat(tagConvertCircleEllipse(tag, transformData));
-		}
-		if (name === 'path' || name === 'glyph') {
-			// log(`MATCHED ${name} as PATH or GLYPH`);
-			result = result.concat(tagConvertPath(tag, transformData));
-		}
-		if (name === 'polygon' || name === 'polyline') {
-			// log(`MATCHED ${name} as POLYGON or POLYLINE`);
-			result = result.concat(tagConvertPolygonPolyline(tag, transformData));
-		}
-		if (name === 'rect') {
-			// log(`MATCHED ${name} as RECT`);
-			result = result.concat(tagConvertRect(tag, transformData));
-		}
-		if (name === 'g') {
-			// log(`MATCHED ${name} as G`);
-			result = result.concat(convertTags(tag, transformData));
+		log(`\n\n\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n START TAG ${tag.name}`);
+		log('tag');
+		log(tag);
+
+		const name = tag.name.toLowerCase();
+		const tagTransforms = getTransformData(tag);
+		log(`tagTransforms`);
+		log(tagTransforms);
+
+		if (convert[name]) {
+			log(`\n\n======= converting ${tag.name} =======`);
+			let bezierPaths = convert[name](tag);
+			log(`converted tag: \n${JSON.stringify(bezierPaths)}`);
+			if (tagTransforms) {
+				log(`\n\n======= transforming ${tag.name} =======`);
+				bezierPaths = applyTransformData(bezierPaths, tagTransforms);
+			}
+			log(`transformed tag: \n${JSON.stringify(bezierPaths)}`);
+			resultBezierPaths = resultBezierPaths.concat(bezierPaths);
 		}
 
-		// log(`END for ${tag.name} - result.length = ${result.length}`);
+		log(`>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n END TAG ${tag.name}\n\n\n\n`);
 	});
 
-	return result;
+	log(`resultBezierPaths`);
+	log(resultBezierPaths);
+	log(`CONVERT TAGS - END ${tagData.name}\n\n`);
+	return resultBezierPaths;
 }
 
-export function getTransformData(tag) {
-	/*
-		`transform` attribute
-			matrix(a,b,c,d,e,f)
-			translate(x, y) 	// default (0,0)
-			scale(x, y) 			// if only x, y = x
-			rotate(a, x, y) 	// if no x,y use 0,0
-			skewX(a) 					// degrees horizontal
-			skewY(a) 					// degrees vertical
-
-		`transform-origin` attribute
-			(x, y, z) 						// default to 0,0 - ignore z value
-														// ignore keyword values
-	*/
-
-	// toLowerCase is called to identify these
-	const supported = ['matrix', 'translate', 'scale', 'rotate', 'skewx', 'skewy'];
-	let transforms = false;
-
-	if (tag.attributes.transform) {
-		// log(`Detected transforms`);
-		// log(tag.attributes.transform);
-		let temp = tag.attributes.transform.replace(',', ' ');
-		temp = temp.toLowerCase();
-		temp = temp.split(')');
-		// log(temp);
-		transforms = [];
-		temp.forEach((value) => {
-			let data = value.split('(');
-			if (data.length === 2) {
-				data[0] = data[0].trim();
-				data[1] = data[1].trim();
-				if (supported.indexOf(data[0]) > -1) {
-					transforms.push({
-						name: data[0],
-						args: data[1].split(' '),
-					});
-				}
-			}
-		});
-	}
-
-	// log(transforms);
-	return transforms;
-}
+/**
+ * Conversion functions for each SVG tag type
+ */
+const convert = {
+	circle: tagConvertCircleEllipse,
+	ellipse: tagConvertCircleEllipse,
+	path: tagConvertPath,
+	glyph: tagConvertPath,
+	polygon: tagConvertPolygonPolyline,
+	polyline: tagConvertPolygonPolyline,
+	rect: tagConvertRect,
+	g: convertTags,
+};
 
 /*
  * Common Functions
@@ -221,10 +167,49 @@ export function chunkAndValidateParameters(data = '') {
 	return validatedParameters;
 }
 
-/*
-	Helper functions
-*/
+/**
+ * One call for floating point sanitize and global rounding
+ * @param {Number} num - number to sanitize
+ * @returns {Number}
+ */
+export function roundAndSanitize(num) {
+	num = floatSanitize(num);
+	num = round(num, roundToDecimalPrecision);
+	return num;
+}
 
+/**
+ * Better rounding than Math.round
+ * @param {Number} num - number to round
+ * @param {Number} dec - number of decimal places
+ * @returns {Number}
+ */
+export function round(num, dec = false) {
+	if (!num) return 0;
+	if (dec === false) return parseFloat(num);
+	num = parseFloat(num);
+	return Number(Math.round(`${num}e${dec}`) + `e-${dec}`) || 0;
+}
+
+/**
+ * Gets rid of those annoying floating point results that contain
+ * long sequences of 0s or 9s, and are really close to another
+ * much more simple number.
+ * @param {Number} num - number to sanitize
+ * @returns {Number}
+ */
+export function floatSanitize(num) {
+	const stringNum = String(num);
+	if (stringNum.indexOf('00000') > -1 || stringNum.indexOf('99999') > -1) {
+		num = round(num, 5);
+	}
+	return num;
+}
+
+/**
+ * Global switch for console logging
+ * @param {String} message - text to log
+ */
 export function log(message) {
 	if (enableConsoleLogging) console.log(message);
 }
