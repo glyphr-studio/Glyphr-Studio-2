@@ -4,7 +4,7 @@ import {
 	setCurrentProjectEditor,
 } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
-import { countItems, pause } from '../common/functions.js';
+import { countItems } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 import { makeKernGroupID } from '../pages/kerning.js';
@@ -65,7 +65,7 @@ export async function ioFont_importFont(importedFont) {
 		const subtables = [];
 		if (table.lookupType === 2) {
 			table?.subtables.forEach((subtable) => {
-				if(subtable.posFormat === 1) {
+				if (subtable.posFormat === 1) {
 					// log(`\n⮟subtable⮟`);
 					// log(subtable);
 					const pairSets = subtable?.pairSets || [];
@@ -78,12 +78,16 @@ export async function ioFont_importFont(importedFont) {
 					subtables.push({ pairSets: pairSets, glyphList: glyphList });
 				} else if (subtable.posFormat === 2) {
 					// TODO support position format 2
-					console.warn(`In a GPOS table: Lookup Type 2, found a subtable with Pair Position: Format 2. Can only import Format 1.`);
+					console.warn(
+						`In a GPOS table: Lookup Type 2, found a subtable with Pair Position: Format 2. Can only import Format 1.`
+					);
 				}
 			});
 		} else {
 			// TODO support other Lookup types
-			console.warn(`Found a GPOS table: Lookup Type ${table.lookupType}. Only Lookup Type 2 is supported.`);
+			console.warn(
+				`Found a GPOS table: Lookup Type ${table.lookupType}. Only Lookup Type 2 is supported.`
+			);
 		}
 
 		// log(`loadOneKernTable`, 'end');
@@ -197,13 +201,12 @@ export async function ioFont_importFont(importedFont) {
 }
 
 async function updateFontImportProgressIndicator(type) {
-	updateProgressIndicator(`
+	await updateProgressIndicator(`
 			Importing ${type}:
 			<span class="progress-indicator__counter">${importItemCounter}</span>
 			 of
 			<span class="progress-indicator__counter">${importItemTotal}</span>
 		`);
-	await pause();
 }
 
 // --------------------------------------------------------------
