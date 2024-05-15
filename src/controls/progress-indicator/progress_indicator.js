@@ -1,15 +1,20 @@
 import { addAsChildren, makeElement } from '../../common/dom.js';
+import { pause } from '../../common/functions.js';
 
 // Animation
 let degrees = 0;
 
-export function updateProgressIndicator(message) {
+export async function updateProgressIndicator(message) {
 	const container = document.getElementById('progress-indicator__message');
-	const bar = document.getElementById('progress-indicator__bar');
-
-	degrees = (degrees + 0.95) % 100;
-	bar.style.backgroundPosition = `${degrees}%`;
-	if (message) container.innerHTML = message;
+	if (container) {
+		const bar = document.getElementById('progress-indicator__bar');
+		if (bar) {
+			degrees = (degrees + 0.95) % 100;
+			bar.style.backgroundPosition = `${degrees}%`;
+			if (message) container.innerHTML = message;
+		}
+		await pause();
+	}
 }
 
 export function makeProgressIndicator() {
