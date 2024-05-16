@@ -26,7 +26,6 @@ let importItemCounter = 0;
 let importItemTotal = 0;
 
 export async function ioFont_importFont(importedFont, testing = false) {
-	console.log('ioFont_importFont', 'start');
 	// log(importedFont);
 	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
@@ -200,8 +199,6 @@ export async function ioFont_importFont(importedFont, testing = false) {
 		app.selectedProjectEditor = editor;
 		app.selectedProjectEditor.navigate();
 	}
-
-	console.log('ioFont_importFont', 'end');
 }
 
 async function updateFontImportProgressIndicator(type) {
@@ -239,7 +236,7 @@ function importOneGlyph(otfGlyph, project) {
 
 	if (!importedGlyph) {
 		console.warn(`Something went wrong with importing this glyph.`);
-		console.log(otfGlyph);
+
 		importItemTotal--;
 		// log('importOneGlyph', 'end');
 		return;
@@ -304,7 +301,7 @@ function importOneLigature(otfLigature, otfFont) {
 		const importedLigature = makeGlyphrStudioGlyphObject(otfLigature.glyph);
 		if (!importedLigature) {
 			console.warn(`Something went wrong with importing this glyph.`);
-			console.log(otfLigature);
+
 			importItemTotal--;
 			// log(`importOneLigature`, 'end');
 			return;
