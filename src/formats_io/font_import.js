@@ -11,6 +11,7 @@ import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { Glyph } from '../project_data/glyph.js';
 import { KernGroup } from '../project_data/kern_group.js';
+import { ProjectEditor } from '../project_editor/project_editor.js';
 import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 
 /**
@@ -24,10 +25,10 @@ let finalKerns = {};
 let importItemCounter = 0;
 let importItemTotal = 0;
 
-export async function ioFont_importFont(importedFont) {
-	// log('ioFont_importFont', 'start');
-	log(importedFont);
-	const editor = getProjectEditorImportTarget();
+export async function ioFont_importFont(importedFont, testing = false) {
+	console.log('ioFont_importFont', 'start');
+	// log(importedFont);
+	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
 
 	// Reset module data
@@ -189,15 +190,18 @@ export async function ioFont_importFont(importedFont) {
 	project.kerning = finalKerns;
 
 	// log(editor);
+	if (testing) {
+		return editor.project;
+	} else {
+		setCurrentProjectEditor(editor);
+		editor.nav.page = 'Overview';
 
-	setCurrentProjectEditor(editor);
-	editor.nav.page = 'Overview';
+		const app = getGlyphrStudioApp();
+		app.selectedProjectEditor = editor;
+		app.selectedProjectEditor.navigate();
+	}
 
-	const app = getGlyphrStudioApp();
-	app.selectedProjectEditor = editor;
-	app.selectedProjectEditor.navigate();
-
-	// log('ioFont_importFont', 'end');
+	console.log('ioFont_importFont', 'end');
 }
 
 async function updateFontImportProgressIndicator(type) {
