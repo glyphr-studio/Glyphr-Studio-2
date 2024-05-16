@@ -15564,9 +15564,8 @@ Drag and drop one of the following:<br>`,style:"display: none;"}),o=C({id:"open-
 				<li>
 					<strong>Send Feedback</strong> -
 					Use new features and let us know if you run into issues.  Follow us on
-					<a href="https://typo.social/@glyphrstudio" target="_blank">Mastodon</a>,
-					<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">Reddit</a>, or
-					<a href="https://twitter.com/glyphrstudio" target="_blank">Twitter</a>.
+					<a href="https://typo.social/@glyphrstudio" target="_blank">Mastodon</a> or
+					<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">Reddit</a>.
 					Read the <a href="http://www.glyphrstudio.com/blog/" target="_blank">blog</a>,
 					and participate in discussions. Be vocal, and let us know what we should do next!
 					<br>
@@ -15608,9 +15607,6 @@ Drag and drop one of the following:<br>`,style:"display: none;"}),o=C({id:"open-
 
 				<span>Reddit:</span>
 				<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">reddit.com/r/GlyphrStudio</a>
-
-				<span>Twitter:</span>
-				<a href="https://twitter.com/glyphrstudio" target="_blank">@glyphrstudio</a>
 
 				<h2>Source code</h2>
 

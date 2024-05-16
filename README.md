@@ -12,7 +12,6 @@ Glyphr Studio v2 is a web-based font editor, optimized for typeface design begin
 | Blog        | [glyphrstudio.com/blog](https://www.glyphrstudio.com/blog/)         |
 | Mastodon    | [@glyphrstudio@typo.social](https://typo.social/@glyphrstudio)      |
 | Reddit      | [reddit.com/r/GlyphrStudio](https://www.reddit.com/r/GlyphrStudio/) |
-| Twitter     | [@glyphrstudio](https://twitter.com/glyphrstudio)                   |
 | GitHub      | [github.com/glyphr-studio](https://github.com/glyphr-studio)        |
 
 ## Approach
