@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <g transform="scale(2 1)">
+    <g transform="rotate(45)">
+      <rect x="70" y="-40" width="50" height="50" fill="darkred"/>
+    </g>
+    <rect x="50" y="200" width="200" height="200" transform="scale(0.5)" fill="red"/>
+  </g>
+  <rect x="200" y="200" width="50" height="50" transform="rotate(45 150 150)" fill="pink"/>
+</svg>

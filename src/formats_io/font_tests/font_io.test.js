@@ -6,7 +6,7 @@ import { ioFont_importFont } from '../font_import.js';
 describe('OTF Font', () => {
 	it('Import: Most Basic Test', async () => {
 		// console.log(sampleFile);
-		const loadResult = opentype.loadSync('./src/formats_io/tests/MostBasicTestRegular.otf');
+		const loadResult = opentype.loadSync('./src/formats_io/font_tests/MostBasicTestRegular.otf');
 		const result = await ioFont_importFont(loadResult, true);
 		// console.log(result);
 		expect(result).toBeTruthy();
@@ -24,7 +24,7 @@ describe('OTF Font', () => {
 
 	it('Import: Oblegg Extended Test', async () => {
 		// console.log(sampleFile);
-		const loadResult = opentype.loadSync('./src/formats_io/tests/ObleggExtendedTestRegular.otf');
+		const loadResult = opentype.loadSync('./src/formats_io/font_tests/ObleggExtendedTestRegular.otf');
 		const result = await ioFont_importFont(loadResult, true);
 		// console.log(result);
 		expect(result).toBeTruthy();
