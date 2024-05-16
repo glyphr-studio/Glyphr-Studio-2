@@ -22,14 +22,14 @@ export const roundToDecimalPrecision = false;
  * @returns {Array} - collection of Paths in Bezier Data Format
  */
 export function SVGtoBezier(inputSVG) {
-	log(`\n\n========================\n========================\nSVGtoBezier`);
-	log(inputSVG);
+	// log(`\n\n========================\n========================\nSVGtoBezier`);
+	// log(inputSVG);
 	let svgDocumentData = XMLtoJSON(inputSVG);
-	log(`JSON DATA`);
-	log(svgDocumentData);
+	// log(`JSON DATA`);
+	// log(svgDocumentData);
 	let bezierPaths = convertTags(svgDocumentData);
-	log(bezierPaths);
-	log(`SVGtoBezier\n========================\n========================\n\n`);
+	// log(bezierPaths);
+	// log(`SVGtoBezier\n========================\n========================\n\n`);
 	return bezierPaths;
 }
 
@@ -39,41 +39,41 @@ export function SVGtoBezier(inputSVG) {
  * @returns {Array} - collection of Paths in Bezier Data Format
  */
 function convertTags(tagData) {
-	log(`\n\nCONVERT TAGS - START ${tagData.name}`);
-	log('tagData');
-	log(tagData);
+	// log(`\n\nCONVERT TAGS - START ${tagData.name}`);
+	// log('tagData');
+	// log(tagData);
 	if (!tagData?.content) return [];
 
 	let resultBezierPaths = [];
 
 	tagData.content.forEach((tag) => {
-		log(`\n\n\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n START TAG ${tag.name}`);
-		log('tag');
-		log(tag);
+		// log(`\n\n\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n START TAG ${tag.name}`);
+		// log('tag');
+		// log(tag);
 
 		const name = tag.name.toLowerCase();
 		const tagTransforms = getTransformData(tag);
-		log(`tagTransforms`);
-		log(tagTransforms);
+		// log(`tagTransforms`);
+		// log(tagTransforms);
 
 		if (convert[name]) {
-			log(`\n\n======= converting ${tag.name} =======`);
+			// log(`\n\n======= converting ${tag.name} =======`);
 			let bezierPaths = convert[name](tag);
-			log(`converted tag: \n${JSON.stringify(bezierPaths)}`);
+			// log(`converted tag: \n${JSON.stringify(bezierPaths)}`);
 			if (tagTransforms) {
-				log(`\n\n======= transforming ${tag.name} =======`);
+				// log(`\n\n======= transforming ${tag.name} =======`);
 				bezierPaths = applyTransformData(bezierPaths, tagTransforms);
 			}
-			log(`transformed tag: \n${JSON.stringify(bezierPaths)}`);
+			// log(`transformed tag: \n${JSON.stringify(bezierPaths)}`);
 			resultBezierPaths = resultBezierPaths.concat(bezierPaths);
 		}
 
-		log(`>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n END TAG ${tag.name}\n\n\n\n`);
+		// log(`>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n END TAG ${tag.name}\n\n\n\n`);
 	});
 
-	log(`resultBezierPaths`);
-	log(resultBezierPaths);
-	log(`CONVERT TAGS - END ${tagData.name}\n\n`);
+	// log(`resultBezierPaths`);
+	// log(resultBezierPaths);
+	// log(`CONVERT TAGS - END ${tagData.name}\n\n`);
 	return resultBezierPaths;
 }
 
