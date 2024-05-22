@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { getCurrentProjectEditor } from '../app/main';
 import colorStyle from '../common/colors.css?inline';
 import { addAsChildren, makeElement } from '../common/dom';

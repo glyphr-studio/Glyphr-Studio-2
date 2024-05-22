@@ -28,14 +28,17 @@ import { XYPoint } from './xy_point.js';
 export class Segment extends GlyphElement {
 	/**
 	 * Create a Segment
-	 * @param {Number} p1x - First point x
-	 * @param {Number} p1y - First point y
-	 * @param {Number} p2x - First handle x
-	 * @param {Number} p2y - First handle y
-	 * @param {Number} p3x - Second handle x
-	 * @param {Number} p3y - Second handle y
-	 * @param {Number} p4x - Second point x
-	 * @param {Number} p4y - Second point y
+	 * @param {Object} arg
+	 * @param {Number =} arg.p1x - First point x
+	 * @param {Number =} arg.p1y - First point y
+	 * @param {Number | undefined =} arg.p2x - First handle x
+	 * @param {Number | undefined =} arg.p2y - First handle y
+	 * @param {Number | undefined =} arg.p3x - Second handle x
+	 * @param {Number | undefined =} arg.p3y - Second handle y
+	 * @param {Number =} arg.p4x - Second point x
+	 * @param {Number =} arg.p4y - Second point y
+	 * @param {Boolean | String =} arg.point1ID - id for the first point
+	 * @param {Boolean | String =} arg.point2ID - id for the second point
 	 */
 	constructor({
 		p1x = 0,
@@ -55,14 +58,15 @@ export class Segment extends GlyphElement {
 		this.p4x = numSan(p4x);
 		this.p4y = numSan(p4y);
 		// For lines, it's better to default p2 to p1 values, and p3 to p4 values
-		this.p2x = isVal(p2x) ? numSan(p2x) : this.p1x;
-		this.p2y = isVal(p2y) ? numSan(p2y) : this.p1y;
-		this.p3x = isVal(p3x) ? numSan(p3x) : this.p4x;
-		this.p3y = isVal(p3y) ? numSan(p3y) : this.p4y;
+
+		this.p2x = p2x === undefined ? this.p1x : numSan(p2x);
+		this.p2y = p2y === undefined ? this.p1y : numSan(p2y);
+		this.p3x = p3x === undefined ? this.p4x : numSan(p3x);
+		this.p3y = p3y === undefined ? this.p4y : numSan(p3y);
 
 		// IDs for stitching
-		if(point1ID) this.point1ID = point1ID;
-		if(point2ID) this.point2ID = point2ID;
+		if (point1ID) this.point1ID = point1ID;
+		if (point2ID) this.point2ID = point2ID;
 		this.objType = 'Segment';
 
 		this.recalculateMaxes();
@@ -212,7 +216,7 @@ export class Segment extends GlyphElement {
 	/**
 	 * Splits a segment at either an x/y value or a decimal %
 	 * @param {*} sp - decimal or x/y object
-	 * @returns {Array} - Array with two segments resulting from the split
+	 * @returns {Array | Boolean} - Array with two segments resulting from the split
 	 */
 	split(sp = 0.5) {
 		if (typeof sp === 'object' && isVal(sp.x) && isVal(sp.y)) {
@@ -226,7 +230,7 @@ export class Segment extends GlyphElement {
 	/**
 	 * Splits a segment at a specific x/y position
 	 * @param {XYPoint} co - x/y point where to split
-	 * @returns {Array} - Array with two segments resulting from the split
+	 * @returns {Array | Boolean} - Array with two segments resulting from the split
 	 */
 	splitAtPoint(co) {
 		// log('Segment.splitAtPoint', 'start');
@@ -394,7 +398,7 @@ export class Segment extends GlyphElement {
 
 		const grains = this.quickLength * 1000;
 		let minDistance = 999999999;
-		let re = false;
+		let result = {};
 		let check;
 		let d;
 
@@ -408,17 +412,17 @@ export class Segment extends GlyphElement {
 
 			if (d < minDistance) {
 				minDistance = d;
-				re = {
+				result = {
 					split: t,
 					distance: d,
 					x: check.x,
 					y: check.y,
 				};
-				if (threshold && re.distance < threshold) return re;
+				if (threshold && result.distance < threshold) return result;
 			}
 		}
 		// log(`getSplitFromXYPoint`, 'end');
-		return re;
+		return result;
 	}
 
 	/**
@@ -497,7 +501,7 @@ export class Segment extends GlyphElement {
 		if (pt === 1) return new XYPoint(this.p1x, this.p1y);
 		else if (pt === 2) return new XYPoint(this.p2x, this.p2y);
 		else if (pt === 3) return new XYPoint(this.p3x, this.p3y);
-		else if (pt === 4) return new XYPoint(this.p4x, this.p4y);
+		else return new XYPoint(this.p4x, this.p4y); // Default to pt 4
 	}
 
 	// --------------------------------------------------------------
@@ -524,7 +528,6 @@ export class Segment extends GlyphElement {
 
 	/**
 	 * Calculate the bounding box for this Segment
-	 * @returns {Maxes}
 	 */
 	recalculateMaxes() {
 		// log('Segment.recalculateMaxes', 'start');
@@ -532,7 +535,7 @@ export class Segment extends GlyphElement {
 
 		/**
 		 * Takes a value and updates a maxes object if that value falls outside the current maxes
-		 * @param {Maxes} maxes - maxes object to check against
+		 * @param {Object} maxes - maxes object to check against
 		 * @param {Number} value - new value that may fall outside the current maxes object
 		 */
 		function checkXBounds(maxes, value) {
@@ -545,7 +548,7 @@ export class Segment extends GlyphElement {
 
 		/**
 		 * Takes a value and updates a maxes object if that value falls outside the current maxes
-		 * @param {Maxes} maxes - maxes object to check against
+		 * @param {Object} maxes - maxes object to check against
 		 * @param {Number} value - new value that may fall outside the current maxes object
 		 */
 		function checkYBounds(maxes, value) {
@@ -578,10 +581,10 @@ export class Segment extends GlyphElement {
 		};
 
 		if (this.lineType) {
-			this.maxes = bounds;
+			this.maxes = new Maxes(bounds);
 			// log(this.maxes.print());
 			// log('Segment.recalculateMaxes - returning fast maxes for line', 'end');
-			return this.maxes;
+			return;
 		}
 
 		const d1x = this.p2x - this.p1x;
@@ -646,8 +649,7 @@ export class Segment extends GlyphElement {
 		}
 		// log([this.getFastMaxes(), bounds]);
 		// log('Segment.recalculateMaxes', 'end');
-		this.maxes = bounds;
-		return this.maxes;
+		this.maxes = new Maxes(bounds);
 	}
 
 	// --------------------------------------------------------------
@@ -684,7 +686,7 @@ export class Segment extends GlyphElement {
 	 * Checks to see if an x/y value is one of the points of this Segment
 	 * @param {XYPoint} pt - point to check
 	 * @param {Number} threshold - how close to check
-	 * @returns {Boolean} - kind of
+	 * @returns {String | false}
 	 */
 	containsTerminalPoint(pt, threshold = 1) {
 		if (this.containsStartPoint(pt, threshold)) return 'start';
@@ -714,17 +716,13 @@ export class Segment extends GlyphElement {
 	/**
 	 * Checks to see if an x/y value is anywhere on this Segment
 	 * @param {XYPoint} pt - point to check
-	 * @param {Number} threshold - how close to check
+	 * @param {Number =} threshold - how close to check
 	 * @returns {Boolean}
 	 */
-	containsPointOnCurve(pt, threshold) {
+	containsPointOnCurve(pt, threshold = 0.1) {
 		if (this.containsTerminalPoint(pt, threshold)) return true;
-
 		if (this.lineType) return this.containsPointOnLine(pt);
-
-		threshold = isVal(threshold) ? threshold : 0.1;
 		const t = this.getSplitFromXYPoint(pt, threshold);
-
 		if (t && t.distance < threshold) return true;
 		else return false;
 	}
@@ -786,11 +784,13 @@ export class Segment extends GlyphElement {
 	/**
 	 * Determines if this Segment is actually a Line Segment
 	 * and if so, what kind
-	 * @param {Number} precision - how close to look
-	 * @returns {String}
+	 * @param {Number =} precision - how close to look
+	 * @returns {String | false}
 	 */
-	determineLineType(precision) {
-		precision = isVal(precision) ? precision : 1;
+	determineLineType(precision = 1) {
+		/**
+		 * @type {Boolean | String} type
+		 */
 		let type = false;
 
 		const rex =
@@ -798,19 +798,18 @@ export class Segment extends GlyphElement {
 			round(this.p1x, precision) === round(this.p3x, precision) &&
 			round(this.p1x, precision) === round(this.p4x, precision);
 
-		if (rex) type = 'vertical';
-
 		const rey =
 			round(this.p1y, precision) === round(this.p2y, precision) &&
 			round(this.p1y, precision) === round(this.p3y, precision) &&
 			round(this.p1y, precision) === round(this.p4y, precision);
-		if (rey) type = 'horizontal';
 
 		const red =
 			pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), this.getXYPoint(2)) &&
 			pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), this.getXYPoint(3));
-		if (red) type = 'diagonal';
 
+		if (rex) type = 'vertical';
+		else if (rey) type = 'horizontal';
+		else if (red) type = 'diagonal';
 		this._lineType = type;
 		return type;
 	}
@@ -858,7 +857,7 @@ export function getLineLength(p1x, p1y, p2x, p2y) {
  * @param {XYPoint} a - point to evaluate
  * @param {XYPoint} b - point to evaluate
  * @param {XYPoint} c - point to evaluate
- * @param {Number} precision - how close to compare
+ * @param {Number =} precision - how close to compare
  * @returns {Boolean}
  */
 export function pointsAreCollinear(a, b, c, precision) {

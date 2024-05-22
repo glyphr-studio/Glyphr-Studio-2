@@ -38,6 +38,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 	let charCounter = 0;
 	await updateSVGImportProgressIndicator('character', 1);
 
+
 	// log(`\n⮟glyphTags⮟`);
 	// log(glyphTags);
 
@@ -270,7 +271,7 @@ async function updateSVGImportProgressIndicator(type, counter) {
  * Recursively looks through data and returns any data that matches
  * a specified list of tag names.
  * @param {Object} obj - object to look through
- * @param {Array or String} grabTags - list of tags to collect
+ * @param {Array | String} grabTags - list of tags to collect
  * @returns {Array} - collection of objects representing tags
  */
 function getTagsByName(obj, grabTags) {
@@ -332,7 +333,7 @@ function getKernMembersByName(names, chars, arr, limit) {
 					// Push the match
 					if (names[n] === chars[c].attributes['glyph-name']) {
 						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
-						if (1 * uni < limit) arr = arr.concat(uni);
+						if (1 * uni[0] < limit) arr = arr.concat(uni);
 					}
 				}
 			}
@@ -356,7 +357,7 @@ function getKernMembersByUnicodeID(ids, chars, arr, limit) {
 					// Push the match
 					if (ids[i] === chars[c].attributes.unicode) {
 						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
-						if (1 * uni < limit) arr = arr.concat(uni);
+						if (1 * uni[0] < limit) arr = arr.concat(uni);
 					}
 				}
 			}

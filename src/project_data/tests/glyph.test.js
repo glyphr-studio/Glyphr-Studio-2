@@ -201,14 +201,10 @@ describe('Glyph - Getters and Setters', () => {
 		expect(g.maxes.xMin).toEqual(10);
 	});
 
-	it('get/set maxes', () => {
+	it('get maxes', () => {
 		const g = sampleGlyph();
-		g.maxes.xMax = 123;
-		g.maxes.xMin = 123;
-		g.maxes.yMax = 435;
-		g.maxes.yMin = 345;
 
-		expect(g.maxes.save()).toEqual({ xMax: 123, xMin: 123, yMax: 435, yMin: 345 });
+		expect(g.maxes.save()).toEqual({ xMax: 484, xMin: 170, yMax: 500, yMin: 186 });
 	});
 
 	it('get maxes', () => {

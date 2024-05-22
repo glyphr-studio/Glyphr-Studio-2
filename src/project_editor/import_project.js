@@ -22,8 +22,7 @@ export function importGlyphrProjectFromText(importedProject) {
 	if (typeof importedProject === 'string') importedProject = JSON.parse(importedProject);
 	// log('passed:');
 	// log(importedProject);
-	if (!importedProject)
-		importedProject = new GlyphrStudioProject({}, 'importGlyphrProjectFromText - !importedProject');
+	if (!importedProject) importedProject = new GlyphrStudioProject({});
 
 	const version = tryToGetProjectVersion(importedProject);
 	// log(`version found: ${version.major}.${version.minor}.${version.patch}.${version.preRelease}`);
@@ -40,10 +39,7 @@ export function importGlyphrProjectFromText(importedProject) {
 	}
 
 	// Hydrate after all updates
-	const newProject = new GlyphrStudioProject(
-		importedProject,
-		'importGlyphrProjectFromText - hydrate'
-	);
+	const newProject = new GlyphrStudioProject(importedProject);
 
 	// Pull system guide visibility from project
 	const projectSystemGuides = newProject?.settings?.app?.guides?.systemGuides;
@@ -77,12 +73,13 @@ export function importGlyphrProjectFromText(importedProject) {
  * roll through updates to translate any old project file structure
  * to current project file structure.
  * Hopefully this is minimal.
- * @param {String} project - Old project object data
+ * @param {Object} oldProject - Old project object data
  * @returns {Object} - Latest Glyphr Studio v2 Project structure
  */
 function migrate_Project(oldProject) {
 	// log('migrate_Project', 'start');
-	const newProject = new GlyphrStudioProject({}, 'migrate_Project');
+
+	const newProject = new GlyphrStudioProject({});
 	const defaultLSB = oldProject.projectsettings.defaultlsb;
 	const defaultRSB = oldProject.projectsettings.defaultrsb;
 
@@ -101,8 +98,10 @@ function migrate_Project(oldProject) {
 	Object.keys(oldProject.ligatures).forEach((oldID) => {
 		const newID = migrate_ItemID(oldID);
 		const chars = hexesToChars(oldID);
+
 		let newGsub = chars.split('').map(charToHex);
 		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID, defaultLSB, defaultRSB);
+
 		newProject.ligatures[newID].objType = 'Ligature';
 		newProject.ligatures[newID].gsub = newGsub;
 	});
@@ -249,7 +248,7 @@ function migrate_Glyph(oldGlyph, newID, defaultLSB = 0, defaultRSB = 0) {
 			// Component Instance
 			// log(`import item as COMPONENT INSTANCE`);
 			// log(item);
-			newItem = new migrate_ComponentInstance(item);
+			newItem = migrate_ComponentInstance(item);
 			newGlyph.addOneShape(newItem);
 		}
 	});
@@ -343,7 +342,7 @@ function migrate_ItemID(oldID) {
 	log(`migrate_ItemID`, 'start');
 	log(`oldID: ${oldID}`);
 
-	let result = false;
+	let result = '';
 
 	// Component
 	if (oldID.startsWith('com')) {
@@ -364,12 +363,14 @@ function migrate_ItemID(oldID) {
 
 	const chars = hexesToChars(oldID);
 	// Ligature
+
 	if (chars.length > 1) {
 		log(`Detected as Ligature`);
 		result = makeLigatureID(chars);
 	}
 
 	// Glyph
+
 	if (chars.length === 1) {
 		log(`Detected as Glyph`);
 		result = `glyph-${validateAsHex(oldID)}`;

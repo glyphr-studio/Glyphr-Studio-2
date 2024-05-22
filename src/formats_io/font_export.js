@@ -277,7 +277,8 @@ async function generateOneGlyph(currentExportItem) {
 	// log(`thisUnicode: ${thisUnicode}`);
 
 	// Name
-	const thisName = getUnicodeShortName(decToHex(num));
+	const hexID = decToHex(num);
+	const thisName = hexID? getUnicodeShortName(hexID) : 'name';
 	// log(`decToHex(num): ${decToHex(num)}`);
 	// log(`thisName: ${thisName}`);
 

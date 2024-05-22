@@ -1,4 +1,4 @@
-import { isVal, round } from '../common/functions.js';
+import { isVal, parseNumber, round } from '../common/functions.js';
 import { GlyphElement } from './glyph_element.js';
 
 /**
@@ -8,10 +8,11 @@ import { GlyphElement } from './glyph_element.js';
 export class Maxes extends GlyphElement {
 	/**
 	 * Create a Maxes object
-	 * @param {Number} xMin - smallest x value
-	 * @param {Number} xMax - largest x value
-	 * @param {Number} yMin - smallest y value
-	 * @param {Number} yMax - largest y value
+	 * @param {Object} arg
+	 * @param {Number | undefined =} arg.xMin - smallest x value
+	 * @param {Number | undefined =} arg.xMax - largest x value
+	 * @param {Number | undefined =} arg.yMin - smallest y value
+	 * @param {Number | undefined =} arg.yMax - largest y value
 	 */
 	constructor({ xMin, xMax, yMin, yMax } = {}) {
 		super();
@@ -67,10 +68,10 @@ export class Maxes extends GlyphElement {
 		for (let i = 0; i < level; i++) ind += '  ';
 
 		let re = `${ind}{`;
-		re += `xMin:${this._xMin} `;
-		re += `xMax:${this._xMax} `;
-		re += `yMin:${this._yMin} `;
-		re += `yMax:${this._yMax}`;
+		re += `xMin:${this.xMin} `;
+		re += `xMax:${this.xMax} `;
+		re += `yMin:${this.yMin} `;
+		re += `yMax:${this.yMax}`;
 		re += `}`;
 
 		return re;
@@ -88,12 +89,8 @@ export class Maxes extends GlyphElement {
 		// log(`Maxes GET xMin`, 'start');
 
 		if (isVal(this._xMin)) {
-			// log(`returning ${this._xMin}`);
-			// log(`Maxes GET xMin`, 'end');
-			return this._xMin;
+			return parseNumber(this._xMin);
 		} else {
-			// log(`returning MAX_SAFE_INTEGER`);
-			// log(`Maxes GET xMin`, 'end');
 			return Number.MAX_SAFE_INTEGER;
 		}
 	}
@@ -103,7 +100,7 @@ export class Maxes extends GlyphElement {
 	 * @returns {Number} value
 	 */
 	get xMax() {
-		if (isVal(this._xMax)) return this._xMax;
+		if (isVal(this._xMax)) return parseNumber(this._xMax);
 		else return Number.MIN_SAFE_INTEGER;
 	}
 
@@ -112,7 +109,7 @@ export class Maxes extends GlyphElement {
 	 * @returns {Number} value
 	 */
 	get yMin() {
-		if (isVal(this._yMin)) return this._yMin;
+		if (isVal(this._yMin)) return parseNumber(this._yMin);
 		else return Number.MAX_SAFE_INTEGER;
 	}
 
@@ -121,7 +118,7 @@ export class Maxes extends GlyphElement {
 	 * @returns {Number} value
 	 */
 	get yMax() {
-		if (isVal(this._yMax)) return this._yMax;
+		if (isVal(this._yMax)) return parseNumber(this._yMax);
 		else return Number.MIN_SAFE_INTEGER;
 	}
 
@@ -158,56 +155,42 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Set xMin
-	 * @param {Number} x - new value
+	 * @param {Number | undefined} x - new value
 	 * @returns {Maxes}
 	 */
 	set xMin(x) {
-		// log(`Maxes SET xMin`, 'start');
-		// log(`x: ${x}`);
-
-		x = parseFloat(x);
-		// log(`x: ${x}`);
-
-		// log(`this._xMin: ${this._xMin}`);
-
-		if (!isNaN(x)) this._xMin = x;
-		// else delete this._xMin;
-		// log(`this._xMin: ${this._xMin}`);
-
-		// log(`Maxes SET xMin`, 'end');
+		if (x === undefined || isNaN(+x)) delete this._xMin;
+		else this._xMin = parseNumber(x);
 	}
 
 	/**
 	 * Set xMax
-	 * @param {Number} x - new value
+	 * @param {Number | undefined} x - new value
 	 * @returns {Maxes}
 	 */
 	set xMax(x) {
-		x = parseFloat(x);
-		if (!isNaN(x)) this._xMax = x;
-		else delete this._xMax;
+		if (x === undefined || isNaN(+x)) delete this._xMax;
+		else this._xMax = parseNumber(x);
 	}
 
 	/**
 	 * Set yMin
-	 * @param {Number} y - new value
+	 * @param {Number | undefined} y - new value
 	 * @returns {Maxes}
 	 */
 	set yMin(y) {
-		y = parseFloat(y);
-		if (!isNaN(y)) this._yMin = y;
-		else delete this._yMin;
+		if (y === undefined || isNaN(+y)) delete this._yMin;
+		else this._yMin = parseNumber(y);
 	}
 
 	/**
 	 * Set yMax
-	 * @param {Number} y - new value
+	 * @param {Number | undefined} y - new value
 	 * @returns {Maxes}
 	 */
 	set yMax(y) {
-		y = parseFloat(y);
-		if (!isNaN(y)) this._yMax = y;
-		else delete this._yMax;
+		if (y === undefined || isNaN(+y)) delete this._yMax;
+		else this._yMax = parseNumber(y);
 	}
 
 	// --------------------------------------------------------------
@@ -232,12 +215,7 @@ export class Maxes extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	isPointInside(x, y) {
-		let result = (
-			x <= this.xMax &&
-			x >= this.xMin &&
-			y <= this.yMax &&
-			y >= this.yMin
-		);
+		let result = x <= this.xMax && x >= this.xMin && y <= this.yMax && y >= this.yMin;
 		return result;
 	}
 }
@@ -250,7 +228,7 @@ export class Maxes extends GlyphElement {
  * Given two Maxes, check if they overlap
  * @param {Maxes} m1 - first maxes
  * @param {Maxes} m2 - second maxes
- * @param {Boolean} exclusive - 'inclusive' or 'exclusive'
+ * @param {Boolean | String =} exclusive - 'inclusive' or 'exclusive'
  * @returns {Boolean}
  */
 export function maxesOverlap(m1, m2, exclusive = true) {

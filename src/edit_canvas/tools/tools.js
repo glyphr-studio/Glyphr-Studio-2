@@ -172,7 +172,7 @@ export function makeViewToolsButtons() {
 	// text zoom control
 	let zoomReadoutNumber = '--';
 	let view = editor.view;
-	if (view) zoomReadoutNumber = round(editor.view.dz * 100, 2);
+	if (view) zoomReadoutNumber = '' + round(editor.view.dz * 100, 2);
 
 	let zoomReadout = makeElement({
 		tag: 'input',
@@ -336,7 +336,7 @@ export function addPathToCurrentItem(newPath) {
  * a shape (or false) at the coordinate location
  * @param {Number} cx - x coordinate in canvas units
  * @param {Number} cy - y coordinate in canvas units
- * @returns {Shape or Boolean}
+ * @returns {Object | Boolean}
  */
 export function getShapeAtLocation(cx, cy) {
 	// log(`getShapeAtLocation`, 'start');
@@ -404,24 +404,10 @@ export function isShapeHere(shape, cx, cy) {
 	// ctx.strokeAlign = 'outside';
 	// ctx.lineWidth = 4;
 	// ctx.strokeRect(xTest - 10, yTest - 10, 20, 20);
-	// openDebugPopOutWindow(ghc);
 
 	// log('red = ' + imageData.data[0] + '  returning: ' + (imageData.data[0] < 255));
 	// log(`isShapeHere`, 'end');
 	return imageData.data[0] < 255;
-}
-
-export function openDebugPopOutWindow(content) {
-	const editor = getCurrentProjectEditor();
-	if (!editor.debugPopOutWindow) {
-		editor.debugPopOutWindow = window.open('', 'glyphr-studio-debug-pop-out');
-		editor.debugPopOutWindow.document.body.style.backgroundColor = 'gray';
-	}
-
-	// Init window properties
-	let popDoc = editor.debugPopOutWindow.document;
-	popDoc.body.innerHTML = '';
-	popDoc.body.appendChild(content);
 }
 
 // --------------------------------------------------------------

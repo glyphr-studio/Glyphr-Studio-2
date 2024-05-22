@@ -17,14 +17,14 @@ import { Tool_Resize } from './tools/resize.js';
 // --------------------------------------------------------------
 
 export let eventHandlerData = {
-	currentToolHandler: false,
-	newBasicPathMaxes: false,
-	newBasicPath: false,
-	dragSelectArea: false,
-	mousePosition: false,
-	handle: false,
-	rotationStartCenter: false,
-	rotationStartMaxesTopY: false,
+	currentToolHandler: {},
+	newBasicPathMaxes: {},
+	newBasicPath: {},
+	dragSelectArea: {},
+	mousePosition: {},
+	handle: '',
+	rotationStartCenter: {},
+	rotationStartMaxesTopY: -100,
 	rotateHandleHeight: 40,
 	isMouseOverCanvas: false,
 	corner: false,
@@ -40,7 +40,7 @@ export let eventHandlerData = {
 	isShiftDown: false,
 	isCtrlDown: false,
 	isAltDown: false,
-	hoverPoint: false,
+	hoverPoint: {},
 	multi: false,
 	canvasHotspots: [],
 };

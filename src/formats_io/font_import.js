@@ -151,6 +151,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 		importOneLigature({ glyph: thisLigature, gsub: liga.sub }, importedFont);
 	}
 
+
 	// --------------------------------------------------------------
 	// Import Kern Pairs
 	// --------------------------------------------------------------

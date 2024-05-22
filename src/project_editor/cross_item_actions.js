@@ -4,6 +4,7 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { copyShapesFromTo } from '../panels/actions.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
+import { KernGroup } from '../project_data/kern_group.js';
 import { Path } from '../project_data/path.js';
 /**
 		Cross-item actions
@@ -72,31 +73,6 @@ export function makeGlyphSVGforExport(glyph) {
 	return re;
 }
 
-/**
- * Make a PostScript path from this path
- * PostScript paths use relative MoveTo commands, so
- * this path must know about where the last path left off
- * @param {Number} lastX - x from previous path
- * @param {Number} lastY - y from previous path
- * @returns {String} - PostScript path data
- */
-export function makeGlyphPostScript(glyph, lastX, lastY) {
-	const g = glyph.transformedGlyph;
-	let re;
-	let part;
-	g.shapes.forEach((shape) => {
-		part = shape.makePostScript(lastX, lastY);
-		lastX = part.lastX;
-		lastY = part.lastY;
-		re += part.re;
-	});
-	return {
-		re: re,
-		lastX: lastX,
-		lastY: lastY,
-	};
-}
-
 // --------------------------------------------------------------
 // Components
 // --------------------------------------------------------------
@@ -124,7 +100,7 @@ export function insertComponentInstance(sourceID, destinationID, updateAdvanceWi
 		glyphChanged(destinationGlyph);
 		if (select) {
 			editor.multiSelect.shapes.select(newComponentInstance);
-			editor.publish('whatShapeIsSelected', editor.multiSelect.shapes.singleton());
+			editor.publish('whatShapeIsSelected', editor.multiSelect.shapes.singleton);
 		}
 
 		addLinkToUsedIn(sourceItem, destinationID);
@@ -282,10 +258,10 @@ export function resolveItemLinks(item, unlinkComponentInstances = false) {
 				if (shape.objType === 'ComponentInstance' && shape.link === item.id) {
 					if (unlinkComponentInstances) {
 						// const sourceItem = editor.project.getItem(shape.link);
-						copyShapesFromTo(shape.transformedGlyph, upstreamGlyph)
+						copyShapesFromTo(shape.transformedGlyph, upstreamGlyph);
 					}
-						upstreamGlyph.shapes.splice(u, 1);
-						u--;
+					upstreamGlyph.shapes.splice(u, 1);
+					u--;
 				}
 			}
 		}

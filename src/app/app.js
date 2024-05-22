@@ -1,10 +1,12 @@
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
+import { parseSemVer } from '../formats_io/validate_file_input.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
+import * as config from './app_config.json';
 import { _DEV } from './dev_mode_includes.js';
 import {
 	GSApp,
@@ -15,9 +17,6 @@ import {
 	setCurrentProjectEditor,
 } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
-import * as config from './app_config.json';
-import { parseSemVer } from '../formats_io/validate_file_input.js';
-
 
 /**
  * Creates a new Glyphr Studio Application
@@ -28,7 +27,7 @@ export class GlyphrStudioApp {
 	 */
 	constructor() {
 		// Version
-		this.version = config.version
+		this.version = config.version;
 		this.versionDate = config.versionDate;
 		const semVer = parseSemVer(config.version);
 		this.versionName = `Version ${semVer.major}.${semVer.minor}`;
@@ -77,6 +76,7 @@ export class GlyphrStudioApp {
 		const dev = this.settings.dev;
 		if (dev.mode) {
 			if (dev.overwriteTitle) document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
+			//@ts-ignore
 			window._DEV = _DEV;
 
 			// Test Function
@@ -90,18 +90,20 @@ export class GlyphrStudioApp {
 				setCurrentProjectEditor(editor);
 				editor.project = importGlyphrProjectFromText(simpleExampleProject);
 				// editor.project = importGlyphrProjectFromText(obleggSampleProject);
-				editor.nav.page = dev.currentPage || 'Overview';
+				if (typeof dev.currentPage === 'string') editor.nav.page = dev.currentPage;
 				updateWindowUnloadEvent();
-			} else if (dev.sampleProject) {
-				let proj = simpleExampleProject;
+			} else if (dev.sampleProject === true) {
+				importGlyphrProjectFromText(simpleExampleProject);
+			} else if (typeof dev.sampleProject === 'string') {
+				let proj;
 				if (dev.sampleProject === 'oblegg') proj = obleggSampleProject;
 				if (dev.sampleProject === 'bool') proj = boolTestProject;
 				// if (dev.sampleProject === 'test') proj = test;
 				editor.project = importGlyphrProjectFromText(proj);
 			}
-			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;
-			if (dev.currentPage) editor.nav.page = dev.currentPage;
-			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
+			if (typeof dev.currentGlyphID === 'string') editor.selectedGlyphID = dev.currentGlyphID;
+			if (typeof dev.currentPage === 'string') editor.nav.page = dev.currentPage;
+			if (typeof dev.currentPanel === 'string') editor.nav.panel = dev.currentPanel;
 			if (dev.currentTool) editor.selectedTool = dev.currentTool;
 			if (dev.selectFirstShape) editor.multiSelect.shapes.select(editor.selectedItem.shapes[0]);
 			if (dev.selectFirstPoint)
@@ -123,6 +125,7 @@ export class GlyphrStudioApp {
 		this.fadeOutLandingPage();
 
 		// Final dev mode stuff
+		//@ts-ignore
 		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw();
 		console.log(this);
 		// log(`GlyphrStudioApp.setUp`, 'end');
@@ -162,7 +165,7 @@ export class GlyphrStudioApp {
 	fadeOutLandingPage(delay = 700) {
 		const landingPage = document.getElementById('app__landing-page');
 		if (landingPage) {
-			landingPage.style.opacity = 0;
+			landingPage.style.opacity = '0';
 
 			setTimeout(function () {
 				// landingPage.style.visibility = 'hidden';
@@ -247,8 +250,10 @@ function addTelemetry() {
 	gScript.setAttribute('async', '');
 	document.head.appendChild(gScript);
 
+	//@ts-ignore
 	window.dataLayer = window.dataLayer || [];
 	function gtag() {
+		//@ts-ignore
 		window.dataLayer.push(arguments);
 	}
 	gtag('js', new Date());
@@ -267,12 +272,12 @@ export function updateWindowUnloadEvent() {
 		if (app.settings.dev.stopPageNavigation) {
 			window.onbeforeunload = showBeforeUnloadConfirmation;
 		} else {
-			window.onbeforeunload = '';
+			window.onbeforeunload = () => {};
 		}
 	} else if (project.settings.app.stopPageNavigation) {
 		window.onbeforeunload = showBeforeUnloadConfirmation;
 	} else {
-		window.onbeforeunload = '';
+		window.onbeforeunload = () => {};
 	}
 }
 
@@ -329,7 +334,7 @@ export function makeEmailContent() {
 	const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
 	%0A%0A%0A%0A___________________________________________%0A
 	version %09Glyphr Studio  ${getGlyphrStudioApp().version} %0A
-	user agent %09 ${encodeURIComponent(navigator.userAgentData)} %0A`;
+	user agent %09 ${encodeURIComponent(navigator.userAgent)} %0A`;
 
 	// log(con);
 
