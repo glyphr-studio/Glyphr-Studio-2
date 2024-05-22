@@ -64,17 +64,17 @@ export function ioSVG_importSVGfont(font) {
 	 *
 	 */
 	function importMissingGlyph(missingGlyph) {
-		log(`\n⮟missingGlyph⮟`);
-		log(missingGlyph);
+		// log(`\n⮟missingGlyph⮟`);
+		// log(missingGlyph);
 		const glyphSVG = `<svg><glyph d="${missingGlyph.d}"/></svg>`;
 		const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG, false);
 		const advanceWidth = parseInt(missingGlyph['horiz-adv-x']);
 		newGlyph.advanceWidth = advanceWidth;
-		project.incrementRangeCountFor('0x0');
+		project.incrementRangeCountFor(0);
 		newGlyph.id = `glyph-0x0`;
 		finalGlyphs[`glyph-0x0`] = newGlyph;
-		log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
-		log(finalGlyphs[`glyph-0x0`]);
+		// log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
+		// log(finalGlyphs[`glyph-0x0`]);
 	}
 
 	/*
@@ -113,7 +113,7 @@ export function ioSVG_importSVGfont(font) {
 		// log(`\n⮟uni⮟`);
 		// log(uni);
 
-		if (uni === false || uni === '0x0') {
+		if (uni === false || uni[0] === '0x0') {
 			// Check for .notdef
 			// log('!!! Skipping '+attributes['glyph-name']+' NO UNICODE !!!');
 			chars.splice(charCounter, 1);
@@ -287,7 +287,7 @@ export function ioSVG_importSVGfont(font) {
  * Recursively looks through data and returns any data that matches
  * a specified list of tag names.
  * @param {Object} obj - object to look through
- * @param {Array or String} grabTags - list of tags to collect
+ * @param {Array | String} grabTags - list of tags to collect
  * @returns {Array} - collection of objects representing tags
  */
 function getTagsByName(obj, grabTags) {
@@ -349,7 +349,7 @@ function getKernMembersByName(names, chars, arr, limit) {
 					// Push the match
 					if (names[n] === chars[c].attributes['glyph-name']) {
 						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
-						if (1 * uni < limit) arr = arr.concat(uni);
+						if (1 * uni[0] < limit) arr = arr.concat(uni);
 					}
 				}
 			}
@@ -373,7 +373,7 @@ function getKernMembersByUnicodeID(ids, chars, arr, limit) {
 					// Push the match
 					if (ids[i] === chars[c].attributes.unicode) {
 						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
-						if (1 * uni < limit) arr = arr.concat(uni);
+						if (1 * uni[0] < limit) arr = arr.concat(uni);
 					}
 				}
 			}

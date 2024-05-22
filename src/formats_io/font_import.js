@@ -57,7 +57,7 @@ export async function ioFont_importFont(importedFont) {
 
 	for (const key of Object.keys(fontKerns)) {
 		await updateFontImportProgressIndicator();
-		importOneKern(key, fontKerns[key], project);
+		importOneKern(key, fontKerns[key]);
 	}
 
 	importFontMetadata(importedFont, project);

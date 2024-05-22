@@ -698,8 +698,8 @@ export class GlyphrStudioProject {
 
 /**
  * Special logic to sort an array of Ligatures
- * @param {Glyph} a - Ligature
- * @param {Glyph} b - Ligature
+ * @param {Glyph | Object} a - Ligature
+ * @param {Glyph | Object} b - Ligature
  * @returns {Number} - sort order
  */
 export function sortLigatures(a, b) {
