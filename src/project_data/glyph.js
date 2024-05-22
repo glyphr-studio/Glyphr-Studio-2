@@ -361,6 +361,25 @@ export class Glyph extends GlyphElement {
 		return result;
 	}
 
+	/**
+	 * Used to check for the 'too many points' warning
+	 */
+	get pointCount() {
+		let count = 0;
+		this.shapes.forEach((shape) => {
+			if (shape.objType === 'ComponentInstance') {
+				count += shape.pointCount;
+			} else {
+				shape.pathPoints.forEach((point) => {
+					count++;
+					if (point?.h1?.use) count++;
+					if (point?.h2?.use) count++;
+				});
+			}
+		});
+		return count;
+	}
+
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------

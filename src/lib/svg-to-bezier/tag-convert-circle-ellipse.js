@@ -1,3 +1,5 @@
+import { roundAndSanitize } from './svg-to-bezier.js';
+
 /**
  * Converts an SVG Circle or Ellipse tags to Bezier Data Format
  * @param {object} tagData - Object with tag information
@@ -48,24 +50,24 @@ function ovalPathFromMaxes(maxes) {
 	*/
 
 	// First Point - Top
-	let Pt = { x: lx + hw, y: ty };
-	let H1t = { x: lx + hwd, y: ty };
-	let H2t = { x: rx - hwd, y: ty };
+	let Pt = { x: roundAndSanitize(lx + hw), y: roundAndSanitize(ty) };
+	let H1t = { x: roundAndSanitize(lx + hwd), y: roundAndSanitize(ty) };
+	let H2t = { x: roundAndSanitize(rx - hwd), y: roundAndSanitize(ty) };
 
 	// Second Point - Right
-	let Pr = { x: rx, y: by + hh };
-	let H1r = { x: rx, y: ty - hhd };
-	let H2r = { x: rx, y: by + hhd };
+	let Pr = { x: roundAndSanitize(rx), y: roundAndSanitize(by + hh) };
+	let H1r = { x: roundAndSanitize(rx), y: roundAndSanitize(ty - hhd) };
+	let H2r = { x: roundAndSanitize(rx), y: roundAndSanitize(by + hhd) };
 
 	// Third Point - Bottom
-	let Pb = { x: lx + hw, y: by };
-	let H1b = { x: rx - hwd, y: by };
-	let H2b = { x: lx + hwd, y: by };
+	let Pb = { x: roundAndSanitize(lx + hw), y: roundAndSanitize(by) };
+	let H1b = { x: roundAndSanitize(rx - hwd), y: roundAndSanitize(by) };
+	let H2b = { x: roundAndSanitize(lx + hwd), y: roundAndSanitize(by) };
 
 	// Fourth Point - Left
-	let Pl = { x: lx, y: by + hh };
-	let H1l = { x: lx, y: by + hhd };
-	let H2l = { x: lx, y: ty - hhd };
+	let Pl = { x: roundAndSanitize(lx), y: roundAndSanitize(by + hh) };
+	let H1l = { x: roundAndSanitize(lx), y: roundAndSanitize(by + hhd) };
+	let H2l = { x: roundAndSanitize(lx), y: roundAndSanitize(ty - hhd) };
 
 	let paths = [
 		[Pt, H2t, H1r, Pr],

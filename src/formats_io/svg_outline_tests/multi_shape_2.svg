@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="Laag_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+  y="0px" style="enable-background:new 0 0 85 85;" xml:space="preserve">
+  <path d="
+  M43.2,9
+  C23.6,9,7.8,24.9,7.8,44.4
+  s15.9,35.4,35.4,35.4
+  S78.6,64,78.6,44.4
+  S62.8,9,43.2,9Z
+  M58.1,66
+  L43.2,55.2
+  L28.3,66
+  L34,48.5
+  L19.1,37.7
+  h18.4
+  l5.7-17.5
+  l5.7,17.5
+  h18.4
+  L52.4,48.5
+  L58.1,66z
+" />
+</svg>

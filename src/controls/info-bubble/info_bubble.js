@@ -77,7 +77,7 @@ export class InfoBubble extends HTMLElement {
 		let left = entryPointRect.x + entryPointRect.width + 2;
 		let top = entryPointRect.y - bubbleRect.height / 2 + 18;
 
-		if (left < 0 || top < 0) this.pointer.style.display = 'none';
+		if (left < 0 || top < 0) bubble.querySelector('.pointer').style.display = 'none';
 		left = Math.max(left, 0);
 		top = Math.max(top, 0);
 

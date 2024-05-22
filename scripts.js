@@ -7,8 +7,32 @@ export function build() {
 	const path = './src/app/app_config.json';
 	const config = readConfig();
 	config.devMode = false;
-	config.versionDate = getShipDate();
 
+	console.log(`
+============================================================
+Glyphr Studio: ${config.version}`);
+	config.versionDate = getShipDate();
+	console.log(`============================================================\n\n`);
+	writeFile(path, JSON.stringify(config, null, 2), (error) => {
+		if (error) {
+			console.log('An error has occurred ', error);
+			return;
+		}
+	});
+}
+/**
+ * Updates app_config.json for stage
+ */
+export function stage() {
+	const path = './src/app/app_config.json';
+	const config = readConfig();
+	config.devMode = true;
+
+	console.log(`
+============================================================
+Glyphr Studio: ${config.version}`);
+	config.versionDate = 'STAGED BUILD';
+	console.log(`============================================================\n\n`);
 	writeFile(path, JSON.stringify(config, null, 2), (error) => {
 		if (error) {
 			console.log('An error has occurred ', error);
@@ -44,6 +68,6 @@ function getShipDate(dayOffset = 0) {
 	shipDate.setDate(shipDate.getDate() + dayOffset);
 	shipDate.setHours(12, 0, 0, 0);
 	const result = shipDate.getTime();
-	console.log(`${new Date(result).toString()}\n`);
+	console.log(`${new Date(result).toString()}`);
 	return result;
 }

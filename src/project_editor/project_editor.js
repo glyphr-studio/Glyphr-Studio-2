@@ -85,6 +85,7 @@ export class ProjectEditor {
 
 		// Navigation
 		this.nav = new Navigator();
+		this.showPageTransitions = true;
 
 		// Canvas
 		this.editCanvas = false;
@@ -112,7 +113,7 @@ export class ProjectEditor {
 		// The rest are for the Pop Out Window
 		this.livePreviews = false;
 
-		// Canvas Event handlers
+		// Event handlers
 		this.eventHandlers = {};
 		this.selectedTool = 'resize';
 
@@ -332,12 +333,18 @@ export class ProjectEditor {
 	 * @returns {String | false}
 	 */
 	get selectedKernGroupID() {
+		// log(`ProjectEditor GET selectedKernGroupID`, 'start');
+		// log(`\n⮟this.project.kerning⮟`);
+		// log(this.project.kerning);
 		if (!this._selectedKernGroupID) {
 			let firstID =
 				getFirstID(this.project.kerning) || generateNewID(this.project.kerning, 'kern-');
 			this._selectedKernGroupID = firstID;
 		}
-		return this._selectedKernGroupID;
+		const result = this._selectedKernGroupID;
+		// log(`result: ${result}`);
+		// log(`ProjectEditor GET selectedKernGroupID`, 'end');
+		return result;
 	}
 
 	/**
@@ -345,7 +352,7 @@ export class ProjectEditor {
 	 * @returns {Object}
 	 */
 	get selectedCharacterRange() {
-		// log(`ProjectEditor.selectedCharacterRange`, 'start');
+		// log(`ProjectEditor GET selectedCharacterRange`, 'start');
 		// log('current ranges');
 		const ranges = this.project.settings.project.characterRanges;
 		// log(ranges);
@@ -357,12 +364,11 @@ export class ProjectEditor {
 			!this._selectedCharacterRange?.isValid ||
 			!this._selectedCharacterRange?.enabled
 		) {
-			// log('detected none selected');
+			// log('detected none selected:');
 			if (ranges.length) {
 				let basicRange = findCharacterRange({ begin: 0x20, end: 0x7f }, ranges);
-				if (basicRange) {
+				if (basicRange && basicRange.enabled) {
 					// If Basic Latin is a range, select it
-					basicRange.enabled = true;
 					this._selectedCharacterRange = basicRange;
 				} else {
 					// Otherwise, just select the first range
@@ -387,7 +393,7 @@ export class ProjectEditor {
 
 		// log(`returning`);
 		// log(this._selectedCharacterRange);
-		// log(`ProjectEditor.selectedCharacterRange`, 'end');
+		// log(`ProjectEditor GET selectedCharacterRange`, 'end');
 		return this._selectedCharacterRange;
 	}
 
@@ -560,7 +566,13 @@ export class ProjectEditor {
 	 * @param {Object} newRange - range object
 	 */
 	set selectedCharacterRange(newRange) {
+		// log(`ProjectEditor SET selectedCharacterRange`, 'start');
+		// log(`\n⮟newRange⮟`);
+		// log(newRange);
 		this._selectedCharacterRange = new CharacterRange(newRange);
+		// log(`\n⮟this._selectedCharacterRange⮟`);
+		// log(this._selectedCharacterRange);
+		// log(`ProjectEditor SET selectedCharacterRange`, 'end');
 	}
 
 	// --------------------------------------------------------------

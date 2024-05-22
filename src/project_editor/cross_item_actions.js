@@ -25,6 +25,10 @@ export function glyphChanged(glyph) {
 	// log(`glyphChanged`, 'start');
 	// log(glyph);
 	if (glyph?.cache) glyph.cache = {};
+	if (glyph.constructor.name !== 'Glyph') {
+		// log(`glyphChanged`, 'end');
+		return;
+	}
 	glyph.recalculateGlyphMaxes();
 	const project = getCurrentProject();
 	glyph.usedIn = glyph.usedIn || [];
