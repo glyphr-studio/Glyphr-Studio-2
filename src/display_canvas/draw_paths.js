@@ -1,6 +1,9 @@
 import { getCurrentProject } from '../app/main.js';
 import { round } from '../common/functions.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
+import { ComponentInstance } from '../project_data/component_instance.js';
+import { Glyph } from '../project_data/glyph.js';
+import { Path } from '../project_data/path.js';
 
 // --------------------------------------------------------------
 // Glyph
@@ -22,7 +25,7 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 	// log(ctx);
 	if (!glyph.shapes) {
 		console.warn(`Glyph ${glyph.id} has no shapes to draw`);
-		return false;
+		return 0;
 	}
 
 	let drewShape;
@@ -59,7 +62,7 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 // --------------------------------------------------------------
 /**
  *
- * @param {Path or ComponentInstance} shape - what thing to draw
+ * @param {Object} shape - what thing to draw
  * @param {Object} ctx - canvas context
  * @param {Object} view - view
  */
@@ -79,7 +82,7 @@ export function drawShape(shape, ctx, view) {
  * Draw this Path to a canvas
  * @param {ComponentInstance} componentInstance - what to draw
  * @param {Object} ctx - canvas context
- * @param {view} view
+ * @param {Object} view
  * @returns {Boolean}
  */
 function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
@@ -120,7 +123,7 @@ function drawPathToCanvas(path, ctx, view, snap = false) {
 	// log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
 	// log(path);
 
-	if (!path?.pathPoints || path.pathPoints === false) {
+	if (!path?.pathPoints) {
 		// log(`RETURNING FALSE: path.pathPoints does not exist`);
 		// log('drawPathToCanvas', 'end');
 		return false;

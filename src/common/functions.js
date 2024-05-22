@@ -175,10 +175,10 @@ export function valuesAreClose(v1, v2, threshold = 1) {
  * Rounds a number to include a .5 so it draws nicely on canvas
  * true = +0.5, false = -0.5
  * @param {Number} num - number to crisp
- * @param {Boolean} dir - direction, plus or minus, to adjust number
+ * @param {Boolean=} dir - direction, plus or minus, to adjust number
  * @returns {Number}
  */
-export function makeCrisp(num, dir) {
+export function makeCrisp(num, dir = false) {
 	const mul = dir ? 1 : -1;
 	return round(num) + 0.5 * mul;
 }
@@ -460,7 +460,7 @@ export function calculateDeltasFromTransform(
 	// log(`transformOrigin: ${transformOrigin}`);
 	// log(maxes.print());
 	if (transformOrigin === false) transformOrigin = 'baseline-left';
-	else if (transformOrigins.indexOf(''+transformOrigin) < 0) transformOrigin = 'baseline-left';
+	else if (transformOrigins.indexOf('' + transformOrigin) < 0) transformOrigin = 'baseline-left';
 	transformOrigin = '' + transformOrigin;
 	// log(`transformOrigin: ${transformOrigin}`);
 	let result = {

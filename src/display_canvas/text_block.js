@@ -51,7 +51,7 @@ export class TextBlock {
 		return this._canvasMaxes;
 	}
 
-	set canvasMaxes(newMaxes = {}) {
+	set canvasMaxes(newMaxes) {
 		this._canvasMaxes = new Maxes({
 			xMin: newMaxes.xMin || 0,
 			xMax: newMaxes.xMax || Infinity,
@@ -251,7 +251,7 @@ export class TextBlock {
 			xMin: this.canvasMaxes.xMin / scale,
 		};
 
-		if (this.options.pageHeight === 'auto') upmMaxes.yMax = Number.Infinity;
+		if (this.options.pageHeight === 'auto') upmMaxes.yMax = Infinity;
 
 		// log(`upmMaxes`);
 		// log(upmMaxes);

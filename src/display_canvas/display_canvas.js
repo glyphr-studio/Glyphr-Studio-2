@@ -395,7 +395,7 @@ export class DisplayCanvas extends HTMLElement {
 		if (item) {
 			ctx.fillStyle = uiColors.enabled.resting.text;
 			ctx.strokeStyle = 'transparent';
-			drawGlyph(item, ctx, view, 1, true);
+			drawGlyph(item, ctx, view, 1);
 		}
 
 		// log(`displayCanvas.drawDisplayCharacter`, 'end');

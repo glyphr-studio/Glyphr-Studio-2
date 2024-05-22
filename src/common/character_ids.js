@@ -349,7 +349,7 @@ export function hexesToXMLHexes(input) {
  * 		XML Hex: '&#x123;&#x123;'
  * 		Chars: 'abc'
  * @param {String} input - input string
- * @returns {Array | false} - sanitized array of strings
+ * @returns {Array} - sanitized array of strings
  */
 export function parseCharsInputAsHex(input) {
 	// log('parseCharsInputAsHex', 'start');
@@ -358,7 +358,7 @@ export function parseCharsInputAsHex(input) {
 	if (!input) {
 		// log(`input is false, returning false`);
 		// log('parseCharsInputAsHex', 'end');
-		return false;
+		return [];
 	}
 
 	let entries = [];
