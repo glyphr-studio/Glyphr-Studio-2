@@ -33,7 +33,7 @@ export function updateContent_copyShapes(parent) {
 	// Range chooser
 	parent.appendChild(
 		makeItemAndRangeChooser({ showLigatures: true }, () => {
-			let table = document.getElementById('cross-project-actions__character-copy-table');
+			let table = document.querySelector('#cross-project-actions__character-copy-table');
 			updateCharacterCopyTable(table);
 		})
 	);
@@ -258,17 +258,23 @@ function copyShapes() {
 	// log(`Cross Project Actions - copyShapes`, 'start');
 	// log(`\n⮟selectedItemIDs⮟`);
 	// log(selectedItemIDs);
-	let emRatio =
+	const emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
 	// log(`emRatio: ${emRatio}`);
 
-	let updateAdvanceWidth = document.getElementById('checkbox-advance-width').checked;
+	/** @type {HTMLInputElement} */
+	const updateAdvanceWidthBox = document.querySelector('#checkbox-advance-width');
+	const updateAdvanceWidth = updateAdvanceWidthBox.checked;
 	// log(`updateAdvanceWidth: ${updateAdvanceWidth}`);
 
-	let scaleItems = document.getElementById('checkbox-scale')?.checked;
+	/** @type {HTMLInputElement} */
+	const scaleItemsBox = document.querySelector('#checkbox-scale');
+	const scaleItems = scaleItemsBox?.checked;
 	// log(`scaleItems: ${scaleItems}`);
 
-	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
+	/** @type {HTMLInputElement} */
+	const reverseWindingsBox = document.querySelector('#checkbox-reverse-windings');
+	const reverseWindings = reverseWindingsBox?.checked;
 	// log(`reverseWindings: ${reverseWindings}`);
 
 	destinationEditor.history.addWholeProjectChangePreState(

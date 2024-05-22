@@ -165,9 +165,11 @@ function flipProjects() {
 }
 
 export function toggleCheckboxes() {
-	let state = document.getElementById('toggle-all-checkbox').checked;
+	/** @type {HTMLInputElement} */
+	const checkbox = document.querySelector('#toggle-all-checkbox');
+	let state = checkbox.checked;
 	const checkboxes = document.querySelectorAll('.item-select-checkbox');
-	checkboxes.forEach((box) => {
+	checkboxes.forEach((/** @type {HTMLInputElement} */ box) => {
 		box.checked = state;
 		updateSelectedIDs(box.getAttribute('item-id'), box.checked);
 	});
@@ -175,7 +177,7 @@ export function toggleCheckboxes() {
 
 export function clearAllSelections() {
 	selectedItemIDs = [];
-	document.getElementById('cross-project-actions__item-count').innerHTML = '';
+	document.querySelector('#cross-project-actions__item-count').innerHTML = '';
 }
 
 export function updateSelectedIDs(itemID, add = true) {
@@ -183,7 +185,7 @@ export function updateSelectedIDs(itemID, add = true) {
 	else selectedItemIDs.splice(selectedItemIDs.indexOf(itemID), 1);
 	selectedItemIDs = selectedItemIDs.filter(duplicates);
 	selectedItemIDs = selectedItemIDs.filter((item) => !!item);
-	document.getElementById('cross-project-actions__item-count').innerHTML = `
+	document.querySelector('#cross-project-actions__item-count').innerHTML = `
 		${selectedItemIDs.length} item${selectedItemIDs.length === 1 ? '' : 's'} selected
 	`;
 }
@@ -282,7 +284,7 @@ export function makeItemAndRangeChooser(
 
 		option.addEventListener('click', () => {
 			selectedRange = range;
-			let table = document.getElementById('cross-project-actions__character-copy-table');
+			let table = document.querySelector('#cross-project-actions__character-copy-table');
 			updateCharacterCopyTable(table);
 		});
 

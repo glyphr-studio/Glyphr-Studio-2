@@ -66,11 +66,13 @@ export function makePage_Ligatures() {
 	if (editor.showPageTransitions) content.classList.add('app__page-animation');
 
 	// Page Selector
+	/** @type {HTMLElement} */
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
 		toggleNavDropdown(l1);
 	});
 
+	/** @type {HTMLElement} */
 	const navArea = content.querySelector('.editor-page__nav-area');
 	const canvasArea = content.querySelector('.editor-page__edit-canvas-wrapper');
 
@@ -313,7 +315,7 @@ function addLigature(sequence) {
 	if (newID === false) {
 		return 'Characters could not be read for the ligature sequence';
 	}
-	
+
 	project.addItemByType(
 		new Glyph({
 			id: newID,
@@ -378,7 +380,9 @@ export function showAddLigatureDialog() {
 		`,
 	});
 
+	/** @type {HTMLElement} */
 	const submitButton = content.querySelector('#ligatures__add-new-ligature-button');
+	/** @type {HTMLInputElement} */
 	const newLigatureInput = content.querySelector('#ligatures__new-ligature-input');
 
 	newLigatureInput.addEventListener('keyup', () => {

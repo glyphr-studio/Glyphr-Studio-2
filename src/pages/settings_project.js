@@ -1,5 +1,5 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
-import { decToHex, hexesToChars } from '../common/character_ids';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { decToHex, hexesToChars } from '../common/character_ids.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { remove } from '../common/functions.js';
 import {
@@ -418,7 +418,7 @@ const characterRangeDeleteOptions = {
 };
 
 function updateDeleteButtonText() {
-	const button = document.getElementById('character-range-delete__button');
+	const button = document.querySelector('#character-range-delete__button');
 	if (characterRangeDeleteOptions.removeRange || characterRangeDeleteOptions.deleteCharacters) {
 		button.removeAttribute('disabled');
 		button.addEventListener('click', deleteCharactersFromRange);
@@ -578,9 +578,18 @@ function validateAndSaveCharacterRange(range = false) {
 	// log(`validateAndSaveCharacterRange`, 'start');
 	// log(`\n⮟range⮟`);
 	// log(range);
-	let newName = document.getElementById('glyph-range-editor__name').value;
-	let newBegin = parseInt(document.getElementById('glyph-range-editor__begin').value);
-	let newEnd = parseInt(document.getElementById('glyph-range-editor__end').value);
+
+	/** @type {HTMLInputElement} */
+	const newNameInput = document.querySelector('#glyph-range-editor__name');
+	let newName = newNameInput.value;
+
+	/** @type {HTMLInputElement} */
+	const newBeginInput = document.querySelector('#glyph-range-editor__begin');
+	let newBegin = parseInt(newBeginInput.value);
+
+	/** @type {HTMLInputElement} */
+	const newEndInput = document.querySelector('#glyph-range-editor__end');
+	let newEnd = parseInt(newEndInput.value);
 
 	if (isNaN(newBegin)) {
 		showError(`Start must be a number, a Unicode code point, or a Hexadecimal number.`);

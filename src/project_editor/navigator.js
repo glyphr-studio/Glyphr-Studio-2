@@ -100,7 +100,7 @@ export class Navigator {
 		// log(`editor.selectedItemID: ${getCurrentProjectEditor().selectedItemID}`);
 
 		closeEveryTypeOfDialog();
-		const wrapper = document.getElementById('app__wrapper');
+		const wrapper = document.querySelector('#app__wrapper');
 
 		// log(`wrapper before:`);
 		// log(wrapper);
@@ -314,7 +314,7 @@ export function showNavDropdown(parentElement) {
 	// closeAllNavMenus();
 	closeEveryTypeOfDialog();
 
-	// let appWrapper = document.getElementById('app__wrapper');
+	// let appWrapper = document.querySelector('#app__wrapper');
 	// appWrapper.appendChild(dropDown).focus();
 	insertAfter(parentElement, dropDown);
 

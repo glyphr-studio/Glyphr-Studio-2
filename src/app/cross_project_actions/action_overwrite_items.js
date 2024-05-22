@@ -65,7 +65,7 @@ export function updateContent_overwriteItems(parent) {
 	parent.appendChild(makeElement({ tag: 'br' }));
 	parent.appendChild(
 		makeItemAndRangeChooser({ showLigatures: true }, () => {
-			let table = document.getElementById('cross-project-actions__character-copy-table');
+			let table = document.querySelector('#cross-project-actions__character-copy-table');
 			updateOverwriteItemsTable(table);
 		})
 	);
@@ -222,14 +222,18 @@ function overwriteItems() {
 	// log(`Cross Project Actions - overwriteItems`, 'start');
 	// log(`\n⮟selectedItemIDs⮟`);
 	// log(selectedItemIDs);
-	let emRatio =
+	const emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
 	// log(`emRatio: ${emRatio}`);
 
-	let scaleItems = document.getElementById('checkbox-scale')?.checked;
+	/** @type {HTMLInputElement} */
+	const scaleItemsBox = document.querySelector('#checkbox-scale');
+	const scaleItems = scaleItemsBox?.checked;
 	// log(`scaleItems: ${scaleItems}`);
 
-	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
+	/** @type {HTMLInputElement} */
+	const reverseWindingsBox = document.querySelector('#checkbox-reverse-windings');
+	const reverseWindings = reverseWindingsBox?.checked;
 	// log(`reverseWindings: ${reverseWindings}`);
 
 	destinationEditor.history.addWholeProjectChangePreState(

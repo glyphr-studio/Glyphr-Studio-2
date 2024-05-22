@@ -34,7 +34,7 @@ export class InfoBubble extends HTMLElement {
 	 * Toggle the bubble
 	 */
 	toggle() {
-		if (document.getElementById('bubble')) this.hide(this.entryPoint);
+		if (document.querySelector('#bubble')) this.hide(this.entryPoint);
 		else this.show();
 	}
 
@@ -77,7 +77,11 @@ export class InfoBubble extends HTMLElement {
 		let left = entryPointRect.x + entryPointRect.width + 2;
 		let top = entryPointRect.y - bubbleRect.height / 2 + 18;
 
-		if (left < 0 || top < 0) bubble.querySelector('.pointer').style.display = 'none';
+		if (left < 0 || top < 0) {
+			/** @type {HTMLElement} */
+			const pointer = bubble.querySelector('.pointer');
+			pointer.style.display = 'none';
+		}
 		left = Math.max(left, 0);
 		top = Math.max(top, 0);
 
@@ -102,7 +106,7 @@ export class InfoBubble extends HTMLElement {
 		// log(`info-bubble hide`, 'start');
 		// log(this);
 		// log(entryPoint);
-		let bubble = document.getElementById('bubble');
+		let bubble = document.querySelector('#bubble');
 		animateRemove(bubble, 120, 0.98, '0px');
 		// document.body.removeChild(bubble);
 		// log(`bubble has been removed`);

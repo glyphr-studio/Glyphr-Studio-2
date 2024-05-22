@@ -226,13 +226,14 @@ function makeCard_Move() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', content: 'Move all glyphs' });
+	const button = makeElement({ tag: 'fancy-button', content: 'Move all glyphs' });
 	button.addEventListener('click', () => {
-		let moveX = document.getElementById('moveX').value;
-		let moveY = document.getElementById('moveY').value;
-
-		moveX = parseFloat(moveX) || 0;
-		moveY = parseFloat(moveY) || 0;
+		/**@type {HTMLInputElement} */
+		const moveXInput = document.querySelector('#moveX');
+		const moveX = parseFloat(moveXInput.value) || 0;
+		/**@type {HTMLInputElement} */
+		const moveYInput = document.querySelector('#moveY');
+		const moveY = parseFloat(moveYInput.value) || 0;
 
 		glyphIterator({
 			title: 'Moving glyph',
@@ -274,7 +275,7 @@ function makeCard_ScaleVertical() {
 	});
 	card.appendChild(effect);
 
-	let table = makeElement({
+	const table = makeElement({
 		className: 'settings-table',
 		innerHTML: `
 			<label for="scaleVertical">Scale&nbsp;value:</label>
@@ -284,16 +285,17 @@ function makeCard_ScaleVertical() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
+	const button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
 	button.addEventListener('click', () => {
-		let scaleVertical = document.getElementById('scaleVertical').value;
-		scaleVertical = parseFloat(scaleVertical) || 1;
+		/** @type {HTMLInputElement} */
+		const scaleVerticalInput = document.querySelector('#scaleVertical');
+		const scaleVertical = parseFloat(scaleVerticalInput.value) || 1;
 
 		glyphIterator({
 			title: 'Vertically scaling glyph',
 			action: function (glyph) {
 				if (!glyph.shapes || !glyph.shapes.length) return;
-				let newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
+				const newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
 				glyph.setGlyphSize({
 					height: newHeight,
 					updateComponentInstances: false,
@@ -346,11 +348,15 @@ function makeCard_ScaleHorizontal() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
+	const button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
 	button.addEventListener('click', () => {
-		let scaleHorizontal = document.getElementById('scaleHorizontal').value;
-		scaleHorizontal = parseFloat(scaleHorizontal) || 1;
-		let updateAdvanceWidth = document.getElementById('scaleHorizontalUpdateAdvanceWidth').checked;
+		/** @type {HTMLInputElement} */
+		const scaleHorizontalInput = document.querySelector('#scaleHorizontal');
+		const scaleHorizontal = parseFloat(scaleHorizontalInput.value) || 1;
+
+		/** @type {HTMLInputElement} */
+		const updateAdvanceWidthBox = document.querySelector('#scaleHorizontalUpdateAdvanceWidth');
+		const updateAdvanceWidth = updateAdvanceWidthBox.checked;
 
 		glyphIterator({
 			title: 'Horizontally scaling glyph',
@@ -419,16 +425,24 @@ function makeCard_Resize() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', content: 'Re-size all glyphs' });
+	const button = makeElement({ tag: 'fancy-button', content: 'Re-size all glyphs' });
 	button.addEventListener('click', () => {
 		// log('updateAllGlyphSizesByEm', 'start');
-		let resizeW = document.getElementById('resizeWidth').value;
-		let resizeH = document.getElementById('resizeHeight').value;
-		let ratio = document.getElementById('resizeMaintainAspectRatio').checked;
-		let updateAdvanceWidth = document.getElementById('resizeUpdateAdvanceWidth').checked;
+		/** @type {HTMLInputElement} */
+		const resizeWInput = document.querySelector('#resizeWidth');
+		let resizeW = parseFloat(resizeWInput.value) || 0;
 
-		resizeW = parseFloat(resizeW) || 0;
-		resizeH = parseFloat(resizeH) || 0;
+		/** @type {HTMLInputElement} */
+		const resizeHInput = document.querySelector('#resizeHeight');
+		const resizeH = parseFloat(resizeHInput.value) || 0;
+
+		/** @type {HTMLInputElement} */
+		const ratioBox = document.querySelector('#resizeMaintainAspectRatio');
+		const ratio = ratioBox.checked;
+
+		/** @type {HTMLInputElement} */
+		const updateAdvanceWidthBox = document.querySelector('#resizeUpdateAdvanceWidth');
+		const updateAdvanceWidth = updateAdvanceWidthBox.checked;
 
 		if (ratio && !resizeH && !resizeW) {
 			// For ratio lock to work, one delta value has to be zero
@@ -556,14 +570,23 @@ function makeCard_SideBearings() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Update Side Bearings' });
 	button.addEventListener('click', () => {
 		// log('updateSideBearings', 'start');
-		let left = document.getElementById('sideBearingLeft').getAttribute('value');
-		let leftCheckbox = document.getElementById('sideBearingLeftCheckbox').checked;
-		left = parseFloat(left);
+		/** @type {HTMLInputElement} */
+		const leftInput = document.querySelector('#sideBearingLeft');
+		const left = parseFloat(leftInput.value);
 		// log(`left input: ${left}`);
-		let right = document.getElementById('sideBearingRight').getAttribute('value');
-		let rightCheckbox = document.getElementById('sideBearingRightCheckbox').checked;
-		right = parseFloat(right);
+
+		/** @type {HTMLInputElement} */
+		const leftCheckboxBox = document.querySelector('#sideBearingLeftCheckbox');
+		let leftCheckbox = leftCheckboxBox.checked;
+
+		/** @type {HTMLInputElement} */
+		const rightInput = document.querySelector('#sideBearingRight');
+		const right = parseFloat(rightInput.value);
 		// log(`right input: ${right}`);
+
+		/** @type {HTMLInputElement} */
+		const rightCheckboxBox = document.querySelector('#sideBearingRightCheckbox');
+		let rightCheckbox = rightCheckboxBox.checked;
 
 		if (leftCheckbox || rightCheckbox) {
 			if (isNaN(left) || isNaN(right)) {
@@ -673,8 +696,10 @@ function makeCard_Monospace() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Convert project to Monospace' });
 	button.addEventListener('click', () => {
 		// log('convertProjectToMonospace', 'start');
-		let width = document.getElementById('monospaceWidth').getAttribute('value');
-		width = parseFloat(width);
+
+		/** @type {HTMLInputElement} */
+		const widthInput = document.querySelector('#monospaceWidth');
+		const width = parseFloat(widthInput.value);
 		// log(`width input: ${width}`);
 
 		if (isNaN(width) || width === 0) {
@@ -774,7 +799,9 @@ function makeCard_AllCaps() {
 		}
 
 		// Basic Latin range
-		if (document.getElementById('allCapsBasic').checked) {
+		/** @type {HTMLInputElement} */
+		const allCapsBasicBox = document.querySelector('#allCapsBasic');
+		if (allCapsBasicBox.checked) {
 			// log(`Converting range: allCapsBasic`);
 			let range = getUnicodeBlockByName('Basic Latin');
 			addCharacterRangeToCurrentProject(range);
@@ -782,7 +809,9 @@ function makeCard_AllCaps() {
 		}
 
 		// Latin-1 Supplement range
-		if (document.getElementById('allCapsSupplement').checked) {
+		/** @type {HTMLInputElement} */
+		const allCapsSupplementBox = document.querySelector('#allCapsSupplement');
+		if (allCapsSupplementBox.checked) {
 			// log(`Converting range: allCapsSupplement`);
 			let range = getUnicodeBlockByName('Latin-1 Supplement');
 			addCharacterRangeToCurrentProject(range);
@@ -790,7 +819,9 @@ function makeCard_AllCaps() {
 		}
 
 		// Latin Extended-A range
-		if (document.getElementById('allCapsLatinA').checked) {
+		/** @type {HTMLInputElement} */
+		const allCapsLatinABox = document.querySelector('#allCapsLatinA');
+		if (allCapsLatinABox.checked) {
 			// log(`Converting range: allCapsLatinA`);
 			let range = getUnicodeBlockByName('Latin Extended-A');
 			addCharacterRangeToCurrentProject(range);
@@ -798,7 +829,9 @@ function makeCard_AllCaps() {
 		}
 
 		// Latin Extended-A range
-		if (document.getElementById('allCapsLatinB').checked) {
+		/** @type {HTMLInputElement} */
+		const allCapsLatinBBox = document.querySelector('#allCapsLatinB');
+		if (allCapsLatinBBox.checked) {
 			// log(`Converting range: allCapsLatinB`);
 			let range = getUnicodeBlockByName('Latin Extended-B');
 			addCharacterRangeToCurrentProject(range);

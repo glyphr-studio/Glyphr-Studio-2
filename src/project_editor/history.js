@@ -95,7 +95,7 @@ export class History {
 			refreshPanel();
 		}
 
-		const undoButton = document.getElementById('actionButtonUndo');
+		const undoButton = document.querySelector('#actionButtonUndo');
 		if (undoButton) undoButton.removeAttribute('disabled');
 
 		if (typeof editor.project !== 'boolean') {
@@ -127,7 +127,7 @@ export class History {
 
 		if (q.length === 0) {
 			editor.setProjectAsSaved();
-			const undoButton = document.getElementById('actionButtonUndo');
+			const undoButton = document.querySelector('#actionButtonUndo');
 			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
 			showToast(`No more undo`);
 			// log(`Queue is 0, returning`);
@@ -246,7 +246,7 @@ export class History {
 		if (editor.nav.panel === 'History') refreshPanel();
 		if (q.length === 0) {
 			editor.setProjectAsSaved();
-			const undoButton = document.getElementById('actionButtonUndo');
+			const undoButton = document.querySelector('#actionButtonUndo');
 			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
 		}
 

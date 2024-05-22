@@ -236,6 +236,12 @@ export function subscribe({ topic, subscriberID = '', callback = false }) {
 	// log(`ProjectEditor.subscribe`, 'end');
 }
 
+/**
+ *
+ * @param {Object} param0
+ * @param {String=} param0.topicToRemove
+ * @param {String=} param0.idToRemove
+ */
 export function unsubscribe({ topicToRemove, idToRemove }) {
 	// log(`ProjectEditor.unsubscribe`, 'start');
 	// log(`topicToRemove: ${topicToRemove}`);
