@@ -32,6 +32,7 @@ function saveTextFileAsDownload(fileSuffix, fileContent) {
 	let fileName = makeFileName(fileSuffix, true);
 	try {
 		// IE
+		// @ts-ignore
 		window.navigator.msSaveBlob(fileBlob, fileName);
 	} catch (err) {
 		// Others
@@ -77,6 +78,7 @@ async function saveTextFileDirectly(fileSuffix, fileContent, fileHandle = false)
 		],
 	};
 
+	// @ts-ignore
 	if (!fileHandle) fileHandle = await window.showSaveFilePicker(pickerOptions);
 	// log(`\n⮟fileHandle⮟`);
 	// log(fileHandle);

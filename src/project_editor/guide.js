@@ -41,7 +41,7 @@ export class Guide {
 		return this._name;
 	}
 
-	set name(newName = false) {
+	set name(newName) {
 		if (!newName) {
 			if (this.angle === 90) newName = 'Horizontal guide';
 			else if (this.angle === 0) newName = 'Vertical guide';
