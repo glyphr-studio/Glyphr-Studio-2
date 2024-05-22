@@ -70,6 +70,7 @@ export function makePage_OpenProject(secondProjectFlag = false) {
 
 	// Drop and Drag Leave handlers
 	const dropNote = content.querySelector('#open-project__drop-note');
+
 	dropNote.addEventListener('drop', (event) => {
 		cancelDefaultEventActions(event);
 		handleFileInput(event?.dataTransfer?.items || []);
@@ -327,8 +328,9 @@ export function makeOpenProjectTabs() {
 function deselectAllTabs() {
 	const tabs = document.querySelectorAll('.open-project__tab');
 	tabs.forEach((tab) => tab.removeAttribute('selected'));
+
 	const tabContents = document.querySelectorAll('.open-project__tab-content');
-	tabContents.forEach((content) => (content.style.display = 'none'));
+	tabContents.forEach((/** @type {HTMLElement} */ content) => (content.style.display = 'none'));
 }
 
 /**
@@ -340,9 +342,10 @@ async function handleFileInput(files) {
 	// log(`\n⮟files⮟`);
 	// log(files);
 
-	const dropNote = document.getElementById('open-project__drop-note');
+	/** @type {HTMLElement} */
+	const dropNote = document.querySelector('#open-project__drop-note');
 	dropNote.style.display = 'none';
-	const rightArea = document.getElementById('open-project__right-area');
+	const rightArea = document.querySelector('#open-project__right-area');
 	rightArea.innerHTML = '';
 	rightArea.appendChild(makeProgressIndicator());
 
@@ -395,7 +398,9 @@ export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	setCurrentProjectEditor(editor);
 	if (!glyphrStudioProjectFile) {
 		editor.project = new GlyphrStudioProject({});
-		const name = document.getElementById('input__new-project-name')?.value || 'My Font';
+		/** @type {HTMLInputElement} */
+		const nameInput = document.querySelector('#input__new-project-name');
+		const name = nameInput?.value || 'My Font';
 		editor.project.settings.project.name = name;
 		editor.project.settings.font.family = name;
 	} else {
@@ -449,7 +454,8 @@ function handleDragEnter(event) {
 	// log(`handleDragEnter`, 'start');
 	// cancelDefaultEventActions(event);
 	event.dataTransfer.dropEffect = 'copy';
-	const dropNote = document.getElementById('open-project__drop-note');
+	/** @type {HTMLElement} */
+	const dropNote = document.querySelector('#open-project__drop-note');
 	dropNote.style.animation = 'var(--animate-fade-in)';
 	dropNote.style.opacity = '1';
 	dropNote.innerHTML = `Drop it!`;
@@ -463,7 +469,8 @@ function handleDragEnter(event) {
 function handleDragLeave() {
 	// log(`handleDragLeave`, 'start');
 	// cancelDefaultEventActions(event);
-	const dropNote = document.getElementById('open-project__drop-note');
+	/** @type {HTMLElement} */
+	const dropNote = document.querySelector('#open-project__drop-note');
 	dropNote.style.animation = 'var(--animate-fade-out)';
 	window.setTimeout(() => {
 		dropNote.style.display = 'none';
@@ -490,7 +497,7 @@ function handleNewProject() {
  */
 function handleLoadSample(name) {
 	if (isSecondProject) addProjectEditorAndSetAsImportTarget();
-	document.getElementById('tab-content__examples').innerHTML =
+	document.querySelector('#tab-content__examples').innerHTML =
 		'<h2>Load an example project</h2>Loading example project...';
 
 	let project = simpleExampleProject;

@@ -149,13 +149,13 @@ export class Tool_NewPath {
 		});
 		finishPath.addEventListener('click', removeStopCreatingNewPathButton);
 
-		insertAfter(document.getElementById('editor-page__edit-canvas'), finishPath);
+		insertAfter(document.querySelector('#editor-page__edit-canvas'), finishPath);
 		// document.body.appendChild(finishPath);
 	}
 }
 
 export function removeStopCreatingNewPathButton() {
-	if (document.getElementById('done-creating-path-button')) {
+	if (document.querySelector('#done-creating-path-button')) {
 		stopCreatingNewPath();
 		clickTool('pathEdit');
 	}
@@ -166,6 +166,6 @@ export function stopCreatingNewPath() {
 	let newPathTool = editor.eventHandlers.tool_addPath;
 	newPathTool.newPath = false;
 	newPathTool.firstPoint = true;
-	let doneButton = document.getElementById('done-creating-path-button');
+	let doneButton = document.querySelector('#done-creating-path-button');
 	if (doneButton) doneButton.remove();
 }

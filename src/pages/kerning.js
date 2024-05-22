@@ -61,13 +61,15 @@ export function makePage_Kerning() {
 	});
 
 	if (editor.showPageTransitions) content.classList.add('app__page-animation');
-	
+
 	// Page Selector
+	/** @type {HTMLElement} */
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
 		toggleNavDropdown(l1);
 	});
 
+	/** @type {HTMLElement} */
 	const navArea = content.querySelector('.editor-page__nav-area');
 	const canvasArea = content.querySelector('.editor-page__edit-canvas-wrapper');
 
@@ -444,7 +446,9 @@ export function showDeleteSingleLetterPairDialog() {
 }
 
 function updateSearchButton() {
+	/** @type {HTMLInputElement} */
 	const leftSearch = document.querySelector('#kerning__letter-pair__left-group');
+	/** @type {HTMLInputElement} */
 	const rightSearch = document.querySelector('#kerning__letter-pair__right-group');
 	const searchButton = document.querySelector('#kerning__letter-pair__search-button');
 
@@ -457,9 +461,13 @@ function updateSearchButton() {
 
 function searchForLetterPairs() {
 	// log(`searchForLetterPairs`, 'start');
-	const leftLetter = document.querySelector('#kerning__letter-pair__left-group').value.charAt(0);
+	/** @type {HTMLInputElement} */
+	const leftGroup = document.querySelector('#kerning__letter-pair__left-group');
+	const leftLetter =	leftGroup.value.charAt(0);
 	// log(`leftLetter: ${leftLetter} : ${charToHex(leftLetter)}`);
-	const rightLetter = document.querySelector('#kerning__letter-pair__right-group').value.charAt(0);
+	/** @type {HTMLInputElement} */
+	const rightGroup = document.querySelector('#kerning__letter-pair__right-group');
+	const rightLetter =	rightGroup.value.charAt(0);
 	// log(`rightLetter: ${rightLetter} : ${charToHex(rightLetter)}`);
 
 	const groups = getCurrentProject().kerning;
@@ -504,10 +512,15 @@ function searchForLetterPairs() {
 
 function deleteLetterPairs() {
 	// log(`deleteLetterPairs`, 'start');
-	const leftLetter = document.querySelector('#kerning__letter-pair__left-group').value.charAt(0);
+	/** @type {HTMLInputElement} */
+	const leftGroup = document.querySelector('#kerning__letter-pair__left-group');
+	const leftLetter = leftGroup.value.charAt(0);
 	// log(`leftLetter: ${leftLetter} : ${charToHex(leftLetter)}`);
-	const rightLetter = document.querySelector('#kerning__letter-pair__right-group').value.charAt(0);
+	/** @type {HTMLInputElement} */
+	const rightGroup = document.querySelector('#kerning__letter-pair__right-group');
+	const rightLetter = rightGroup.value.charAt(0);
 	// log(`rightLetter: ${rightLetter} : ${charToHex(rightLetter)}`);
+
 	const resultMessage = document.querySelector('#kerning__result-message');
 	resultMessage.innerHTML = '';
 

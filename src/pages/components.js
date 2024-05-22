@@ -59,13 +59,15 @@ export function makePage_Components() {
 	});
 
 	if (editor.showPageTransitions) content.classList.add('app__page-animation');
-	
+
 	// Page Selector
+	/** @type {HTMLElement} */
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
 		toggleNavDropdown(l1);
 	});
 
+	/** @type {HTMLElement} */
 	const navArea = content.querySelector('.editor-page__nav-area');
 	const canvasArea = content.querySelector('.editor-page__edit-canvas-wrapper');
 
@@ -273,6 +275,7 @@ export function showAddComponentDialog() {
 	});
 
 	const submitButton = content.querySelector('#components__add-new-component-button');
+	/** @type {HTMLInputElement} */
 	const newComponentInput = content.querySelector('#components__new-component-input');
 
 	newComponentInput.addEventListener('keyup', () => {

@@ -361,7 +361,7 @@ export function handleMouseWheel(event) {
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
 	let canZoom = editor.nav.isOnEditCanvasPage;
-	// && document.getElementById('dialog_box').style.display !== 'block';
+	// && document.querySelector('#dialog_box').style.display !== 'block';
 
 	if (canZoom) {
 		if (event.ctrlKey || event.metaKey) {

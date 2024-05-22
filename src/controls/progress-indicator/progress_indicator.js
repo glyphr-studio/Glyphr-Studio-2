@@ -5,9 +5,10 @@ import { pause } from '../../common/functions.js';
 let degrees = 0;
 
 export async function updateProgressIndicator(message) {
-	const container = document.getElementById('progress-indicator__message');
+	const container = document.querySelector('#progress-indicator__message');
 	if (container) {
-		const bar = document.getElementById('progress-indicator__bar');
+		/** @type {HTMLElement} */
+		const bar = document.querySelector('#progress-indicator__bar');
 		if (bar) {
 			degrees = (degrees + 0.95) % 100;
 			bar.style.backgroundPosition = `${degrees}%`;

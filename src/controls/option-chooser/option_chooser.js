@@ -137,7 +137,7 @@ export class OptionChooser extends HTMLElement {
 
 		const currentSelection = this.getAttribute('selected-id');
 		let optionRows = [];
-		[...this.children].forEach((child) => {
+		[...this.children].forEach((/** @type {HTMLElement} */ child) => {
 			let tag = child.tagName.toLowerCase();
 			if (tag === 'option') {
 				let note = child.getAttribute('note') || '';

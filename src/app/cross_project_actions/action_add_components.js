@@ -191,10 +191,14 @@ function addComponents() {
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
 	// log(`emRatio: ${emRatio}`);
 
-	let scaleItems = document.getElementById('checkbox-scale')?.checked;
+	/** @type {HTMLInputElement} */
+	const scaleBox = document.querySelector('#checkbox-scale');
+	let scaleItems = scaleBox?.checked;
 	// log(`scaleItems: ${scaleItems}`);
 
-	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
+	/** @type {HTMLInputElement} */
+	const reverseBox = document.querySelector('#checkbox-reverse-windings');
+	let reverseWindings = reverseBox?.checked;
 	// log(`reverseWindings: ${reverseWindings}`);
 
 	destinationEditor.history.addWholeProjectChangePreState(

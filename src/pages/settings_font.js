@@ -142,7 +142,9 @@ function showPanoseBuilderDialog() {
 		let result = workingPanoseValue.join(' ');
 		// log(`result: ${result}`);
 		getCurrentProject().settings.font.panose = result;
-		document.getElementById('settings-page-input__font-panose').value = result;
+		/** @type {HTMLInputElement} */
+		const setting = document.querySelector('#settings-page-input__font-panose');
+		setting.value = result;
 		closeEveryTypeOfDialog();
 		// log(`panose builder Save button`, 'end');
 	});

@@ -153,7 +153,7 @@ export class GlyphrStudioApp {
 			id: 'app__main-content',
 		});
 		mainContent.appendChild(pageMaker());
-		const wrapper = document.getElementById('app__wrapper');
+		const wrapper = document.querySelector('#app__wrapper');
 		wrapper.innerHTML = '';
 		wrapper.appendChild(mainContent);
 	}
@@ -163,7 +163,8 @@ export class GlyphrStudioApp {
 	 * @param {Number} delay - override default fadeout time
 	 */
 	fadeOutLandingPage(delay = 700) {
-		const landingPage = document.getElementById('app__landing-page');
+		/** @type {HTMLElement} */
+		const landingPage = document.querySelector('#app__landing-page');
 		if (landingPage) {
 			landingPage.style.opacity = '0';
 

@@ -61,14 +61,14 @@ export function closeAllErrors() {
 export function closeAllInfoBubbles() {
 	// log(`closeAllInfoBubbles`, 'start');
 	let bubbles = document.querySelectorAll('#bubble');
-	bubbles.forEach((elem) => {
+	bubbles.forEach((/** @type {HTMLElement} */ elem) => {
 		elem.querySelector('.content').dispatchEvent(new Event('mouseleave'));
 		elem.blur();
 	});
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
 		bubbles = editor.popOutWindow.document.querySelectorAll('#bubble');
-		bubbles.forEach((elem) => {
+		bubbles.forEach((/** @type {HTMLElement} */ elem) => {
 			elem.querySelector('.content').dispatchEvent(new Event('mouseleave'));
 			elem.blur();
 		});
@@ -115,8 +115,9 @@ export function animateRemove(element, animationLength = 120, scale = 0.98, tran
 export function showToast(message = '0_o', duration = 3000, fancy = false) {
 	// log(`showToast`, 'start');
 	// log(`message: ${message}`);
-	// log(`duration: ${duration}`);
-	let element = document.getElementById('toast');
+	// log(`duration: ${duration}`);scaleItems
+	/** @type {HTMLElement} */
+	let element = document.querySelector('#toast');
 
 	// remove any current context menu, or create one if it doesn't exist
 	if (element) {
@@ -150,7 +151,8 @@ export function showToast(message = '0_o', duration = 3000, fancy = false) {
 
 export function showNotation(content, x, y) {
 	// document.body.focus();
-	let notation = document.getElementById('notation');
+	/** @type {HTMLElement} */
+	let notation = document.querySelector('#notation');
 	if (!notation) {
 		notation = makeElement({
 			id: 'notation',
@@ -246,7 +248,7 @@ export function makeContextMenu(
 			element.style.width = `${width}px`;
 		}
 		if (height) {
-			if(isDropdown) element.style.maxHeight = `${height}px`;
+			if (isDropdown) element.style.maxHeight = `${height}px`;
 			else element.style.height = `${height}px`;
 		}
 		element.addEventListener('mouseleave', closeAllOptionChoosers);
@@ -397,7 +399,8 @@ export function makeModalDialog(contentNode, maxWidth = false, openProjectDialog
 		.querySelector('.modal-dialog__close-button')
 		.addEventListener('click', closeEveryTypeOfDialog);
 	modal.addEventListener('click', (event) => {
-		if (event.target.id === 'modal-dialog') closeEveryTypeOfDialog();
+		const elem = event.currentTarget;
+		if (elem.getAttribute('id') === 'modal-dialog') closeEveryTypeOfDialog();
 	});
 
 	if (openProjectDialog) {
@@ -407,7 +410,9 @@ export function makeModalDialog(contentNode, maxWidth = false, openProjectDialog
 
 	addAsChildren(modal.querySelector('.modal-dialog__body'), contentNode);
 	if (maxWidth) {
-		modal.querySelector('.modal-dialog__content').style.maxWidth = `${maxWidth}px`;
+		/** @type {HTMLElement} */
+		const content = modal.querySelector('.modal-dialog__content');
+		content.style.maxWidth = `${maxWidth}px`;
 	}
 
 	// log(`\n⮟modal⮟`);

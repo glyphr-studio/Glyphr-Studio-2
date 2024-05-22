@@ -200,11 +200,13 @@ export function updateFooter_addKernGroups(parent) {
 
 function addKernGroups() {
 	// log(`Cross Project Actions - addKernGroups`, 'start');
-	let emRatio =
+	const emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
 	// log(`emRatio: ${emRatio}`);
 
-	let scaleItems = document.getElementById('checkbox-scale')?.checked;
+	/** @type {HTMLInputElement} */
+	const scaleBox = document.querySelector('#checkbox-scale');
+	const scaleItems = scaleBox?.checked;
 	// log(`scaleItems: ${scaleItems}`);
 
 	destinationEditor.history.addWholeProjectChangePreState(
