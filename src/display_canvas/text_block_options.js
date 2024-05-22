@@ -18,6 +18,7 @@ export class TextBlockOptions {
 		this.showCharacterExtras = options.showCharacterExtras || false;
 		this.showLineExtras = options.showLineExtras || false;
 		this.showPageExtras = options.showPageExtras || false;
+		this.showPlaceholderMessage = options.showPlaceholderMessage || false;
 		this.widthAdjustment = options.widthAdjustment || 0;
 		// log(`TextBlockOptions.constructor`, 'end');
 	}
@@ -33,7 +34,7 @@ export class TextBlockOptions {
 		return this._text;
 	}
 
-	set text(newText = '') {
+	set text(newText) {
 		this._text = newText;
 	}
 
