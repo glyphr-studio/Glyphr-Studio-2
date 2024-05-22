@@ -1,12 +1,17 @@
-import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
+import {
+	getGlyphrStudioApp,
+	getProjectEditorImportTarget,
+	setCurrentProjectEditor,
+} from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
-import { countItems, pause } from '../common/functions.js';
+import { countItems } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
-import { getUnicodeBlockByName, isControlChar } from '../lib/unicode/unicode_blocks.js';
+import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { Glyph } from '../project_data/glyph.js';
 import { KernGroup } from '../project_data/kern_group.js';
+import { ProjectEditor } from '../project_editor/project_editor.js';
 import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 
 /**
@@ -14,38 +19,129 @@ import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 	Using OpenType.js to read in a font file
 	and convert it to a Glyphr Studio Project.
 **/
-const finalGlyphs = {};
-const finalLigatures = {};
-const finalKerns = {};
+let finalGlyphs = {};
+let finalLigatures = {};
+let finalKerns = {};
 let importItemCounter = 0;
 let importItemTotal = 0;
-// let maxChar = 0;
-// let minChar = 0xffff;
 
-export async function ioFont_importFont(importedFont) {
-	// log('ioFont_importFont', 'start');
+export async function ioFont_importFont(importedFont, testing = false) {
 	// log(importedFont);
-	const editor = getProjectEditorImportTarget();
+	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
-	const fontGlyphs = importedFont.glyphs.glyphs;
+
+	// Reset module data
+	finalGlyphs = {};
+	finalLigatures = {};
+	finalKerns = {};
+	importItemCounter = 0;
+	importItemTotal = 0;
+
+	// --------------------------------------------------------------
+	// Set up import groups
+	// --------------------------------------------------------------
+
+	const fontGlyphs = importedFont.glyphs.glyphs || {};
 	// log(`\nfontGlyphs:`);
 	// log(fontGlyphs);
-	const fontLigatures = importedFont.substitution.getLigatures('liga');
+	const fontLigatures = importedFont.substitution.getLigatures('liga') || [];
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
-	const fontKerns = importedFont.kerningPairs;
-	// log(`\nfontKerns:`);
-	// log(fontKerns);
+	const kernTables = importedFont.position.getKerningTables() || [];
+	// log(`\n⮟kernTables⮟`);
+	// log(kernTables);
 
-	importItemTotal = countItems(fontGlyphs) + fontLigatures.length + countItems(fontKerns);
+	// --------------------------------------------------------------
+	// Count items and set up progress indicator
+	// --------------------------------------------------------------
+
+	// Get Kern Info
+	let kernPairCount = 0;
+	const gposKernTables = [];
+
+	function loadOneKernTable(table) {
+		// log(`loadOneKernTable`, 'start');
+		// log(table);
+		const subtables = [];
+		if (table.lookupType === 2) {
+			table?.subtables.forEach((subtable) => {
+				if (subtable.posFormat === 1) {
+					// log(`\n⮟subtable⮟`);
+					// log(subtable);
+					const pairSets = subtable?.pairSets || [];
+					const glyphList = coverageTableToGlyphList(subtable?.coverage);
+					// log(`\n⮟pairSets⮟`);
+					// log(pairSets);
+					// log(`\n⮟glyphList⮟`);
+					// log(glyphList);
+					pairSets.forEach((base) => (kernPairCount += base.length));
+					subtables.push({ pairSets: pairSets, glyphList: glyphList });
+				} else if (subtable.posFormat === 2) {
+					// TODO support position format 2
+					console.warn(
+						`In a GPOS table: Lookup Type 2, found a subtable with Pair Position: Format 2. Can only import Format 1.`
+					);
+				}
+			});
+		} else {
+			// TODO support other Lookup types
+			console.warn(
+				`Found a GPOS table: Lookup Type ${table.lookupType}. Only Lookup Type 2 is supported.`
+			);
+		}
+
+		// log(`loadOneKernTable`, 'end');
+		return subtables;
+	}
+
+	/**
+	 * Normalizes different coverage table data structures
+	 * to a simple array of font glyph IDs
+	 * @param {Object} coverage - glyph id data
+	 * @returns Array
+	 */
+	function coverageTableToGlyphList(coverage) {
+		if (!coverage) return [];
+		let result = [];
+		const coverageFormat = coverage.format;
+		if (coverageFormat === 1) {
+			result = coverage?.glyphs || [];
+		} else if (coverageFormat === 2) {
+			const typeTwoCoverage = coverage?.ranges || [];
+			for (let i = 0; i < typeTwoCoverage.length; i++) {
+				const range = typeTwoCoverage[i];
+				for (let j = range.start; j <= range.end; j++) {
+					result.push(j);
+				}
+			}
+		}
+		return result;
+	}
+
+	// log(`\n⮟kernTables⮟`);
+	// log(kernTables);
+	kernTables.forEach((table) => gposKernTables.push(loadOneKernTable(table)));
+	// log(`\n⮟gposKernTables⮟`);
+	// log(gposKernTables);
+
+	// log(`kernPairCount: ${kernPairCount}`);
+	importItemTotal = countItems(fontGlyphs) + fontLigatures.length + kernPairCount;
+
+	// --------------------------------------------------------------
+	// Import Characters
+	// --------------------------------------------------------------
 
 	for (const key of Object.keys(fontGlyphs)) {
-		await updateFontImportProgressIndicator();
+		await updateFontImportProgressIndicator('character');
 		importOneGlyph(fontGlyphs[key], project);
 	}
 
+	// --------------------------------------------------------------
+	// Import Ligatures
+	// --------------------------------------------------------------
+
 	for (const liga of fontLigatures) {
-		await updateFontImportProgressIndicator();
+		await updateFontImportProgressIndicator('ligature');
 		let thisLigature = false;
 		try {
 			thisLigature = importedFont.glyphs.get(liga.by);
@@ -55,10 +151,37 @@ export async function ioFont_importFont(importedFont) {
 		importOneLigature({ glyph: thisLigature, gsub: liga.sub }, importedFont);
 	}
 
-	for (const key of Object.keys(fontKerns)) {
-		await updateFontImportProgressIndicator();
-		importOneKern(key, fontKerns[key]);
+
+	// --------------------------------------------------------------
+	// Import Kern Pairs
+	// --------------------------------------------------------------
+
+	for (let t = 0; t < gposKernTables.length; t++) {
+		for (let s = 0; s < gposKernTables[t].length; s++) {
+			const pairSets = gposKernTables[t][s].pairSets;
+			const glyphList = gposKernTables[t][s].glyphList;
+			for (let leftPairID = 0; leftPairID < pairSets.length; leftPairID++) {
+				const pairSet = pairSets[leftPairID];
+				const leftID = glyphList[leftPairID];
+				const leftGlyph = importedFont.glyphs.glyphs[leftID];
+				for (let p = 0; p < pairSet.length; p++) {
+					const pair = pairSet[p];
+					const rightID = pair.secondGlyph;
+					// GS Kerns are relative to the left hand glyph,
+					// So we need to invert this data from the right hand glyph
+					const kernValue = pair.value1.xAdvance * -1;
+					const rightGlyph = importedFont.glyphs.glyphs[rightID];
+					// log(`${leftGlyph.name} : ${rightGlyph.name} = ${kernValue}`);
+					await updateFontImportProgressIndicator('kern pair');
+					importOneKern(leftGlyph, rightGlyph, kernValue);
+				}
+			}
+		}
 	}
+
+	// --------------------------------------------------------------
+	// Import metadata, and finishing steps
+	// --------------------------------------------------------------
 
 	importFontMetadata(importedFont, project);
 
@@ -66,24 +189,26 @@ export async function ioFont_importFont(importedFont) {
 	project.ligatures = finalLigatures;
 	project.kerning = finalKerns;
 
-	// log(project);
+	// log(editor);
+	if (testing) {
+		return editor.project;
+	} else {
+		setCurrentProjectEditor(editor);
+		editor.nav.page = 'Overview';
 
-	setCurrentProjectEditor(editor);
-	editor.selectedCharacterRange = getUnicodeBlockByName('Basic Latin');
-	editor.nav.page = 'Overview';
-	editor.navigate();
-
-	// log('ioFont_importFont', 'end');
+		const app = getGlyphrStudioApp();
+		app.selectedProjectEditor = editor;
+		app.selectedProjectEditor.navigate();
+	}
 }
 
-async function updateFontImportProgressIndicator() {
-	updateProgressIndicator(`
-			Importing glyph:
+async function updateFontImportProgressIndicator(type) {
+	await updateProgressIndicator(`
+			Importing ${type}:
 			<span class="progress-indicator__counter">${importItemCounter}</span>
 			 of
 			<span class="progress-indicator__counter">${importItemTotal}</span>
 		`);
-	await pause();
 }
 
 // --------------------------------------------------------------
@@ -99,37 +224,31 @@ function importOneGlyph(otfGlyph, project) {
 	// log(`otfGlyph.advanceWidth: ${otfGlyph.advanceWidth}`);
 	// log(otfGlyph);
 
-	const uni = decToHex(otfGlyph.unicode || 0);
-
-	if (uni === false) {
+	if (isNaN(otfGlyph.unicode)) {
 		// log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
 		importItemTotal--;
 		// log('importOneGlyph', 'end');
 		return;
 	}
 
+	const uni = decToHex(otfGlyph.unicode || 0);
+	// log(`uni: ${uni}`);
 	const importedGlyph = makeGlyphrStudioGlyphObject(otfGlyph);
 
 	if (!importedGlyph) {
 		console.warn(`Something went wrong with importing this glyph.`);
-		console.log(otfGlyph);
+
 		importItemTotal--;
 		// log('importOneGlyph', 'end');
 		return;
 	}
 
-	// Get some range data
-	// minChar = Math.min(minChar, uni);
-	// maxChar = Math.max(maxChar, uni);
-
 	const glyphID = `glyph-${uni}`;
 	importedGlyph.id = glyphID;
 	finalGlyphs[glyphID] = importedGlyph;
 
-	if (isControlChar(uni)) {
+	if (isControlChar(uni) && uni !== '0x0') {
 		project.settings.app.showNonCharPoints = true;
-		// console.warn(`CONTROL CHAR FOUND ${uni}`);
-		// log(otfGlyph);
 	}
 
 	project.incrementRangeCountFor(uni);
@@ -183,7 +302,7 @@ function importOneLigature(otfLigature, otfFont) {
 		const importedLigature = makeGlyphrStudioGlyphObject(otfLigature.glyph);
 		if (!importedLigature) {
 			console.warn(`Something went wrong with importing this glyph.`);
-			console.log(otfLigature);
+
 			importItemTotal--;
 			// log(`importOneLigature`, 'end');
 			return;
@@ -226,30 +345,41 @@ function importOneLigature(otfLigature, otfFont) {
 // Kerning
 // --------------------------------------------------------------
 
-function importOneKern(members, value) {
+function importOneKern(leftGlyph, rightGlyph, value) {
 	// log(`importOneKern`, 'start');
-	members = members.split(',');
-	let left = decToHex(members[0]);
-	let right = decToHex(members[1]);
+	// log(`leftGlyph.unicode: ${leftGlyph.unicode}`);
+	// log(`rightGlyph.unicode: ${rightGlyph.unicode}`);
 
-	if (members.length !== 2) {
-		console.warn(
-			`Something went wrong with importing this kern pair: ${JSON.stringify(members)} | ${value} `
-		);
+	if (!leftGlyph || !rightGlyph) {
+		console.warn(`Something went wrong with importing this kern pair:
+${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 		importItemCounter--;
 		// log(`importOneKern`, 'end');
 		return;
 	}
+
+	if (!leftGlyph.unicode || !rightGlyph.unicode) {
+		console.warn(`Only kern values containing characters with Unicode Code Points can be imported (can't kern ligatures) :
+${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
+		importItemCounter--;
+		// log(`importOneKern`, 'end');
+		return;
+	}
+
 	const importedKern = new KernGroup({
-		leftGroup: [left],
-		rightGroup: [right],
+		leftGroup: [decToHex(leftGlyph.unicode)],
+		rightGroup: [decToHex(rightGlyph.unicode)],
 		value: value,
 	});
 	const newKernID = makeKernGroupID(finalKerns);
+	importedKern.id = newKernID;
 
 	// Finish up
 	finalKerns[newKernID] = importedKern;
 	importItemCounter++;
+
+	// log(`newKernID: ${newKernID}`);
+	// log(importedKern);
 	// log(`importOneKern`, 'end');
 }
 
@@ -305,16 +435,25 @@ function importFontMetadata(font, project) {
 }
 
 function getTableValue(val) {
+	// log(`getTableValue`, 'start');
+	// log(`val: ${val}`);
 	try {
-		// fixes #238 .ttf import from Google Fonts
-		if (typeof val === 'object' && typeof val.en === 'string') {
-			return val.en;
+		let tableValue = false;
+		if (Array.isArray(val)) {
+			tableValue = val.join(' ');
+		} else if (typeof val === 'object' && typeof val.en === 'string') {
+			// fixes #238 .ttf import from Google Fonts
+			tableValue = val.en;
+		} else if (typeof val === 'string' || typeof val === 'number') {
+			tableValue = val;
 		}
 
-		if (Object.prototype.toString.call(val) === '[object Array]') {
-			return val.join(' ');
-		}
+		// log(`tableValue: ${tableValue}`);
+		// log(`getTableValue`, 'end');
+		return tableValue;
 	} catch (err) {
-		return 0;
+		// log(`Error, returning false`);
+		// log(`getTableValue`, 'end');
+		return false;
 	}
 }

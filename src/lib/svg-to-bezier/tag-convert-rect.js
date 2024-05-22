@@ -1,3 +1,5 @@
+import { roundAndSanitize } from './svg-to-bezier.js';
+
 /**
  * Converts an SVG Rect tag to Bezier Data Format
  * @param {object} tagData - Object with tag information
@@ -5,10 +7,10 @@
  */
 export function tagConvertRect(tagData) {
 	let data = tagData.attributes || {};
-	let x = Number(data.x) || 0;
-	let y = Number(data.y) || 0;
-	let w = Number(data.width) || 100;
-	let h = Number(data.height) || 100;
+	let x = roundAndSanitize(data.x) || 0;
+	let y = roundAndSanitize(data.y) || 0;
+	let w = roundAndSanitize(data.width) || 100;
+	let h = roundAndSanitize(data.height) || 100;
 	let right = x + w;
 	let bottom = y + h;
 	let upperLeft = { x: x, y: y };

@@ -361,6 +361,10 @@ export function parseCharsInputAsHex(input) {
 		return [];
 	}
 
+	// Special case semi-colon
+	if (input === ';') return ['0x3B'];
+
+	// Start parsing
 	let entries = [];
 	const results = [];
 	input = normalizePrefixes(input);

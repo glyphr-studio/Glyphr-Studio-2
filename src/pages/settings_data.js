@@ -145,6 +145,21 @@ export default {
 			description: `When text wraps onto multiple lines, this is the distance between the bottom of one Em Square to the top of the next line's Em Square.`,
 			type: `Em`,
 		},
+		weight: {
+			label: `Font weight`,
+			description: `How bold this font is - a number between 100 and 900:
+				<br>100 : Thin
+				<br>200 : Extra-Light
+				<br>300 : Light
+				<br>400 : Regular
+				<br>500 : Medium
+				<br>600 : Semi-Bold
+				<br>700 : Bold
+				<br>800 : Extra-Bold
+				<br>900 : Black
+			`,
+			type: `Number`,
+		},
 		italicAngle: {
 			label: `Italic angle`,
 			description: `Most common degree of slant for glyphs in an italic font.`,
@@ -159,10 +174,6 @@ export default {
 		copyright: { label: `Copyright`, description: '' },
 		trademark: { label: `Trademark`, description: '' },
 		variant: { label: `Font variant`, description: "Either 'normal' or 'small-caps'." },
-		weight: {
-			label: `Font weight`,
-			description: `How bold this font is. Can be 'normal', 'bold', or a number between 100 and 900.`,
-		},
 		stretch: {
 			label: `Font stretch`,
 			description: `How condensed or expanded this font is.`,

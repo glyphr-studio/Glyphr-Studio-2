@@ -136,6 +136,15 @@ export function makeKeyboardShortcutReference() {
 				Press <code>shift</code> to nudge <span class="number">10em</span>
 			</label>
 
+			<span>
+				<code>ctrl</code><i><code>Click an Edit Canvas shape</code></i>
+				or<br>
+				<code>ctrl</code><i><code>Click a Layers Panel shape</code></i>
+			</span>
+			<label>
+				Toggle selection for that shape (multi-select)
+			</label>
+
 			<h3>Tools</h3>
 			<span>
 				<code>v</code>

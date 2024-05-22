@@ -289,16 +289,6 @@ function showBeforeUnloadConfirmation(event) {
 	return message;
 }
 
-export function disablePageTransitions() {
-	// log(`disablePageTransitions`, 'start');
-	// document.querySelector('#app__wrapper').classList.remove('animate-fade-everything');
-	// log(`disablePageTransitions`, 'end');
-}
-
-export function enablePageTransitions() {
-	// document.querySelector('#app__wrapper').classList.add('animate-fade-everything');
-}
-
 // --------------------------------------------------------------
 // Issues
 // --------------------------------------------------------------

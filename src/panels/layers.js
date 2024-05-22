@@ -2,6 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
 import { addChildActions, getActionData } from './actions.js';
+import { panelsEventHandlerData } from './panel_events.js';
 
 // --------------------------------------------------------------
 // Layer panel
@@ -67,7 +68,11 @@ export function makePanel_Layers() {
 			});
 
 			row.addEventListener('click', () => {
-				editor.multiSelect.shapes.select(item);
+				if (panelsEventHandlerData.isCtrlDown) {
+					editor.multiSelect.shapes.toggle(item);
+				} else {
+					editor.multiSelect.shapes.select(item);
+				}
 				editor.publish('whichShapeIsSelected', item);
 			});
 

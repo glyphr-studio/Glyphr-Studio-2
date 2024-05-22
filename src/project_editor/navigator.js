@@ -1,4 +1,4 @@
-import { disablePageTransitions, enablePageTransitions, showAppErrorPage } from '../app/app.js';
+import { showAppErrorPage } from '../app/app.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeAppTopBar } from '../app/menu.js';
 import { accentColors } from '../common/colors.js';
@@ -99,6 +99,7 @@ export class Navigator {
 		// log(`this.panel: ${this.panel}`);
 		// log(`editor.selectedItemID: ${getCurrentProjectEditor().selectedItemID}`);
 
+		closeEveryTypeOfDialog();
 		const wrapper = document.getElementById('app__wrapper');
 
 		// log(`wrapper before:`);
@@ -168,13 +169,7 @@ export class Navigator {
 	 */
 	get isOnChooserPanelPage() {
 		const nh = this.page;
-		return (
-			nh === 'Characters' ||
-			nh === 'Components' ||
-			nh === 'Kerning' ||
-			nh === 'Import SVG' ||
-			nh === 'Ligatures'
-		);
+		return nh === 'Characters' || nh === 'Components' || nh === 'Kerning' || nh === 'Ligatures';
 	}
 
 	/**
@@ -420,9 +415,9 @@ function makeNavButton_Panel(panelName, iconName) {
 		// log(`panelName: ${panelName}`);
 		const editor = getCurrentProjectEditor();
 		editor.nav.panel = panelName;
-		disablePageTransitions();
+		editor.showPageTransitions = false;
 		editor.navigate();
-		enablePageTransitions();
+		editor.showPageTransitions = true;
 		// log(`navButton.click`, 'end');
 	});
 	return button;

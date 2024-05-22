@@ -2,7 +2,7 @@ import { getCurrentProject } from '../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../common/character_ids.js';
 import { pause, round } from '../common/functions.js';
 import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
-import openTypeJS from '../lib/opentype/opentypejs_1-3-1.js';
+import openTypeJS from '../lib/opentype.js-1.3.4/opentype.module.js';
 import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { Glyph } from '../project_data/glyph.js';
 import { sortLigatures } from '../project_data/glyphr_studio_project.js';
@@ -19,7 +19,6 @@ const codePointGlyphIndexTable = {};
 
 export async function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'start');
-
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
 	// Add .notdef
@@ -60,9 +59,14 @@ export async function ioFont_exportFont() {
 			font.substitution.addLigature('liga', sub);
 		});
 	}
+
+	// TODO investigate advanced table values
+	/*
+	font.tables.os2.ySuperscriptYSize = 1234;
 	// log('Font object:');
 	// log(font);
 	// log(font.toTables());
+	*/
 
 	font.download();
 	await pause();
@@ -146,16 +150,26 @@ function populateExportList() {
 				// log(`\t adding ligature "${thisLigature.name}"`);
 				exportLigatures.push({ xg: thisLigature, xc: key, chars: thisLigature.chars });
 
-				// TODO Add Ligatures to ligature code points
-				// ligWithCodePoint = doesLigatureHaveCodePoint(l);
-				// if (ligWithCodePoint) {
-				// 	// log(`\t LIGATURE WITH CODE POINT FOUND for ${l} at ${ligWithCodePoint.point}`);
-				// 	const dupe = new Glyph(
-				// 		clone(_GP.ligatures[l], 'ioOTF export.populateExportLists - ligature with code point')
-				// 	);
-				// 	exportGlyphs.push({ xg: dupe, xc: ligWithCodePoint.point });
-				// 	if (parseInt(l) >= 0xe000) privateUseArea.push(parseInt(l));
-				// }
+				/*
+					When exporting to OTF, if a ligature depends on certain
+					characters, and one or more of those characters do not
+					exist in the font, it causes an error.
+					This will check to see if Glyph objects exist for all
+					Ligature source characters, and if some are missing, it
+					will create blank Glyphs for them.
+				 */
+				project.ligatures[key].gsub.forEach((charID) => {
+					const hexID = '' + decToHex(charID);
+					const id = `glyph-${hexID}`;
+					if (!project.glyphs[id]) {
+						// log(`No glyph found for charID ${charID} id ${id}`);
+						const newGlyph = project.addItemByType(new Glyph({ id: id }), 'Glyph', id);
+						if (!checklist.includes(hexID)) {
+							exportGlyphs.push({ xg: newGlyph, xc: hexID });
+							checklist.push(hexID);
+						}
+					}
+				});
 			} else {
 				console.warn(`
 				Skipped exporting ligature ${project.ligatures[key].name}.
@@ -220,22 +234,20 @@ function addNotdefToExport(options) {
 	// Add it to the export
 	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
 	let thisAdvance = notdef.advanceWidth;
-	if (thisAdvance === 0) thisAdvance = 0.000001;
-	else thisAdvance = round(thisAdvance);// TODO investigate zero advance width
 
-	options.glyphs.push(
-		new openTypeJS.Glyph({
-			name: 'null',
-			unicode: 0,
-			index: 0,
-			advanceWidth: thisAdvance,
-			xMin: round(notdef.maxes.xMin),
-			xMax: round(notdef.maxes.xMax),
-			yMin: round(notdef.maxes.yMin),
-			yMax: round(notdef.maxes.yMax),
-			path: notdefPath,
-		})
-	);
+	const notdefGlyph = new openTypeJS.Glyph({
+		name: 'null',
+		unicode: 0,
+		index: 0,
+		xMin: round(notdef.maxes.xMin),
+		xMax: round(notdef.maxes.xMax),
+		yMin: round(notdef.maxes.yMin),
+		yMax: round(notdef.maxes.yMax),
+		path: notdefPath,
+	});
+	notdefGlyph.advanceWidth = thisAdvance;
+
+	options.glyphs.push(notdefGlyph);
 
 	codePointGlyphIndexTable['0x0'] = 0;
 }
@@ -270,22 +282,21 @@ async function generateOneGlyph(currentExportItem) {
 	// log(`decToHex(num): ${decToHex(num)}`);
 	// log(`thisName: ${thisName}`);
 
-	// Advance width
-	let thisAdvance = glyph.advanceWidth;
-	if (thisAdvance === 0) thisAdvance = 0.000001; // TODO investigate zero advance width
-
 	// Create OTF.js Glyph
 	const thisGlyph = new openTypeJS.Glyph({
 		name: thisName,
 		unicode: thisUnicode,
 		index: thisIndex,
-		advanceWidth: thisAdvance,
 		xMin: round(maxes.xMin),
 		xMax: round(maxes.xMax),
 		yMin: round(maxes.yMin),
 		yMax: round(maxes.yMax),
 		path: thisPath,
 	});
+
+	// Opentype.js Glyph constructor removes Advance Width of zero.
+	// So, incase we need it to be zero, we add it here.
+	thisGlyph.advanceWidth = glyph.advanceWidth;
 
 	// Add this finished glyph
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
@@ -311,26 +322,41 @@ async function generateOneLigature(currentExportItem) {
 	const thisIndex = getNextGlyphIndexNumber();
 	// log(`thisIndex: ${thisIndex}`);
 
-	const glyphInfo = {
-		name: liga.name.replace('Ligature ', 'liga-'),
+	const thisLigature = new openTypeJS.Glyph({
+		name: generateLigatureExportName(liga),
 		index: thisIndex,
-		advanceWidth: round(liga.advanceWidth || 1), // has to be non-zero
 		path: thisPath,
 		xMin: round(maxes.xMin),
 		xMax: round(maxes.xMax),
 		yMin: round(maxes.yMin),
 		yMax: round(maxes.yMax),
-	};
+	});
+
+	// Opentype.js Glyph constructor removes Advance Width of zero.
+	// So, incase we need it to be zero, we add it here.
+	thisLigature.advanceWidth = liga.advanceWidth;
 
 	// Add substitution info to font
 	const indexList = liga.gsub.map((v) => codePointGlyphIndexTable[decToHex(v)]);
 	// log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex}}`);
 	ligatureSubstitutions.push({ sub: indexList, by: thisIndex });
-	// log(glyphInfo);
+	// log(thisLigature);
 
 	await pause();
 	// log(`generateOneLigature`, 'end');
-	return new openTypeJS.Glyph(glyphInfo);
+	return thisLigature;
+}
+
+function generateLigatureExportName(lig) {
+	let result = 'lig';
+
+	lig.gsub.forEach((char) => {
+		let shortName = getUnicodeShortName(decToHex(char));
+		if (!shortName || shortName === '[name not found]') shortName = '?';
+		result += '.' + shortName;
+	});
+
+	return result;
 }
 
 let currentIndex = 0;

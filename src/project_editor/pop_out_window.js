@@ -18,6 +18,9 @@ export function openPopOutWindow() {
 	const editor = getCurrentProjectEditor();
 	editor.popOutWindow = window.open('', 'glyphr-studio-pop-out-live-preview');
 
+	// Define custom elements for the Pop Out Window
+	editor.popOutWindow.customElements.define('display-canvas', DisplayCanvas);
+
 	// Init window properties
 	let popDoc = editor.popOutWindow.document;
 
@@ -68,8 +71,6 @@ export function updatePopOutWindowContent() {
 	let popDoc = editor.popOutWindow.document;
 	const popWrapper = popDoc.querySelector('#pop-out__wrapper');
 	popWrapper.innerHTML = '';
-	// log(popWrapper);
-	// log(popWrapper.getClientRects()[0]);
 
 	editor.livePreviews.forEach((options, index) => {
 		// index 0 is for the Live Previews Page
@@ -78,7 +79,8 @@ export function updatePopOutWindowContent() {
 			// log(`appending new display canvas`);
 			// log(options);
 			options.widthAdjustment = -20;
-			popWrapper.appendChild(new DisplayCanvas(options));
+			const newCanvas = new DisplayCanvas(options);
+			popWrapper.appendChild(newCanvas);
 		}
 	});
 
@@ -122,7 +124,7 @@ export function updatePopOutWindowContent() {
 			selected: false,
 		});
 	}
-	// log(popDoc);
+
 	// editor.popOutWindow.setTimeout(refreshPopOutWindow, 10);
 	// log(`updatePopOutWindowContent`, 'end');
 }
@@ -191,8 +193,10 @@ export function livePreviewPopOutWindowResize() {
 	let popDoc = editor.popOutWindow.document;
 	const allDisplayCanvases = popDoc.querySelectorAll('display-canvas');
 	// log(allDisplayCanvases);
-	allDisplayCanvases.forEach((displayCanvas) => {
-		// log(`displayCanvas.options.name: ${displayCanvas.getAttribute('title')}`);
+	allDisplayCanvases.forEach((displayCanvas, index) => {
+		// log(`\n⮟displayCanvas #${index}⮟`);
+		// log(displayCanvas);
+		// log(`displayCanvas.constructor.name: ${displayCanvas.constructor.name}`);
 		displayCanvas.resizeAndRedraw(-50);
 	});
 	// log(`livePreviewPopOutWindowResize`, 'end');

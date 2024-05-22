@@ -1,0 +1,6 @@
+<svg  xmlns="http://www.w3.org/2000/svg">
+  <circle cx="37.5" cy="37.5" r="10" fill="red" transform="scale(4)" tranform-origin="20 200 123"/>
+  <circle cx="150" cy="37.5" r="10" fill="yellow" transform="scale(1, 4)" tranform-origin="20 200 123"/>
+  <circle cx="37.5" cy="150" r="10" fill="pink" transform="scale(4, 1)" tranform-origin="20 200 123"/>
+  <circle cx="150" cy="150" r="10" fill="black" tranform-origin="20 200 123"/>
+</svg>

@@ -1,7 +1,13 @@
 import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeElement } from '../common/dom.js';
-import { caseCamelToKebab, clone, makeCrisp, round } from '../common/functions.js';
+import {
+	caseCamelToKebab,
+	caseKebabToCamel,
+	clone,
+	makeCrisp,
+	round,
+} from '../common/functions.js';
 import style from './display-canvas.css?inline';
 import { drawGlyph } from './draw_paths.js';
 import { TextBlock } from './text_block.js';
@@ -20,24 +26,21 @@ export class DisplayCanvas extends HTMLElement {
 	constructor(attributes = {}) {
 		// log(`DisplayCanvas.constructor`, 'start');
 		super();
-		// log('attributes');
-		// log(attributes);
-		this.textBlockOptions = new TextBlockOptions();
-		Object.keys(attributes).forEach((key) => {
-			if (key !== '_text') {
-				if (key !== 'width' && key !== 'height') {
-					this.setAttribute(caseCamelToKebab(key), attributes[key]);
-				}
-				if (this.textBlockOptions[key]) {
-					this.textBlockOptions[key] = attributes[key];
-				}
-			} else {
-				this.textBlockOptions.text = attributes._text;
-				this.setAttribute('text', this.textBlockOptions.text);
-			}
-		});
+
 		this.isSetUp = false;
-		// log(this);
+		this.initialAttributes = attributes;
+		this.observedAttrs = [
+			'text',
+			'font-size',
+			'line-gap',
+			'page-padding',
+			'show-page-extras',
+			'show-line-extras',
+			'show-character-extras',
+			'show-placeholder-message',
+			'width-adjustment',
+		];
+
 		// log(`DisplayCanvas.constructor`, 'end');
 	}
 
@@ -46,6 +49,57 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	connectedCallback() {
 		// log(`DisplayCanvas.connectedCallback`, 'start');
+
+		// Firefox bug, custom element's prototype is lost when used across frames
+		if (this.constructor.name !== 'DisplayCanvas') {
+			this.__proto__ = customElements.get('display-canvas').prototype;
+		}
+
+		// Initialize passed attributes
+		// log(`ATTRIBUTES: PASSED FROM CONSTRUCTOR`);
+		// log('this.initialAttributes');
+		// log(this.initialAttributes);
+		this.textBlockOptions = new TextBlockOptions();
+		Object.keys(this.initialAttributes).forEach((key) => {
+			// log(`key: ${key}`);
+			let value = this.initialAttributes[key];
+			// log(`value: ${value} (${typeof value})`);
+			if (key !== '_text') {
+				if (key !== 'width' && key !== 'height') {
+					this.setAttribute(caseCamelToKebab(key), value);
+				}
+				if (this.textBlockOptions[caseKebabToCamel(key)]) {
+					this.textBlockOptions[caseKebabToCamel(key)] = value;
+					// log(`this.textBlockOptions[${key}] = ${value}`);
+				}
+			} else {
+				this.textBlockOptions.text = this.initialAttributes._text;
+				this.setAttribute('text', this.textBlockOptions.text);
+			}
+		});
+
+		// Pull attributes from element
+		// log(`ATTRIBUTES: PULL FROM ELEMENTS`);
+		// log(`\n⮟this.getAttributeNames()⮟`);
+		// log(this.getAttributeNames());
+		this.observedAttrs.forEach((key) => {
+			if (this.hasAttribute(key)) {
+				let value = this.getAttribute(key);
+				if (key.startsWith('show')) {
+					if (value === 'false') value = false;
+					else value = true;
+				} else if (key !== 'text') {
+					value = parseFloat(value);
+				}
+
+				this.textBlockOptions[caseKebabToCamel(key)] = value;
+				// log(`this.textBlockOptions[${caseKebabToCamel(key)}] = ${value}`);
+			}
+		});
+
+		// log(`\n⮟this.textBlockOptions⮟`);
+		// log(this.textBlockOptions);
+
 		// Put it all together
 		const shadow = this.attachShadow({ mode: 'open' });
 		const styles = makeElement({ tag: 'style', innerHTML: style });
@@ -59,14 +113,20 @@ export class DisplayCanvas extends HTMLElement {
 
 		// Finish
 		this.isSetUp = true;
-		this.resizeAndRedraw();
+		if (this.resizeAndRedraw) this.resizeAndRedraw();
+		else {
+			console.warn(`${this.constructor.name}: Methods not available on connectedCallback`);
+		}
+
 		// log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
 	resizeAndRedraw() {
 		// log(`DisplayCanvas.resizeAndRedraw`, 'start');
+		// log(`this.getAttribute('text'): ${this.getAttribute('text')}`);
 		if (!this.isSetUp) {
-			// log('DisplayCanvas.redraw', 'end');
+			// log('not set up!');
+			// log('DisplayCanvas.resizeAndRedraw', 'end');
 			return;
 		}
 		this.updateTextBlock();
@@ -141,6 +201,8 @@ export class DisplayCanvas extends HTMLElement {
 			drawCharacter: this.drawDisplayCharacter,
 			project: proj,
 		});
+		// log(`\n⮟this.textBlock⮟`);
+		// log(this.textBlock);
 		// log(`DisplayCanvas.updateTextBlock`, 'end');
 	}
 
@@ -184,17 +246,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return [
-			'text',
-			'font-size',
-			'line-gap',
-			'page-padding',
-			'show-page-extras',
-			'show-line-extras',
-			'show-character-extras',
-			'show-placeholder-message',
-			'width-adjustment',
-		];
+		return this.observedAttrs;
 	}
 
 	/**
@@ -207,6 +259,8 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`DisplayCanvas.attributeChangeCallback`, 'start');
 		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 		// log(this);
+
+		if (this.constructor.name !== 'DisplayCanvas') return;
 
 		if (attributeName === 'text') {
 			this.textBlockOptions.text = newValue;
@@ -253,10 +307,6 @@ export class DisplayCanvas extends HTMLElement {
 			this.resizeAndRedraw();
 		}
 
-		// if (this.isSetUp) {
-		// 	this.resizeAndRedraw();
-		// }
-
 		// log(`DisplayCanvas.attributeChangeCallback`, 'end');
 	}
 
@@ -274,6 +324,8 @@ export class DisplayCanvas extends HTMLElement {
 
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+		// log('this.textBlock');
+		// log(this.textBlock);
 		if (this.textBlock.hasDrawableCharacters) {
 			this.textBlock.draw({
 				showPageExtras: this.textBlockOptions.showPageExtras,

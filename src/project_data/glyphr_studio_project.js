@@ -80,6 +80,7 @@ export class GlyphrStudioProject {
 				xHeight: 1100,
 				overshoot: 30,
 				lineGap: 58,
+				weight: 400,
 				italicAngle: 0,
 				designer: '',
 				designerURL: '',
@@ -91,7 +92,6 @@ export class GlyphrStudioProject {
 				trademark: '',
 				// SVG Font properties
 				variant: 'normal',
-				weight: 400,
 				stretch: 'normal',
 				stemv: 0,
 				stemh: 0,
@@ -396,9 +396,13 @@ export class GlyphrStudioProject {
 			if (range.isWithinRange(id)) {
 				hasParent = true;
 				range.count++;
+				// log(`Range ${range.name} now has count ${range.count}`);
 			}
 		}
-		if (!hasParent) this.createRangeForHex(id);
+
+		if (!hasParent) {
+			this.createRangeForHex(hex, hex === '0x0');
+		}
 
 		// log(`GlyphrStudioProject.incrementRangeCountFor`, 'end');
 	}
@@ -410,16 +414,15 @@ export class GlyphrStudioProject {
 	 */
 	createRangeForHex(id, createAsHidden = false) {
 		// log(`createRangeForHex`, 'start');
-		// log(`id: ${id}`);
-
+		// log(`hex: ${hex}`);
+		// log(`createAsHidden: ${createAsHidden}`);
 		const projectRanges = this.settings.project.characterRanges;
-		const newParentRange = new CharacterRange(getParentRange(id));
+		const newParentRange = new CharacterRange(getParentRange(hex));
+		// log(newParentRange);
 		newParentRange.count = 1;
 		if (createAsHidden) newParentRange.enabled = false;
 		projectRanges.push(newParentRange);
-
-		if (unicodeNonCharPointNames[id]) this.settings.app.showNonCharPoints = true;
-
+		if (unicodeNonCharPointNames[hex] && hex !== '0x0') this.settings.app.showNonCharPoints = true;
 		// log(`createRangeForHex`, 'end');
 	}
 
@@ -516,7 +519,7 @@ export class GlyphrStudioProject {
 		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;
 		const translateX = (size - itemWidth * scale) / 2;
 		const translateY = itemHeight * scale - padding;
-		const svg = item?.svgPathData || 'H100 V100 H-100 V-100';
+		const svg = item?.svgPathData || 'M0,0 H100 V100 H-100 V-100';
 		// log(`itemWidth: ${itemWidth}`);
 		// log(svg);
 

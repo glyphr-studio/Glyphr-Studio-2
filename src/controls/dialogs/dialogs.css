@@ -217,8 +217,11 @@ dialog {
 
 .context-menu-row .row-notes code {
 	height: 20px;
+	line-height: 18px;
 	margin: 2px;
 	font-size: 0.8em;
+	min-height: 24px;
+	min-width: 24px;
 }
 
 .context-menu-row .row-notes span {

@@ -60,6 +60,8 @@ export function makePage_Kerning() {
 	`,
 	});
 
+	if (editor.showPageTransitions) content.classList.add('app__page-animation');
+	
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
@@ -232,8 +234,10 @@ export function makeKernGroupID(kernGroups = getCurrentProject().kerning) {
 	// log(`makeKernGroupID`, 'start');
 	let counter = countItems(kernGroups);
 	while (kernGroups[`kern-${counter}`]) counter++;
+	const newID = `kern-${counter}`;
+	// log(`newID: ${newID}`);
 	// log(`makeKernGroupID`, 'end');
-	return `kern-${counter}`;
+	return newID;
 }
 
 export function showAddEditKernGroupDialog(kernGroup = false) {

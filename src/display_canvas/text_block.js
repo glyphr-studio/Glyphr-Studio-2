@@ -142,6 +142,8 @@ export class TextBlock {
 	 */
 	generateData() {
 		// log('TextBlock.generateData', 'start');
+		// log(`\n⮟this.options⮟`);
+		// log(this.options);
 		/*
 		 *
 		 *

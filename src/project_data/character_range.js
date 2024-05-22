@@ -93,8 +93,8 @@ export class CharacterRange {
 	// --------------------------------------------------------------
 
 	get isValid() {
-		let begin = this.begin !== 0;
-		let end = this.end !== 0;
+		let begin = !isNaN(this.begin);
+		let end = this.end !== 0 && !isNaN(this.end);
 		let name = this.name !== '';
 		return begin && end && name;
 	}

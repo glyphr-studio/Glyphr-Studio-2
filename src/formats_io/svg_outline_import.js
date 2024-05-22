@@ -61,6 +61,7 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true) {
 			for (let b = 0; b < path.length - 1; b++) {
 				// log(`>>>>Bezier path: ${b} and ${b + 1}`);
 				thisPath.addPathPoint(makePathPointFromBeziers(path[b], path[b + 1]));
+				// log(thisPath.print());
 			}
 
 			if (isPathClosed) {
@@ -74,6 +75,9 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true) {
 				thisPath.addPathPoint(newPoint);
 			}
 
+			// log(`Done with one path:`);
+			// log(`\n⮟thisPath⮟`);
+			// log(thisPath);
 			newPaths.push(thisPath);
 		}
 	});

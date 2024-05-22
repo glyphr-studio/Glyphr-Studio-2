@@ -1,5 +1,6 @@
 import {
 	chunkAndValidateParameters,
+	roundAndSanitize,
 	sanitizeParameterData,
 } from './svg-to-bezier.js';
 
@@ -25,10 +26,10 @@ export function tagConvertPolygonPolyline(tagData) {
 			let px = Number(data[i]) || 0;
 			let py = Number(data[i + 1]) || 0;
 			bezierPath.push([
-				{ x: previousX, y: previousY },
+				{ x: roundAndSanitize(previousX), y: roundAndSanitize(previousY) },
 				false,
 				false,
-				{ x: px, y: py },
+				{ x: roundAndSanitize(px), y: roundAndSanitize(py) },
 			]);
 			previousX = px;
 			previousY = py;

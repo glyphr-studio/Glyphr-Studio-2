@@ -68,7 +68,7 @@ export function getUnicodeShortName(codePoint) {
 				.replace(/latin /gi, '')
 				.replace(/ /g, '')
 				.substr(0, 20);
-		else name = 'none';
+		else name = '[name not found]';
 	}
 
 	// log(`name: ${name}`);

@@ -78,7 +78,10 @@ export function importGlyphrProjectFromText(importedProject) {
  */
 function migrate_Project(oldProject) {
 	// log('migrate_Project', 'start');
+
 	const newProject = new GlyphrStudioProject({});
+	const defaultLSB = oldProject.projectsettings.defaultlsb;
+	const defaultRSB = oldProject.projectsettings.defaultrsb;
 
 	// Glyphs
 	// log(`Migrating Glyphs`);
@@ -87,7 +90,7 @@ function migrate_Project(oldProject) {
 		// log(`newID: ${newID}`);
 		// log(`typeof newID: ${typeof newID}`);
 
-		newProject.glyphs[newID] = migrate_Glyph(oldProject.glyphs[oldID], newID);
+		newProject.glyphs[newID] = migrate_Glyph(oldProject.glyphs[oldID], newID, defaultLSB, defaultRSB);
 	});
 
 	// Ligatures
@@ -95,8 +98,10 @@ function migrate_Project(oldProject) {
 	Object.keys(oldProject.ligatures).forEach((oldID) => {
 		const newID = migrate_ItemID(oldID);
 		const chars = hexesToChars(oldID);
-		let newGsub = chars ? chars.split('').map(charToHex) : [];
-		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID);
+
+		let newGsub = chars.split('').map(charToHex);
+		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID, defaultLSB, defaultRSB);
+
 		newProject.ligatures[newID].objType = 'Ligature';
 		newProject.ligatures[newID].gsub = newGsub;
 	});
@@ -105,7 +110,7 @@ function migrate_Project(oldProject) {
 	// log(`Migrating Components`);
 	Object.keys(oldProject.components).forEach((oldID) => {
 		const newID = migrate_ItemID(oldID);
-		newProject.components[newID] = migrate_Glyph(oldProject.components[oldID], newID);
+		newProject.components[newID] = migrate_Glyph(oldProject.components[oldID], newID, defaultLSB, defaultRSB);
 		newProject.components[newID].objType = 'Component';
 		newProject.components[newID].advanceWidth = false;
 	});
@@ -219,7 +224,7 @@ function migrate_Project(oldProject) {
  * @param {Object} oldGlyph - v1 Glyph to migrate
  * @returns {Glyph} - new v2 Glyph
  */
-function migrate_Glyph(oldGlyph, newID) {
+function migrate_Glyph(oldGlyph, newID, defaultLSB = 0, defaultRSB = 0) {
 	// log(`migrate_Glyph`, 'start');
 
 	const newGlyph = new Glyph({
@@ -247,6 +252,13 @@ function migrate_Glyph(oldGlyph, newID) {
 			newGlyph.addOneShape(newItem);
 		}
 	});
+
+	if (oldGlyph.isautowide) {
+		const lsb = oldGlyph.leftsidebearing || defaultLSB;
+		const rsb = oldGlyph.rightsidebearing || defaultRSB;
+		newGlyph.leftSideBearing = lsb;
+		newGlyph.rightSideBearing = rsb;
+	}
 
 	// log(newGlyph);
 	// log(`migrate_Glyph`, 'end');
@@ -327,38 +339,45 @@ function migrate_ComponentInstance(oldItem) {
 }
 
 function migrate_ItemID(oldID) {
-	// log(`migrate_ItemID`, 'start');
-	// log(`oldID: ${oldID}`);
+	log(`migrate_ItemID`, 'start');
+	log(`oldID: ${oldID}`);
 
 	let result = '';
 
 	// Component
 	if (oldID.startsWith('com')) {
-		// log(`Detected as Component`);
+		log(`Detected as Component`);
 		result = `comp-${oldID.split('com')[1]}`;
 	}
 
 	// Kern
 	if (oldID.startsWith('kern')) {
-		// log(`Detected as Kern`);
+		log(`Detected as Kern`);
 		result = `kern-${oldID.split('kern')[1]}`;
+	}
+
+	if (oldID.startsWith('id')) {
+		log(`Detected as Kern (old id format)`);
+		result = `kern-${oldID.split('id')[1]}`;
 	}
 
 	const chars = hexesToChars(oldID);
 	// Ligature
-	if (chars && chars.length > 1) {
-		// log(`Detected as Ligature`);
+
+	if (chars.length > 1) {
+		log(`Detected as Ligature`);
 		result = makeLigatureID(chars);
 	}
 
 	// Glyph
-	if (chars && chars.length === 1) {
-		// log(`Detected as Glyph`);
+
+	if (chars.length === 1) {
+		log(`Detected as Glyph`);
 		result = `glyph-${validateAsHex(oldID)}`;
-		// log(`oldID: ${oldID} \t result: ${result}`);
+		log(`oldID: ${oldID} \t result: ${result}`);
 	}
 
-	// log(`result: ${result}`);
-	// log(`migrate_ItemID`, 'end');
+	log(`result: ${result}`);
+	log(`migrate_ItemID`, 'end');
 	return result;
 }

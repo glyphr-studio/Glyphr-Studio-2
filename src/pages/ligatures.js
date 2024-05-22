@@ -63,6 +63,8 @@ export function makePage_Ligatures() {
 	`,
 	});
 
+	if (editor.showPageTransitions) content.classList.add('app__page-animation');
+	
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
@@ -348,19 +350,27 @@ export function showAddLigatureDialog() {
 	const content = makeElement({
 		innerHTML: `
 			<h2>Add a new ligature</h2>
-				Create a new ligature by specifying two or more individual glyphs that will make up the ligature (like <code>ff</code>).
+			Create a new ligature by specifying two or more individual characters:
+			<br><br>
+			<input id="ligatures__new-ligature-input" type="text"
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+			/>
+			<info-bubble style="display: inline-block; margin-left: 10px;">
+				Ligature characters can be specified in three different formats:
+				<ul>
+					<li>By just typing characters: <code>ff</code></li>
+					<li>Specifying Unicode code points: <code>U+66U+66</code></li>
+					<li>Specifying Hexadecimal format: <code>0x660x66</code></li>
+				</ul>
 				<br><br>
-				Ligature glyphs can also be specified in Unicode format (like <code>U+66U+66</code>) or hexadecimal format (like <code>0x660x66</code>).
+				Hexadecimal, Unicode, and regular character formats cannot be mixed - choose one type!
 				<br><br>
-				Hexadecimal, Unicode, and regular glyph formats cannot be mixed - choose one type!
-				<br><br>
-
-				<h3>Ligature Glyphs</h3>
-				<input id="ligatures__new-ligature-input" type="text"
-					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				/>
-				<br><br>
-				<fancy-button disabled id="ligatures__add-new-ligature-button">Add new ligature to project</fancy-button>
+				<b>Warning!</b><br>
+				Specifying ligature characters beyond the Basic Multilingual Plane
+				(above Unicode <code>U+FFFF</code>) will cause errors!
+			</info-bubble>
+			<br><br>
+			<fancy-button disabled id="ligatures__add-new-ligature-button">Add new ligature to project</fancy-button>
 		`,
 	});
 
