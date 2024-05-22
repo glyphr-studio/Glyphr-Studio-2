@@ -1,5 +1,9 @@
 import { getCurrentProjectEditor } from '../app/main';
 import { xyPointsAreClose } from '../common/functions';
+import { ComponentInstance } from '../project_data/component_instance';
+import { Glyph } from '../project_data/glyph';
+import { Path } from '../project_data/path';
+import { PathPoint } from '../project_data/path_point';
 import { canvasUIPointSize } from './draw_edit_affordances';
 
 export function isOverOneOfThese(pathPoints = [], x, y) {
@@ -21,11 +25,11 @@ export function isOverOneOfThese(pathPoints = [], x, y) {
 
 /**
  * Checks to see if the cursor is over a control point, for cursor hover effect
- * @param {Glyph or ComponentInstance} item - what Glyph, Ligature, ComponentInstance, or Component to check
+ * @param {Glyph | ComponentInstance | Array} item - what Glyph, Ligature, ComponentInstance, or Component to check
  * @param {Number} x - x to check
  * @param {Number} y - y to check
- * @param {Boolean} noHandles - only check for Path Points, not Handles
- * @returns {Boolean}
+ * @param {Boolean=} noHandles - only check for Path Points, not Handles
+ * @returns {Object | false}
  */
 export function isOverControlPoint(item, x, y, noHandles) {
 	// log(`isOverControlPoint`, 'start');
@@ -34,7 +38,7 @@ export function isOverControlPoint(item, x, y, noHandles) {
 	let result = false;
 	if (item) {
 		if (Array.isArray(item)) {
-			result = isOverOneOfThese(item, x, y, noHandles);
+			result = isOverOneOfThese(item, x, y);
 		} else if (item.objType === 'Glyph' || item.objType === 'VirtualGlyph') {
 			if (item.shapes && item.shapes.length) {
 				result = isOverGlyphControlPoint(item, x, y, noHandles);
@@ -122,7 +126,7 @@ export function isOverFirstPoint(path, x, y) {
  * @param {Number} x - mouse x position
  * @param {Number} y - mouse y position
  * @param {Boolean} noHandles - Eliminates checking for handles in multi-select situations
- * @returns {Object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
+ * @returns {Object | false} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
  */
 function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
 	// log(`isOverPathPointControlPoint`, 'start');

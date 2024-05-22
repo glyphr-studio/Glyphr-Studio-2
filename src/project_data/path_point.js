@@ -1,5 +1,6 @@
-import { calculateAngle, calculateLength, round, xyPointsAreClose } from '../common/functions.js';
+import { calculateAngle, calculateLength, parseNumber, round, xyPointsAreClose } from '../common/functions.js';
 import { ControlPoint } from './control_point.js';
+import { Coord } from './coord.js';
 import { GlyphElement } from './glyph_element.js';
 
 /**
@@ -12,11 +13,12 @@ import { GlyphElement } from './glyph_element.js';
 export class PathPoint extends GlyphElement {
 	/**
 	 * Create a PathPoint
-	 * @param {ControlPoint} p - Main control point
-	 * @param {ControlPoint} h1 - First handle
-	 * @param {ControlPoint} h2 - Second handle
-	 * @param {String} type - corner, flat, or symmetric
-	 * @param {Object} parent - link to the parent Path object
+	 * @param {Object} arg
+	 * @param {ControlPoint | undefined =} arg.p - Main control point
+	 * @param {ControlPoint | undefined =} arg.h1 - First handle
+	 * @param {ControlPoint | undefined =} arg.h2 - Second handle
+	 * @param {String =} arg.type - corner, flat, or symmetric
+	 * @param {Object =} arg.parent - link to the parent Path object
 	 */
 	constructor({ p, h1, h2, type = 'corner', parent = false } = {}) {
 		// log(`PathPoint.constructor`, 'start');
@@ -56,7 +58,7 @@ export class PathPoint extends GlyphElement {
 		}
 
 		if (verbose) re.objType = this.objType;
-		if (!verbose && this.__ID) delete this.__ID;
+		// if (!verbose && this.__ID) delete this.__ID;
 
 		return re;
 	}
@@ -64,13 +66,13 @@ export class PathPoint extends GlyphElement {
 	/**
 	 * Create a nicely-formatted string for this object
 	 * @param {Number} level - how far down we are
-	 * @param {Number} num - increment designator for arrays
+	 * @param {Number | Boolean} num - increment designator for arrays
 	 * @returns {String}
 	 */
 	print(level = 0, num = false) {
 		let ind = '';
 		for (let i = 0; i < level; i++) ind += '  ';
-		let pNum = parseInt(num) ? ` ${parseInt(num)}` : '';
+		let pNum = parseNumber(num) ? ` ${parseNumber(num)}` : '';
 		let re = `${ind}{PathPoint${pNum}\n`;
 		ind += '  ';
 
@@ -94,7 +96,7 @@ export class PathPoint extends GlyphElement {
 	 * @returns {ControlPoint}
 	 */
 	get p() {
-		return this._p;
+		return this._p || new ControlPoint();
 	}
 
 	/**
@@ -102,7 +104,7 @@ export class PathPoint extends GlyphElement {
 	 * @returns {ControlPoint}
 	 */
 	get h1() {
-		return this._h1;
+		return this._h1 || new ControlPoint();
 	}
 
 	/**
@@ -110,7 +112,7 @@ export class PathPoint extends GlyphElement {
 	 * @returns {ControlPoint}
 	 */
 	get h2() {
-		return this._h2;
+		return this._h2 || new ControlPoint();
 	}
 
 	/**
@@ -118,12 +120,12 @@ export class PathPoint extends GlyphElement {
 	 * @returns {String} type - symmetric / flat / corner
 	 */
 	get type() {
-		return this._type;
+		return this._type || 'corner';
 	}
 
 	/**
 	 * Figure out where this point is in the overall path
-	 * @returns {Number}
+	 * @returns {Number | Boolean}
 	 */
 	get pointNumber() {
 		if (!this.parent) return false;
@@ -144,9 +146,10 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * set the main point
-	 * @param {ControlPoint} newPoint
+	 * @param {ControlPoint | undefined} newPoint
 	 */
-	set p(newPoint = {}) {
+	set p(newPoint) {
+		if (!newPoint) newPoint = new ControlPoint();
 		newPoint.type = 'p';
 		this._p = new ControlPoint(newPoint);
 		this._p.parent = this;
@@ -154,11 +157,16 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * set the first handle
-	 * @param {ControlPoint} newPoint
+	 * @param {ControlPoint | undefined} newPoint
 	 */
-	set h1(newPoint = {}) {
-		if (!newPoint.coord) {
-			newPoint.coord = { x: this.p.x - 50, y: this.p.y };
+	set h1(newPoint) {
+		let needToInitialize = false;
+		if (!newPoint) {
+			newPoint = new ControlPoint();
+			needToInitialize = true;
+		}
+		if (!newPoint.coord || needToInitialize) {
+			newPoint.coord = new Coord({ x: this.p.x - 50, y: this.p.y });
 			newPoint.use = false;
 		}
 		newPoint.type = 'h1';
@@ -168,11 +176,16 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * set the second handle
-	 * @param {ControlPoint} newPoint
+	 * @param {ControlPoint | undefined} newPoint
 	 */
-	set h2(newPoint = {}) {
-		if (!newPoint.coord) {
-			newPoint.coord = { x: this.p.x + 50, y: this.p.y };
+	set h2(newPoint) {
+		let needToInitialize = false;
+		if (!newPoint) {
+			newPoint = new ControlPoint();
+			needToInitialize = true;
+		}
+		if (!newPoint.coord || needToInitialize) {
+			newPoint.coord = new Coord({ x: this.p.x + 50, y: this.p.y });
 			newPoint.use = false;
 		}
 		newPoint.type = 'h2';
@@ -207,8 +220,8 @@ export class PathPoint extends GlyphElement {
 		// log(`PathPoint.updatePathPointPosition`, 'start');
 		// log(`control point ${controlPoint} dx ${dx} dy ${dy}`);
 
-		dx = parseFloat(dx);
-		dy = parseFloat(dy);
+		dx = parseNumber(dx);
+		dy = parseNumber(dy);
 
 		dx = Number.isFinite(dx) ? dx : 0;
 		dy = Number.isFinite(dy) ? dy : 0;
@@ -252,10 +265,10 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Moves one handle to be symmetrical with the other
-	 * @param {String} hold - Handle to not move while making symmetric
+	 * @param {String | Boolean =} hold - Handle to not move while making symmetric
 	 * @returns {PathPoint}
 	 */
-	makeSymmetric(hold) {
+	makeSymmetric(hold = false) {
 		// log(`PathPoint.makeSymmetric`, 'start');
 		// log(`hold: ${hold}`);
 		this._type = 'symmetric';
@@ -276,7 +289,7 @@ export class PathPoint extends GlyphElement {
 					this.h2.use = true;
 					// log(`Handles and points are all in the same place`);
 					// log('PathPoint.makeSymmetric', 'end');
-					return;
+					return this;
 				}
 			}
 		}
@@ -329,10 +342,10 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Moves one handle to be inline with the other, while maintaining handle length
-	 * @param {String} hold - handle to not move
+	 * @param {String | Boolean =} hold - handle to not move
 	 * @returns {PathPoint}
 	 */
-	makeFlat(hold) {
+	makeFlat(hold = false) {
 		// log('PathPoint.makeFlat', 'start');
 		// log(`Point position: ${this.p.x} / ${this.p.y}`);
 
@@ -342,7 +355,7 @@ export class PathPoint extends GlyphElement {
 		if (this.isFlat()) {
 			// log(`This path point is already flat.`);
 			// log('PathPoint.makeFlat', 'end');
-			return;
+			return this;
 		}
 
 		if (!hold) {
@@ -359,7 +372,7 @@ export class PathPoint extends GlyphElement {
 					this.h1.x += 100;
 					// log(`Handles and points are all in the same place`);
 					// log('PathPoint.makeFlat', 'end');
-					return;
+					return this;
 				}
 			}
 			// log(`hold: ${hold}`);
@@ -511,7 +524,7 @@ export class PathPoint extends GlyphElement {
 	 * @param {Boolean} doNotResolvePointType - After updating, skip auto-resolving the point type
 	 * @returns {PathPoint}
 	 */
-	makePointedTo(px, py, length = false, handle = 'h2', doNotResolvePointType = false) {
+	makePointedTo(px, py, length = 0, handle = 'h2', doNotResolvePointType = false) {
 		// figure out angle
 		const adj1 = this.p.x - px;
 		const opp1 = this.p.y - py;
@@ -552,7 +565,7 @@ export class PathPoint extends GlyphElement {
 	/**
 	 * Rotate Point and Handles around a center of rotation
 	 * @param {Number} angle - how much to rotate (radians)
-	 * @param {XYPoint} about - x/y point center of rotation
+	 * @param {Object} about - x/y point center of rotation
 	 * @returns {PathPoint}
 	 */
 	rotate(angle, about) {

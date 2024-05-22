@@ -68,7 +68,7 @@ export function handleKeyPress(event) {
 	// Ctrl
 	if (ehd.isCtrlDown) {
 		// Show multi-selectable stuff on the canvas
-		editor.editCanvas.redraw({ calledBy: 'Event Handler - Keydown Ctrl for multi select' });
+		editor.editCanvas.redraw();
 	}
 
 	// Ctrl+A - Select All
@@ -124,25 +124,25 @@ export function handleKeyPress(event) {
 	// left
 	if (key === 'left' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
-		nudge(-1, 0, event);
+		nudge(-1, 0);
 	}
 
 	// right
 	if (key === 'right' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
-		nudge(1, 0, event);
+		nudge(1, 0);
 	}
 
 	// up
 	if (key === 'up' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
-		nudge(0, 1, event);
+		nudge(0, 1);
 	}
 
 	// down
 	if (key === 'down' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
-		nudge(0, -1, event);
+		nudge(0, -1);
 	}
 
 	// Only allow above stuff on Kerning page

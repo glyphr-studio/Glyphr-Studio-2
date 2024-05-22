@@ -1,3 +1,4 @@
+/// <reference lib="es2021" />
 /**
  * FUNCTIONS
  * some random general-use functions
@@ -10,7 +11,7 @@
 /**
  * Gets the first key in an object
  * @param {Object} obj
- * @returns {String}
+ * @returns {String | false}
  */
 export function getFirstID(obj = {}) {
 	const keys = Object.keys(obj);
@@ -21,12 +22,11 @@ export function getFirstID(obj = {}) {
 /**
  * Creates a unique key for an object given a prefix
  * @param {Object} obj
- * @param {String} base - string prefix for the new ID
+ * @param {String =} base - string prefix for the new ID
  * @returns {String}
  */
-export function generateNewID(obj, base) {
+export function generateNewID(obj, base = 'id') {
 	let number = 1;
-	base = base || 'id';
 	let id = '' + base + number;
 	while (obj[id]) {
 		number += 1;
@@ -76,7 +76,7 @@ export function clone(source) {
  * Wrapper for JSON.stringify that does pretty
  * formatting by default
  * @param {Object} obj - object to stringify
- * @param {Boolean} raw - true = don't format
+ * @param {Boolean =} raw - true = don't format
  * @returns {String}
  */
 export function json(obj, raw) {
@@ -175,10 +175,10 @@ export function valuesAreClose(v1, v2, threshold = 1) {
  * Rounds a number to include a .5 so it draws nicely on canvas
  * true = +0.5, false = -0.5
  * @param {Number} num - number to crisp
- * @param {Boolean} dir - direction, plus or minus, to adjust number
+ * @param {Boolean=} dir - direction, plus or minus, to adjust number
  * @returns {Number}
  */
-export function makeCrisp(num, dir) {
+export function makeCrisp(num, dir = false) {
 	const mul = dir ? 1 : -1;
 	return round(num) + 0.5 * mul;
 }
@@ -191,7 +191,7 @@ export function makeCrisp(num, dir) {
  */
 export function round(num, dec = 0) {
 	if (!num) return 0;
-	return Number(Math.round(`${num}e${dec}`) + `e-${dec}`) || 0;
+	return Number(Math.round(+`${num}e${dec}`) + `e-${dec}`) || 0;
 }
 
 /**
@@ -201,7 +201,7 @@ export function round(num, dec = 0) {
  * @returns {Number}
  */
 export function numSan(num) {
-	num = parseFloat(num);
+	num = parseNumber(num);
 	const stringNumber = '' + num;
 
 	if (stringNumber.indexOf('0000') > -1 || stringNumber.indexOf('9999') > -1) {
@@ -222,6 +222,17 @@ export function isInteger(input) {
 	if (isNaN(input)) return false;
 	if (input !== Math.round(input)) return false;
 	return true;
+}
+
+/**
+ * Tries to make a number out of an input
+ * @param {* =} input - something to check as a number
+ * @returns {Number}
+ */
+export function parseNumber(input = 0) {
+	let result = +input;
+	if (isNaN(result)) return 0;
+	return result;
 }
 
 /**
@@ -262,8 +273,8 @@ export function trim(text = '') {
  */
 export function remove(base = '', searchTerm = '') {
 	base = String(base);
-	base = base.split(searchTerm);
-	base = base.join('');
+	let baseArr = base.split(searchTerm);
+	base = baseArr.join('');
 	return base || '';
 }
 
@@ -433,24 +444,25 @@ export const transformOrigins = [
  * the future position changes based on a given transform origin.
  * @param {Number} deltaWidth - how much the item will change in width
  * @param {Number} deltaHeight - how much the item will change in height
- * @param {Maxes} maxes - item maxes *before* resizing
- * @param {String} transformOrigin - name of the origin position
+ * @param {Object} maxes - item maxes *before* resizing
+ * @param {String | Boolean} transformOrigin - name of the origin position
  * @returns {Object} - deltaX and deltaY to apply after resizing
  */
 export function calculateDeltasFromTransform(
 	deltaWidth = 0,
 	deltaHeight = 0,
 	maxes,
-	transformOrigin
+	transformOrigin = 'baseline-left'
 ) {
 	// log(`calculateDeltasFromTransform`, 'start');
 	// log(`deltaWidth: ${deltaWidth}`);
 	// log(`deltaHeight: ${deltaHeight}`);
 	// log(`transformOrigin: ${transformOrigin}`);
 	// log(maxes.print());
-	if (transformOrigins.indexOf(transformOrigin) < 0) transformOrigin = 'baseline-left';
+	if (transformOrigin === false) transformOrigin = 'baseline-left';
+	else if (transformOrigins.indexOf('' + transformOrigin) < 0) transformOrigin = 'baseline-left';
+	transformOrigin = '' + transformOrigin;
 	// log(`transformOrigin: ${transformOrigin}`);
-
 	let result = {
 		deltaX: 0,
 		deltaY: 0,
@@ -504,8 +516,8 @@ export function calculateDeltasFromTransform(
 
 /**
  * Calculates the angle (in radians) of a handle given a point
- * @param {XYPoint} handle - x/y point of handle
- * @param {XYPoint} point - x/y point of point
+ * @param {Object} handle - x/y point of handle
+ * @param {Object} point - x/y point of point
  * @returns {Number} - Angle (in radians)
  */
 export function calculateAngle(handle, point = { x: 0, y: 0 }) {
@@ -521,8 +533,8 @@ export function calculateAngle(handle, point = { x: 0, y: 0 }) {
 
 /**
  * Calculates the length of a handle, given a point
- * @param {XYPoint} handle - x/y point of handle
- * @param {XYPoint} point - x/y point of point
+ * @param {Object} handle - x/y point of handle
+ * @param {Object} point - x/y point of point
  * @returns {Number}
  */
 export function calculateLength(handle, point) {
@@ -534,9 +546,9 @@ export function calculateLength(handle, point) {
 
 /**
  * Rotates a point a certain number of degrees around a given point
- * @param {XYPoint} point - x/y point to rotate
+ * @param {Object} point - x/y point to rotate
  * @param {Number} angle - how much to rotate (radians)
- * @param {XYPoint} about - x/y point center of rotation
+ * @param {Object} about - x/y point center of rotation
  */
 export function rotate(point, angle, about = { x: 0, y: 0 }) {
 	// log('rotate', 'start');

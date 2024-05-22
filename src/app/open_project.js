@@ -333,7 +333,7 @@ function deselectAllTabs() {
 
 /**
  * Handle file input or drop
- * @param {Object} input - event from drop, or fileHandle from showOpenFilePicker
+ * @param {Object} files - event from drop, or fileHandle from showOpenFilePicker
  */
 async function handleFileInput(files) {
 	// log('handleFileInput', 'start');
@@ -394,8 +394,8 @@ export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	const editor = getProjectEditorImportTarget();
 	setCurrentProjectEditor(editor);
 	if (!glyphrStudioProjectFile) {
-		editor.project = new GlyphrStudioProject({}, 'importProjectDataAndNavigate');
-		const name = document.getElementById('input__new-project-name').value || 'My Font';
+		editor.project = new GlyphrStudioProject({});
+		const name = document.getElementById('input__new-project-name')?.value || 'My Font';
 		editor.project.settings.project.name = name;
 		editor.project.settings.font.family = name;
 	} else {
@@ -459,7 +459,6 @@ function handleDragEnter(event) {
 
 /**
  * Handle DragLeave event
- * @param {Object} event - event
  */
 function handleDragLeave() {
 	// log(`handleDragLeave`, 'start');

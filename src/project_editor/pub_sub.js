@@ -112,7 +112,7 @@ export function publish(topic, data) {
 			related / dependent topics.
 		*/
 
-		let specificItem = false;
+		let specificItem = '';
 		if (this.selectedItem?.objType) specificItem = `current${this.selectedItem.objType}`;
 
 		if (topic === 'currentVirtualGlyph') {
@@ -196,12 +196,13 @@ export function publish(topic, data) {
 /**
  * Sets up an intent to listen for changes based on a keyword, and
  * provides a callback function in case a change is published
- * @param {string or array} topic what keyword to listen for
- * @param {String} subscriberID - the name of the thing listening
- * @param {function} callback - what to do when a change is triggered
+ * @param {Object} arg
+ * @param {String | Array } arg.topic what keyword to listen for
+ * @param {String} arg.subscriberID - the name of the thing listening
+ * @param {Function | Boolean} arg.callback - what to do when a change is triggered
  * @returns nothing
  */
-export function subscribe({ topic = false, subscriberID = '', callback = false }) {
+export function subscribe({ topic, subscriberID = '', callback = false }) {
 	// log(`ProjectEditor.subscribe`, 'start');
 	// log(`topic: ${topic}`);
 	// log(`subscriberID: ${subscriberID}`);
@@ -235,7 +236,7 @@ export function subscribe({ topic = false, subscriberID = '', callback = false }
 	// log(`ProjectEditor.subscribe`, 'end');
 }
 
-export function unsubscribe({ topicToRemove = false, idToRemove = false }) {
+export function unsubscribe({ topicToRemove, idToRemove }) {
 	// log(`ProjectEditor.unsubscribe`, 'start');
 	// log(`topicToRemove: ${topicToRemove}`);
 	// log(`idToRemove: ${idToRemove}`);

@@ -50,7 +50,7 @@ export function drawContextCharacters(ctx) {
 
 	// log(`view: ${json(view, true)}`);
 
-	clearCanvasHotspots(ctx);
+	clearCanvasHotspots();
 
 	// Draw left block
 	if (split.left) {
@@ -155,8 +155,8 @@ export function drawContextCharacters(ctx) {
 
 		const lineColor = getColorFromRGBA(contextCharacters.labelColors.link, alpha);
 		ctx.fillStyle = lineColor;
-		drawEmVerticalLine(ctx, 0, editor.view, false);
-		drawEmVerticalLine(ctx, editor.selectedItem.advanceWidth, editor.view, false);
+		drawEmVerticalLine(ctx, 0, editor.view);
+		drawEmVerticalLine(ctx, editor.selectedItem.advanceWidth, editor.view);
 	}
 
 	// log('drawContextCharacters', 'end');
@@ -328,7 +328,7 @@ function drawBaseline(ctx, x, y, width) {
  * Draws the Guide Lines and Labels ("Extras") for each text block character
  * @param {Object} char - Individual character from a text block
  */
-function drawContextCharacterExtras(ctx, char, roundUp = 'none') {
+function drawContextCharacterExtras(ctx, char) {
 	// log('drawContextCharacterExtras', 'start');
 	// log(char);
 
@@ -359,8 +359,8 @@ function drawContextCharacterExtras(ctx, char, roundUp = 'none') {
 		// Draw vertical lines
 		// log(`drawing vertical line`);
 		ctx.fillStyle = color;
-		drawEmVerticalLine(ctx, cXsX(rightX), editor.view, roundUp);
-		drawEmVerticalLine(ctx, cXsX(currentX), editor.view, roundUp);
+		drawEmVerticalLine(ctx, cXsX(rightX), editor.view);
+		drawEmVerticalLine(ctx, cXsX(currentX), editor.view);
 
 		// Draw kern notation
 		if (char.widths.kern) {
@@ -378,7 +378,7 @@ function drawContextCharacterExtras(ctx, char, roundUp = 'none') {
  * @param {Number} currentX - x position in canvas units
  * @param {Number} advanceWidth - width of the character in canvas units
  * @param {String} color - what color to draw the name
- * @param {Boolean} registerHotspot - register a hotspot for this name?
+ * @param {Boolean} hotspotItemID - register a hotspot for this name?
  */
 function drawCharacterNameExtra(ctx, text, currentX, advanceWidth, color, hotspotItemID = false) {
 	// log('drawCharacterNameExtra', 'start');

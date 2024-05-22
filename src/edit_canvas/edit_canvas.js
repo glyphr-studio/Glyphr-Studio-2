@@ -95,7 +95,7 @@ export class EditCanvas extends HTMLElement {
 			topic: '*',
 			subscriberID: `editCanvas-all`,
 			callback: () => {
-				this.redraw({ calledBy: `editCanvas-all` });
+				this.redraw();
 			},
 		});
 		// log(`EditCanvas.constructor`, 'end');
@@ -124,9 +124,7 @@ export class EditCanvas extends HTMLElement {
 			case 'editing-item-id':
 				this.editingItemID = newValue;
 				// getCurrentProjectEditor().autoFitIfViewIsDefault();
-				this.redraw({
-					calledBy: 'EditCanvas.attributeChangeCallback - attribute: editing-item-id',
-				});
+				this.redraw();
 				break;
 		}
 		// log(`EditCanvas.attributeChangeCallback`, 'end');

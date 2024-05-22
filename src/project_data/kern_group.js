@@ -1,5 +1,5 @@
 import { hexesToChars, validateAsHex } from '../common/character_ids.js';
-import { duplicates } from '../common/functions.js';
+import { duplicates, parseNumber } from '../common/functions.js';
 import { GlyphElement } from './glyph_element.js';
 
 /**
@@ -10,9 +10,10 @@ import { GlyphElement } from './glyph_element.js';
 export class KernGroup extends GlyphElement {
 	/**
 	 * Set up the KernGroup object
-	 * @param {Array} leftGroup - Collection of Unicode values
-	 * @param {Array} rightGroup - Collection of Unicode values
-	 * @param {Number} value - Amount to move leftGroup to the right
+	 * @param {Object} arg
+	 * @param {Array =} arg.leftGroup - Collection of Unicode values
+	 * @param {Array =} arg.rightGroup - Collection of Unicode values
+	 * @param {Number =} arg.value - Amount to move leftGroup to the right
 	 */
 	constructor({ leftGroup = [], rightGroup = [], value = 0 } = {}) {
 		super();
@@ -106,11 +107,14 @@ export class KernGroup extends GlyphElement {
 	 * @returns {String}
 	 */
 	get leftGroupAsString() {
+		/**
+		 * @type {Boolean | String}
+		 */
 		let left = '';
 		if (this.leftGroup) {
 			left = hexesToChars(this.leftGroup.join(''));
 		}
-		return left;
+		return left || '';
 	}
 
 	/**
@@ -118,11 +122,14 @@ export class KernGroup extends GlyphElement {
 	 * @returns {String}
 	 */
 	get rightGroupAsString() {
+		/**
+		 * @type {Boolean | String}
+		 */
 		let right = '';
 		if (this.rightGroup) {
 			right = hexesToChars(this.rightGroup.join(''));
 		}
-		return right;
+		return right || '';
 	}
 
 	// --------------------------------------------------------------
@@ -131,9 +138,9 @@ export class KernGroup extends GlyphElement {
 
 	/**
 	 * Validates and sets the members of the left group
-	 * @param {Array}
+	 * @param {Array} newGroup
 	 */
-	set leftGroup(newGroup = []) {
+	set leftGroup(newGroup)  {
 		newGroup = newGroup.map((value) => validateAsHex(value));
 		newGroup = newGroup.filter(duplicates);
 		this.changed();
@@ -141,9 +148,9 @@ export class KernGroup extends GlyphElement {
 	}
 	/**
 	 * Validates and sets the members of the right group
-	 * @param {Array}
+	 * @param {Array} newGroup
 	 */
-	set rightGroup(newGroup = []) {
+	set rightGroup(newGroup) {
 		newGroup = newGroup.map((value) => validateAsHex(value));
 		newGroup = newGroup.filter(duplicates);
 		this.changed();
@@ -155,7 +162,7 @@ export class KernGroup extends GlyphElement {
 	 * @param {Number} val
 	 */
 	set value(val) {
-		this._value = parseInt(val) || 0;
+		this._value = parseNumber(val) || 0;
 		this.changed();
 	}
 }

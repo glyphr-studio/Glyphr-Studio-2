@@ -21,13 +21,13 @@ export function ioSVG_exportSVGfont() {
 	let timeOutput = timestamp.split('-');
 	timeOutput[0] = timeOutput[0].replace(/\./g, '-');
 	timeOutput[1] = timeOutput[1].replace(/\./g, ':');
-	timeOutput = timeOutput.join(' at ');
+	let timeOutputString = timeOutput.join(' at ');
 
 	let con = `<?xml version="1.0"?>
 <svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<metadata>
 		Project: ${project.settings.project.name}
-		Font exported on ${timeOutput}
+		Font exported on ${timeOutputString}
 		Created with Glyphr Studio - the free, web-based font editor
 		Version: ${app.version}
 		Find out more at www.glyphrstudio.com

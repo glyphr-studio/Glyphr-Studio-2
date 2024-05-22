@@ -8,6 +8,11 @@ export class TabControl {
 		this.targetElement.addEventListener('scroll', closeAllInfoBubbles);
 	}
 
+	/**
+	 *
+	 * @param {String} tabName - name for the tab
+	 * @param {HTMLElement | String} tabContent - what to put in the tab
+	 */
 	registerTab(tabName = 'Tab Name', tabContent = '') {
 		let newTab = {
 			name: tabName,

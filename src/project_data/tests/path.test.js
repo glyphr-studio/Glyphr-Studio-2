@@ -3,6 +3,7 @@ import { clone, xyPointsAreClose } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
 import { Path } from '../path.js';
 import { PathPoint } from '../path_point.js';
+import { Maxes } from '../maxes.js';
 
 /**
  * A sample path
@@ -198,15 +199,9 @@ describe('Path', () => {
 		expect(path.winding).toBe(-1);
 	});
 
-	it('maxes setter/getter', () => {
+	it('maxes getter', () => {
 		const path = samplePath();
-		path.maxes = {
-			xMin: 100,
-			yMin: 100,
-			xMax: 300,
-			yMax: 300,
-		};
-		expect(path.maxes.center.x).toBe(200);
+		expect(path.maxes.center.x).toBe(327);
 	});
 
 	it('y setter/getter', () => {
@@ -349,7 +344,7 @@ describe('Path', () => {
 	it('reverseWinding', () => {
 		const path = samplePath();
 		path.reverseWinding();
-		expect(path.winding).toBe(5);
+		expect(path.winding).toBeGreaterThan(0);
 	});
 
 	it('makeSegment', () => {

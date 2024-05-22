@@ -1,9 +1,10 @@
 import { decToHex } from '../common/character_ids.js';
-import { clone, getFirstID, json, round } from '../common/functions.js';
+import { clone, generateNewID, getFirstID, json, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
+import { isCharInRange } from '../lib/unicode/unicode_blocks.js';
 import { findCharacterRange } from '../pages/settings_project.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { Glyph } from '../project_data/glyph.js';
@@ -31,13 +32,16 @@ import { publish, subscribe, unsubscribe } from './pub_sub.js';
  * in tabs or separate windows, but the App has
  * access to all the Project Editors, enabling
  * cross-project features like glyph copy/paste.
+ *
+ * @class
+ * @public
  */
 export class ProjectEditor {
 	/**
 	 * Initialize a project editor, with defaults
 	 * @param {Object} newProjectEditor
 	 */
-	constructor(newProjectEditor = false) {
+	constructor(newProjectEditor) {
 		// log('ProjectEditor.constructor', 'start');
 		if (newProjectEditor) {
 			// log(`\n⮟Passed: newProjectEditor⮟`);
@@ -48,8 +52,8 @@ export class ProjectEditor {
 		this.loadedFileHandle = false;
 
 		// Project
-		this.project = false;
-		if (newProjectEditor.project) this.project = newProjectEditor.project;
+		this.project;
+		// if (newProjectEditor.project) this.project = newProjectEditor.project;
 		// log(`this.project`);
 		// log(this.project);
 
@@ -149,7 +153,7 @@ export class ProjectEditor {
 	 */
 	get project() {
 		if (!this._project) {
-			this._project = new GlyphrStudioProject({}, 'ProjectEditor GET .project');
+			this._project = new GlyphrStudioProject({});
 			this.initializeHistory(this._project);
 		}
 		return this._project;
@@ -170,7 +174,7 @@ export class ProjectEditor {
 			this.selectedGlyphID = 'glyph-0x41';
 		} else {
 			// log(`Setting to false`);
-			this._project = false;
+			// this._project = false;
 		}
 		// log(`ProjectEditor SET project`, 'end');
 	}
@@ -219,6 +223,7 @@ export class ProjectEditor {
 	/**
 	 * Returns the appropriate Glyph, Ligature or Component
 	 * ID based on the current page
+	 * @returns {String | false}
 	 */
 	get selectedItemID() {
 		if (this.nav.page === 'Characters') return this.selectedGlyphID;
@@ -248,7 +253,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected glyph ID
-	 * @returns {String}
+	 * @returns {String | false}
 	 */
 	get selectedGlyphID() {
 		// log('ProjectEditor GET selectedGlyphID', 'start');
@@ -256,9 +261,13 @@ export class ProjectEditor {
 		if (!this._selectedGlyphID) {
 			const rangeBegin = this.selectedCharacterRange.begin;
 			// Special case Basic Latin (return Capital A, not Space)
-			if (rangeBegin === 0x20) return 'glyph-0x41';
-			// Otherwise, just return the first char of the selected range
-			this._selectedGlyphID = `glyph-${decToHex(rangeBegin)}`;
+			if (rangeBegin === 0x20 && isCharInRange(0x41, this.selectedCharacterRange)) {
+				this._selectedGlyphID = 'glyph-0x41';
+			} else {
+				// Otherwise, just return the first char of the selected range
+				let begin = decToHex(rangeBegin) || '0x41';
+				this._selectedGlyphID = `glyph-${begin}`;
+			}
 		}
 		// log(`RETURNING this._selectedGlyphID: ${this._selectedGlyphID}`);
 		// log('ProjectEditor GET selectedGlyphID', 'end');
@@ -279,7 +288,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected ligature ID
-	 * @returns {String}
+	 * @returns {String | false}
 	 */
 	get selectedLigatureID() {
 		// log(`ProjectEditor GET selectedLigatureID`, 'start');
@@ -301,7 +310,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected component ID
-	 * @returns {String}
+	 * @returns {String | false}
 	 */
 	get selectedComponentID() {
 		if (!this._selectedComponentID) {
@@ -321,14 +330,16 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected kern ID
-	 * @returns {String}
+	 * @returns {String | false}
 	 */
 	get selectedKernGroupID() {
 		// log(`ProjectEditor GET selectedKernGroupID`, 'start');
 		// log(`\n⮟this.project.kerning⮟`);
 		// log(this.project.kerning);
 		if (!this._selectedKernGroupID) {
-			this._selectedKernGroupID = getFirstID(this.project.kerning);
+			let firstID =
+				getFirstID(this.project.kerning) || generateNewID(this.project.kerning, 'kern-');
+			this._selectedKernGroupID = firstID;
 		}
 		const result = this._selectedKernGroupID;
 		// log(`result: ${result}`);
@@ -418,20 +429,22 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected item based on nav.page
-	 * @param {String} id - ID to select
+	 * @param {String} newID - ID to select
 	 */
 	set selectedItemID(newID) {
-		if (newID.startsWith('glyph-')) this.selectedGlyphID = newID;
-		else if (newID.startsWith('comp-')) this.selectedComponentID = newID;
-		else if (newID.startsWith('liga-')) this.selectedLigatureID = newID;
-		else if (newID.startsWith('kern-')) this.selectedKernGroupID = newID;
+		if (typeof newID === 'string') {
+			if (newID.startsWith('glyph-')) this.selectedGlyphID = newID;
+			else if (newID.startsWith('comp-')) this.selectedComponentID = newID;
+			else if (newID.startsWith('liga-')) this.selectedLigatureID = newID;
+			else if (newID.startsWith('kern-')) this.selectedKernGroupID = newID;
+		}
 	}
 
 	/**
 	 * Replaces the current Glyph
-	 * @param {Glyph} newGlyph - new glyph to set
+	 * @param {Glyph | Object} newGlyph - new glyph to set
 	 */
-	set selectedGlyph(newGlyph = {}) {
+	set selectedGlyph(newGlyph) {
 		let id = this.selectedGlyphID;
 		newGlyph = new Glyph(newGlyph);
 		newGlyph.parent = this.project;
@@ -440,7 +453,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected glyph
-	 * @param {String} id - ID to select
+	 * @param {String | false} id - ID to select
 	 */
 	set selectedGlyphID(id) {
 		// log(`ProjectEditor SET selectedGlyphID`, 'start');
@@ -459,9 +472,9 @@ export class ProjectEditor {
 
 	/**
 	 * Replaces the current Ligature
-	 * @param {Glyph} newLigature - new ligature to set
+	 * @param {Glyph | Object} newLigature - new ligature to set
 	 */
-	set selectedLigature(newLigature = {}) {
+	set selectedLigature(newLigature) {
 		let id = this.selectedLigatureID;
 		newLigature = new Glyph(newLigature);
 		newLigature.parent = this.project;
@@ -470,7 +483,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected ligature
-	 * @param {String} id - ID to select
+	 * @param {String | Boolean} id - ID to select
 	 */
 	set selectedLigatureID(id) {
 		if (typeof id !== 'string' || !id.startsWith('liga-')) {
@@ -489,9 +502,9 @@ export class ProjectEditor {
 
 	/**
 	 * Replaces the current Component
-	 * @param {Glyph} newComponent - new component to set
+	 * @param {Glyph | Object} newComponent - new component to set
 	 */
-	set selectedComponent(newComponent = {}) {
+	set selectedComponent(newComponent) {
 		let id = this.selectedComponentID;
 		newComponent = new Glyph(newComponent);
 		newComponent.parent = this.project;
@@ -500,7 +513,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected component
-	 * @param {String} id - ID to select
+	 * @param {String | Boolean} id - ID to select
 	 */
 	set selectedComponentID(id) {
 		if (typeof id !== 'string' || !id.startsWith('comp-')) {
@@ -521,7 +534,7 @@ export class ProjectEditor {
 	 * Replaces the current Kern
 	 * @param {KernGroup} newKern - new kern to set
 	 */
-	set selectedKernGroup(newKern = {}) {
+	set selectedKernGroup(newKern) {
 		let id = this.selectedKernGroupID;
 		newKern = new KernGroup(newKern);
 		this.project.kerning[id] = newKern;
@@ -529,7 +542,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected kern
-	 * @param {String} id - ID to select
+	 * @param {String | false} id - ID to select
 	 */
 	set selectedKernGroupID(id) {
 		if (typeof id !== 'string' || !id.startsWith('kern-')) {
@@ -566,11 +579,15 @@ export class ProjectEditor {
 	// Project-level actions
 	// --------------------------------------------------------------
 
+	/**
+	 * Deletes the selected item, based on the current page
+	 * @param {String | false} page - currently selected page
+	 */
 	deleteSelectedItemFromProject(page = false) {
 		// log(`deleteSelectedItemFromProject`, 'start');
 		// log(`page: ${page}`);
 		// log(`this.nav.page: ${this.nav.page}`);
-		const itemPageName = page || this.nav.page;
+		const itemPageName = page || this.nav.page || 'Overview';
 		// log(`itemPageName: ${itemPageName}`);
 
 		let id;
@@ -579,19 +596,19 @@ export class ProjectEditor {
 		if (itemPageName === 'Characters') {
 			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
-			this.deleteItem(id, this.project.glyphs, unlinkComponentInstances);
+			if(id) this.deleteItem(id, this.project.glyphs, unlinkComponentInstances);
 		} else if (itemPageName === 'Components') {
 			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
 			id = this.selectedComponentID;
-			this.deleteItem(id, this.project.components, unlinkComponentInstances);
+			if(id) this.deleteItem(id, this.project.components, unlinkComponentInstances);
 		} else if (itemPageName === 'Ligatures') {
 			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
 			id = this.selectedLigatureID;
-			this.deleteItem(id, this.project.ligatures, unlinkComponentInstances);
+			if(id) this.deleteItem(id, this.project.ligatures, unlinkComponentInstances);
 		} else if (itemPageName === 'Kerning') {
 			// log(`deleting selectedKernGroupID: ${this.selectedKernGroupID}`);
 			id = this.selectedKernGroupID;
-			this.deleteItem(id, this.project.kerning);
+			if(id) this.deleteItem(id, this.project.kerning);
 		}
 
 		const fallbackAcrossItemType = this.selectFallbackItem(itemPageName);
@@ -603,18 +620,26 @@ export class ProjectEditor {
 		// log(`deleteSelectedItemFromProject`, 'end');
 	}
 
+	/**
+	 *
+	 * @param {String} itemID - ID of item to delete
+	 * @param {Object} projectGroup - collection of project items
+	 * @param {Boolean} unlinkComponentInstances
+	 */
 	deleteItem(itemID, projectGroup, unlinkComponentInstances = false) {
 		const item = this.project.getItem(itemID);
-		let historyTitle = `Deleted ${item.displayType} ${itemID} : ${item.name}`;
-		if (item?.usedIn?.length) {
-			historyTitle += ', and unlinked instances where it was used as a component.';
-			this.history.addWholeProjectChangePreState(historyTitle);
-		} else {
-			this.history.addState(historyTitle, true);
+		if (item) {
+			let historyTitle = `Deleted ${item.displayType} ${itemID} : ${item.name}`;
+			if (item?.usedIn?.length) {
+				historyTitle += ', and unlinked instances where it was used as a component.';
+				this.history.addWholeProjectChangePreState(historyTitle);
+			} else {
+				this.history.addState(historyTitle, true);
+			}
+			resolveItemLinks(item, unlinkComponentInstances);
+			delete projectGroup[itemID];
+			if (item?.usedIn?.length) this.history.addWholeProjectChangePostState();
 		}
-		resolveItemLinks(item, unlinkComponentInstances);
-		delete projectGroup[itemID];
-		if (item?.usedIn?.length) this.history.addWholeProjectChangePostState();
 	}
 
 	/**
@@ -622,6 +647,7 @@ export class ProjectEditor {
 	 * For Glyphs, there is additional logic to stay within the current
 	 * selected range, and to special case Basic Latin order.
 	 * For Ligatures, Components, and Kerns, it's just the first item.
+	 * @param {String | false} page name of object type's page to fallback to
 	 */
 	selectFallbackItem(page = false) {
 		// log(`ProjectEditor.selectFallbackItem`, 'start');
@@ -733,6 +759,7 @@ export class ProjectEditor {
 	// --------------------------------------------------------------
 	/**
 	 * Sets the view for the current work item on the current page
+	 * @param {Object} oa
 	 */
 	set view(oa) {
 		// log(`ProjectEditor SET view`, 'start');
@@ -824,6 +851,11 @@ export class ProjectEditor {
 		this.publish('editCanvasView', this.view);
 	}
 
+	/**
+	 * Calculates a view based on the screen size
+	 * @param {Object} rect - width and height
+	 * @returns {Object} - new View object: dx/dy/dz
+	 */
 	makeAutoFitView(rect = false) {
 		// log(`ProjectEditor.makeAutoFitView`, 'start');
 		// log(`rect:`);
@@ -1019,7 +1051,7 @@ export class ProjectEditor {
 		return this.livePreviews[0];
 	}
 
-	set livePreviewPageOptions(newOptions = {}) {
+	set livePreviewPageOptions(newOptions) {
 		this.livePreviews[0] = new TextBlockOptions(newOptions);
 	}
 
@@ -1029,7 +1061,7 @@ export class ProjectEditor {
 
 	/**
 	 * Save a Glyphr Project Text File
-	 * @param {Boolean} overwrite - for Electron app, overwrite current working file
+	 * @param {Boolean} saveAsCopy - for Electron app, overwrite current working file
 	 */
 	async saveProjectFile(saveAsCopy = false) {
 		// log(`ProjectEditor.saveProjectFile`, 'start');
@@ -1038,7 +1070,7 @@ export class ProjectEditor {
 
 		let saveData = this.project.save();
 
-		const defaultValues = new GlyphrStudioProject({}, 'saveProjectFile');
+		const defaultValues = new GlyphrStudioProject({});
 		saveData = removeDefaultValues(saveData, defaultValues, 'settings');
 
 		if (this.project.settings.app.saveLivePreviews) {
