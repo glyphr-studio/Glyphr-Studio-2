@@ -82,8 +82,8 @@ export function makeElement({
  * without regard for who the parent will be.
  * This function takes a parent and recursively adds collections of
  * children that are contained in arrays.
- * @param {HTMLElement} parentNode - wrapper to add children to
- * @param {HTMLElement | Array} childNodes - child nodes to recursively add to the wrapper
+ * @param {HTMLElement | Element} parentNode - wrapper to add children to
+ * @param {HTMLElement | Element | Array} childNodes - child nodes to recursively add to the wrapper
  */
 export function addAsChildren(parentNode, childNodes = []) {
 	// log(`addAsChildren`, 'start');
