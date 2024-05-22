@@ -67,7 +67,8 @@ export class CharacterRange {
 	// --------------------------------------------------------------
 
 	/**
-	 * For this range, yields char points in order.
+	 * For this range, yields char points in order
+	 * @param {Boolean} showNonCharPoints - include control points in the output
 	 */
 	*generator(showNonCharPoints = false) {
 		if (this.begin <= 0x21 && (this.end === 0x7e || this.end === 0x7f)) {
@@ -132,6 +133,11 @@ export class CharacterRange {
 		return `${this.name} ${this.note}`;
 	}
 
+	/**
+	 * Generates an array of ids in order
+	 * @param {Boolean} showNonCharPoints - include control points in the output
+	 * @returns {Array}
+	 */
 	getMemberIDs(showNonCharPoints = false) {
 		if (this.cachedArray) return this.cachedArray;
 

@@ -231,7 +231,7 @@ export function toggleNavDropdown(parentElement) {
  *	this method gets called from other dropdowns, so we have to know if this is
  *	being called from a control inside a nav menu or from outside of it.
  */
-export function closeAllNavMenus(isChooserMenu) {
+export function closeAllNavMenus(isChooserMenu = false) {
 	// log(`closeAllNavMenus`, 'start');
 	let navMenus = document.querySelectorAll('nav');
 	// log(navMenus);

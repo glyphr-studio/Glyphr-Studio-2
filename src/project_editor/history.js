@@ -14,8 +14,8 @@ import { KernGroup } from '../project_data/kern_group.js';
 export class History {
 	constructor() {
 		this.queue = [];
-		this.initialTimeStamp = false;
-		this.initialProject = false;
+		this.initialTimeStamp = 0;
+		this.initialProject = {};
 	}
 
 	/**
@@ -98,12 +98,14 @@ export class History {
 		const undoButton = document.getElementById('actionButtonUndo');
 		if (undoButton) undoButton.removeAttribute('disabled');
 
-		if (editor.project.settings.app.autoSave) {
-			const app = getGlyphrStudioApp();
-			if (app.settings.dev.mode && app.settings.dev.autoSave) {
-				app.addAutoSaveState();
-			} else {
-				app.addAutoSaveState();
+		if (typeof editor.project !== 'boolean') {
+			if (editor.project.settings.app.autoSave) {
+				const app = getGlyphrStudioApp();
+				if (app.settings.dev.mode && app.settings.dev.autoSave) {
+					app.addAutoSaveState();
+				} else {
+					app.addAutoSaveState();
+				}
 			}
 		}
 	}
@@ -140,8 +142,8 @@ export class History {
 		if (q[0] && q[1]) {
 			if (q[0].itemID !== q[1].itemID) {
 				// Assumes navigate adds an entry to the queue
-				if(q[1].page) editor.nav.page = q[1].page;
-				if(q[1].itemID) editor.selectedItemID = q[1].itemID;
+				if (q[1].page) editor.nav.page = q[1].page;
+				if (q[1].itemID) editor.selectedItemID = q[1].itemID;
 				q.shift();
 				editor.navigate();
 
@@ -166,27 +168,37 @@ export class History {
 			// log(this.initialProject);
 			let baseItemState;
 			let baseItem;
+
 			if (editor.nav.page === 'Characters') {
 				// log(`editor.selectedGlyphID : ${editor.selectedGlyphID}`);
-				baseItem = this.initialProject.glyphs[editor.selectedGlyphID];
-				// log(baseItem);
-				baseItemState = baseItem.save();
+				if (editor.selectedGlyphID) {
+					baseItem = this.initialProject.glyphs[editor.selectedGlyphID];
+					// log(baseItem);
+					baseItemState = baseItem.save();
+				}
 			} else if (editor.nav.page === 'Ligatures') {
 				// log(`editor.selectedLigatureID : ${editor.selectedLigatureID}`);
-				baseItem = this.initialProject.ligatures[editor.selectedLigatureID];
-				// log(baseItem);
-				baseItemState = baseItem.save();
+				if (editor.selectedLigatureID) {
+					baseItem = this.initialProject.ligatures[editor.selectedLigatureID];
+					// log(baseItem);
+					baseItemState = baseItem.save();
+				}
 			} else if (editor.nav.page === 'Components') {
 				// log(`editor.selectedComponentID : ${editor.selectedComponentID}`);
-				baseItem = this.initialProject.components[editor.selectedComponentID];
-				// log(baseItem);
-				baseItemState = baseItem.save();
+				if (editor.selectedComponentID) {
+					baseItem = this.initialProject.components[editor.selectedComponentID];
+					// log(baseItem);
+					baseItemState = baseItem.save();
+				}
 			} else if (editor.nav.page === 'Kerning') {
 				// log(`editor.selectedKernGroupID : ${editor.selectedKernGroupID}`);
-				baseItem = this.initialProject.kerning[editor.selectedKernGroupID];
-				// log(baseItem);
-				baseItemState = baseItem.save();
+				if (editor.selectedKernGroupID) {
+					baseItem = this.initialProject.kerning[editor.selectedKernGroupID];
+					// log(baseItem);
+					baseItemState = baseItem.save();
+				}
 			}
+
 			nextEntry = {
 				itemState: baseItemState,
 				itemID: editor.selectedItemID,
@@ -250,7 +262,7 @@ function makeHistoryEntry({ title = '', itemWasDeleted = false, wholeProjectSave
 
 	if (wholeProjectSave) {
 		// Whole project save point
-		item = new GlyphrStudioProject(editor.project.save(), 'makeHistoryEntry');
+		item = new GlyphrStudioProject(editor.project.save());
 		title = title || `Changes across many items.`;
 		page = false;
 	} else {

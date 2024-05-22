@@ -3,13 +3,13 @@ import paperCore from 'paper/dist/paper-core';
 import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import.js';
 
 const paper = paperCore;
-paper.setup();
+paper.setup('');
 
 /**
  * Combines an array of paths, separating them out by winding
- * @param {Array} paths - paths to combine
+ * @param {Array} gsPaths - paths to combine
  * @param {String} operation - how to combine the paths
- * @returns {Array} - resulting paths
+ * @returns {Array | String} - resulting paths
  */
 export function combinePaths(gsPaths = [], operation = 'unite') {
 	// log(`combinePaths`, 'start');
@@ -143,16 +143,18 @@ function convertToGlyphrStudioPaths(paperPath) {
 	const paperPathData = paperPathSVGData(paperPath);
 	// log(paperPathData);
 	if (paperPathData === '') return [];
-	let newGSPaths = ioSVG_convertSVGTagsToGlyph(
+
+	let newGSPaths = [];
+	let newGSGlyph = ioSVG_convertSVGTagsToGlyph(
 		`<svg><path d="${paperPathData}"></path></svg>`,
 		false
 	);
 
-	if (!newGSPaths.shapes) return [];
-	else newGSPaths = newGSPaths.shapes;
+	if (!newGSGlyph.shapes) return [];
+	else newGSPaths = newGSGlyph.shapes;
 
-	// log(`\n⮟newGSPaths[0]⮟`);
-	// log(clone(newGSPaths[0]));
+	// log(`\n⮟newGSPaths⮟`);
+	// log(clone(newGSPaths));
 	// log(`convertToGlyphrStudioPaths`, 'end');
 	return newGSPaths;
 }
@@ -167,7 +169,9 @@ function paperPathSVGData(paperPath) {
 	// log(paperPath);
 	const pathSVG = paperPath.exportSVG();
 	// log(pathSVG);
-	const result = pathSVG.getAttribute('d');
+	let result = '';
+	if (typeof pathSVG !== 'string') result = pathSVG.getAttribute('d');
+
 	// log(result);
 	// log(`paperPathSVGData`, 'end');
 	return result;
