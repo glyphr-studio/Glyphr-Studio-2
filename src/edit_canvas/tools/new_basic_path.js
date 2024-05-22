@@ -19,6 +19,7 @@ export class Tool_NewBasicPath {
 		this.mousedown = function () {
 			// log(`Tool_NewBasicPath.mousedown`, 'start');
 			const editor = getCurrentProjectEditor();
+
 			const ehd = eventHandlerData;
 			ehd.newBasicPathMaxes = {
 				xMax: cXsX(ehd.mousePosition.x),

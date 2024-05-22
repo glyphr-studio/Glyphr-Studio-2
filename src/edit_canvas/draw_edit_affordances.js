@@ -10,6 +10,7 @@ import {
 	snapRadiansToDegrees,
 } from '../common/functions.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
+import { PathPoint } from '../project_data/path_point.js';
 import { cXsX, cYsY, sXcX, sYcY } from './edit_canvas.js';
 import { eventHandlerData } from './events.js';
 import { canResize } from './events_mouse.js';
@@ -236,7 +237,7 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	}
 
 	const editor = getCurrentProjectEditor();
-	let re = false;
+	let re = '';
 	let ps = canvasUIPointSize;
 	let bb = getBoundingBoxAndHandleDimensions(maxes);
 
@@ -539,7 +540,7 @@ export function drawPoint(point, ctx, isSelected) {
  * @param {PathPoint} point - point to draw
  * @param {Object} ctx - canvas context
  * @param {Boolean} isSelected - draw this as selected
- * @param {Point} next - next Point in the path sequence
+ * @param {Object} next - next Point in the path sequence
  */
 export function drawDirectionalityPoint(point, ctx, isSelected, next) {
 	// ctx.fillStyle = sel? 'white' : accent;
@@ -586,11 +587,11 @@ export function drawDirectionalityPoint(point, ctx, isSelected, next) {
 	ctx.beginPath();
 	ctx.moveTo(rotatedArrow[0][0] + sXcX(point.p.x), rotatedArrow[0][1] + sYcY(point.p.y));
 
-	for (const p of Object.keys(rotatedArrow)) {
-		if (p > 0) {
-			ctx.lineTo(rotatedArrow[p][0] + sXcX(point.p.x), rotatedArrow[p][1] + sYcY(point.p.y));
+	rotatedArrow.forEach((v, i) => {
+		if (i > 0) {
+			ctx.lineTo(rotatedArrow[i][0] + sXcX(point.p.x), rotatedArrow[i][1] + sYcY(point.p.y));
 		}
-	}
+	});
 
 	ctx.lineTo(rotatedArrow[0][0] + sXcX(point.p.x), rotatedArrow[0][1] + sYcY(point.p.y));
 	ctx.fill();
