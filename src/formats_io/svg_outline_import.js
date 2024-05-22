@@ -79,7 +79,7 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true) {
 	});
 
 	const resultGlyph = new Glyph({ shapes: newPaths });
-	resultGlyph.changed(true);
+	resultGlyph.changed();
 
 	// log(`RESULTING paths in a glyph`);
 	// log(resultGlyph);

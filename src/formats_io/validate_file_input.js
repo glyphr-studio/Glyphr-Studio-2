@@ -7,9 +7,9 @@ import { getFirstTagInstance } from './svg_font_import.js';
  * Build the result
  */
 const validationResult = {
-	fileName: false,
-	fileSuffix: false,
-	fileType: false,
+	fileName: '',
+	fileSuffix: '',
+	fileType: '',
 	fileHandle: false,
 	errorMessage: false,
 	content: false,
@@ -29,13 +29,14 @@ let postValidationCallback;
  *  - SVG Font (.svg)
  *  - SVG (.svg)
  * @param {*} fileInput - Any input from the user, hopefully a File
- * @returns {Object} - processed stuff to use
+ * @returns {Promise<any>} - processed stuff to use
  */
 export async function validateSingleFileInput(fileInput, callback) {
 	// log(`validateSingleFileInput`, 'start');
 	postValidationCallback = callback;
 
 	let file;
+	//@ts-ignore
 	if (window.showOpenFilePicker && window.showSaveFilePicker) {
 		validationResult.fileHandle = fileInput;
 		file = await fileInput.getFile();
@@ -112,6 +113,7 @@ function readerValidateFont() {
 	}
 
 	if (font) {
+		//@ts-ignore
 		if (!font?.glyphs?.length) {
 			return failWithError('Font file does not have any glyph data. [FF1]');
 		} else {
@@ -263,8 +265,8 @@ function failWithError(message) {
 /**
  * Tests a semantic version against a threshold
  * @param {Object} test - semVer object to test
- * @param {Object or Array} threshold - semVer as a threshold
- * @returns {Boolean}
+ * @param {Object | Array} threshold - semVer as a threshold
+ * @returns {String}
  */
 export function isSemVerLessThan(test, threshold) {
 	// log(`isSemVerLessThan`, 'start');
@@ -277,7 +279,7 @@ export function isSemVerLessThan(test, threshold) {
 		};
 	}
 
-	let result = false;
+	let result = '';
 	if (test.major < threshold.major) result = 'major';
 	else if (test.major === threshold.major) {
 		if (test.minor < threshold.minor) result = 'minor';
