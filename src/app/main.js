@@ -14,6 +14,7 @@ import { closeAllInfoBubbles, closeAllOptionChoosers } from '../controls/dialogs
 import { closeAllNavMenus } from '../project_editor/navigator.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp, showAppErrorPage } from './app.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 
 // The main app object
 export const GSApp = new GlyphrStudioApp();
@@ -107,6 +108,7 @@ function addGlobalEventListeners() {
 		closeAllOptionChoosers();
 		closeAllInfoBubbles();
 	});
+	//@ts-ignore
 	window.getShipDate = getShipDate;
 	// }
 }
