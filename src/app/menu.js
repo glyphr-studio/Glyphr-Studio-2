@@ -261,9 +261,9 @@ function makeProjectPreviewRow(projectID = 0) {
 	// log(projectEditor);
 
 	let rowWrapper = makeElement({ tag: 'div', className: 'project-preview__row-wrapper' });
-	let superTitle = false;
+	let superTitle;
 	let title = makeElement({ tag: 'h3' });
-	let thumbnail = false;
+	let thumbnail;
 
 	if (projectEditor) {
 		superTitle = makeElement({ className: 'project-preview__super-title' });

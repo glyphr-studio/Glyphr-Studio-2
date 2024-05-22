@@ -294,6 +294,11 @@ export function isSemVerLessThan(test, threshold) {
 	return result;
 }
 
+/**
+ * Turns a SemVer string into an object
+ * @param {String} versionString - string to parse
+ * @returns {Object}
+ */
 export function parseSemVer(versionString) {
 	// log(`parseSemVer`, 'start');
 	// log(`versionString: ${versionString}`);
@@ -305,13 +310,12 @@ export function parseSemVer(versionString) {
 	if (versions.length !== 3) return false;
 
 	const result = {
-		preRelease: false,
 		major: parseInt(versions[0]),
 		minor: parseInt(versions[1]),
 		patch: parseInt(versions[2]),
 	};
 
-	if (prePostDash[1]) result.preRelease = prePostDash[1];
+	if (prePostDash[1]) result.preRelease = prePostDash[1] || false;
 	// log(`Result:`);
 	// log(json(result));
 	// log(`parseSemVer`, 'end');
