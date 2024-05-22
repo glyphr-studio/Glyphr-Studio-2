@@ -266,7 +266,7 @@ export class GlyphrStudioProject {
 	/**
 	 * Get a glyph, ligature, or component by ID
 	 * @param {String} id - which Glyph to return
-	 * @returns {Glyph | false}
+	 * @returns {Glyph | KernGroup | false}
 	 */
 	getItem(id, forceCreateItem = false) {
 		// log('GlyphrStudioProject.getItem', 'start');
