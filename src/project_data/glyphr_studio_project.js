@@ -401,7 +401,7 @@ export class GlyphrStudioProject {
 		}
 
 		if (!hasParent) {
-			this.createRangeForHex(hex, hex === '0x0');
+			this.createRangeForHex(id, id === 0);
 		}
 
 		// log(`GlyphrStudioProject.incrementRangeCountFor`, 'end');
@@ -414,15 +414,15 @@ export class GlyphrStudioProject {
 	 */
 	createRangeForHex(id, createAsHidden = false) {
 		// log(`createRangeForHex`, 'start');
-		// log(`hex: ${hex}`);
+		// log(`id: ${id}`);
 		// log(`createAsHidden: ${createAsHidden}`);
 		const projectRanges = this.settings.project.characterRanges;
-		const newParentRange = new CharacterRange(getParentRange(hex));
+		const newParentRange = new CharacterRange(getParentRange(id));
 		// log(newParentRange);
 		newParentRange.count = 1;
 		if (createAsHidden) newParentRange.enabled = false;
 		projectRanges.push(newParentRange);
-		if (unicodeNonCharPointNames[hex] && hex !== '0x0') this.settings.app.showNonCharPoints = true;
+		if (unicodeNonCharPointNames[id] && id !== 0) this.settings.app.showNonCharPoints = true;
 		// log(`createRangeForHex`, 'end');
 	}
 

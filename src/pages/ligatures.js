@@ -64,7 +64,7 @@ export function makePage_Ligatures() {
 	});
 
 	if (editor.showPageTransitions) content.classList.add('app__page-animation');
-	
+
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
@@ -267,7 +267,7 @@ function addLigature(sequence) {
 	}
 
 	// Test to see if Unicode or Hex notation is being used
-	let prefix = false;
+	let prefix = '';
 	let workingSequence = normalizePrefixes(sequence);
 	if (workingSequence.startsWith('U+')) {
 		workingSequence = workingSequence.split('U+');
@@ -310,6 +310,10 @@ function addLigature(sequence) {
 		return 'Ligature already exists';
 	}
 
+	if (newID === false) {
+		return 'Characters could not be read for the ligature sequence';
+	}
+	
 	project.addItemByType(
 		new Glyph({
 			id: newID,
@@ -325,10 +329,10 @@ function addLigature(sequence) {
 	return project.ligatures[newID];
 }
 
-export function makeLigatureID(sequence) {
+export function makeLigatureID(sequence = '') {
 	// log(`makeLigatureID`, 'start');
 	// log(`sequence: ${sequence}`);
-
+	if (sequence === false) return false;
 	let newID = 'liga';
 	let chars = sequence.split('');
 	chars.forEach((char) => {

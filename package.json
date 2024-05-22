@@ -16,6 +16,7 @@
 		"fix": "eslint src --fix"
 	},
 	"devDependencies": {
+		"@types/jest": "^29.5.12",
 		"@vitest/browser": "^1.2.2",
 		"buffer": "^6.0.3",
 		"eslint-config-prettier": "^8.5.0",
