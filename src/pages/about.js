@@ -144,6 +144,7 @@ function makeLicenseInfo() {
 
 function makeVersionInfo() {
 	const editor = getCurrentProjectEditor();
+	// @ts-ignore
 	const app = window._GlyphrStudioApp;
 	const content = makeElement({
 		innerHTML: `

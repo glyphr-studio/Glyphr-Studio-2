@@ -11,6 +11,10 @@ import { stopCreatingNewPath } from './new_path.js';
 // --------------------------------------------------------------
 // Making tool buttons
 // --------------------------------------------------------------
+/**
+ * Makes the tools buttons
+ * @returns {Array}
+ */
 export function makeEditToolsButtons() {
 	// log('makeEditToolsButtons', 'start');
 	const editor = getCurrentProjectEditor();
@@ -18,13 +22,13 @@ export function makeEditToolsButtons() {
 	if (!editor.nav.isOnEditCanvasPage) {
 		// log('returning, !isOnEditCanvasPage');
 		// log('makeEditToolsButtons', 'end');
-		return '';
+		return [];
 	}
 
 	if (!editor.selectedItemID) {
 		// log('returning, !selectedItemID');
 		// log('makeEditToolsButtons', 'end');
-		return '';
+		return [];
 	}
 
 	// All the various permutations of states

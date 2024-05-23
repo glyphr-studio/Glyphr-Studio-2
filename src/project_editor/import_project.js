@@ -99,11 +99,13 @@ function migrate_Project(oldProject) {
 		const newID = migrate_ItemID(oldID);
 		const chars = hexesToChars(oldID);
 
-		let newGsub = chars.split('').map(charToHex);
-		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID, defaultLSB, defaultRSB);
+		if (chars !== false) {
+			let newGsub = chars.split('').map(charToHex);
+			newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID, defaultLSB, defaultRSB);
 
-		newProject.ligatures[newID].objType = 'Ligature';
-		newProject.ligatures[newID].gsub = newGsub;
+			newProject.ligatures[newID].objType = 'Ligature';
+			newProject.ligatures[newID].gsub = newGsub;
+		}
 	});
 
 	// Components
@@ -339,45 +341,45 @@ function migrate_ComponentInstance(oldItem) {
 }
 
 function migrate_ItemID(oldID) {
-	log(`migrate_ItemID`, 'start');
-	log(`oldID: ${oldID}`);
+	// log(`migrate_ItemID`, 'start');
+	// log(`oldID: ${oldID}`);
 
 	let result = '';
 
 	// Component
 	if (oldID.startsWith('com')) {
-		log(`Detected as Component`);
+		// log(`Detected as Component`);
 		result = `comp-${oldID.split('com')[1]}`;
 	}
 
 	// Kern
 	if (oldID.startsWith('kern')) {
-		log(`Detected as Kern`);
+		// log(`Detected as Kern`);
 		result = `kern-${oldID.split('kern')[1]}`;
 	}
 
 	if (oldID.startsWith('id')) {
-		log(`Detected as Kern (old id format)`);
+		// log(`Detected as Kern (old id format)`);
 		result = `kern-${oldID.split('id')[1]}`;
 	}
 
 	const chars = hexesToChars(oldID);
 	// Ligature
 
-	if (chars.length > 1) {
-		log(`Detected as Ligature`);
-		result = makeLigatureID(chars);
+	if (chars !== false && chars.length > 1) {
+		// log(`Detected as Ligature`);
+		result = makeLigatureID(chars) || '';
 	}
 
 	// Glyph
 
-	if (chars.length === 1) {
-		log(`Detected as Glyph`);
+	if (chars !== false && chars.length === 1) {
+		// log(`Detected as Glyph`);
 		result = `glyph-${validateAsHex(oldID)}`;
-		log(`oldID: ${oldID} \t result: ${result}`);
+		// log(`oldID: ${oldID} \t result: ${result}`);
 	}
 
-	log(`result: ${result}`);
-	log(`migrate_ItemID`, 'end');
+	// log(`result: ${result}`);
+	// log(`migrate_ItemID`, 'end');
 	return result;
 }

@@ -4,6 +4,7 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
+import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 import { isCharInRange } from '../lib/unicode/unicode_blocks.js';
 import { findCharacterRange } from '../pages/settings_project.js';
 import { CharacterRange } from '../project_data/character_range.js';
@@ -88,6 +89,7 @@ export class ProjectEditor {
 		this.showPageTransitions = true;
 
 		// Canvas
+		/** @type {EditCanvas | false} */
 		this.editCanvas = false;
 
 		// Views
@@ -483,7 +485,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected ligature
-	 * @param {String | Boolean} id - ID to select
+	 * @param {String | false} id - ID to select
 	 */
 	set selectedLigatureID(id) {
 		if (typeof id !== 'string' || !id.startsWith('liga-')) {
@@ -513,7 +515,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected component
-	 * @param {String | Boolean} id - ID to select
+	 * @param {String | false} id - ID to select
 	 */
 	set selectedComponentID(id) {
 		if (typeof id !== 'string' || !id.startsWith('comp-')) {
@@ -596,19 +598,19 @@ export class ProjectEditor {
 		if (itemPageName === 'Characters') {
 			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
-			if(id) this.deleteItem(id, this.project.glyphs, unlinkComponentInstances);
+			if (id) this.deleteItem(id, this.project.glyphs, unlinkComponentInstances);
 		} else if (itemPageName === 'Components') {
 			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
 			id = this.selectedComponentID;
-			if(id) this.deleteItem(id, this.project.components, unlinkComponentInstances);
+			if (id) this.deleteItem(id, this.project.components, unlinkComponentInstances);
 		} else if (itemPageName === 'Ligatures') {
 			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
 			id = this.selectedLigatureID;
-			if(id) this.deleteItem(id, this.project.ligatures, unlinkComponentInstances);
+			if (id) this.deleteItem(id, this.project.ligatures, unlinkComponentInstances);
 		} else if (itemPageName === 'Kerning') {
 			// log(`deleting selectedKernGroupID: ${this.selectedKernGroupID}`);
 			id = this.selectedKernGroupID;
-			if(id) this.deleteItem(id, this.project.kerning);
+			if (id) this.deleteItem(id, this.project.kerning);
 		}
 
 		const fallbackAcrossItemType = this.selectFallbackItem(itemPageName);

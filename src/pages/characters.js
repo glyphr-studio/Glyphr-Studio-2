@@ -1,6 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { closeAllInfoBubbles } from '../controls/dialogs/dialogs.js';
+import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
@@ -9,6 +10,7 @@ import {
 	makeNavButtonContent,
 	toggleNavDropdown,
 } from '../project_editor/navigator.js';
+import { ProjectEditor } from '../project_editor/project_editor.js';
 
 /**
  * Page > Characters
@@ -17,6 +19,7 @@ import {
  */
 export function makePage_Characters() {
 	// log(`makePage_Characters`, 'start');
+	/** @type {ProjectEditor} */
 	const editor = getCurrentProjectEditor();
 	// log('current ProjectEditor');
 	// log(editor);
@@ -124,9 +127,9 @@ export function makePage_Characters() {
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
 			removeStopCreatingNewPathButton();
-			if (editor.editCanvas.redraw) {
-				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath' });
-			}
+			/** @type {EditCanvas} */
+			const canvas = editor.editCanvas;
+			if (canvas.redraw) canvas.redraw();
 		},
 	});
 
@@ -134,9 +137,9 @@ export function makePage_Characters() {
 		topic: 'whichPathPointIsSelected',
 		subscriberID: 'editCanvas.selectedPathPoint',
 		callback: () => {
-			if (editor.editCanvas.redraw) {
-				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPathPoint' });
-			}
+			/** @type {EditCanvas} */
+			const canvas = editor.editCanvas;
+			if (canvas.redraw) canvas.redraw();
 		},
 	});
 
