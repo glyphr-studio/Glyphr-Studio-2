@@ -2,7 +2,9 @@ import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { parseSemVer } from '../formats_io/validate_file_input.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
+import { ProjectEditor } from '../project_editor/project_editor.js';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
@@ -34,6 +36,7 @@ export class GlyphrStudioApp {
 
 		// Project Editors
 		this.projectEditors = [];
+		/** @type {ProjectEditor | false} */
 		this.selectedProjectEditor = false;
 
 		// Current import target

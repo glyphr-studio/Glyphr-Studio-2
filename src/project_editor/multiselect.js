@@ -555,6 +555,7 @@ export class MultiSelectShapes extends MultiSelect {
 		// log('MultiSelectedShapes.isOverBoundingBoxHandle', 'start');
 		// log('passed x/y: ' + px + '/' + py);
 
+		/** @type {String | false} */
 		let re = false;
 		if (this.members.length === 0) {
 			// log('no members, returning false');
