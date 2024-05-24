@@ -1040,7 +1040,7 @@ export class Path extends GlyphElement {
 	/**
 	 * Adds a Path Point to the end of this path
 	 * @param {PathPoint} newPoint - Path Point to add
-	 * @returns {PathPoint} - reference to the added point
+	 * @returns {PathPoint | Object} - reference to the added point
 	 */
 	addPathPoint(newPoint) {
 		// log('Path.addPathPoint', 'start');

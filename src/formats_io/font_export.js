@@ -278,7 +278,7 @@ async function generateOneGlyph(currentExportItem) {
 
 	// Name
 	const hexID = decToHex(num);
-	const thisName = hexID? getUnicodeShortName(hexID) : 'name';
+	const thisName = hexID ? getUnicodeShortName(hexID) : 'name';
 	// log(`decToHex(num): ${decToHex(num)}`);
 	// log(`thisName: ${thisName}`);
 
@@ -351,7 +351,9 @@ function generateLigatureExportName(lig) {
 	let result = 'lig';
 
 	lig.gsub.forEach((char) => {
-		let shortName = getUnicodeShortName(decToHex(char));
+		const hex = decToHex(char);
+		let shortName;
+		if (hex) shortName = getUnicodeShortName(hex);
 		if (!shortName || shortName === '[name not found]') shortName = '?';
 		result += '.' + shortName;
 	});

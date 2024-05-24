@@ -10,7 +10,7 @@ export class ControlPoint extends GlyphElement {
 	/**
 	 * Create a ControlPoint
 	 * @param {Object} arg
-	 * @param {Object =} arg.coord - position of the handle
+	 * @param {Coord | Object =} arg.coord - position of the handle
 	 * @param {Boolean =} arg.use - show or hide the handle
 	 * @param {Boolean =} arg.xLock - lock movement in the x direction
 	 * @param {Boolean =} arg.yLock - lock movement in the y direction
@@ -18,7 +18,7 @@ export class ControlPoint extends GlyphElement {
 	 * @param {String =} arg.type - p, h1, or h2
 	 */
 	constructor({
-		coord = { x: 0, y: 0 },
+		coord = {},
 		use = true,
 		xLock = false,
 		yLock = false,

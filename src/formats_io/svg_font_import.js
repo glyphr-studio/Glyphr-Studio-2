@@ -38,7 +38,6 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 	let charCounter = 0;
 	await updateSVGImportProgressIndicator('character', 1);
 
-
 	// log(`\n⮟glyphTags⮟`);
 	// log(glyphTags);
 
@@ -73,7 +72,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 			}
 			// log(`attributes.unicode: |${attributes.unicode}| parsed as ${uni}`);
 
-			if (uni === false || uni === '0x0') {
+			if (uni[0] === '0x0') {
 				// Check for .notdef
 				// log('!!! Skipping '+glyphName+' NO UNICODE !!!');
 				glyphTags.splice(charCounter, 1);
@@ -93,26 +92,30 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 					// It's a GLYPH
 					await updateSVGImportProgressIndicator('character', charCounter);
 					// log(`Detected Glyph`);
-					uni = uni[0];
-					project.incrementRangeCountFor(uni);
-					newGlyph.id = `glyph-${uni}`;
+					const single = uni[0];
+					project.incrementRangeCountFor(single);
+					newGlyph.id = `glyph-${single}`;
 					// log(newGlyph);
-					finalGlyphs[`glyph-${uni}`] = newGlyph;
-					if (getUnicodeName(uni) === '[name not found]') {
+					finalGlyphs[`glyph-${single}`] = newGlyph;
+					if (getUnicodeName(single) === '[name not found]') {
 						project.settings.app.showNonCharPoints = true;
 					}
 				} else {
 					// It's a LIGATURE
 					await updateSVGImportProgressIndicator('ligature', charCounter);
 					// log(`Detected Ligature`);
-					uni = uni.join('');
-					// log(`uni: ${uni}`);
-					const chars = hexesToChars(uni);
+					const joined = uni.join('');
+					// log(`joined: ${joined}`);
+					const chars = hexesToChars(joined);
 					// log(`chars: ${chars}`);
-					const newID = makeLigatureID(chars);
-					newGlyph.id = newID;
-					newGlyph.gsub = hexesToHexArray(uni);
-					finalLigatures[newID] = newGlyph;
+					if (chars) {
+						const newID = makeLigatureID(chars);
+						if (newID) {
+							newGlyph.id = newID;
+							newGlyph.gsub = hexesToHexArray(joined);
+							finalLigatures[newID] = newGlyph;
+						}
+					}
 				}
 			}
 			// Done with loop, advance charCounter
@@ -136,7 +139,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 		const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG, false);
 		const advanceWidth = parseInt(missingGlyphAttributes['horiz-adv-x']);
 		newGlyph.advanceWidth = advanceWidth;
-		project.incrementRangeCountFor('0x0');
+		project.incrementRangeCountFor(0);
 		newGlyph.id = `glyph-0x0`;
 		finalGlyphs[`glyph-0x0`] = newGlyph;
 		// log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
