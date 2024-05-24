@@ -52,7 +52,7 @@ export function makePage_Settings() {
 // --------------------------------------------------------------
 // Individual settings
 // --------------------------------------------------------------
-export function makeOneSettingsRow(groupName, propertyName, callback = false) {
+export function makeOneSettingsRow(groupName, propertyName, callback) {
 	// log(`makeOneSettingsRow`, 'start');
 	// log(`groupName: ${groupName}`);
 	// log(`propertyName: ${propertyName}`);
@@ -83,6 +83,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback = false) {
 		});
 
 		input.addEventListener('change', (event) => {
+			// @ts-ignore
 			let newValue = parseInt(event.target.value);
 			if (isNaN(newValue)) {
 				showToast(`Could not save value - needs to be a number.`);
@@ -100,6 +101,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback = false) {
 		});
 
 		input.addEventListener('change', (event) => {
+			// @ts-ignore
 			let newValue = sanitizeValueWithJSON(event.target.value);
 			settings[groupName][propertyName] = newValue;
 			if (callback) callback();

@@ -11,10 +11,10 @@ import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 /* Other stuff */
 import asciiLogo from '../common/graphics/ascii-wordmark-vertical.txt?raw';
 import { closeAllInfoBubbles, closeAllOptionChoosers } from '../controls/dialogs/dialogs.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { closeAllNavMenus } from '../project_editor/navigator.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp, showAppErrorPage } from './app.js';
-import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 
 // The main app object
 export const GSApp = new GlyphrStudioApp();
@@ -97,6 +97,8 @@ function addGlobalEventListeners() {
 	// if (!getGlyphrStudioApp().settings.dev.mode) {
 	window.addEventListener('mouseup', (event) => {
 		let navElement = document.querySelector('nav');
+
+		// @ts-ignore
 		if (!(navElement && navElement.contains(event.target))) {
 			closeAllNavMenus();
 			closeAllOptionChoosers();
@@ -108,7 +110,7 @@ function addGlobalEventListeners() {
 		closeAllOptionChoosers();
 		closeAllInfoBubbles();
 	});
-	//@ts-ignore
+	// @ts-ignore
 	window.getShipDate = getShipDate;
 	// }
 }
@@ -153,10 +155,6 @@ export function getCurrentProject() {
  */
 export function getCurrentProjectEditor() {
 	const app = getGlyphrStudioApp();
-	if (!app.selectedProjectEditor) {
-		if (!app.projectEditors[0]) app.projectEditors[0] = new ProjectEditor();
-		app.selectedProjectEditor = app.projectEditors[0];
-	}
 	return app.selectedProjectEditor;
 }
 
@@ -176,7 +174,6 @@ export function setCurrentProjectEditor(newEditor) {
 export function getProjectEditorImportTarget() {
 	// log(`getProjectEditorImportTarget`, 'start');
 	const app = getGlyphrStudioApp();
-	if (!app.editorImportTarget) app.editorImportTarget = getCurrentProjectEditor();
 	// log(`getProjectEditorImportTarget`, 'end');
 	return app.editorImportTarget;
 }

@@ -151,6 +151,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 		newInput.addEventListener('lock', (event) => {
 			// log(`makeSingleInput LOCK event`, 'start');
 			// log(event);
+			// @ts-ignore
 			if (event.detail.isLocked) {
 				item.lock(property);
 			} else {
@@ -274,6 +275,7 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 	if (item[property]) newCheckbox.setAttribute('checked', '');
 
 	newCheckbox.addEventListener('change', (event) => {
+		// @ts-ignore
 		let newValue = event.target.checked;
 		item[property] = !!newValue;
 		if (thisTopic) {
@@ -354,8 +356,9 @@ export function makeDirectCheckbox(item, property, callback, id=false) {
 	});
 	if (item[property]) newCheckbox.setAttribute('checked', '');
 	if (id) newCheckbox.setAttribute('id', id);
-	
+
 	newCheckbox.addEventListener('change', (event) => {
+		// @ts-ignore
 		let newValue = event.target.checked;
 		item[property] = !!newValue;
 		if (callback) callback(newValue);

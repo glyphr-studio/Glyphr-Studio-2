@@ -36,7 +36,7 @@ export async function validateSingleFileInput(fileInput, callback) {
 	postValidationCallback = callback;
 
 	let file;
-	//@ts-ignore
+	// @ts-ignore
 	if (window.showOpenFilePicker && window.showSaveFilePicker) {
 		validationResult.fileHandle = fileInput;
 		file = await fileInput.getFile();
@@ -113,7 +113,7 @@ function readerValidateFont() {
 	}
 
 	if (font) {
-		//@ts-ignore
+		// @ts-ignore
 		if (!font?.glyphs?.length) {
 			return failWithError('Font file does not have any glyph data. [FF1]');
 		} else {

@@ -149,6 +149,7 @@ function makeMenu(menuName) {
 			},
 		]);
 		entryPoint.addEventListener('click', (event) => {
+			// @ts-ignore
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
 			insertAfter(entryPoint, makeContextMenu(fileMenuData, rect.x, rect.y + rect.height));
@@ -157,6 +158,7 @@ function makeMenu(menuName) {
 
 	if (menuName === 'Projects') {
 		entryPoint.addEventListener('click', (event) => {
+			// @ts-ignore
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
 			let menuRows = makeContextMenu(
@@ -209,6 +211,7 @@ function makeMenu(menuName) {
 
 	if (menuName === 'Help') {
 		entryPoint.addEventListener('click', (event) => {
+			// @ts-ignore
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
 			insertAfter(
