@@ -223,6 +223,7 @@ function makeCustomGuideRow(guide, number) {
 	});
 	colorButton.addEventListener('input', (event) => {
 		// Get new color
+		// @ts-ignore
 		let rgb = parseColorString(event.target.value);
 		let rgbString = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
 

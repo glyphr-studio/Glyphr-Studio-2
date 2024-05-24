@@ -2,7 +2,6 @@ import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { parseSemVer } from '../formats_io/validate_file_input.js';
-import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
@@ -36,11 +35,10 @@ export class GlyphrStudioApp {
 
 		// Project Editors
 		this.projectEditors = [];
-		/** @type {ProjectEditor | false} */
-		this.selectedProjectEditor = false;
+		this._selectedProjectEditor;
 
 		// Current import target
-		this.editorImportTarget = false;
+		this._editorImportTarget;
 
 		// Settings
 		this.settings = {
@@ -79,7 +77,7 @@ export class GlyphrStudioApp {
 		const dev = this.settings.dev;
 		if (dev.mode) {
 			if (dev.overwriteTitle) document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
-			//@ts-ignore
+			// @ts-ignore
 			window._DEV = _DEV;
 
 			// Test Function
@@ -128,10 +126,61 @@ export class GlyphrStudioApp {
 		this.fadeOutLandingPage();
 
 		// Final dev mode stuff
-		//@ts-ignore
+		// @ts-ignore
 		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw();
 		console.log(this);
 		// log(`GlyphrStudioApp.setUp`, 'end');
+	}
+
+	/**
+	 * Returns the selected Project Editor
+	 * @returns {ProjectEditor}
+	 */
+	get selectedProjectEditor() {
+		if (!this._selectedProjectEditor) {
+			if (this.projectEditors.length === 0) this.projectEditors[0] = new ProjectEditor();
+			this.selectedProjectEditor = this.projectEditors[0];
+		}
+
+		return this._selectedProjectEditor;
+	}
+
+	/**
+	 * Sets the selected Project Editor
+	 * @param {ProjectEditor} editor
+	 */
+	set selectedProjectEditor(editor) {
+		if (this.projectEditors[0] === editor) {
+			this._selectedProjectEditor = this.projectEditors[0];
+		}
+		if (this.projectEditors[1] === editor) {
+			this._selectedProjectEditor = this.projectEditors[1];
+		}
+	}
+
+	/**
+	 * Returns the selected Project Editor Import Target
+	 * @returns {ProjectEditor}
+	 */
+	get editorImportTarget() {
+		if (!this._editorImportTarget) {
+			this._editorImportTarget = this.selectedProjectEditor;
+		}
+
+		return this._editorImportTarget;
+	}
+
+	/**
+	 * Sets the selected Project Editor Import Target
+	 * @param {ProjectEditor} editor
+	 */
+	set editorImportTarget(editor) {
+		if (this.projectEditors[0] === editor) {
+			this._editorImportTarget = this.projectEditors[0];
+		}
+		if (this.projectEditors[1] === editor) {
+			this._editorImportTarget = this.projectEditors[1];
+		}
 	}
 
 	/**
@@ -254,10 +303,10 @@ function addTelemetry() {
 	gScript.setAttribute('async', '');
 	document.head.appendChild(gScript);
 
-	//@ts-ignore
+	// @ts-ignore
 	window.dataLayer = window.dataLayer || [];
 	function gtag() {
-		//@ts-ignore
+		// @ts-ignore
 		window.dataLayer.push(arguments);
 	}
 	gtag('js', new Date());
