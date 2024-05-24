@@ -1,6 +1,7 @@
 import { showError } from '../controls/dialogs/dialogs.js';
 import { SVGtoBezier } from '../lib/svg-to-bezier/svg-to-bezier.js';
 import { ControlPoint } from '../project_data/control_point.js';
+import { Coord } from '../project_data/coord.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
@@ -51,9 +52,12 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true) {
 			let newPoint;
 
 			if (!isPathClosed) {
-				newPoint = new PathPoint({ p: { coord: { x: path[0][0].x, y: path[0][0].y } } });
+				newPoint = new PathPoint();
+				newPoint.p = new ControlPoint({ coord: new Coord({ x: path[0][0].x, y: path[0][0].y }) });
 				if (path[0][1]) {
-					newPoint.h2 = new ControlPoint({ coord: { x: path[0][1].x, y: path[0][1].y } });
+					newPoint.h2 = new ControlPoint({
+						coord: new Coord({ x: path[0][1].x, y: path[0][1].y }),
+					});
 				}
 				thisPath.addPathPoint(newPoint);
 			}
@@ -68,9 +72,14 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true) {
 				// log(`>>>>Bezier path: at(-1) and 0`);
 				thisPath.addPathPoint(makePathPointFromBeziers(path.at(-1), path[0]));
 			} else {
-				newPoint = new PathPoint({ p: { coord: { x: path.at(-1)[3].x, y: path.at(-1)[3].y } } });
+				newPoint = new PathPoint();
+				newPoint.p = new ControlPoint({
+					coord: new Coord({ x: path.at(-1)[3].x, y: path.at(-1)[3].y }),
+				});
 				if (path.at(-1)[2]) {
-					newPoint.h1 = new ControlPoint({ coord: { x: path.at(-1)[2].x, y: path.at(-1)[2].y } });
+					newPoint.h1 = new ControlPoint({
+						coord: new Coord({ x: path.at(-1)[2].x, y: path.at(-1)[2].y }),
+					});
 				}
 				thisPath.addPathPoint(newPoint);
 			}
@@ -101,9 +110,8 @@ function makePathPointFromBeziers(seg1, seg2) {
 		// console.warn(`Segments do not share endpoints`);
 	}
 
-	let newPoint = new PathPoint({
-		p: { coord: { x: seg2[0].x, y: seg2[0].y } },
-	});
+	let newPoint = new PathPoint();
+	newPoint.p = new ControlPoint({ coord: { x: seg2[0].x, y: seg2[0].y } });
 
 	if (seg1[2]) {
 		newPoint.h1 = new ControlPoint({ coord: { x: seg1[2].x, y: seg1[2].y }, use: true });

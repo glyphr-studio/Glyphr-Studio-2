@@ -329,7 +329,7 @@ function importOneLigature(otfLigature, otfFont) {
 		importedLigature.objType = 'Ligature';
 		const newLigatureID = makeLigatureID(String.fromCodePoint(...newGsub));
 		// log(`newLigatureID: ${newLigatureID}`);
-		importedLigature.id = newLigatureID;
+		if(newLigatureID) importedLigature.id = newLigatureID;
 
 		// Finish up
 		finalLigatures[newLigatureID] = importedLigature;
@@ -392,24 +392,29 @@ function importFontMetadata(font, project) {
 	// log(font);
 	const fontSettings = project.settings.font;
 	const os2 = font.tables.os2;
-	const familyName = getTableValue(font.names.fontFamily) || 'My Font';
+	const familyName = ''+getTableValue(font.names.fontFamily) || 'My Font';
 	project.settings.project.name = familyName;
 
 	fontSettings.name = familyName;
 	fontSettings.upm = 1 * font.unitsPerEm || fontSettings.upm;
 
 	// TODO reconcile conflicting ascender data
-	fontSettings.ascent = 1 * getTableValue(os2.sTypoAscender) || fontSettings.ascent;
+	fontSettings.ascent = 1 * (getTableValue(os2.sTypoAscender) || fontSettings.ascent);
 	// fontSettings.ascent = 1 * font.ascender || fontSettings.ascent;
 
 	// TODO reconcile conflicting descender data
-	fontSettings.descent = -1 * Math.abs(getTableValue(os2.sTypoDescender)) || fontSettings.descent;
+	/** @type {any} */
+	let typoDescender = getTableValue(os2.sTypoDescender);
+	if (typoDescender) {
+		typoDescender = parseFloat(typoDescender);
+		fontSettings.descent = -1 * Math.abs(1* typoDescender);
+	}
 	// fontSettings.descent = -1 * Math.abs(font.descender) || fontSettings.descent;
 
-	fontSettings.capHeight = 1 * getTableValue(os2.sCapHeight) || fontSettings.capHeight;
-	fontSettings.xHeight = 1 * getTableValue(os2.sxHeight) || fontSettings.xHeight;
+	fontSettings.capHeight = 1 * (getTableValue(os2.sCapHeight) || fontSettings.capHeight);
+	fontSettings.xHeight = 1 * (getTableValue(os2.sxHeight) || fontSettings.xHeight);
 	fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
-	fontSettings.lineGap = 1 * getTableValue(os2.sTypoLineGap) || fontSettings.lineGap;
+	fontSettings.lineGap = 1 * (getTableValue(os2.sTypoLineGap) || fontSettings.lineGap);
 
 	fontSettings.family = familyName.substring(0, 31);
 	fontSettings.panose = getTableValue(os2.panose) || '0 0 0 0 0 0 0 0 0 0';
@@ -438,6 +443,7 @@ function getTableValue(val) {
 	// log(`getTableValue`, 'start');
 	// log(`val: ${val}`);
 	try {
+		/** @type {any} */
 		let tableValue = false;
 		if (Array.isArray(val)) {
 			tableValue = val.join(' ');
