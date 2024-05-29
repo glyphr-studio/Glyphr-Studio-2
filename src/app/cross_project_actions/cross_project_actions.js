@@ -21,6 +21,7 @@ import {
 export let sourceEditor;
 export let destinationEditor;
 export let selectedItemIDs = [];
+/** @type {Object | false} */
 export let selectedRange = false;
 
 export function makePage_CrossProjectActions() {

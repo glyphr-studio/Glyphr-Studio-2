@@ -84,6 +84,7 @@ export class DisplayCanvas extends HTMLElement {
 		// log(this.getAttributeNames());
 		this.observedAttrs.forEach((key) => {
 			if (this.hasAttribute(key)) {
+				/** @type {String | Boolean | Number} */
 				let value = this.getAttribute(key);
 				if (key.startsWith('show')) {
 					if (value === 'false') value = false;
@@ -108,6 +109,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(this.canvas);
 
+		// @ts-ignore
 		this.ctx = this.canvas.getContext('2d');
 		this.drawCrisp = false;
 
@@ -174,7 +176,9 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`newWidth: ${newWidth}`);
 		this.height = newHeight;
 		this.width = newWidth;
+		// @ts-ignore
 		this.canvas.height = newHeight;
+		// @ts-ignore
 		this.canvas.width = newWidth;
 
 		// log(this);
@@ -246,6 +250,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
+		// @ts-ignore
 		return this.observedAttrs;
 	}
 
@@ -321,7 +326,7 @@ export class DisplayCanvas extends HTMLElement {
 		}
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
-
+		// @ts-ignore
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		// log('this.textBlock');

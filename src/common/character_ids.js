@@ -326,7 +326,7 @@ export function hexesToChars(input = '') {
 
 /**
  * Convert hexadecimal string to XML format
- * @param {Number} input - hexadecimal
+ * @param {Number | String} input - hexadecimal
  * @returns {String} - String of XML char entities
  */
 export function hexesToXMLHexes(input) {

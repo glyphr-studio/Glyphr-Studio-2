@@ -71,7 +71,7 @@ export function makePage_OpenProject(secondProjectFlag = false) {
 	// Drop and Drag Leave handlers
 	const dropNote = content.querySelector('#open-project__drop-note');
 
-	dropNote.addEventListener('drop', (event) => {
+	dropNote.addEventListener('drop', (/** @type {DragEvent} */ event) => {
 		cancelDefaultEventActions(event);
 		handleFileInput(event?.dataTransfer?.items || []);
 	});
@@ -161,15 +161,19 @@ export function makeOpenProjectTabs() {
 		attributes: { dark: '' },
 		innerHTML: 'or, open file chooser...',
 		onClick: async () => {
+			// @ts-ignore
 			if (window.showOpenFilePicker) {
+				// @ts-ignore
 				const files = await window.showOpenFilePicker();
 				handleFileInput(files);
 			} else {
 				// showError(`Can't open OS File Picker. Try dragging and dropping a file instead.`);
+				// @ts-ignore
 				const fallbackFileChooser = makeElement({ tag: 'input', attributes: { type: 'file' } });
 				fallbackFileChooser.addEventListener('change', (event) => {
 					// log(fallbackFileChooser.files);
 					cancelDefaultEventActions(event);
+					// @ts-ignore
 					handleFileInput(fallbackFileChooser.files);
 				});
 				fallbackFileChooser.click();
