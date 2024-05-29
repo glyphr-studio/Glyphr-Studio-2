@@ -73,10 +73,12 @@ function makeMenu(menuName) {
 	entryPoint.addEventListener('mouseover', closeEveryTypeOfDialog);
 	const editor = getCurrentProjectEditor();
 	if (menuName === 'File') {
+		/** @type {Array} */
 		let fileMenuData = [];
-		if (editor.loadedFileHandle) {
+		if (typeof editor.loadedFileHandle === 'object') {
 			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
-			if (editor.loadedFileHandle?.name) projectDisplayName = editor.loadedFileHandle.name;
+			// @ts-ignore
+			if ( typeof editor.loadedFileHandle?.name === 'string') projectDisplayName = editor.loadedFileHandle.name;
 			fileMenuData.push(
 				{
 					child: makeElement({

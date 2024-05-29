@@ -89,8 +89,8 @@ export class ProjectEditor {
 		this.showPageTransitions = true;
 
 		// Canvas
-		/** @type {EditCanvas | false} */
-		this.editCanvas = false;
+		/** @type {EditCanvas} */
+		this.editCanvas;
 
 		// Views
 		this._views = {};

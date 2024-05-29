@@ -240,6 +240,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 					if (tagName === 'input') newValue = changedItem[property];
 					else newValue = round(changedItem[property], 3);
 					// log(`newValue: ${newValue}`);
+					// @ts-ignore
 					newInput.value = newValue;
 					newInput.setAttribute('value', newValue);
 					// log(`value NEW: ${newInput.value}`);
@@ -253,7 +254,13 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 	return newInput;
 }
 
-export function addAttributeListener(element, listenFor = [], callback = false) {
+/**
+ * Centralized way to add a listener attribute
+ * @param {HTMLElement} element - what to add the listener to
+ * @param {Array | String} listenFor - collection of event names to listen for
+ * @param {Function} callback - what to do
+ */
+export function addAttributeListener(element, listenFor = [], callback) {
 	listenFor = typeof listenFor === 'string' ? [listenFor] : listenFor;
 
 	const mutationCallback = function () {
@@ -311,6 +318,14 @@ function toggleHandleInputs(handle, show) {
 	if (group) group.style.display = show ? 'grid' : 'none';
 }
 
+/**
+ * Creates a label, with options
+ * @param {String} text - text to show
+ * @param {String | false} infoContent - if a string, show an info bubble with the text
+ * @param {String | false} forID - 'for' attribute value
+ * @param {String | false} className - 'class' attribute value
+ * @returns {HTMLElement}
+ */
 export function makeSingleLabel(text, infoContent = false, forID = false, className = false) {
 	let newText = makeElement({ content: text });
 	let newLabel = makeElement({
@@ -355,7 +370,7 @@ export function makeDirectCheckbox(item, property, callback, id=false) {
 		attributes: { type: 'checkbox' },
 	});
 	if (item[property]) newCheckbox.setAttribute('checked', '');
-	if (id) newCheckbox.setAttribute('id', id);
+	if (typeof id === 'string') newCheckbox.setAttribute('id', id);
 
 	newCheckbox.addEventListener('change', (event) => {
 		// @ts-ignore
