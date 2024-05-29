@@ -140,10 +140,10 @@ class MultiSelect {
 	}
 
 	/**
-	 * @returns {PathPoint | Path | Boolean}
+	 * @returns {PathPoint | Path | false}
 	 */
 	get singleton() {
-		let result = false;
+		let result;
 		// log(`MultiSelect GET singleton`, 'start');
 		if (this.members.length === 1) {
 			result = this.members[0];
@@ -151,7 +151,7 @@ class MultiSelect {
 		}
 
 		// log(`MultiSelect GET singleton`, 'end');
-		return result;
+		return result || false;
 	}
 }
 
