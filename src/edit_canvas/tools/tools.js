@@ -197,8 +197,9 @@ export function makeViewToolsButtons() {
 		subscriberID: 'tools.zoomReadout',
 		callback: (newView) => {
 			let zoomReadoutNumber = round(newView.dz * 100, 2);
-			zoomReadout.setAttribute('value', zoomReadoutNumber);
+			zoomReadout.setAttribute('value', '' + zoomReadoutNumber);
 			zoomReadout.innerHTML = `${zoomReadoutNumber}%`;
+			// @ts-ignore
 			zoomReadout.value = `${zoomReadoutNumber}%`;
 		},
 	});
@@ -323,7 +324,7 @@ export function addPathToCurrentItem(newPath) {
 	} else {
 		// log(`passed null, creating new path.`);
 		newPath = new Path({});
-		newPath.name = 'Rectangle ' + (editor.selectedItemPaths.length * 1 + 1);
+		newPath.name = 'Rectangle ' + (editor.selectedItem.shapes.length * 1 + 1);
 	}
 
 	let sg = editor.selectedItem;
