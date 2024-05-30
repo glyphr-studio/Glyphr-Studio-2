@@ -25,7 +25,7 @@ export function isOverOneOfThese(pathPoints = [], x, y) {
 
 /**
  * Checks to see if the cursor is over a control point, for cursor hover effect
- * @param {Glyph | ComponentInstance | Array} item - what Glyph, Ligature, ComponentInstance, or Component to check
+ * @param {any} item - what Glyph, Ligature, ComponentInstance, or Component to check
  * @param {Number} x - x to check
  * @param {Number} y - y to check
  * @param {Boolean=} noHandles - only check for Path Points, not Handles
@@ -133,6 +133,7 @@ function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false)
 	const dz = getCurrentProjectEditor().view.dz;
 	const targetSize = canvasUIPointSize / dz;
 	const test = { x: x, y: y };
+	/** @type {Object | false} */
 	let result = false;
 
 	// log(pathPoint.p);

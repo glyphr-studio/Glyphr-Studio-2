@@ -46,7 +46,6 @@ export async function handlePasteSVGonEditCanvas(event) {
 	// Stop data actually being pasted into div
 	// cancelDefaultEventActions(event);
 
-
 	// log(`\n⮟event.clipboardData⮟`);
 	// log(event.clipboardData);
 	// log(`\n⮟window.clipboardData⮟`);
@@ -54,6 +53,7 @@ export async function handlePasteSVGonEditCanvas(event) {
 	// log(`\n⮟navigator.clipboard⮟`);
 	// log(navigator.clipboard);
 
+	// @ts-ignore
 	const clipboardData = event.clipboardData || window.clipboardData;
 	if (clipboardData) {
 		// log(clipboardData);

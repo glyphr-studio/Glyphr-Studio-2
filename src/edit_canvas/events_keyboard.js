@@ -253,13 +253,13 @@ function nudge(dx, dy) {
 		editor.selectedKernGroup.value += delta;
 		editor.history.addState(`Nudged kern group ${editor.selectedKernGroupID} by ${delta}`);
 		editor.publish('currentKernGroup', editor.selectedKernGroup);
-		editor.editCanvas.redraw({ calledBy: 'Nudge kern value', redrawPanels: false });
+		editor.editCanvas.redraw();
 	} else if (editMode === 'arrow') {
 		const msShapes = editor.multiSelect.shapes;
 		msShapes.updateShapePosition(mx, my);
 		editor.history.addState(`Nudged shape(s) by ${mx}, ${my}`);
 		editor.publish('currentItem', editor.selectedItem);
-		editor.editCanvas.redraw({ calledBy: 'Nudge shape' });
+		editor.editCanvas.redraw();
 	} else if (editMode === 'pen') {
 		const msPoints = editor.multiSelect.points;
 		msPoints.members.forEach((point) => point.updatePathPointPosition('p', mx, my));
@@ -270,7 +270,7 @@ function nudge(dx, dy) {
 			editor.history.addState(`Nudged path point by ${mx}, ${my}`);
 			editor.publish('currentPathPoint', msPoints.singleton);
 		}
-		editor.editCanvas.redraw({ calledBy: 'Nudge path point' });
+		editor.editCanvas.redraw();
 	}
 	// log(`events_keyboard Nudge`, 'end');
 }
@@ -302,7 +302,7 @@ export function handleKeyUp(event) {
 	// Ctrl
 	if (key === 'ctrl' && !ehd.isCtrlDown) {
 		// updateCursor();
-		editor.editCanvas.redraw({ calledBy: 'Event Handler - Keyup Ctrl for multi select' });
+		editor.editCanvas.redraw();
 	}
 
 	// Space

@@ -255,7 +255,7 @@ export function getActionData(name) {
 						name += ' ' + shape.name;
 					});
 					const addedComponent = addComponent(newComponent);
-					addLinkToUsedIn(addedComponent, editor.selectedItemID);
+					if (editor.selectedItemID) addLinkToUsedIn(addedComponent, editor.selectedItemID);
 					const newShape = editor.selectedItem.addOneShape(
 						new ComponentInstance({
 							link: addedComponent.id,
@@ -324,7 +324,7 @@ export function getActionData(name) {
 							newShapes = newShapes.concat(
 								copyShapesFromTo(shape.transformedGlyph, editor.selectedItem)
 							);
-							removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
+							if (editor.selectedItemID) removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
 						}
 					});
 					editor.multiSelect.shapes.deleteShapes();
@@ -728,6 +728,7 @@ export function makeActionsArea_ComponentInstance(test = false) {
 	// Path align actions
 	if (selectedPaths.length > 1 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
+		// @ts-ignore
 		alignActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
 		addChildActions(alignActions, getActionData('alignActions'));
 	}
@@ -898,7 +899,7 @@ export function clipboardPaste() {
 			}
 
 			if (offsetPaths) {
-				newShape.updateShapePosition(clipboard.dx, clipboard.dy, true);
+				newShape.updateShapePosition(clipboard.dx, clipboard.dy);
 			}
 
 			newName = newShape.name;
@@ -922,7 +923,7 @@ export function clipboardPaste() {
 			}
 			newShape.name = newName + newSuffix;
 
-			if (newShape.objType === 'ComponentInstance') {
+			if (newShape.objType === 'ComponentInstance' && newShape.link && editor.selectedItemID) {
 				addLinkToUsedIn(editor.project.getItem(newShape.link), editor.selectedItemID);
 			}
 
@@ -1003,7 +1004,7 @@ function showDialogChooseOtherItem(type) {
 	let content = makeElement({
 		innerHTML: '<h2>Choose another glyph</h2>',
 	});
-	let onClick = false;
+	let onClick;
 
 	if (type === 'copyPaths') {
 		content.innerHTML += `All the paths from the glyph you select will be copied and pasted into this glyph.<br><br>`;

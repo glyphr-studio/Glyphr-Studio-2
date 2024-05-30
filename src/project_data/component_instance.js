@@ -16,7 +16,7 @@ export class ComponentInstance extends GlyphElement {
 	/**
 	 * Create a ComponentInstance
 	 * @param {Object} arg
-	 * @param {Boolean | String =} arg.link - Root component that this instances is based on
+	 * @param {String | false =} arg.link - Root component that this instances is based on
 	 * @param {String =} arg.name - name
 	 * @param {Number =} arg.translateX - horizontal position difference
 	 * @param {Number =} arg.translateY - vertical position difference
@@ -208,7 +208,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get link
-	 * @returns {Boolean | String}
+	 * @returns {String | false}
 	 */
 	get link() {
 		return this._link || false;
@@ -400,7 +400,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set link
-	 * @param {Boolean | String} link
+	 * @param {String | false} link
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set link(link) {

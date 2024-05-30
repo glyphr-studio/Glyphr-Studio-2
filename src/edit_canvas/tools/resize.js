@@ -20,7 +20,7 @@ export class Tool_Resize {
 		this.didStuff = false;
 		this.clickedPath = false;
 		this.historyTitle = 'Path resize tool';
-		eventHandlerData.handle = false;
+		eventHandlerData.handle = '';
 	}
 	// --------------------------------------------------------------
 	// Mouse Down
@@ -31,12 +31,12 @@ export class Tool_Resize {
 		const editor = getCurrentProjectEditor();
 		const msShapes = editor.multiSelect.shapes;
 		const ehd = eventHandlerData;
-		ehd.handle = false;
+		ehd.handle = '';
 		ehd.lastX = ehd.mousePosition.x;
 		ehd.firstX = ehd.mousePosition.x;
 		ehd.lastY = ehd.mousePosition.y;
 		ehd.firstY = ehd.mousePosition.y;
-		ehd.handle = msShapes.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y);
+		ehd.handle = msShapes.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y) || '';
 
 		this.didStuff = false;
 		this.clickedPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
@@ -220,13 +220,13 @@ export class Tool_Resize {
 		this.resizing = false;
 		this.rotating = false;
 		this.monitorForDeselect = false;
-		ehd.handle = false;
+		ehd.handle = '';
 		ehd.lastX = -100;
 		ehd.lastY = -100;
 		ehd.firstX = -100;
 		ehd.firstY = -100;
 		ehd.rotationStartCenter = false;
-		ehd.rotationStartMaxesTopY = false;
+		ehd.rotationStartMaxesTopY = -100;
 		if (ehd.undoQueueHasChanged) editor.history.addState(this.historyTitle);
 		ehd.undoQueueHasChanged = false;
 		editor.publish('currentItem', editor.selectedItem);

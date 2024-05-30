@@ -3,6 +3,7 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
+import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
@@ -140,7 +141,7 @@ class MultiSelect {
 	}
 
 	/**
-	 * @returns {PathPoint | Path | false}
+	 * @returns {any}
 	 */
 	get singleton() {
 		let result;
@@ -338,6 +339,9 @@ export class MultiSelectShapes extends MultiSelect {
 		});
 	}
 
+	/**
+	 * @returns {Glyph}
+	 */
 	get virtualGlyph() {
 		// log(`MultiSelectShapes GET virtualGlyph`, 'start');
 		// needs to be _shapes, otherwise Glyph.shapes setter
