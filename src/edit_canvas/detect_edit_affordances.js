@@ -6,6 +6,14 @@ import { Path } from '../project_data/path';
 import { PathPoint } from '../project_data/path_point';
 import { canvasUIPointSize } from './draw_edit_affordances';
 
+/**
+ * Looks through a collection of path points, checking an x/y value.
+ * Returns a PathPoint if it finds something.
+ * @param {Array} pathPoints - collection of path points to check
+ * @param {Number} x - x value to check
+ * @param {Number} y - y value to check
+ * @returns {PathPoint | false}
+ */
 export function isOverOneOfThese(pathPoints = [], x, y) {
 	// log(`isOverOneOfThese`, 'start');
 	// log(`x: ${x}`);
@@ -35,8 +43,8 @@ export function isOverControlPoint(item, x, y, noHandles) {
 	// log(`isOverControlPoint`, 'start');
 	// log(`item.objType: ${item.objType}`);
 	// log(item);
-	let result = false;
-	if (item) {
+	let result;
+	if (item !== false) {
 		if (Array.isArray(item)) {
 			result = isOverOneOfThese(item, x, y);
 		} else if (item.objType === 'Glyph' || item.objType === 'VirtualGlyph') {
