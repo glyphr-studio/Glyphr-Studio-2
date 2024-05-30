@@ -11,7 +11,7 @@ const validationResult = {
 	fileSuffix: '',
 	fileType: '',
 	fileHandle: false,
-	errorMessage: false,
+	errorMessage: '',
 	content: false,
 };
 
@@ -254,6 +254,11 @@ export function tryToGetProjectVersion(projectData) {
 	return version;
 }
 
+/**
+ * finalizes validation in an error-like way
+ * @param {String} message - description of the error
+ * @returns {false} - because it's an error
+ */
 function failWithError(message) {
 	validationResult.errorMessage = message;
 	// console.warn(message.replace(/[\t\n\r]/gm, ' '));
@@ -322,6 +327,11 @@ export function parseSemVer(versionString) {
 	return result;
 }
 
+/**
+ * Turns a SemVer object into a string
+ * @param {Object} versionObject - object with major, minor, patch, and optionally preRelease info
+ * @returns {String}
+ */
 export function makeSemVerString(versionObject) {
 	const major = versionObject?.major || '0';
 	const minor = versionObject?.minor || '0';
