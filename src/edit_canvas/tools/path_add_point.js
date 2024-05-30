@@ -16,7 +16,7 @@ import { clickTool, getShapeAtLocation } from './tools.js';
 
 export class Tool_PathAddPoint {
 	constructor() {
-		this.previewPoint = false;
+		this.previewPoint;
 	}
 	mousedown(ev) {
 		const editor = getCurrentProjectEditor();

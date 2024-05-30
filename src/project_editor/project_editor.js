@@ -126,7 +126,7 @@ export class ProjectEditor {
 		};
 
 		// Clipboard
-		this.clipboard = false;
+		this.clipboard = {};
 
 		// Dialogs
 		this.closeAllDialogsOverride = false;

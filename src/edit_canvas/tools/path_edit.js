@@ -15,8 +15,8 @@ export class Tool_PathEdit {
 	constructor() {
 		this.dragging = false;
 		this.monitorForDeselect = false;
-		this.controlPoint = false;
-		this.pathPoint = false;
+		this.controlPoint = {};
+		this.pathPoint = {};
 		this.historyTitle = 'Path edit tool';
 	}
 	// --------------------------------------------------------------

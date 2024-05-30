@@ -1,4 +1,10 @@
-import { calculateAngle, calculateLength, parseNumber, round, xyPointsAreClose } from '../common/functions.js';
+import {
+	calculateAngle,
+	calculateLength,
+	parseNumber,
+	round,
+	xyPointsAreClose,
+} from '../common/functions.js';
 import { ControlPoint } from './control_point.js';
 import { Coord } from './coord.js';
 import { GlyphElement } from './glyph_element.js';
@@ -121,6 +127,29 @@ export class PathPoint extends GlyphElement {
 	 */
 	get type() {
 		return this._type || 'corner';
+	}
+
+	/**
+	 * Wrapper for p.xLock
+	 */
+	get xLock() {
+		return this.p.xLock;
+	}
+
+	/**
+	 * Wrapper for p.yLock
+	 */
+	get yLock() {
+		return this.p.yLock;
+	}
+
+	/**
+	 * Return a default name
+	 */
+	get name() {
+		let pointNum = this.pointNumber === false ? '-1' : this.pointNumber;
+		let parentName = this.parent.name;
+		return `${parentName}: Path Point ${pointNum}`;
 	}
 
 	/**

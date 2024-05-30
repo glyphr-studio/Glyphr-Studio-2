@@ -304,7 +304,7 @@ export function getComponentInstancesFromRoot(rootGlyph) {
  * @param {Glyph} item - reference to the item (Glyph, Component, Ligature)
  * @param {String} linkID - itemID where the item is being used as a Component Instance
  */
-export function addLinkToUsedIn(item, linkID) {
+export function addLinkToUsedIn(item, linkID = '') {
 	// log(`addLinkToUsedIn`, 'start');
 	// log(`linkID: ${linkID}`);
 	// log(`usedIn BEFORE:`);

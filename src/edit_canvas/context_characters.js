@@ -17,7 +17,9 @@ const contextCharacters = {
 	chars: '',
 	currentGlyphChar: '',
 	canvasHotspots: [],
+	/** @type {TextBlock | false} */
 	leftBlock: false,
+	/** @type {TextBlock | false} */
 	rightBlock: false,
 	labelColors: {
 		link: 'rgb(214, 71, 0)',
@@ -172,7 +174,11 @@ function splitContextCharacterString(splitChar) {
 	const cChars = contextCharacters.chars;
 	// log(`cChars: ${cChars}`);
 	// log(`splitChar: ${splitChar}`);
-	const result = { left: false, right: false };
+	const result = {};
+	/** @type {String | false} */
+	result.left = false;
+	/** @type {String | false} */
+	result.right = false;
 
 	if (cChars) {
 		const pos = cChars.indexOf(splitChar);
@@ -223,20 +229,22 @@ export function getItemStringAdvanceWidth(textString) {
 	textString.forEach(function (v, i, a) {
 		itemID = project.getItemID(v);
 		// log(`itemID: ${itemID}`);
-		item = project.getItem(itemID);
-		// log(item);
-		if (item) {
-			advanceWidth += item.advanceWidth;
-			// log(`just item advanceWidth: ${advanceWidth}`);
+		if (itemID) {
+			item = project.getItem(itemID);
+			// log(item);
+			if (item) {
+				advanceWidth += item.advanceWidth;
+				// log(`just item advanceWidth: ${advanceWidth}`);
 
-			if (a[i + 1]) {
-				// log(`Next item found:`);
-				// log(a[i + 1]);
-				advanceWidth += calculateKernOffset(v, a[i + 1]);
-				// log(`+= kern for next advanceWidth: ${advanceWidth}`);
+				if (a[i + 1]) {
+					// log(`Next item found:`);
+					// log(a[i + 1]);
+					advanceWidth += calculateKernOffset(v, a[i + 1]);
+					// log(`+= kern for next advanceWidth: ${advanceWidth}`);
+				}
+			} else {
+				advanceWidth += getCurrentProject().defaultAdvanceWidth;
 			}
-		} else {
-			advanceWidth += getCurrentProject().defaultAdvanceWidth;
 		}
 	});
 
@@ -290,9 +298,10 @@ function drawContextCharacterRightLineExtras(ctx, char, block) {
 	// Draw baseline from the first char to the end of the right-hand group
 	// Draw baseline from first char to selected item
 	const editor = getCurrentProjectEditor();
-	const rightHandAdvanceWidth = getItemStringAdvanceWidth(
-		contextCharacters.rightBlock.options.text
-	);
+	let rightHandAdvanceWidth = 0;
+	if (contextCharacters.rightBlock) {
+		rightHandAdvanceWidth = getItemStringAdvanceWidth(contextCharacters.rightBlock.options.text);
+	}
 	// log(`rightHandAdvanceWidth: ${rightHandAdvanceWidth}`);
 	const underlineWidth = rightHandAdvanceWidth * editor.view.dz;
 	// log(`underlineWidth: ${underlineWidth}`);
