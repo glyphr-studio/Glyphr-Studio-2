@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { closeAllNotations } from '../controls/dialogs/dialogs.js';
+import { Glyph } from '../project_data/glyph.js';
 import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
 import { canvasUIPointSize } from './draw_edit_affordances.js';
@@ -306,11 +307,18 @@ export function canResize(handle) {
 	const editor = getCurrentProjectEditor();
 	const msShapes = editor.multiSelect.shapes;
 	let selected = msShapes;
-	if (msShapes.length > 1) selected = msShapes.virtualGlyph;
+	if (msShapes.length > 1) {
+		// @ts-ignore
+		selected = msShapes.virtualGlyph;
+	}
 	let rl = selected.ratioLock;
+	// @ts-ignore
 	let xl = selected.xLock;
+	// @ts-ignore
 	let yl = selected.yLock;
+	// @ts-ignore
 	let wl = selected.wLock;
+	// @ts-ignore
 	let hl = selected.hLock;
 	let yMax = selected.maxes.yMax;
 	let yMin = selected.maxes.yMin;

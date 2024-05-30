@@ -48,15 +48,16 @@ export class EditCanvas extends HTMLElement {
 		this.height = this.getAttribute('height') || 2000;
 
 		// internal properties
-		this.canvas = makeElement({ tag: 'canvas' });
+		/** @type {HTMLCanvasElement} */
+		this.canvas = document.createElement('canvas');
 		this.ctx = this.canvas.getContext('2d');
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
 		shadow.appendChild(this.canvas);
 
-		this.canvas.height = this.height;
-		this.canvas.width = this.width;
+		this.canvas.height = Number(this.height);
+		this.canvas.width = Number(this.width);
 
 		const editor = getCurrentProjectEditor();
 
@@ -139,8 +140,8 @@ export class EditCanvas extends HTMLElement {
 		const project = getCurrentProject();
 		const view = editor.view;
 		const ctx = this.ctx;
-		const width = this.width;
-		const height = this.height;
+		const width = Number(this.width);
+		const height = Number(this.height);
 		const currentItemID = this.editingItemID;
 		// log(`currentItemID: ${currentItemID}`);
 		const advanceWidth = project.getItem(currentItemID)?.advanceWidth || 0;
@@ -248,8 +249,8 @@ export class EditCanvas extends HTMLElement {
 				);
 
 				ctx.fillStyle = accentColors.purple.l60;
-				drawEmVerticalLine(ctx, 0, view, false);
-				drawEmVerticalLine(ctx, kernGroup.value, view, true);
+				drawEmVerticalLine(ctx, 0, view);
+				drawEmVerticalLine(ctx, kernGroup.value, view);
 				drawCharacterKernExtra(ctx, kernGroup.value, view.dx, view.dz);
 
 				let drawItem;

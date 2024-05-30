@@ -10,6 +10,10 @@ import {
 	updateSelectedIDs,
 } from './cross_project_actions';
 
+/**
+ * Cross-project actions: Overwrite Settings page
+ * @param {HTMLElement} parent - wrapper element
+ */
 export function updateContent_overwriteSettings(parent) {
 	parent.innerHTML = '';
 	parent.appendChild(
@@ -30,6 +34,11 @@ export function updateContent_overwriteSettings(parent) {
 	parent.appendChild(updateOverwriteSettingsTable(table));
 }
 
+/**
+ * Updates the items table
+ * @param {Element} table - wrapper
+ * @returns {Element}
+ */
 export function updateOverwriteSettingsTable(table) {
 	table.innerHTML = '';
 	// Table column headers
@@ -76,6 +85,10 @@ export function updateOverwriteSettingsTable(table) {
 	return table;
 }
 
+/**
+ * Make rows for the table
+ * @param {Element} parent - wrapper
+ */
 function makeRows(parent) {
 	// log(`makeRows`, 'start');
 
@@ -182,6 +195,10 @@ function makeRows(parent) {
 	// log(`makeRows`, 'end');
 }
 
+/**
+ * Updates the footer of the page
+ * @param {Element} parent - wrapper
+ */
 export function updateFooter_overwriteSettings(parent) {
 	parent.appendChild(
 		makeElement({
@@ -192,6 +209,9 @@ export function updateFooter_overwriteSettings(parent) {
 	);
 }
 
+/**
+ * Action for the page
+ */
 function overwriteSettings() {
 	// log(`Cross Project Actions - overwriteSettings`, 'start');
 

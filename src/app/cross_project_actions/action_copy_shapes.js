@@ -3,6 +3,7 @@ import { showToast } from '../../controls/dialogs/dialogs';
 import { copyShapesFromTo } from '../../panels/actions';
 import { makeSingleLabel } from '../../panels/cards';
 import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions';
+import { ProjectEditor } from '../../project_editor/project_editor';
 import {
 	clearAllSelections,
 	destinationEditor,
@@ -15,6 +16,10 @@ import {
 	updateSelectedIDs,
 } from './cross_project_actions';
 
+/**
+ * Cross-project actions: Copy Shapes page
+ * @param {HTMLElement} parent - wrapper element
+ */
 export function updateContent_copyShapes(parent) {
 	parent.innerHTML = '';
 	parent.appendChild(
@@ -47,6 +52,12 @@ export function updateContent_copyShapes(parent) {
 	parent.appendChild(table);
 }
 
+/**
+ * Common way to add shape option controls to the top of some pages
+ * @param {Element} parent - wrapper
+ * @param {ProjectEditor} srcEditor - source editor object
+ * @param {ProjectEditor} destEditor - destination editor object
+ */
 export function addCrossProjectCopyShapeOptionControls(parent, srcEditor, destEditor) {
 	let emRatio = destEditor.project.settings.font.upm / srcEditor.project.settings.font.upm;
 
@@ -109,6 +120,11 @@ export function addCrossProjectCopyShapeOptionControls(parent, srcEditor, destEd
 	parent.appendChild(textToNode('<br>'));
 }
 
+/**
+ * Updates the items table
+ * @param {Element} table - wrapper
+ * @returns {Element}
+ */
 export function updateCharacterCopyTable(table) {
 	table.innerHTML = '';
 	// Table column headers
@@ -156,6 +172,11 @@ export function updateCharacterCopyTable(table) {
 	return table;
 }
 
+/**
+ * Make rows for the table
+ * @param {String | Object} range - Components, Ligatures, or Characters
+ * @param {Element} parent - wrapper
+ */
 function makeRows(range, parent) {
 	// log(`makeRows`, 'start');
 	let count = 0;
@@ -244,6 +265,10 @@ function makeRows(range, parent) {
 	// log(`makeRows`, 'end');
 }
 
+/**
+ * Updates the footer of the page
+ * @param {Element} parent - wrapper
+ */
 export function updateFooter_copyShapes(parent) {
 	parent.appendChild(
 		makeElement({
@@ -254,6 +279,9 @@ export function updateFooter_copyShapes(parent) {
 	);
 }
 
+/**
+ * Action for the page
+ */
 function copyShapes() {
 	// log(`Cross Project Actions - copyShapes`, 'start');
 	// log(`\n⮟selectedItemIDs⮟`);
