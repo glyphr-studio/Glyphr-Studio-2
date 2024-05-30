@@ -12,6 +12,10 @@ import {
 	updateSelectedIDs,
 } from './cross_project_actions';
 
+/**
+ * Cross-project actions: Add Components page
+ * @param {HTMLElement} parent - wrapper element
+ */
 export function updateContent_addComponents(parent) {
 	parent.innerHTML = '';
 	parent.appendChild(
@@ -63,6 +67,11 @@ export function updateContent_addComponents(parent) {
 	parent.appendChild(updateAddItemTable(table));
 }
 
+/**
+ * Updates the items table
+ * @param {Element} table - wrapper
+ * @returns {Element}
+ */
 export function updateAddItemTable(table) {
 	table.innerHTML = '';
 	// Table column headers
@@ -104,6 +113,10 @@ export function updateAddItemTable(table) {
 	return table;
 }
 
+/**
+ * Make rows for the table
+ * @param {Element} parent - wrapper
+ */
 function makeRows(parent) {
 	// log(`makeRows`, 'start');
 	let count = 0;
@@ -175,6 +188,10 @@ function makeRows(parent) {
 	// log(`makeRows`, 'end');
 }
 
+/**
+ * Updates the footer of the page
+ * @param {Element} parent - wrapper
+ */
 export function updateFooter_addComponents(parent) {
 	parent.appendChild(
 		makeElement({
@@ -185,6 +202,9 @@ export function updateFooter_addComponents(parent) {
 	);
 }
 
+/**
+ * Action for the page
+ */
 function addComponents() {
 	// log(`Cross Project Actions - addComponents`, 'start');
 	let emRatio =
