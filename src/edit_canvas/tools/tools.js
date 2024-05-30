@@ -3,6 +3,7 @@ import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';
+import { ComponentInstance } from '../../project_data/component_instance.js';
 import { Path } from '../../project_data/path.js';
 import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
@@ -126,6 +127,10 @@ export function makeEditToolsButtons() {
 	return content;
 }
 
+/**
+ * Makes the view control buttons
+ * @returns {Array} - an array of Elements
+ */
 export function makeViewToolsButtons() {
 	// log(`makeViewToolsButtons`, 'start');
 
@@ -240,6 +245,10 @@ export function makeViewToolsButtons() {
 	return [viewButtonElements.pan, responsiveGroup, viewButtonElements.zoomEm, livePreviewPopOut];
 }
 
+/**
+ * Event handler for clicking a tool button
+ * @param {String} tool - which tool was clicked
+ */
 export function clickTool(tool) {
 	// log('clickTool', 'start');
 	const editor = getCurrentProjectEditor();
@@ -267,6 +276,10 @@ export function clickTool(tool) {
 	// log('clickTool', 'end');
 }
 
+/**
+ * Handle switching the tool on the current Editor
+ * @param {String} newTool - which tool to switch to
+ */
 export function switchToolTo(newTool) {
 	// log(`switchToolTo`, 'start');
 	// log(`newTool: ${newTool}`);
@@ -277,7 +290,11 @@ export function switchToolTo(newTool) {
 	// log(`switchToolTo`, 'end');
 }
 
-export function makeKernToolsButtons() {
+/**
+ * Makes the Kern Tool button
+ * @returns {Element}
+ */
+export function makeKernToolButton() {
 	// Kern
 	const editor = getCurrentProjectEditor();
 	const kernToolButton = makeElement({
@@ -308,6 +325,11 @@ export function makeKernToolsButtons() {
 // Button helper functions
 // --------------------------------------------------------------
 
+/**
+ * Adds a given path to the current work item
+ * @param {Path} newPath - Path to add
+ * @returns {Path} - Path that was added, with updated properties
+ */
 export function addPathToCurrentItem(newPath) {
 	// log(`addPathToCurrentItem`, 'start');
 	// log(`name: ${ewPath.name}`);
@@ -366,6 +388,13 @@ export function getShapeAtLocation(cx, cy) {
 	return false;
 }
 
+/**
+ * Returns a true if a clicked x/y is on a shape
+ * @param {Path | ComponentInstance} shape - shape to check
+ * @param {Number} cx - clicked x value
+ * @param {Number} cy - clicked y value
+ * @returns {Boolean}
+ */
 export function isShapeHere(shape, cx, cy) {
 	// log(`isShapeHere`, 'start');
 	// log(`cx: ${cx} / cy: ${cy}`);
@@ -421,6 +450,11 @@ export function isShapeHere(shape, cx, cy) {
 
 let icons = {};
 
+/**
+ * Makes a SVG icon based on options
+ * @param {Object} oa - options
+ * @returns {String} - SVG code
+ */
 export function makeToolButtonSVG(oa) {
 	// log(`makeToolButtonSVG`, 'start');
 	// log(`oa.name: ${oa.name}`);

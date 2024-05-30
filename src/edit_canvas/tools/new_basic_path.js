@@ -5,6 +5,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { isVal, round } from '../../common/functions.js';
 import { ControlPoint } from '../../project_data/control_point.js';
+import { Maxes } from '../../project_data/maxes.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
@@ -135,7 +136,13 @@ export class Tool_NewBasicPath {
 	}
 }
 
-export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
+/**
+ * Makes a rectangular path from a Maxes object
+ * @param {Maxes | Object} maxes - bound object to make the rectangle from
+ * @param {String} name
+ * @returns {Path}
+ */
+export function rectPathFromMaxes(maxes, name = 'Rectangle') {
 	// log(`rectPathFromMaxes`, 'start');
 	// log(JSON.stringify(maxes));
 	let fontSettings = getCurrentProject().settings.font;
@@ -178,7 +185,13 @@ export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
 	return newPath;
 }
 
-export function ovalPathFromMaxes(maxes = {}, name = 'Oval') {
+/**
+ * Makes an oval path from a Maxes object
+ * @param {Maxes | Object} maxes - bound object to make the rectangle from
+ * @param {String} name
+ * @returns {Path}
+ */
+export function ovalPathFromMaxes(maxes, name = 'Oval') {
 	let fontSettings = getCurrentProject().settings.font;
 
 	//Default Circle size
