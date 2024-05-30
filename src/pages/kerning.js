@@ -8,7 +8,7 @@ import {
 	showError,
 	showModalDialog,
 } from '../controls/dialogs/dialogs.js';
-import { makeKernToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
+import { makeKernToolButton, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { makeOneKernGroupRow } from '../panels/item_chooser.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
@@ -139,7 +139,7 @@ export function makePage_Kerning() {
 	editor.selectedTool = 'kern';
 	let toolsArea = content.querySelector('.editor-page__tools-area');
 	toolsArea.innerHTML = '';
-	let toolsButtons = makeKernToolsButtons();
+	let toolsButtons = makeKernToolButton();
 	if (toolsButtons) addAsChildren(toolsArea, toolsButtons);
 
 	let zoomArea = content.querySelector('.editor-page__zoom-area');
@@ -463,11 +463,11 @@ function searchForLetterPairs() {
 	// log(`searchForLetterPairs`, 'start');
 	/** @type {HTMLInputElement} */
 	const leftGroup = document.querySelector('#kerning__letter-pair__left-group');
-	const leftLetter =	leftGroup.value.charAt(0);
+	const leftLetter = leftGroup.value.charAt(0);
 	// log(`leftLetter: ${leftLetter} : ${charToHex(leftLetter)}`);
 	/** @type {HTMLInputElement} */
 	const rightGroup = document.querySelector('#kerning__letter-pair__right-group');
-	const rightLetter =	rightGroup.value.charAt(0);
+	const rightLetter = rightGroup.value.charAt(0);
 	// log(`rightLetter: ${rightLetter} : ${charToHex(rightLetter)}`);
 
 	const groups = getCurrentProject().kerning;
