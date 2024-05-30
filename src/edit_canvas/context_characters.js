@@ -29,7 +29,7 @@ const contextCharacters = {
 
 /**
  * Draw the selected item's context characters
- * @param {Object} ctx - Reference to the edit canvas
+ * @param {CanvasRenderingContext2D} ctx
  */
 export function drawContextCharacters(ctx) {
 	// log('drawContextCharacters', 'start');
@@ -256,6 +256,7 @@ export function getItemStringAdvanceWidth(textString) {
 
 /**
  * Draws the Guide Lines and Labels ("Extras") for the left half
+ * @param {CanvasRenderingContext2D} ctx
  * @param {Object} char - Individual character from a text block
  * @param {TextBlock} block - text block to draw
  */
@@ -290,7 +291,9 @@ function drawContextCharacterLeftLineExtras(ctx, char, block) {
 
 /**
  * Draws the Guide Lines and Labels ("Extras") for the right half
+ * @param {CanvasRenderingContext2D} ctx
  * @param {Object} char - Individual character from a text block
+ * @param {TextBlock} block
  */
 function drawContextCharacterRightLineExtras(ctx, char, block) {
 	// log(`drawContextCharacterRightLineExtras`, 'start');
@@ -325,6 +328,13 @@ function drawContextCharacterRightLineExtras(ctx, char, block) {
 	// log(`drawContextCharacterRightLineExtras`, 'end');
 }
 
+/**
+ * Draws a baseline at a given location and width
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Number} x - x location
+ * @param {Number} y - y location
+ * @param {Number} width
+ */
 function drawBaseline(ctx, x, y, width) {
 	// ctx.fillStyle = accentColors.gray.l90;
 	const transparency = getCurrentProject().settings.app.contextCharacters.guidesTransparency;
@@ -335,6 +345,7 @@ function drawBaseline(ctx, x, y, width) {
 
 /**
  * Draws the Guide Lines and Labels ("Extras") for each text block character
+ * @param {CanvasRenderingContext2D} ctx
  * @param {Object} char - Individual character from a text block
  */
 function drawContextCharacterExtras(ctx, char) {
@@ -383,13 +394,14 @@ function drawContextCharacterExtras(ctx, char) {
 
 /**
  * Draws the name label "extra" for this character
+ * @param {CanvasRenderingContext2D} ctx
  * @param {String} text - Name to draw
  * @param {Number} currentX - x position in canvas units
  * @param {Number} advanceWidth - width of the character in canvas units
  * @param {String} color - what color to draw the name
  * @param {Boolean} hotspotItemID - register a hotspot for this name?
  */
-function drawCharacterNameExtra(ctx, text, currentX, advanceWidth, color, hotspotItemID = false) {
+function drawCharacterNameExtra(ctx, text, currentX, advanceWidth, color, hotspotItemID) {
 	// log('drawCharacterNameExtra', 'start');
 	// log(`text: ${text}`);
 	// log(`currentX: ${currentX}`);
@@ -415,7 +427,7 @@ function drawCharacterNameExtra(ctx, text, currentX, advanceWidth, color, hotspo
 	ctx.fillText(text, textX, textY);
 
 	// Register hotspot
-	if (hotspotItemID) {
+	if (typeof hotspotItemID === 'string') {
 		registerCanvasHotspot({
 			target: {
 				xMin: currentX,
@@ -438,7 +450,7 @@ function drawCharacterNameExtra(ctx, text, currentX, advanceWidth, color, hotspo
 
 /**
  * Draws the kern label "extra" for this character
- * @param {Object} ctx - Canvas context
+ * @param {CanvasRenderingContext2D} ctx
  * @param {Number} kern - Kern value
  * @param {Number} rightX - x position in canvas units
  * @param {Number} scale - view.dz
@@ -468,6 +480,7 @@ export function drawCharacterKernExtra(ctx, kern, rightX, scale) {
 
 /**
  * Draws a single character to the edit canvas
+ * @param {CanvasRenderingContext2D} ctx
  * @param {Object} charData - Text Block character
  */
 function drawSingleContextCharacter(ctx, charData) {
@@ -489,6 +502,22 @@ function drawSingleContextCharacter(ctx, charData) {
 //    CANVAS HOTSPOTS
 // -------------------------------
 
+/**
+ *
+ * @param {Object} hotspot - in this format:
+ * 		target: {
+ *			xMin: Number
+ *			xMax: Number
+ *			yMin: Number
+ *			yMax: Number
+ *		},
+ *		underline: {
+ *			xMin: Number
+ *			xMax: Number
+ *			y: Number
+ *		},
+ *		onclick: Function
+ */
 function registerCanvasHotspot(hotspot) {
 	// log(`registerCanvasHotspot`, 'start');
 	contextCharacters.canvasHotspots.push(hotspot);
@@ -496,10 +525,19 @@ function registerCanvasHotspot(hotspot) {
 	// log(`registerCanvasHotspot`, 'end');
 }
 
+/**
+ * Clears all hotspots
+ */
 function clearCanvasHotspots() {
 	contextCharacters.canvasHotspots = [];
 }
 
+/**
+ * Determines if a hotspot is at a location
+ * @param {Number} cx - x value
+ * @param {Number} cy - y value
+ * @returns {Object | false} - returns the hotspot if true
+ */
 export function isHotspotHere(cx, cy) {
 	// log(`isHotspotHere`, 'start');
 	// log(`cx: ${cx}`);
@@ -532,6 +570,11 @@ export function isHotspotHere(cx, cy) {
 	return false;
 }
 
+/**
+ * If a hotspot is at the clicked location, call the function
+ * @param {Number} cx - x value
+ * @param {Number} cy - y value
+ */
 export function findAndCallHotspot(cx, cy) {
 	contextCharacters.canvasHotspots.forEach((spot) => {
 		if (
@@ -545,6 +588,10 @@ export function findAndCallHotspot(cx, cy) {
 	});
 }
 
+/**
+ * Handle navigating to another item
+ * @param {String} id - Item ID
+ */
 function hotspotNavigateToItem(id) {
 	// log('hotspotNavigateToItem', 'start');
 	// log('passed ' + id);
@@ -598,6 +645,12 @@ function hotspotNavigateToItem(id) {
 	// log('hotspotNavigateToItem', 'end');
 }
 
+/**
+ *
+ * @param {Number} cx - x value
+ * @param {Number} cy - y value
+ * @returns {Number} - xMin value of the hotspot
+ */
 export function findAndUnderlineHotspot(cx, cy) {
 	// log('findAndUnderlineHotspot', 'start');
 	// log(`cx:${cx} \t cy:${cy}`);

@@ -2,6 +2,11 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { eventHandlerData } from './events.js';
 import { canResize } from './events_mouse.js';
 
+/**
+ * Updates the cursor based on the name of a tool
+ * Only if over the edit canvas, otherwise defaults to the regular cursor
+ * @param {String =} tool - name of tool
+ */
 export function updateCursor(tool) {
 	// log('updateCursor', 'start');
 	const editor = getCurrentProjectEditor();
@@ -43,6 +48,12 @@ export function updateCursor(tool) {
 	// log('updateCursor', 'end');
 }
 
+/**
+ * Sets the cursor based on a name
+ * could be a custom cursor or a different built-in cursor
+ * @param {String} name - name of the cursor
+ * @returns nothing
+ */
 export function setCursor(name) {
 	if (document.body.style.cursor === name) {
 		// log('setCursor', 'end');
