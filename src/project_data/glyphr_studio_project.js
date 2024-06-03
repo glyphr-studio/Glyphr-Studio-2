@@ -454,7 +454,7 @@ export class GlyphrStudioProject {
 
 	/**
 	 * Get a glyph's name based on it's ID
-	 * @param {String} id - Glyph ID
+	 * @param {String | false} id - Glyph ID
 	 * @param {Boolean} forceLongName - don't use the short Unicode name by default
 	 * @returns {String | false}
 	 */

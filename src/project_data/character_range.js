@@ -4,8 +4,8 @@ import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 /**
  * Create a Character Range
  * @param {Object} arg
- * @param {Number =} arg.begin - start of the range (inclusive)
- * @param {Number =} arg.end - end of the range (inclusive)
+ * @param {Number | String =} arg.begin - start of the range (inclusive)
+ * @param {Number | String =} arg.end - end of the range (inclusive)
  * @param {String =} arg.name
  * @param {Boolean =} arg.enabled
  * @param {Number =} arg.count - how many glyph objects exist in this range

@@ -150,8 +150,8 @@ function makeEnabledRangesTable() {
 		projectRanges.unshift(
 			new CharacterRange({
 				name: 'Basic Latin',
-				begin: '0x20',
-				end: '0x7F',
+				begin: 0x20,
+				end: 0x7F,
 				enabled: true,
 			})
 		);
