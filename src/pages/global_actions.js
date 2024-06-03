@@ -93,9 +93,17 @@ function glyphIterator(oa) {
 	let listOfItemIDs = [];
 	let itemNumber = 0;
 	let title = oa.title || 'Iterating on Glyph';
-	let filter = () => {
-		return true;
+
+	/**
+	 * Filter function that gets overwritten by various things
+	 * to include or not include items in Global Actions
+	 * @param {String} itemID - check this ID against a filter function
+	 * @returns {Boolean} - include this Item or not
+	 */
+	let filter = (itemID = '') => {
+		return !!itemID;
 	};
+
 	let callback = oa.callback || false;
 	let currentItem, currentItemID;
 
@@ -869,13 +877,21 @@ function makeCard_Diacritics() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Generate Diacritical Glyphs' });
 	button.addEventListener('click', () => {
 		let range = getUnicodeBlockByName('Latin-1 Supplement');
-		let currentItemHex = decToHex(range.begin);
+		let rangeBeginHex = '0x0';
+		let currentItemDec = 0;
+		if (range && range.begin) {
+			rangeBeginHex = range.beginHex;
+			currentItemDec = range.begin;
+		}
+		let currentItemHex = rangeBeginHex;
+		let rangeEndDec = 0;
+		if (range && range.end) rangeEndDec = Number(decToHex(range.end));
 		let sourceArray;
 		// const project = getCurrentProject();
 
 		function processOneDiacriticItem() {
 			// log(`processOneDiacriticItem - currentItemHex = ${currentItemHex}`);
-			sourceArray = findMappedValue(unicodeDiacriticsMapSimple, currentItemHex);
+			sourceArray = findMappedValue(unicodeDiacriticsMapSimple, '' + currentItemHex);
 			let currentItemID = `glyph-${currentItemHex}`;
 
 			if (sourceArray) {
@@ -884,10 +900,10 @@ function makeCard_Diacritics() {
 				insertComponentInstance(`glyph-${validateAsHex(sourceArray[1])}`, currentItemID, false);
 			}
 
-			currentItemHex++;
+			currentItemDec++;
 
-			if (currentItemHex <= range.end) {
-				currentItemHex = decToHex(currentItemHex);
+			if (currentItemDec <= rangeEndDec) {
+				currentItemDec = Number(currentItemHex);
 				setTimeout(processOneDiacriticItem, 10);
 			} else {
 				showToast('Done!', 1000);
@@ -933,8 +949,11 @@ function makeCard_DiacriticsAdvanced() {
 		addCharacterRangeToCurrentProject(rangeSupplement);
 		let rangeExtendedA = getUnicodeBlockByName('Latin Extended-A');
 		addCharacterRangeToCurrentProject(rangeExtendedA);
-		let range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
-		let currentItemHex = decToHex(range.begin);
+		let range = { begin: 0, end: 0 };
+		if (rangeSupplement && rangeExtendedA) range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
+		let currentItemDec = range.begin;
+		/** @type {String} */
+		let currentItemHex = decToHex(range.begin) || '0x0';
 		let sourceArray;
 		let targetCenter, currCenter;
 
@@ -954,10 +973,10 @@ function makeCard_DiacriticsAdvanced() {
 				project.getItem(currentItemID).shapes[1].updateShapePosition(targetCenter - currCenter, 0);
 			}
 
-			currentItemHex++;
+			currentItemDec++;
 
-			if (currentItemHex <= range.end) {
-				currentItemHex = decToHex(currentItemHex);
+			if (currentItemDec <= range.end) {
+				currentItemHex = decToHex(currentItemDec) || '0x0';
 				setTimeout(processOneItem, 10);
 			} else {
 				showToast('Done!', 1000);
