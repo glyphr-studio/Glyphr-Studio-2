@@ -1,5 +1,4 @@
 import { makeElement } from '../../common/dom.js';
-import { round } from '../../common/functions.js';
 import { cancelDefaultEventActions } from '../../edit_canvas/events.js';
 import style from './input-number.css?inline';
 
@@ -7,14 +6,11 @@ import style from './input-number.css?inline';
  * A numeric input field, with up/down arrows for increment/decrement
  */
 export class InputNumber extends HTMLElement {
-	/**
-	 * Create an InputNumber
-	 * @param {Object} attributes - collection of key: value pairs to set as attributes
-	 */
 	constructor() {
 		// log(`InputNumber.constructor`, 'start');
 		super();
 
+		this.elementRoot = {};
 		const isDisabled = this.hasAttribute('disabled');
 
 		// this.wrapper = makeElement({ className: 'wrapper' });
@@ -28,6 +24,7 @@ export class InputNumber extends HTMLElement {
 			tabIndex: !isDisabled,
 			attributes: { type: 'text', value: this.sanitizeValue(this.getAttribute('value')) },
 		});
+		// @ts-ignore
 		this.numberInput.elementRoot = this;
 
 		// Arrows
@@ -35,6 +32,7 @@ export class InputNumber extends HTMLElement {
 			className: 'arrowWrapper',
 			tabIndex: !isDisabled,
 		});
+		// @ts-ignore
 		this.arrowWrapper.elementRoot = this;
 
 		const arrowSeparator = makeElement({
@@ -46,6 +44,7 @@ export class InputNumber extends HTMLElement {
 			content: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 10"><polygon points="6.5 7 13.5 7 10 3.5 6.5 7"/></svg>`,
 			attributes: { tabIndex: -1 },
 		});
+		// @ts-ignore
 		this.upArrow.elementRoot = this;
 
 		this.downArrow = makeElement({
@@ -53,6 +52,7 @@ export class InputNumber extends HTMLElement {
 			content: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 10"><polygon points="13.5 3 6.5 3 10 6.5 13.5 3"/></svg>`,
 			attributes: { tabIndex: -1 },
 		});
+		// @ts-ignore
 		this.downArrow.elementRoot = this;
 
 		// Lock
@@ -73,6 +73,7 @@ export class InputNumber extends HTMLElement {
 			attributes: { tabIndex: 0 },
 			content: this.iconUnlocked,
 		});
+		// @ts-ignore
 		this.padlock.elementRoot = this;
 
 		// Put it all together
@@ -157,6 +158,7 @@ export class InputNumber extends HTMLElement {
 			// log(`setting internal numberInput. PRE  ${this.numberInput.getAttribute('value')}`);
 			this.numberInput.setAttribute('value', newValue);
 			this.value = newValue;
+			// @ts-ignore
 			this.numberInput.value = newValue;
 			// log(`setting internal numberInput. POST ${this.numberInput.getAttribute('value')}`);
 		}
@@ -260,11 +262,11 @@ export class InputNumber extends HTMLElement {
 
 	/**
 	 * Make sure new values are good
-	 * @param {Number} input - new value
+	 * @param {Number | String} input - new value
 	 */
 	sanitizeValue(input) {
-		let newValue = parseFloat(input) || 0;
-		if (this.precision) newValue = round(newValue, this.precision);
+		let newValue = Number(input) || 0;
+		// if (this.precision) newValue = round(newValue, this.precision);
 		return newValue;
 	}
 
@@ -277,6 +279,7 @@ export class InputNumber extends HTMLElement {
 		this.setAttribute('value', newValue);
 		this.value = newValue;
 		if (dispatch) this.dispatchEvent(new Event('change'));
+		// @ts-ignore
 		this.numberInput.value = newValue;
 		// log(`updateToNewValue`, 'end');
 	}

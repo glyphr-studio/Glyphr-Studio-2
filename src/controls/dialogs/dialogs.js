@@ -34,6 +34,7 @@ export function closeAllOptionChoosers() {
 	elements.forEach((elem) => elem.removeAttribute('deployed'));
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
+		// @ts-ignore
 		elements = editor.popOutWindow.document.querySelectorAll('option-chooser');
 		elements.forEach((elem) => elem.removeAttribute('deployed'));
 	}
@@ -67,6 +68,7 @@ export function closeAllInfoBubbles() {
 	});
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
+		// @ts-ignore
 		bubbles = editor.popOutWindow.document.querySelectorAll('#bubble');
 		bubbles.forEach((/** @type {HTMLElement} */ elem) => {
 			elem.querySelector('.content').dispatchEvent(new Event('mouseleave'));
@@ -85,6 +87,7 @@ export function animateRemoveAll(query = '') {
 	elements.forEach((elem) => animateRemove(elem));
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
+		// @ts-ignore
 		elements = editor.popOutWindow.document.querySelectorAll(query);
 		elements.forEach((elem) => animateRemove(elem));
 	}
@@ -198,7 +201,7 @@ export function makeAndShowPathAddPointNotation(emPoint) {
  *   * Top app File menus
  *   * Right-click menus
  *   * Drop-down menus
- * @param {Array} data - collection of objects representing each row
+ * @param {Array} rows - collection of objects representing each row
  * @param {Number} x - X position for the menu
  * @param {Number} y - Y position for the menu
  * @param {Number} width - width for the menu (defaults to auto-width)
@@ -207,10 +210,10 @@ export function makeAndShowPathAddPointNotation(emPoint) {
  */
 export function makeContextMenu(
 	rows = [],
-	x = false,
-	y = false,
-	width = false,
-	height = false,
+	x,
+	y,
+	width,
+	height,
 	isDropdown = false
 ) {
 	// log(`makeContextMenu`, 'start');
@@ -358,7 +361,7 @@ export function showError(message) {
 	let body = makeElement({ className: 'error__body', innerHTML: message });
 	addAsChildren(element, [header, body]);
 
-	closeEveryTypeOfDialog(true);
+	closeEveryTypeOfDialog();
 	document.body.appendChild(element);
 }
 
@@ -368,7 +371,7 @@ export function showError(message) {
 
 /**
  * Shows a big dialog that blurs the UI behind it.
- * @param {DOM Node} contentNode - HTML to show in the dialog
+ * @param {Element} contentNode - HTML to show in the dialog
  */
 export function showModalDialog(contentNode, maxWidth, noPadding) {
 	let modal = makeModalDialog(contentNode, maxWidth, noPadding);
@@ -400,6 +403,7 @@ export function makeModalDialog(contentNode, maxWidth = false, openProjectDialog
 		.addEventListener('click', closeEveryTypeOfDialog);
 	modal.addEventListener('click', (event) => {
 		const elem = event.currentTarget;
+		// @ts-ignore
 		if (elem.getAttribute('id') === 'modal-dialog') closeEveryTypeOfDialog();
 	});
 

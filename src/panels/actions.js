@@ -923,8 +923,9 @@ export function clipboardPaste() {
 			}
 			newShape.name = newName + newSuffix;
 
-			if (newShape.objType === 'ComponentInstance' && newShape.link && editor.selectedItemID) {
-				addLinkToUsedIn(editor.project.getItem(newShape.link), editor.selectedItemID);
+			if (newShape.objType === 'ComponentInstance' && newShape?.link && editor.selectedItemID) {
+				let newShapeLink = '' + newShape.link;
+				addLinkToUsedIn(editor.project.getItem(newShapeLink), editor.selectedItemID);
 			}
 
 			newShapes.push(newShape);

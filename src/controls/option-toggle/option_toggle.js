@@ -17,11 +17,12 @@ export class OptionToggle extends HTMLElement {
 	constructor() {
 		// log(`OptionToggle.constructor`, 'start');
 		super();
-
+		this.disabled = false;
 		this.wrapper = makeElement({
 			className: 'wrapper',
 			tabIndex: !this.disabled,
 		});
+		// @ts-ignore
 		this.wrapper.elementRoot = this;
 
 		this.selectionDisplay = makeElement({
@@ -29,6 +30,7 @@ export class OptionToggle extends HTMLElement {
 			attributes: { tabIndex: -1 },
 			innerHTML: this.getDisplayName(),
 		});
+		// @ts-ignore
 		this.selectionDisplay.elementRoot = this;
 
 		this.toggleIcon = makeElement({
@@ -36,6 +38,7 @@ export class OptionToggle extends HTMLElement {
 			content: this.makeIcon(),
 			attributes: { tabIndex: -1 },
 		});
+		// @ts-ignore
 		this.toggleIcon.elementRoot = this;
 
 		// Put it all together
@@ -71,6 +74,7 @@ export class OptionToggle extends HTMLElement {
 		[...this.children].forEach((child) => {
 			let tag = child.tagName.toLowerCase();
 			if (tag === 'option') {
+				// @ts-ignore
 				let name = child.innerText;
 				let value = child.getAttribute('value');
 				if (!value) value = name;

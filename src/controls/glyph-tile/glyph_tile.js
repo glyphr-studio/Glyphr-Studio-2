@@ -54,7 +54,9 @@ export class GlyphTile extends HTMLElement {
 				tag: 'span',
 				className: 'thumbnail',
 			});
+			// @ts-ignore
 			this.thumbnail.width = overallSize;
+			// @ts-ignore
 			this.thumbnail.height = overallSize;
 		} else {
 			this.thumbnail = makeElement({
