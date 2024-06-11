@@ -21,10 +21,13 @@ export class OptionChooser extends HTMLElement {
 		// log(`OptionChooser.constructor`, 'start');
 		super();
 
+		this.disabled = false;
+		
 		this.wrapper = makeElement({
 			className: 'wrapper',
 			tabIndex: !this.disabled,
 		});
+		// @ts-ignore
 		this.wrapper.elementRoot = this;
 
 		// this.options = makeElement({ tag: 'slot', className: 'options' });
@@ -35,6 +38,7 @@ export class OptionChooser extends HTMLElement {
 			attributes: { tabIndex: -1 },
 			innerHTML: this.getDisplayName(),
 		});
+		// @ts-ignore
 		this.selectionDisplay.elementRoot = this;
 
 		this.downArrow = makeElement({
@@ -42,6 +46,7 @@ export class OptionChooser extends HTMLElement {
 			content: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><polygon points="14.5 8.5 5.5 8.5 10 13 14.5 8.5"/></svg>`,
 			attributes: { tabIndex: -1 },
 		});
+		// @ts-ignore
 		this.downArrow.elementRoot = this;
 
 		// Put it all together
