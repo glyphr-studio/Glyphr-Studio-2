@@ -242,10 +242,11 @@ export function makeKernGroupID(kernGroups = getCurrentProject().kerning) {
 	return newID;
 }
 
-export function showAddEditKernGroupDialog(kernGroup = false) {
+export function showAddEditKernGroupDialog(kernGroup) {
 	// log(`showAddEditKernGroupDialog`, 'start');
 	// log(`kernGroup`);
 	// log(kernGroup);
+
 	const content = makeElement({
 		innerHTML: `
 		<h2>${kernGroup ? 'Edit this' : 'Create a new'} kern group</h2>
@@ -279,8 +280,11 @@ export function showAddEditKernGroupDialog(kernGroup = false) {
 	});
 
 	const submitButton = content.querySelector('#kerning__add-new-kern-group__submit-button');
+	/** @type {HTMLInputElement} */
 	const leftGroupInput = content.querySelector('#kerning__add-new-kern-group__left-group');
+	/** @type {HTMLInputElement} */
 	const rightGroupInput = content.querySelector('#kerning__add-new-kern-group__right-group');
+	/** @type {HTMLInputElement} */
 	const valueInput = content.querySelector('#kerning__add-new-kern-group__value');
 
 	leftGroupInput.addEventListener('change', inputChange);
@@ -579,7 +583,7 @@ function deleteLetterPairs() {
 	// log(`deleteLetterPairs`, 'end');
 }
 
-function deleteLetterPair(leftLetter = '', rightLetter = '', kernID = false) {
+function deleteLetterPair(leftLetter = '', rightLetter = '', kernID = '') {
 	// log(`deleteLetterPair`, 'start');
 	let list = {};
 	let leftHex = charToHex(leftLetter);
@@ -639,7 +643,7 @@ export function makeCharChip(charID) {
 	// log(`makeCharChip`, 'start');
 	// log(`charID: ${charID}`);
 
-	let char = hexesToChars(charID);
+	let char = hexesToChars(charID) || '';
 	let name = getUnicodeName(charID);
 	let title = charID;
 	if (name) title = `${name}\n${charID}`;

@@ -170,7 +170,7 @@ export function makePage_Ligatures() {
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
 			removeStopCreatingNewPathButton();
-			editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath' });
+			editor.editCanvas.redraw();
 		},
 	});
 
@@ -178,7 +178,7 @@ export function makePage_Ligatures() {
 		topic: 'whichPathPointIsSelected',
 		subscriberID: 'editCanvas.selectedPathPoint',
 		callback: () => {
-			editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPathPoint' });
+			editor.editCanvas.redraw();
 		},
 	});
 
@@ -256,7 +256,8 @@ const ligaturesWithCodePoints = [
 function addCommonLigaturesToProject() {
 	ligaturesWithCodePoints.forEach((lig) => addLigature(lig.chars));
 	const editor = getCurrentProjectEditor();
-	editor.navigate('Ligatures');
+	editor.nav.page = 'Ligatures';
+	editor.navigate();
 	editor.history.addWholeProjectChangePostState();
 }
 
@@ -270,24 +271,25 @@ function addLigature(sequence) {
 
 	// Test to see if Unicode or Hex notation is being used
 	let prefix = '';
-	let workingSequence = normalizePrefixes(sequence);
+	const workingSequence = normalizePrefixes(sequence);
+	let workingArr = [];
 	if (workingSequence.startsWith('U+')) {
-		workingSequence = workingSequence.split('U+');
-		workingSequence = workingSequence.slice(1);
+		workingArr = workingSequence.split('U+');
+		workingArr = workingArr.slice(1);
 		prefix = 'U+';
 	} else if (workingSequence.startsWith('0x')) {
-		workingSequence = workingSequence.split('0x');
-		workingSequence = workingSequence.slice(1);
+		workingArr = workingSequence.split('0x');
+		workingArr = workingArr.slice(1);
 		prefix = '0x';
 	}
 
 	// log(`prefix: ${prefix}`);
-	// log(`workingSequence: ${workingSequence}`);
+	// log(`workingArr: ${workingArr}`);
 
-	if (prefix && workingSequence.length > 1) {
+	if (prefix && workingArr.length > 1) {
 		sequence = '';
-		for (let i = 0; i < workingSequence.length; i++) {
-			let id = workingSequence[i];
+		for (let i = 0; i < workingArr.length; i++) {
+			let id = workingArr[i];
 			// log(`id: ${id}`);
 			let validatedSuffix = validateDecOrHexSuffix(id);
 			// log(`validatedSuffix: ${validatedSuffix}`);
@@ -331,10 +333,11 @@ function addLigature(sequence) {
 	return project.ligatures[newID];
 }
 
+
 export function makeLigatureID(sequence = '') {
 	// log(`makeLigatureID`, 'start');
 	// log(`sequence: ${sequence}`);
-	if (sequence === false) return false;
+	if (sequence === '') return false;
 	let newID = 'liga';
 	let chars = sequence.split('');
 	chars.forEach((char) => {

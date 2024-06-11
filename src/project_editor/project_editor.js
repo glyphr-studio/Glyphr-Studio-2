@@ -139,6 +139,10 @@ export class ProjectEditor {
 	// --------------------------------------------------------------
 	// Navigate
 	// --------------------------------------------------------------
+
+	/**
+	 * Refreshes the whole UI
+	 */
 	navigate() {
 		// log(`ProjectEditor.navigate`, 'start');
 		this.nav.navigate();
@@ -273,6 +277,7 @@ export class ProjectEditor {
 		}
 		// log(`RETURNING this._selectedGlyphID: ${this._selectedGlyphID}`);
 		// log('ProjectEditor GET selectedGlyphID', 'end');
+		if (typeof this._selectedGlyphID === 'boolean') return false;
 		return this._selectedGlyphID;
 	}
 
@@ -298,6 +303,7 @@ export class ProjectEditor {
 			this._selectedLigatureID = getFirstID(this.project.ligatures);
 		}
 		// log(`ProjectEditor GET selectedLigatureID`, 'end');
+		if (typeof this._selectedLigatureID === 'boolean') return false;
 		return this._selectedLigatureID;
 	}
 
@@ -318,6 +324,8 @@ export class ProjectEditor {
 		if (!this._selectedComponentID) {
 			this._selectedComponentID = getFirstID(this.project.components);
 		}
+
+		if (typeof this._selectedComponentID === 'boolean') return false;
 		return this._selectedComponentID;
 	}
 
@@ -343,10 +351,10 @@ export class ProjectEditor {
 				getFirstID(this.project.kerning) || generateNewID(this.project.kerning, 'kern-');
 			this._selectedKernGroupID = firstID;
 		}
-		const result = this._selectedKernGroupID;
-		// log(`result: ${result}`);
+
 		// log(`ProjectEditor GET selectedKernGroupID`, 'end');
-		return result;
+		if (typeof this._selectedKernGroupID === 'boolean') return false;
+		return this._selectedKernGroupID;
 	}
 
 	/**
