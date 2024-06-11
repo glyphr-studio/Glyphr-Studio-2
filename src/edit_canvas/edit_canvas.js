@@ -206,7 +206,7 @@ export class EditCanvas extends HTMLElement {
 			}
 
 			// Draw temporary new paths
-			if (eventHandlerData.newBasicPath) {
+			if (eventHandlerData?.newBasicPath?.objType) {
 				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
 			}
 

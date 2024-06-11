@@ -142,7 +142,7 @@ export class Tool_NewBasicPath {
  * @param {String} name
  * @returns {Path}
  */
-export function rectPathFromMaxes(maxes, name = 'Rectangle') {
+export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
 	// log(`rectPathFromMaxes`, 'start');
 	// log(JSON.stringify(maxes));
 	let fontSettings = getCurrentProject().settings.font;
