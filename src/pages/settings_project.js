@@ -151,7 +151,7 @@ function makeEnabledRangesTable() {
 			new CharacterRange({
 				name: 'Basic Latin',
 				begin: 0x20,
-				end: 0x7F,
+				end: 0x7f,
 				enabled: true,
 			})
 		);
@@ -536,8 +536,11 @@ function showEditCharacterRangeDialog(range = false) {
 	});
 
 	if (range) {
+		// @ts-ignore
 		inputName.value = range.name;
+		// @ts-ignore
 		inputBegin.value = '' + decToHex(range.begin);
+		// @ts-ignore
 		inputEnd.value = '' + decToHex(range.end);
 	}
 
@@ -577,7 +580,7 @@ function showEditCharacterRangeDialog(range = false) {
 	// log(`showEditCharacterRangeDialog`, 'end');
 }
 
-function validateAndSaveCharacterRange(range = false) {
+function validateAndSaveCharacterRange(range) {
 	// log(`validateAndSaveCharacterRange`, 'start');
 	// log(`\n⮟range⮟`);
 	// log(range);
@@ -657,7 +660,7 @@ function enableRangesForOrphanedItems() {
 	let newRanges = 0;
 	for (const glyphID in project.glyphs) {
 		let hasParent = false;
-		let hex = remove(glyphID, 'glyph-');
+		let hex = Number(remove(glyphID, 'glyph-'));
 		// log(`hex: ${hex}`);
 		for (const range of project.settings.project.characterRanges) {
 			if (range.isWithinRange(hex)) {
@@ -689,8 +692,11 @@ function hideCharacterRange(range) {
 
 	range.enabled = false;
 
-	if (range.getMemberIDs().indexOf(editor.selectedGlyphID.substring(6)) > -1) {
-		editor.selectFallbackItem('Characters');
+	const glyphID = editor.selectedGlyphID;
+	if (glyphID !== false) {
+		if (range.getMemberIDs().indexOf(glyphID.substring(6)) > -1) {
+			editor.selectFallbackItem('Characters');
+		}
 	}
 
 	updateRangesTables();
@@ -810,7 +816,7 @@ function previewCharacterRange(range) {
 			makeElement({
 				className: 'glyph-range-chooser__preview-tile',
 				title: `${hexString}\n${name}`,
-				innerHTML: hexesToChars(hexString),
+				innerHTML: hexesToChars(hexString) || '',
 			})
 		);
 	}
@@ -842,7 +848,7 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 	// log(`addCharacterRangeToCurrentProject`, 'end');
 }
 
-export function findCharacterRange(range, ranges = false) {
+export function findCharacterRange(range, ranges) {
 	if (!ranges) ranges = getCurrentProject().settings.project.characterRanges;
 
 	for (let r = 0; r < ranges.length; r++) {
