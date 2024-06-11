@@ -16,7 +16,11 @@ export function makePanel_Layers() {
 	let selected = editor.selectedItem;
 	let paths = selected.shapes;
 
-	if (eventHandlerData.newBasicPath) {
+	// log(`\n⮟eventHandlerData⮟`);
+	// log(eventHandlerData);
+
+	if (eventHandlerData?.newBasicPath?.objType) {
+		// log(`Handling new basic path`);
 		let path = eventHandlerData.newBasicPath;
 		let row = makeElement();
 		row.setAttribute('class', 'item-link__row layer-panel__new-path');
@@ -38,6 +42,8 @@ export function makePanel_Layers() {
 		rowsArea.appendChild(row);
 	}
 
+	// log(`\n⮟paths⮟`);
+	// log(paths);
 	if (paths.length > 0) {
 		for (let i = paths.length - 1; i >= 0; i--) {
 			let item = paths[i];
