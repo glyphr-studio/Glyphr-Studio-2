@@ -204,8 +204,9 @@ export function makeAndShowPathAddPointNotation(emPoint) {
  * @param {Array} rows - collection of objects representing each row
  * @param {Number} x - X position for the menu
  * @param {Number} y - Y position for the menu
- * @param {Number} width - width for the menu (defaults to auto-width)
- * @param {Boolean} isDropdown - triggers slight style adjustments for dropdown control
+ * @param {Number =} width - width for the menu (defaults to auto-width)
+ * @param {Number =} height - height for the menu (defaults to auto-width)
+ * @param {Boolean =} isDropdown - triggers slight style adjustments for dropdown control
  * @returns {HTMLElement}
  */
 export function makeContextMenu(
