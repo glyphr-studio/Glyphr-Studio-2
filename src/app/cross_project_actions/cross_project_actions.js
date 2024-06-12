@@ -1,5 +1,6 @@
 import { makeElement } from '../../common/dom';
 import { countItems, duplicates } from '../../common/functions';
+import { ProjectEditor } from '../../project_editor/project_editor';
 import { emailLink } from '../app';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../main';
 import { updateContent_addComponents, updateFooter_addComponents } from './action_add_components';
@@ -18,8 +19,11 @@ import {
 	updateFooter_overwriteSettings,
 } from './action_overwrite_settings';
 
+/** @type {ProjectEditor} */
 export let sourceEditor;
+/** @type {ProjectEditor} */
 export let destinationEditor;
+/** @type {Array} */
 export let selectedItemIDs = [];
 /** @type {Object | false} */
 export let selectedRange = false;

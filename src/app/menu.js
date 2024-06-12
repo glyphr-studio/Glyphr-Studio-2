@@ -18,6 +18,10 @@ import { makePage_OpenProject } from './open_project.js';
 // Top bar for the App
 // --------------------------------------------------------------
 
+/**
+ * Makes the Top Bar for the App
+ * @returns {Element}
+ */
 export function makeAppTopBar() {
 	let topBar = makeElement({ tag: 'div', id: 'app__top-bar' });
 
@@ -64,6 +68,11 @@ export function makeAppTopBar() {
 // Menu
 // --------------------------------------------------------------
 
+/**
+ * Makes one menu, with an entry point and a hidden dropdown
+ * @param {String} menuName - Name for the menu entry point
+ * @returns {Element}
+ */
 function makeMenu(menuName) {
 	let entryPoint = makeElement({
 		tag: 'button',
@@ -257,6 +266,12 @@ function makeMenu(menuName) {
 	return entryPoint;
 }
 
+/**
+ * Makes a special row for a menu that displays a small
+ * project preview
+ * @param {Number} projectID - which project to show
+ * @returns {Element}
+ */
 function makeProjectPreviewRow(projectID = 0) {
 	// log(`makeProjectPreviewRow`, 'start');
 	// log(`projectID: ${projectID}`);

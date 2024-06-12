@@ -54,11 +54,11 @@ export class GlyphrStudioApp {
 				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
 				autoSave: false, // {bool} trigger auto saves
-				selectFirstShape: false, // {bool} select a shape
-				selectFirstPoint: false, // {bool} select a path point
-				testActions: [], // {name, onClick}
-				testOnLoad: function () {},
-				testOnRedraw: function () {},
+				selectFirstShape: false, // {bool} select the first shape
+				selectFirstPoint: false, // {bool} select the first path point
+				testActions: [], // {name: '', onClick: ()=>{}} adds test actions to the Glyph card
+				testOnLoad: function () {}, // code to run on load
+				testOnRedraw: function () {}, // code to run on Edit Canvas redraw
 			},
 			telemetry: true, // Load google analytics
 		};
@@ -185,6 +185,7 @@ export class GlyphrStudioApp {
 
 	/**
 	 * Returns the project editor that isn't the selected project editor
+	 * @returns {ProjectEditor}
 	 */
 	get otherProjectEditor() {
 		if (this.selectedProjectEditor === this.projectEditors[0]) {
@@ -232,6 +233,10 @@ export class GlyphrStudioApp {
 	// Local Storage and Auto-saves
 	// --------------------------------------------------------------
 
+	/**
+	 * Wrapper for getting the Glyphr Studio area of local storage
+	 * @returns {Object} - current data
+	 */
 	getLocalStorage() {
 		// log(`GlyphrStudioApp.getLocalStorage`, 'start');
 		if (!window.localStorage.getItem('GlyphrStudio')) {
@@ -246,6 +251,12 @@ export class GlyphrStudioApp {
 		return data;
 	}
 
+	/**
+	 * Wrapper to write a key/value pair to the
+	 * Glyphr Studio area of local storage
+	 * @param {String} key - what part to set
+	 * @param {String} newData - value to set
+	 */
 	setLocalStorage(key, newData) {
 		// log(`GlyphrStudioApp.setLocalStorage`, 'start');
 		// log(`key: ${key}`);
@@ -268,11 +279,19 @@ export class GlyphrStudioApp {
 		// log(`GlyphrStudioApp.setLocalStorage`, 'end');
 	}
 
+	/**
+	 * Counts how many projects are saved locally
+	 * @returns {Number}
+	 */
 	countLocalStorageProjects() {
 		const data = this.getLocalStorage();
 		return countItems(data.autoSaves);
 	}
 
+	/**
+	 * Automatically writes the current state to the
+	 * local storage for the current project
+	 */
 	addAutoSaveState() {
 		// log(`addAutoSaveState`, 'start');
 		const projectData = getCurrentProject().save();
@@ -317,6 +336,9 @@ function addTelemetry() {
 // Window behavior
 // --------------------------------------------------------------
 
+/**
+ * Sets the appropriate window unload event
+ */
 export function updateWindowUnloadEvent() {
 	const project = getCurrentProject();
 	const app = getGlyphrStudioApp();
@@ -334,6 +356,11 @@ export function updateWindowUnloadEvent() {
 	}
 }
 
+/**
+ * handler for onBeforeUnload
+ * @param {Event} event - original event
+ * @returns {String} - message to show
+ */
 function showBeforeUnloadConfirmation(event) {
 	// console.log(`event.type: ${event.type}`);
 	event.preventDefault();
@@ -373,12 +400,18 @@ export function showAppErrorPage(friendlyMessage = '', errorObject = { message: 
 	wrapper.innerHTML = content;
 }
 
+/**
+ * Makes a mailto link
+ * @param {String} displayText - what text to show
+ * @returns {String} - mailto link
+ */
 export function emailLink(displayText = 'mail@glyphrstudio.com') {
 	let app = getGlyphrStudioApp();
 	return `
 		<a class="mailto" href="mailto:mail@glyphrstudio.com?subject=[${app.version}] Feedback">${displayText}</a>
 	`;
 }
+
 /**
  * Generates the content for the "email us" link
  * @returns {String}
@@ -390,6 +423,5 @@ export function makeEmailContent() {
 	user agent %09 ${encodeURIComponent(navigator.userAgent)} %0A`;
 
 	// log(con);
-
 	return con;
 }

@@ -118,7 +118,7 @@ function addGlobalEventListeners() {
 /**
  * An epoch date number that looks nice
  * @param {Number} dayOffset - how many days to add to the result
- * @returns - nice number for the day a version was shipped
+ * @returns {Number} - nice number for the day a version was shipped
  */
 export function getShipDate(dayOffset = 0) {
 	const shipDate = new Date();
@@ -195,15 +195,14 @@ export function addProjectEditorAndSetAsImportTarget() {
 // Fancy Logging
 // --------------------------------------------------------------
 
+let colors = {};
+let depth = 0;
 /**
  * Wrapper for console.log that does some extra fancy stuff, and
  * also adheres to a global switch in settings
  * @param {String} message - message to show in the console
- * @param {Boolean} type - 'start' or 'end'
+ * @param {String} type - 'start' or 'end'
  */
-
-let colors = {};
-let depth = 0;
 export function log(message, type) {
 	let dev = GSApp.settings.dev;
 	// if (!dev.mode) return;
