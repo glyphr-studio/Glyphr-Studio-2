@@ -22,7 +22,7 @@ export class OptionChooser extends HTMLElement {
 		super();
 
 		this.disabled = false;
-		
+
 		this.wrapper = makeElement({
 			className: 'wrapper',
 			tabIndex: !this.disabled,
@@ -124,6 +124,10 @@ export class OptionChooser extends HTMLElement {
 		// log(`OptionChooser.attributeChangedCallback`, 'end');
 	}
 
+	/**
+	 * Figures out the name to display in the entry point
+	 * @returns {String}
+	 */
 	getDisplayName() {
 		let displayText = this.getAttribute('selected-name');
 		if (!displayText) return '';
@@ -137,6 +141,9 @@ export class OptionChooser extends HTMLElement {
 		return displayText;
 	}
 
+	/**
+	 * Shows the dropdown part of the control
+	 */
 	showOptions() {
 		// log(`OptionsChooser.showOptions`, 'start');
 

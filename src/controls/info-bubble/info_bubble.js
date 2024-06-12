@@ -101,11 +101,13 @@ export class InfoBubble extends HTMLElement {
 
 	/**
 	 * Hide the bubble
+	 * @param {HTMLElement} entryPoint
 	 */
 	hide(entryPoint) {
 		// log(`info-bubble hide`, 'start');
 		// log(this);
 		// log(entryPoint);
+		/** @type {HTMLElement} */
 		let bubble = document.querySelector('#bubble');
 		animateRemove(bubble, 120, 0.98, '0px');
 		// document.body.removeChild(bubble);

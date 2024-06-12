@@ -187,7 +187,8 @@ export class InputNumber extends HTMLElement {
 	}
 
 	/**
-	 * Locked state
+	 * Set to locked
+	 * @param {Boolean} internalEvent - If there isn't an internal event, dispatch a custom one
 	 */
 	setToLocked(internalEvent = false) {
 		// log(`InputNumber.setToLocked`, 'start');
@@ -201,6 +202,10 @@ export class InputNumber extends HTMLElement {
 		// log(`InputNumber.setToLocked`, 'end');
 	}
 
+	/**
+	 * Set to unlocked
+	 * @param {Boolean} internalEvent - If there isn't an internal event, dispatch a custom one
+	 */
 	setToUnlocked(internalEvent = false) {
 		// log(`InputNumber.setToUnlocked`, 'start');
 		this.setAttribute('is-locked', 'false');
@@ -214,7 +219,7 @@ export class InputNumber extends HTMLElement {
 	}
 
 	/**
-	 * Enabled or disabled
+	 * Set to disabled
 	 */
 	setToDisabled() {
 		// log(`InputNumber.setToDisabled`, 'start');
@@ -226,6 +231,9 @@ export class InputNumber extends HTMLElement {
 		// log(`InputNumber.setToDisabled`, 'end');
 	}
 
+	/**
+	 * Set to enabled
+	 */
 	setToEnabled() {
 		// log(`InputNumber.setToEnabled`, 'start');
 		this.numberInput.removeAttribute('disabled');
@@ -237,7 +245,7 @@ export class InputNumber extends HTMLElement {
 	}
 
 	/**
-	 * Event Listeners
+	 * Add all event listeners to this control
 	 */
 	addAllEventListeners() {
 		// log('addAllEventListeners');
@@ -248,6 +256,9 @@ export class InputNumber extends HTMLElement {
 		this.numberInput.addEventListener('keydown', this.numberInputKeyboardPress);
 	}
 
+	/**
+	 * Remove all event listeners from this control
+	 */
 	removeAllEventListeners() {
 		// log('removeAllEventListeners');
 		this.upArrow.removeEventListener('click', this.increment);

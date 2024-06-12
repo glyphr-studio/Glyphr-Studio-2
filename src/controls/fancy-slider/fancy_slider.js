@@ -1,5 +1,14 @@
 import { addAsChildren, makeElement } from '../../common/dom.js';
 
+/**
+ * Makes a styled slider element
+ * @param {Number} initialValue - what the slider value should be
+ * @param {Function} callback - what to do when it changes
+ * @param {Number} min - min value for the slider
+ * @param {Number} max - max value for the slider
+ * @param {Number} step - how big each step is
+ * @returns {Element}
+ */
 export function makeFancySlider(initialValue = 50, callback, min = 0, max = 100, step = 1) {
 	// log('makeFancySlider', 'start');
 
