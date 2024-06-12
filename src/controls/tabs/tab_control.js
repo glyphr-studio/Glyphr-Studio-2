@@ -9,7 +9,7 @@ export class TabControl {
 	}
 
 	/**
-	 *
+	 * Saves a new tab object to this tab group
 	 * @param {String} tabName - name for the tab
 	 * @param {HTMLElement | String} tabContent - what to put in the tab
 	 */
@@ -30,6 +30,10 @@ export class TabControl {
 		this.tabs.push(newTab);
 	}
 
+	/**
+	 * Makes the tabs
+	 * @returns {Element}
+	 */
 	makeTabs() {
 		const tabContainer = makeElement({
 			tag: 'div',
@@ -43,6 +47,10 @@ export class TabControl {
 		return tabContainer;
 	}
 
+	/**
+	 * Selects the specified tab
+	 * @param {String} tabName - which to select
+	 */
 	selectTab(tabName) {
 		this.targetElement.innerHTML = '';
 		this.tabs.forEach((tab) => {

@@ -119,6 +119,10 @@ export class OptionToggle extends HTMLElement {
 		// log(`OptionToggle.attributeChangedCallback`, 'end');
 	}
 
+	/**
+	 * Figures out the name for this toggle
+	 * @returns {String}
+	 */
 	getDisplayName() {
 		let displayText = this.getAttribute('selected-name');
 		if (!displayText) return '';
@@ -126,6 +130,9 @@ export class OptionToggle extends HTMLElement {
 		return displayText;
 	}
 
+	/**
+	 * Toggle the toggle
+	 */
 	toggle() {
 		// log(`OptionToggle.toggle`, 'start');
 
@@ -144,6 +151,10 @@ export class OptionToggle extends HTMLElement {
 		// log(`OptionToggle.toggle`, 'end');
 	}
 
+	/**
+	 * Returns true if the first option is selected
+	 * @returns {Boolean}
+	 */
 	isFirstOptionSelected() {
 		const currentName = this.getAttribute('selected-name');
 		// log(`currentName: ${currentName}`);
@@ -195,6 +206,11 @@ export class OptionToggle extends HTMLElement {
 		}
 	}
 
+	/**
+	 * Creates the appropriate toggle icon
+	 * @param {Boolean} left - is it left?
+	 * @returns {String} - SVG Icon
+	 */
 	makeIcon(left = false) {
 		let svg = `
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

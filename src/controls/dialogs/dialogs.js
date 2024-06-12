@@ -9,6 +9,10 @@ import { closeAllNavMenus } from '../../project_editor/navigator.js';
 // --------------------------------------------------------------
 // Generic dialog stuff
 // --------------------------------------------------------------
+
+/**
+ * Closes all dialogs
+ */
 export function closeEveryTypeOfDialog() {
 	// log(`closeEveryTypeOfDialog`, 'start');
 	closeAllNavMenus();
@@ -21,12 +25,18 @@ export function closeEveryTypeOfDialog() {
 	// log(`closeEveryTypeOfDialog`, 'end');
 }
 
+/**
+ * Closes all Modal Dialog style dialogs
+ */
 export function closeAllModalDialogs() {
 	// log(`closeAllModalDialogs`, 'start');
 	animateRemoveAll('dialog');
 	// log(`closeAllModalDialogs`, 'end');
 }
 
+/**
+ * Closes all Option Chooser style dialogs
+ */
 export function closeAllOptionChoosers() {
 	// log(`closeAllOptionChoosers`, 'start');
 	closeAllContextMenus();
@@ -41,24 +51,36 @@ export function closeAllOptionChoosers() {
 	// log(`closeAllOptionChoosers`, 'end');
 }
 
+/**
+ * Closes all Context Menu style dialogs
+ */
 export function closeAllContextMenus() {
 	// log(`closeAllContextMenus`, 'start');
 	animateRemoveAll('#context-menu');
 	// log(`closeAllContextMenus`, 'end');
 }
 
+/**
+ * Closes all Toast style dialogs
+ */
 export function closeAllToasts() {
 	// log(`closeAllToasts`, 'start');
 	animateRemoveAll('#toast');
 	// log(`closeAllToasts`, 'end');
 }
 
+/**
+ * Closes all Error style dialogs
+ */
 export function closeAllErrors() {
 	// log(`closeAllErrors`, 'start');
 	animateRemoveAll('#error');
 	// log(`closeAllErrors`, 'end');
 }
 
+/**
+ * Closes all Info Bubble style dialogs
+ */
 export function closeAllInfoBubbles() {
 	// log(`closeAllInfoBubbles`, 'start');
 	let bubbles = document.querySelectorAll('#bubble');
@@ -78,11 +100,20 @@ export function closeAllInfoBubbles() {
 	// log(`closeAllInfoBubbles`, 'end');
 }
 
+/**
+ * Closes all Notation style dialogs
+ */
 export function closeAllNotations() {
 	animateRemoveAll('#notation');
 }
 
+/**
+ * Query the current document for all types of elements,
+ * then remove them with an animated fade out
+ * @param {String} query - querySelector argument
+ */
 export function animateRemoveAll(query = '') {
+	/** @type {NodeListOf<HTMLElement>} */
 	let elements = document.querySelectorAll(query);
 	elements.forEach((elem) => animateRemove(elem));
 	const editor = getCurrentProjectEditor();
@@ -93,6 +124,13 @@ export function animateRemoveAll(query = '') {
 	}
 }
 
+/**
+ * Handle the animation and removal of one element
+ * @param {HTMLElement} element - what element to remove
+ * @param {Number =} animationLength - how long in milliseconds
+ * @param {Number =} scale - how much to shrink
+ * @param {String =} translateY - CSS value for how much to move vertically
+ */
 export function animateRemove(element, animationLength = 120, scale = 0.98, translateY = '-5px') {
 	element.animate(
 		{ opacity: 0, transform: `scale(${scale}) translateY(${translateY})` },
@@ -152,6 +190,12 @@ export function showToast(message = '0_o', duration = 3000, fancy = false) {
 // Notation
 // --------------------------------------------------------------
 
+/**
+ * Show a small dialog note
+ * @param {String} content - HTML content to show in the note
+ * @param {Number} x - screen x location
+ * @param {Number} y - screen y location
+ */
 export function showNotation(content, x, y) {
 	// document.body.focus();
 	/** @type {HTMLElement} */
@@ -170,6 +214,10 @@ export function showNotation(content, x, y) {
 	notation.style.display = 'block';
 }
 
+/**
+ * Shows a special case notation for the Path Add Point tool
+ * @param {Object} emPoint - x/y point for where to show it
+ */
 export function makeAndShowPathAddPointNotation(emPoint) {
 	let x = round(emPoint.x, 3);
 	let y = round(emPoint.y, 3);
@@ -265,6 +313,11 @@ export function makeContextMenu(
 	return element;
 }
 
+/**
+ * Make one row for a context menu, based on options
+ * @param {Object} data - options for this row
+ * @returns {Element}
+ */
 function makeOneContextMenuRow(data = {}) {
 	// log(`makeOneContextMenuRow`, 'start');
 	// log(data);
@@ -373,6 +426,8 @@ export function showError(message) {
 /**
  * Shows a big dialog that blurs the UI behind it.
  * @param {Element} contentNode - HTML to show in the dialog
+ * @param {Number} maxWidth - limit the dialog width
+ * @param {Boolean} noPadding - turn on or off padding
  */
 export function showModalDialog(contentNode, maxWidth, noPadding) {
 	let modal = makeModalDialog(contentNode, maxWidth, noPadding);
@@ -380,7 +435,14 @@ export function showModalDialog(contentNode, maxWidth, noPadding) {
 	document.body.appendChild(modal);
 }
 
-export function makeModalDialog(contentNode, maxWidth = false, openProjectDialog = false) {
+/**
+ * Makes a modal dialog and returns it
+ * @param {Element} contentNode - Main content area for the dialog
+ * @param {Number =} maxWidth - limit the width of the dialog
+ * @param {Boolean} openProjectDialog - is this the Open Project dialog?
+ * @returns {Element}
+ */
+export function makeModalDialog(contentNode, maxWidth, openProjectDialog = false) {
 	// log(`makeModalDialog`, 'start');
 	// log(`\n⮟contentNode⮟`);
 	// log(contentNode);
