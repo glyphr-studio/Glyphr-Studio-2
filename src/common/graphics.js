@@ -5,6 +5,11 @@ import { accentColors } from './colors';
 // --------------------------------------------------------------
 let icons = {};
 
+/**
+ * Makes an icon based on options
+ * @param {Object} oa - options argument
+ * @returns {String} - SVG code for the icon
+ */
 export function makeIcon(oa) {
 	// log(`makeIcon`, 'start');
 	// log(oa);
@@ -245,6 +250,12 @@ icons.page_overview = `
 // Transform Origin
 // --------------------------------------------------------------
 
+/**
+ * Programmatically create all the Transform Origin icons, since they
+ * are very similar, only differing in what point is highlighted
+ * @param {String} corner - name of the location to highlight
+ * @returns {String} - SVG code of the icon
+ */
 export function makeTransformOriginIcon(corner = 'baseline-left') {
 	let darkFill = accentColors.gray.l25;
 	let blue = accentColors.blue.l70;
