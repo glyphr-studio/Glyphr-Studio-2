@@ -23,6 +23,9 @@ export class TextBlockOptions {
 		// log(`TextBlockOptions.constructor`, 'end');
 	}
 
+	/**
+	 * Returns the text for this Text Block
+	 */
 	get text() {
 		let t = this._text;
 		if (t.substring(0, 2) === '{{') {
@@ -34,16 +37,26 @@ export class TextBlockOptions {
 		return this._text;
 	}
 
+	/**
+	 * Sets the text for this Text Block
+	 */
 	set text(newText) {
 		this._text = newText;
 	}
 
+	/**
+	 * Makes a short version of this text to display
+	 */
 	get displayName() {
 		let result = '';
 		result += `${this.text.substring(0, 40)}...`;
 		return result;
 	}
 
+	/**
+	 * Generates a simplified data structure to save
+	 * @returns {Object} - JSON to save to a project file
+	 */
 	save() {
 		let result = {};
 		if (this.fontSize && this.fontSize !== 48) result.fontSize = this.fontSize;
