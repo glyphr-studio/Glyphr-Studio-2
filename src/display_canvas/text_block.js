@@ -47,10 +47,16 @@ export class TextBlock {
 	// Getters / Setters
 	// --------------------------------------------------------------
 
+	/**
+	 * Gets the bounds for the canvas
+	 */
 	get canvasMaxes() {
 		return this._canvasMaxes;
 	}
 
+	/**
+	 * Sets the bounds for the canvas
+	 */
 	set canvasMaxes(newMaxes) {
 		this._canvasMaxes = new Maxes({
 			xMin: newMaxes.xMin || 0,
@@ -61,6 +67,16 @@ export class TextBlock {
 		// log(`SET canvasMaxes\n ${this.canvasMaxes.print()}`);
 	}
 
+	/**
+	 * Draws this text block to the canvas, with options for
+	 * page, line, and character extras
+	 * @param {Object} options - options object
+	 * @param {Boolean =} options.showPageExtras - show additional page markings
+	 * @param {Boolean =} options.showLineExtras - show additional line markings
+	 * @param {Boolean =} options.showCharacterExtras - show additional character markings
+	 * @param {Boolean =} options.showCharacter - draw characters
+	 * @returns nothing
+	 */
 	draw({
 		showPageExtras = false,
 		showLineExtras = false,
@@ -111,6 +127,11 @@ export class TextBlock {
 		// log(`TextBlock.draw`, 'end');
 	}
 
+	/**
+	 * Easy way for external functions to handle custom drawing
+	 * while looping over all characters in this Text Block.
+	 * @param {Function} drawFunction - handles drawing to the canvas
+	 */
 	iterator(drawFunction) {
 		for (let block = 0; block < this.data.length; block++) {
 			for (let char = 0; char < this.data[block].length; char++) {
@@ -119,6 +140,11 @@ export class TextBlock {
 		}
 	}
 
+	/**
+	 * Visualize the Text Block maxes on the canvas
+	 * For debugging purposes
+	 * @param {CanvasRenderingContext2D} ctx - canvas context
+	 */
 	drawCanvasMaxes(ctx) {
 		// log(`TextBlock.drawCanvasMaxes`, 'start');
 		// log(this.canvasMaxes);
@@ -364,7 +390,7 @@ export class TextBlock {
  * Looks ahead through a block to return the next line break character
  * @param {Array} block - collection of chars to check
  * @param {Number} start - what index to start at
- * @returns - line break charData
+ * @returns {Object} - object representing the line break character
  */
 function getNextLineBreaker(block, start) {
 	// log('getNextLineBreaker', 'start');
@@ -434,7 +460,7 @@ export function calculateKernOffset(c1, c2) {
  * Takes an array of glyphs as an argument, and looks for glyph
  * sequences that merge to ligatures.
  * @param {Array} glyphCollection - Array of Glyph objects
- * @returns - Array with merged results
+ * @returns {Array} - Array with merged results
  */
 export function findAndMergeLigatures(glyphCollection, project) {
 	// log('findAndMergeLigatures', 'start');
