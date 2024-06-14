@@ -22,6 +22,14 @@ import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 let glyphTags = [];
 let kernTags = [];
 
+/**
+ * Takes SVG code representing a SVG Font, and imports all it's
+ * data into a Glyphr Studio Project. Also updates the import
+ * progress UI.
+ * @param {Object} font - Opentype.js font object
+ * @param {Boolean} testing - is this a vitest test?
+ * @returns {Promise}
+ */
 export async function ioSVG_importSVGfont(font, testing = false) {
 	// log('ioSVG_importSVGfont', 'start');
 
@@ -273,7 +281,7 @@ async function updateSVGImportProgressIndicator(type, counter) {
 /**
  * Recursively looks through data and returns any data that matches
  * a specified list of tag names.
- * @param {Object} obj - object to look through
+ * @param {Object} obj - object to look through (in XMLtoJSON format)
  * @param {Array | String} grabTags - list of tags to collect
  * @returns {Array} - collection of objects representing tags
  */
@@ -300,6 +308,13 @@ function getTagsByName(obj, grabTags) {
 	return result;
 }
 
+/**
+ * Returns the first instance of a given tag name
+ * from a XMLtoJSON object.
+ * @param {Object} obj - object to look through (in XMLtoJSON format)
+ * @param {String} tagname - tag to look for
+ * @returns {Object}
+ */
 export function getFirstTagInstance(obj, tagname) {
 	// log('getFirstTagInstance', 'start');
 	// log('finding ' + tagname + ' in:');
@@ -322,19 +337,28 @@ export function getFirstTagInstance(obj, tagname) {
 	}
 }
 
+/**
+ * Given names from a kern attribute value, go find the actual
+ * char from the font and collect all applicable Unicode IDs.
+ * @param {String} names - list of comma separated kern members
+ * @param {Array} chars - list of chars to check
+ * @param {Array} arr - result array to add to
+ * @param {Number =} limit - max char to check
+ * @returns {Array}
+ */
 function getKernMembersByName(names, chars, arr, limit) {
 	limit = limit || 0xffff;
 	let uni;
 	if (names) {
-		names = names.split(',');
+		const namesArr = names.split(',');
 
 		// Check all the glyph names
-		for (let n = 0; n < names.length; n++) {
+		for (let n = 0; n < namesArr.length; n++) {
 			// Check all the chars
 			for (let c = 0; c < chars.length; c++) {
 				if (chars[c].attributes.unicode) {
 					// Push the match
-					if (names[n] === chars[c].attributes['glyph-name']) {
+					if (namesArr[n] === chars[c].attributes['glyph-name']) {
 						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
 						if (1 * uni[0] < limit) arr = arr.concat(uni);
 					}
@@ -346,19 +370,28 @@ function getKernMembersByName(names, chars, arr, limit) {
 	return arr;
 }
 
+/**
+ * Given unicode ids from a kern attribute value, go find the actual
+ * char from the font and collect all applicable Unicode IDs.
+ * @param {String} ids - list of comma separated unicode ids
+ * @param {Array} chars - list of chars to check
+ * @param {Array} arr - result array to add to
+ * @param {Number =} limit - max char to check
+ * @returns {Array}
+ */
 function getKernMembersByUnicodeID(ids, chars, arr, limit) {
 	limit = limit || 0xffff;
 	let uni;
 	if (ids) {
-		ids = ids.split(',');
+		const idArr = ids.split(',');
 
 		// Check all the IDs
-		for (let i = 0; i < ids.length; i++) {
+		for (let i = 0; i < idArr.length; i++) {
 			// Check all the chars
 			for (let c = 0; c < chars.length; c++) {
 				if (chars[c].attributes.unicode) {
 					// Push the match
-					if (ids[i] === chars[c].attributes.unicode) {
+					if (idArr[i] === chars[c].attributes.unicode) {
 						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
 						if (1 * uni[0] < limit) arr = arr.concat(uni);
 					}

@@ -101,6 +101,13 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true) {
 	return resultGlyph;
 }
 
+/**
+ * Given two Bezier paths, using the point in common, create
+ * a Glyphr Studio path point.
+ * @param {Object} seg1 - curve data in Bezier format
+ * @param {Object} seg2 - curve data in Bezier format
+ * @returns {PathPoint}
+ */
 function makePathPointFromBeziers(seg1, seg2) {
 	// log(`makePathPointFromBeziers`, 'start');
 	// log(`seg1: ${JSON.stringify(seg1)}`);

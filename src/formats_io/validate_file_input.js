@@ -94,7 +94,7 @@ export async function validateSingleFileInput(fileInput, callback) {
 
 /**
  * Validate the file as OTF, TTF, or WOFF
- * @returns Validated data object
+ * @returns {Object} - Validated data object
  */
 function readerValidateFont() {
 	// log(`readerValidateFont`, 'start');
@@ -127,7 +127,7 @@ function readerValidateFont() {
 
 /**
  * Validate file content as SVG
- * @returns Validated data object
+ * @returns {Object} - Validated data object
  */
 function readerValidateSVG() {
 	// log(`readerValidateSVG`, 'start');
@@ -164,7 +164,7 @@ function readerValidateSVG() {
 /**
  * Validate file content as TXT File
  * This is (hopefully) a Glyphr Studio Project File
- * @returns Validated data object
+ * @returns {Object} - Validated data object
  */
 function readerValidateTXTandGS2() {
 	// log(`readerValidateTXTandGS2`, 'start');
