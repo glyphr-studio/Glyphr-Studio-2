@@ -1,7 +1,3 @@
-// ----------------------------------------------------------------
-// New Path - adds many points to a new path (Pen Plus)
-// ----------------------------------------------------------------
-
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { insertAfter, makeElement } from '../../common/dom.js';
 import { Path } from '../../project_data/path.js';
@@ -13,6 +9,11 @@ import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { clickTool } from './tools.js';
 
+/**
+	// ----------------------------------------------------------------
+	// New Path - adds many points to a new path (Pen Plus)
+	// ----------------------------------------------------------------
+ */
 export class Tool_NewPath {
 	constructor() {
 		this.dragging = false;
@@ -157,6 +158,11 @@ export class Tool_NewPath {
 	}
 }
 
+/**
+ * Removes (hides) the "Stop creating new path" button.
+ * Also calls `stopCreatingNewPath` for instances where
+ * the path creation ends, but not because of this button.
+ */
 export function removeStopCreatingNewPathButton() {
 	if (document.querySelector('#done-creating-path-button')) {
 		stopCreatingNewPath();
@@ -164,6 +170,9 @@ export function removeStopCreatingNewPathButton() {
 	}
 }
 
+/**
+ * Event handler for the "Stop creating new path" button.
+ */
 export function stopCreatingNewPath() {
 	let editor = getCurrentProjectEditor();
 	let newPathTool = editor.eventHandlers.tool_addPath;

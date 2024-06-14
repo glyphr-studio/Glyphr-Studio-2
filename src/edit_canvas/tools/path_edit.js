@@ -1,7 +1,3 @@
-// ----------------------------------------------------------------
-// Path Edit - selects points and moves points and handles (Pen)
-// ----------------------------------------------------------------
-
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
@@ -11,6 +7,11 @@ import { eventHandlerData } from '../events.js';
 import { checkForMouseOverHotspot, clickEmptySpace } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 
+/**
+	// ----------------------------------------------------------------
+	// Path Edit - selects points and moves points and handles (Pen)
+	// ----------------------------------------------------------------
+ */
 export class Tool_PathEdit {
 	constructor() {
 		this.dragging = false;
@@ -19,9 +20,7 @@ export class Tool_PathEdit {
 		this.pathPoint = {};
 		this.historyTitle = 'Path edit tool';
 	}
-	// --------------------------------------------------------------
-	// Mouse Down
-	// --------------------------------------------------------------
+
 	mousedown() {
 		// log('Tool_PathEdit.mousedown', 'start');
 		const ehd = eventHandlerData;
@@ -106,9 +105,6 @@ export class Tool_PathEdit {
 		// log('Tool_PathEdit.mousedown', 'end');
 	}
 
-	// --------------------------------------------------------------
-	// Mouse Move
-	// --------------------------------------------------------------
 	mousemove() {
 		// log('Tool_PathEdit.mousemove', 'start');
 		const ehd = eventHandlerData;
@@ -223,9 +219,6 @@ export class Tool_PathEdit {
 		// log('Tool_PathEdit.mousemove', 'end');
 	}
 
-	// --------------------------------------------------------------
-	// Mouse Up
-	// --------------------------------------------------------------
 	mouseup() {
 		// log('Tool_PathEdit.mouseup', 'start');
 		const ehd = eventHandlerData;

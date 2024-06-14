@@ -15,6 +15,11 @@ import { clickTool } from './tools/tools.js';
 // Key Down
 // --------------------------------------------------------------
 
+/**
+ * Handles key presses
+ * @param {KeyboardEvent} event - key press event
+ * @returns nothing
+ */
 export function handleKeyPress(event) {
 	const editor = getCurrentProjectEditor();
 	// log('handleKeyPress', 'start');
@@ -187,6 +192,11 @@ export function handleKeyPress(event) {
 	// log('handleKeyPress', 'end');
 }
 
+/**
+ * Converts Key press IDs to actual characters
+ * @param {KeyboardEvent} event - key press event
+ * @returns {String} - character equivalent for the key ID
+ */
 export function getKeyFromEvent(event) {
 	// log(`getKeyFromEvent`, 'start');
 	// log(`event.keyCode: ${event.keyCode}`);
@@ -225,13 +235,20 @@ export function getKeyFromEvent(event) {
 	};
 
 	let result =
-		specialGlyphs[parseInt(event.which)] || String.fromCodePoint(event.which).toLowerCase();
+		specialGlyphs[parseInt(event.code)] || String.fromCodePoint(Number(event.code)).toLowerCase();
 	// log(`result: ${result}`);
 
 	// log(`getKeyFromEvent`, 'end');
 	return result;
 }
 
+/**
+ * Moves the selected thing a small amount, depending
+ * on if the shift key is down or not.
+ * @param {Number} dx - x value to nudge
+ * @param {Number} dy - y value to nudge
+ * @returns nothing
+ */
 function nudge(dx, dy) {
 	// log(`events_keyboard Nudge`, 'start');
 	// log(`dx: ${dx}`);
@@ -275,6 +292,10 @@ function nudge(dx, dy) {
 	// log(`events_keyboard Nudge`, 'end');
 }
 
+/**
+ * Returns the tool name that corresponds to the selected tool
+ * @returns {String} - name of the applicable tool
+ */
 function getEditMode() {
 	const editor = getCurrentProjectEditor();
 	if (editor.nav.page === 'Kerning') return 'kern';
@@ -286,6 +307,11 @@ function getEditMode() {
 // Key Up
 // --------------------------------------------------------------
 
+/**
+ * Handles the key-up event
+ * @param {KeyboardEvent} event - key up event
+ * @returns nothing
+ */
 export function handleKeyUp(event) {
 	// log(`handleKeyup`, 'start');
 	let key = getKeyFromEvent(event);
@@ -313,6 +339,18 @@ export function handleKeyUp(event) {
 	// log(`handleKeyup`, 'end');
 }
 
+
+
+// --------------------------------------------------------------
+// Special Keys
+// --------------------------------------------------------------
+
+/**
+ * Sets or removes the appropriate event handler settings, given some
+ * special key (Ctrl, Space, Shift, Alt).
+ * @param {String} key - name of the special key
+ * @param {String} keyDirection - up or down
+ */
 function handleSpecialKeys(key, keyDirection) {
 	// log(`handleSpecialKeys`, 'start');
 	// log(`key: ${key}`);

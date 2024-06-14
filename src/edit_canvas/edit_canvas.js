@@ -406,6 +406,13 @@ export class EditCanvas extends HTMLElement {
 // Guides
 // --------------------------------------------------------------
 
+/**
+ * Draws a horizontal line, based on some Em values
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Number} emY - y value, in Em space units (not pixels)
+ * @param {Number} advanceWidth - width, in Em space units (not pixels)
+ * @param {Object} view - view object (dx, dy, dz)
+ */
 function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view) {
 	// log(`drawEmHorizontalLine`, 'start');
 	let pad = 50 * view.dz;
@@ -423,6 +430,12 @@ function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view) {
 	// log(`drawEmHorizontalLine`, 'end');
 }
 
+/**
+ * Draws a vertical line, based on some Em values
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Number} emX - x value, in Em space units (not pixels)
+ * @param {Object} view - view object (dx, dy, dz)
+ */
 export function drawEmVerticalLine(ctx, emX = 0, view) {
 	// log(`drawEmVerticalLine`, 'start');
 	const project = getCurrentProject();
@@ -444,24 +457,51 @@ export function drawEmVerticalLine(ctx, emX = 0, view) {
 // --------------------------------------------------------------------------
 // Convert between Saved values and Canvas values
 // --------------------------------------------------------------------------
-// convert stored x-y point to canvas x-y
+
+/**
+ * Converts saved X value into a canvas pixel value, given
+ * a specified view.
+ * @param {Number} sx - Saved X value "sx"
+ * @param {Object} view - view object (dx, dy, dz)
+ * @returns {Number} - X value in Canvas units (pixels)
+ */
 export function sXcX(sx, view = getCurrentProjectEditor().view) {
 	let canvasX = view.dx;
 	canvasX += sx * view.dz;
 	return canvasX || view.dx;
 }
 
+/**
+ * Converts saved Y value into a canvas pixel value, given
+ * a specified view.
+ * @param {Number} sy - Saved Y value "sy"
+ * @param {Object} view - view object (dx, dy, dz)
+ * @returns {Number} - Y value in Canvas units (pixels)
+ */
 export function sYcY(sy, view = getCurrentProjectEditor().view) {
 	let canvasY = view.dy;
 	canvasY -= sy * view.dz;
 	return canvasY || view.dy;
 }
 
-// convert canvas x-y inputs to saved path x-y
+/**
+ * Converts canvas pixel X value into Em units that are
+ * saved to project data.
+ * @param {Number} cx - Canvas X value "cx"
+ * @param {Object} view - view object (dx, dy, dz)
+ * @returns {Number} - X value in Save units (Em units)
+ */
 export function cXsX(cx, view = getCurrentProjectEditor().view) {
 	return (cx - view.dx) / view.dz;
 }
 
+/**
+ * Converts canvas pixel Y value into Em units that are
+ * saved to project data.
+ * @param {Number} cy - Canvas Y value "cy"
+ * @param {Object} view - view object (dx, dy, dz)
+ * @returns {Number} - Y value in Save units (Em units)
+ */
 export function cYsY(cy, view = getCurrentProjectEditor().view) {
 	return (view.dy - cy) / view.dz;
 }

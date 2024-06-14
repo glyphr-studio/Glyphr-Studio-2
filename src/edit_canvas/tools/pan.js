@@ -1,10 +1,11 @@
-// ----------------------------------------------------------------
-// Pan - moves the canvas view
-// ----------------------------------------------------------------
-
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { eventHandlerData } from '../events.js';
 
+/**
+	// ----------------------------------------------------------------
+	// Pan - moves the canvas view
+	// ----------------------------------------------------------------
+ */
 export class Tool_Pan {
 	constructor() {
 		this.deltaX = 0;

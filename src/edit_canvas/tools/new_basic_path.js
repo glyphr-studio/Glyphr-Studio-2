@@ -1,7 +1,3 @@
-// ----------------------------------------------------------------
-// New Basic Path - adds many points to a new path
-// ----------------------------------------------------------------
-
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { isVal, round } from '../../common/functions.js';
 import { ControlPoint } from '../../project_data/control_point.js';
@@ -13,6 +9,11 @@ import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { addPathToCurrentItem, switchToolTo } from './tools.js';
 
+/**
+	// ----------------------------------------------------------------
+	// New Basic Path - adds many points to a new path
+	// ----------------------------------------------------------------
+ */
 export class Tool_NewBasicPath {
 	constructor() {
 		this.dragging = false;

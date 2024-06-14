@@ -7,10 +7,11 @@ import { eventHandlerData } from '../events.js';
 import { checkForMouseOverHotspot, clickEmptySpace, resizePath } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 
-// ----------------------------------------------------------------
-// Resize - resizes whole paths (Arrow / Pointer)
-// ----------------------------------------------------------------
-
+/**
+	// ----------------------------------------------------------------
+	// Resize - resizes whole paths (Arrow / Pointer)
+	// ----------------------------------------------------------------
+ */
 export class Tool_Resize {
 	constructor() {
 		this.dragging = false;
@@ -22,9 +23,7 @@ export class Tool_Resize {
 		this.historyTitle = 'Path resize tool';
 		eventHandlerData.handle = '';
 	}
-	// --------------------------------------------------------------
-	// Mouse Down
-	// --------------------------------------------------------------
+
 	mousedown() {
 		// log(`Tool_Resize.mousedown`, 'start');
 		// log('x:y ' + eventHandlerData.mousePosition.x + ':' + eventHandlerData.mousePosition.y);
@@ -93,9 +92,6 @@ export class Tool_Resize {
 		// log(`Tool_Resize.mousedown`, 'end');
 	}
 
-	// --------------------------------------------------------------
-	// Mouse Move
-	// --------------------------------------------------------------
 	mousemove() {
 		// log(`Tool_Resize.mousemove`, 'start');
 
@@ -193,9 +189,6 @@ export class Tool_Resize {
 		// log(`Tool_Resize.mousemove`, 'end');
 	}
 
-	// --------------------------------------------------------------
-	// Mouse Up
-	// --------------------------------------------------------------
 	mouseup() {
 		// log(`Tool_Resize.mouseup`, 'start');
 		const ehd = eventHandlerData;
