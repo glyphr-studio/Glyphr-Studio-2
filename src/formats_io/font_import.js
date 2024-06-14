@@ -10,6 +10,7 @@ import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { Glyph } from '../project_data/glyph.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
@@ -25,6 +26,13 @@ let finalKerns = {};
 let importItemCounter = 0;
 let importItemTotal = 0;
 
+/**
+ * Takes the import result from Opentype.js, reads the data, and
+ * creates a new Glyphr Studio Project from it.
+ * @param {Object} importedFont - result from Opentype.js import
+ * @param {Boolean} testing - is this a vitest test
+ * @returns nothing
+ */
 export async function ioFont_importFont(importedFont, testing = false) {
 	// log(importedFont);
 	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
@@ -202,6 +210,10 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	}
 }
 
+/**
+ * Updates the progress indicator UI
+ * @param {String} type - Character, Ligature, Kern Pair
+ */
 async function updateFontImportProgressIndicator(type) {
 	await updateProgressIndicator(`
 			Importing ${type}:
@@ -215,6 +227,13 @@ async function updateFontImportProgressIndicator(type) {
 // Characters
 // --------------------------------------------------------------
 
+/**
+ * Imports one Opentype.js Glyph object and adds it
+ * to the current project
+ * @param {Object} otfGlyph - Opentype.js Glyph object
+ * @param {GlyphrStudioProject} project - current project
+ * @returns nothing
+ */
 function importOneGlyph(otfGlyph, project) {
 	// log('importOneGlyph', 'start');
 
@@ -251,7 +270,7 @@ function importOneGlyph(otfGlyph, project) {
 		project.settings.app.showNonCharPoints = true;
 	}
 
-	project.incrementRangeCountFor(uni);
+	if(typeof uni === 'number') project.incrementRangeCountFor(uni);
 
 	// Successful loop, advance importItemCounter
 	importItemCounter++;
@@ -259,6 +278,11 @@ function importOneGlyph(otfGlyph, project) {
 	// log('importOneGlyph', 'end');
 }
 
+/**
+ * Converts one Opentype.js Glyph into a Glyphr Studio Glyph.
+ * @param {Object} otfGlyph - Opentype.js Glyph object
+ * @returns {Glyph}
+ */
 function makeGlyphrStudioGlyphObject(otfGlyph) {
 	// log(`makeGlyphrStudioGlyphObject`, 'start');
 	// log(otfGlyph);
@@ -291,7 +315,13 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 // --------------------------------------------------------------
 // Ligatures
 // --------------------------------------------------------------
-
+/**
+ * Imports one Opentype.js Ligature and adds it
+ * to the current project
+ * @param {Object} otfLigature - Opentype.js Ligature object
+ * @param {Object} otfFont - entire Opentype.js Font object
+ * @returns nothing
+ */
 function importOneLigature(otfLigature, otfFont) {
 	// log(`importOneLigature`, 'start');
 	// log(`otfLigature.glyph.name: ${otfLigature.glyph.name}`);
@@ -344,7 +374,14 @@ function importOneLigature(otfLigature, otfFont) {
 // --------------------------------------------------------------
 // Kerning
 // --------------------------------------------------------------
-
+/**
+ * Imports kern information from Opentype.js into the
+ * current Glyphr Studio project.
+ * @param {Object} leftGlyph - kern left glyph
+ * @param {Object} rightGlyph - kern right glyph
+ * @param {Number} value - kern value
+ * @returns nothing
+ */
 function importOneKern(leftGlyph, rightGlyph, value) {
 	// log(`importOneKern`, 'start');
 	// log(`leftGlyph.unicode: ${leftGlyph.unicode}`);
@@ -387,6 +424,12 @@ ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 // Metadata
 // --------------------------------------------------------------
 
+/**
+ * Finds metadata stuff in the Opentype.js Font object, and pulls
+ * appropriate stuff into a provided Glyphr Studio Project.
+ * @param {Object} font - Opentype.js Font object
+ * @param {GlyphrStudioProject} project - current Glyphr Studio Project
+ */
 function importFontMetadata(font, project) {
 	// log('importFontMetadata', 'start');
 	// log(font);
@@ -439,6 +482,13 @@ function importFontMetadata(font, project) {
 	// log('importFontMetadata', 'end');
 }
 
+/**
+ * "Values" from a font table may take many forms - this function
+ * takes anything, figures out what it should be, and returns a
+ * value that Glyphr Studio can use.
+ * @param {any} val - a thing that is some sort of value
+ * @returns {String | false}
+ */
 function getTableValue(val) {
 	// log(`getTableValue`, 'start');
 	// log(`val: ${val}`);

@@ -6,6 +6,7 @@ import openTypeJS from '../lib/opentype.js-1.3.4/opentype.module.js';
 import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { Glyph } from '../project_data/glyph.js';
 import { sortLigatures } from '../project_data/glyphr_studio_project.js';
+import { Path } from '../project_data/path.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 
 /**
@@ -17,6 +18,9 @@ import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions
 const ligatureSubstitutions = [];
 const codePointGlyphIndexTable = {};
 
+/**
+ * Exports the current project to an .otf file
+ */
 export async function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'start');
 	const options = createOptionsObject();
@@ -77,6 +81,10 @@ export async function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'end');
 }
 
+/**
+ * Creates the options object
+ * @returns {Object}
+ */
 function createOptionsObject() {
 	// log('createOptionsObject', 'start');
 
@@ -115,6 +123,11 @@ function createOptionsObject() {
 	// log('createOptionsObject', 'end');
 }
 
+/**
+ * Looks through the project and creates a list
+ * of items that should be exported.
+ * @returns {Object}
+ */
 function populateExportList() {
 	// log('populateExportList', 'start');
 	const project = getCurrentProject();
@@ -188,9 +201,16 @@ function populateExportList() {
 	}
 
 	// log('populateExportList', 'end');
-	return { glyphs: exportGlyphs, ligatures: exportLigatures };
+	const result = { glyphs: exportGlyphs, ligatures: exportLigatures };
+	return result;
 }
 
+/**
+ * Creates a notdef character, based on the project's key metrics,
+ * and adds it to the provided export options object.
+ * @param {Object} options - The options object that is being
+ * built for the .otf export
+ */
 function addNotdefToExport(options) {
 	const project = getCurrentProject();
 	let notdef = project.getItem('glyph-0x0');
@@ -252,6 +272,12 @@ function addNotdefToExport(options) {
 	codePointGlyphIndexTable['0x0'] = 0;
 }
 
+/**
+ * Makes one item from the export list, and updates the
+ * exterior export process, as well as the UI progress bar.
+ * @param {Object} currentExportItem - Information about a single item
+ * @returns {Promise<Object>} - Opentype.js Glyph object
+ */
 async function generateOneGlyph(currentExportItem) {
 	// log('generateOneGlyph', 'start');
 	// export this glyph
@@ -307,6 +333,12 @@ async function generateOneGlyph(currentExportItem) {
 	return thisGlyph;
 }
 
+/**
+ * Makes one item from the export list, and updates the
+ * exterior export process, as well as the UI progress bar.
+ * @param {Object} currentExportItem - Information about a single item
+ * @returns {Promise<Object>} - Opentype.js Glyph object
+ */
 async function generateOneLigature(currentExportItem) {
 	// log(`generateOneLigature`, 'start');
 	// log(currentExportItem);
@@ -347,6 +379,12 @@ async function generateOneLigature(currentExportItem) {
 	return thisLigature;
 }
 
+/**
+ * Ligature characters need a name for the .otf file, this
+ * generates one based on the ligature's source characters.
+ * @param {Glyph | Object} lig - Ligature to generate name for
+ * @returns {String}
+ */
 function generateLigatureExportName(lig) {
 	let result = 'lig';
 
@@ -367,6 +405,12 @@ function getNextGlyphIndexNumber() {
 	return currentIndex;
 }
 
+/**
+ * Converts a Glyphr Studio item into an Opentype.js Glyph
+ * @param {Glyph | Object} item - Item to convert
+ * @param {Object} openTypePath - current path to add to
+ * @returns {Object}
+ */
 function makeOpenTypeJS_Glyph(item, openTypePath) {
 	// log(`makeOpenTypeJS_Glyph`, 'start');
 	let flatItem = makeGlyphWithResolvedLinks(item);
@@ -379,6 +423,12 @@ function makeOpenTypeJS_Glyph(item, openTypePath) {
 	return openTypePath;
 }
 
+/**
+ * Converts a Glyphr Studio Path into an Opentype.js Path
+ * @param {Path| Object} path - Item to convert
+ * @param {Object} openTypePath - current path to add to
+ * @returns {Object}
+ */
 function makeOpenTypeJS_Path(path, openTypePath) {
 	// log('makeOpenTypeJS_Path', 'start');
 	// log('openTypePath:');
