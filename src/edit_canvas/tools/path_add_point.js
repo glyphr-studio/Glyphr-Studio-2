@@ -1,19 +1,19 @@
-// ----------------------------------------------------------------
-// Path Add Point - adds points to an existing path (Pen Plus)
-// ----------------------------------------------------------------
-
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { round } from '../../common/functions.js';
 import {
 	closeAllNotations,
 	makeAndShowPathAddPointNotation,
 } from '../../controls/dialogs/dialogs.js';
-import { Path } from '../../project_data/path.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { clickTool, getShapeAtLocation } from './tools.js';
 
+/**
+	// ----------------------------------------------------------------
+	// Path Add Point - adds points to an existing path (Pen Plus)
+	// ----------------------------------------------------------------
+ */
 export class Tool_PathAddPoint {
 	constructor() {
 		this.previewPoint;

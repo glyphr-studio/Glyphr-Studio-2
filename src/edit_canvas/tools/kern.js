@@ -1,11 +1,12 @@
-// ----------------------------------------------------------------
-// Kern - moves the left kern group
-// ----------------------------------------------------------------
-
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { round } from '../../common/functions.js';
 import { eventHandlerData } from '../events.js';
 
+/**
+	// ----------------------------------------------------------------
+	// Kern - moves the left kern group
+	// ----------------------------------------------------------------
+ */
 export class Tool_Kern {
 	constructor() {
 		this.dragging = false;

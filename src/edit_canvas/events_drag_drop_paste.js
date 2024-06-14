@@ -4,6 +4,12 @@ import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import.js
 import { copyShapesFromTo } from '../panels/actions.js';
 import { cancelDefaultEventActions } from './events.js';
 
+/**
+ * Given some SVG code, parse it into Glyphr Studio shapes, and
+ * add it to the currently selected item.
+ * @param {String} svgData - code imported from dropped file
+ * @param {String} sourceText - title for the stuff that was imported
+ */
 export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 	// log(`importSVGtoCurrentItem`, 'start');
 
@@ -40,6 +46,11 @@ export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 	// log(`importSVGtoCurrentItem`, 'end');
 }
 
+/**
+ * Handle copy + pasted SVG code on the Edit Canvas
+ * @param {KeyboardEvent} event - paste key event
+ * @returns nothing
+ */
 export async function handlePasteSVGonEditCanvas(event) {
 	// log(`handlePasteSVGonEditCanvas`, 'start');
 	// log(event);
@@ -77,26 +88,30 @@ export async function handlePasteSVGonEditCanvas(event) {
 	// log(`handlePasteSVGonEditCanvas`, 'end');
 }
 
+/**
+ * Handles dragging + dropping a SVG file on the edit canvas.
+ * @param {DragEvent} event - drag + drop event
+ */
 export function handleDropSVGonEditCanvas(event) {
 	// log(`handleDropSVGonEditCanvas`, 'start');
 
 	cancelDefaultEventActions(event);
 
-	let f = event.dataTransfer;
-	f = f.files[0] || '';
-	// log('\t filename: ' + f.name);
-	let fname = f.name.split('.');
-	fname = fname[fname.length - 1].toLowerCase();
-	// log('\t fname = ' + fname);
+	const transfer = event.dataTransfer;
+	const file = transfer.files[0];
+	// log('\t filename: ' + file.name);
+	const fileName = file.name.split('.');
+	const fileType = fileName[fileName.length - 1].toLowerCase();
+	// log('\t fileName = ' + fileName);
 
 	const reader = new FileReader();
 
-	if (fname === 'svg') {
+	if (fileType === 'svg') {
 		reader.onload = function () {
-			importSVGtoCurrentItem(reader.result, '<br>from the dropped SVG file');
+			importSVGtoCurrentItem(reader.result.toString(), '<br>from the dropped SVG file');
 		};
 
-		reader.readAsText(f);
+		reader.readAsText(file);
 	} else {
 		showToast('Only SVG files can be dropped on the canvas');
 	}
