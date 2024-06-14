@@ -11,9 +11,8 @@
 		"build": "run-func scripts.js build  && vite build ./src/ --emptyOutDir --base=/app/",
 		"stage": "run-func scripts.js stage  && vite build ./src/ --emptyOutDir --base=/staged/",
 		"test": "vitest watch",
-		"coverage": "vitest watch --silent=true --coverage",
-		"lint": "eslint src",
-		"fix": "eslint src --fix"
+		"typecheck": "tsc",
+		"coverage": "vitest watch --silent=true --coverage"
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.12",
@@ -25,6 +24,7 @@
 		"paper": "^0.12.17",
 		"prettier": "^2.7.1",
 		"run-func": "^3.0.0",
+		"typescript": "^5.4.5",
 		"vite": ">=5.1.7",
 		"vitest": "^1.2.2"
 	},
