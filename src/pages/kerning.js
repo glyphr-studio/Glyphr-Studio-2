@@ -21,8 +21,8 @@ import {
 
 /**
  * Page > Kerning
- * Edit surface for Kerning
- * Comprised of Panels of tools, and the Edit Canvas
+ * Edit surface for Kerning, comprised of Panels of tools, and the Edit Canvas.
+ * @returns {Element} - page content
  */
 export function makePage_Kerning() {
 	// log(`makePage_Kerning`, 'start');
@@ -163,6 +163,10 @@ export function makePage_Kerning() {
 	return content;
 }
 
+/**
+ * Makes the first run / get started content
+ * @returns {Element}
+ */
 function makeKerningFirstRunContent() {
 	const content = makeElement({
 		className: 'editor-page__first-run',
@@ -207,6 +211,13 @@ function makeKerningFirstRunContent() {
 	return content;
 }
 
+/**
+ * New kern group dialog handler
+ * @param {Array} leftGroup - left kern members
+ * @param {Array} rightGroup - right kern members
+ * @param {Number} value - kern value
+ * @returns {KernGroup}
+ */
 function addKernGroup(leftGroup, rightGroup, value) {
 	// log(`addKernGroup`, 'start');
 	// log(leftGroup);
@@ -232,6 +243,11 @@ function addKernGroup(leftGroup, rightGroup, value) {
 	return project.kerning[newID];
 }
 
+/**
+ * Makes a new Kern Group ID, without colliding with old ones.
+ * @param {Object} kernGroups - current kern groups
+ * @returns {String}
+ */
 export function makeKernGroupID(kernGroups = getCurrentProject().kerning) {
 	// log(`makeKernGroupID`, 'start');
 	let counter = countItems(kernGroups);
@@ -242,6 +258,11 @@ export function makeKernGroupID(kernGroups = getCurrentProject().kerning) {
 	return newID;
 }
 
+/**
+ * Shows an edit dialog for a given Kern Group - or, if
+ * one is not provided, used as a 'create new' Kern Group dialog.
+ * @param {KernGroup | false =} kernGroup
+ */
 export function showAddEditKernGroupDialog(kernGroup) {
 	// log(`showAddEditKernGroupDialog`, 'start');
 	// log(`kernGroup`);
@@ -349,6 +370,9 @@ export function showAddEditKernGroupDialog(kernGroup) {
 	// log(`showAddEditKernGroupDialog`, 'end');
 }
 
+/**
+ * Makes the content for the Find Single Letter Pair dialog, and shows it.
+ */
 export function showFindSingleLetterPairDialog() {
 	const content = makeElement({
 		innerHTML: `
@@ -401,6 +425,9 @@ export function showFindSingleLetterPairDialog() {
 	showModalDialog(content, 800);
 }
 
+/**
+ * Makes the content for the Delete Single Letter Pair dialog, and shows it.
+ */
 export function showDeleteSingleLetterPairDialog() {
 	const content = makeElement({
 		innerHTML: `
@@ -449,6 +476,9 @@ export function showDeleteSingleLetterPairDialog() {
 	showModalDialog(content, 800);
 }
 
+/**
+ * Enables or disables the search button based on input fields.
+ */
 function updateSearchButton() {
 	/** @type {HTMLInputElement} */
 	const leftSearch = document.querySelector('#kerning__letter-pair__left-group');
@@ -463,6 +493,9 @@ function updateSearchButton() {
 	}
 }
 
+/**
+ * Does the search for letter pairs
+ */
 function searchForLetterPairs() {
 	// log(`searchForLetterPairs`, 'start');
 	/** @type {HTMLInputElement} */
@@ -514,6 +547,9 @@ function searchForLetterPairs() {
 	// log(`searchForLetterPairs`, 'end');
 }
 
+/**
+ * Deletes letter pairs
+ */
 function deleteLetterPairs() {
 	// log(`deleteLetterPairs`, 'start');
 	/** @type {HTMLInputElement} */
@@ -583,6 +619,13 @@ function deleteLetterPairs() {
 	// log(`deleteLetterPairs`, 'end');
 }
 
+/**
+ * Given a Kern ID, removes a letter pair from it.
+ * @param {String} leftLetter - left letter
+ * @param {String} rightLetter - right letter
+ * @param {String} kernID - which Kern Group to use
+ * @returns {Boolean} - successful or not
+ */
 function deleteLetterPair(leftLetter = '', rightLetter = '', kernID = '') {
 	// log(`deleteLetterPair`, 'start');
 	let list = {};
@@ -626,6 +669,12 @@ function deleteLetterPair(leftLetter = '', rightLetter = '', kernID = '') {
 	return success;
 }
 
+/**
+ * Makes a small collection of character 'chips' for half
+ * of a kern group's membership (left or right).
+ * @param {Array} group - list of character IDs
+ * @returns {Element}
+ */
 export function makeKernGroupCharChips(group) {
 	// log(`makeKernGroupCharChips`, 'start');
 	// log(`group: ${group}`);
@@ -639,6 +688,11 @@ export function makeKernGroupCharChips(group) {
 	return wrapper;
 }
 
+/**
+ * Makes a small element that represents a single character.
+ * @param {String} charID - char to make a chip for
+ * @returns {Element}
+ */
 export function makeCharChip(charID) {
 	// log(`makeCharChip`, 'start');
 	// log(`charID: ${charID}`);

@@ -23,9 +23,9 @@ import { addCharacterRangeToCurrentProject } from './settings_project.js';
 
 /**
  * Page > Global Actions
- * Various actions that can be applied to all glyphs
+ * Various actions that can be applied to all glyphs.
+ * @returns {Element} - page content
  */
-
 export function makePage_GlobalActions() {
 	const content = makeElement({
 		tag: 'div',
@@ -85,6 +85,12 @@ export function makePage_GlobalActions() {
 //	Glyph Iterator
 //	------------------
 
+/**
+ * Centralized way to iterate over specific items in the
+ * project, applying changes from a callback function, and
+ * optionally collecting errors.
+ * @param {Object} oa - options argument
+ */
 function glyphIterator(oa) {
 	// log(`glyphIterator`, 'start');
 	// log(oa);
@@ -203,7 +209,10 @@ function glyphIterator(oa) {
 // --------------------------------------------------------------
 // Move
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Move global action card.
+ * @returns {Element}
+ */
 function makeCard_Move() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -265,7 +274,10 @@ function makeCard_Move() {
 // --------------------------------------------------------------
 // Scale Vertical
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Scale Vertical global action card.
+ * @returns {Element}
+ */
 function makeCard_ScaleVertical() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -321,7 +333,10 @@ function makeCard_ScaleVertical() {
 // --------------------------------------------------------------
 // Scale Horizontal
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Scale Horizontal global action card.
+ * @returns {Element}
+ */
 function makeCard_ScaleHorizontal() {
 	const card = makeElement({ className: 'global-actions__card' });
 	card.appendChild(makeElement({ tag: 'h2', content: 'Horizontally scale all glyphs' }));
@@ -388,7 +403,10 @@ function makeCard_ScaleHorizontal() {
 // --------------------------------------------------------------
 // Resize
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Resize global action card.
+ * @returns {Element}
+ */
 function makeCard_Resize() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -483,7 +501,10 @@ function makeCard_Resize() {
 // --------------------------------------------------------------
 // Flatten
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Flatten global action card.
+ * @returns {Element}
+ */
 function makeCard_Flatten() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -538,7 +559,10 @@ function makeCard_Flatten() {
 // --------------------------------------------------------------
 // Side Bearings
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Side Bearings global action card.
+ * @returns {Element}
+ */
 function makeCard_SideBearings() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -632,7 +656,10 @@ function makeCard_SideBearings() {
 // --------------------------------------------------------------
 // Round
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Round global action card.
+ * @returns {Element}
+ */
 function makeCard_Round() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -673,7 +700,10 @@ function makeCard_Round() {
 // --------------------------------------------------------------
 // Monospace
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Monospace global action card.
+ * @returns {Element}
+ */
 function makeCard_Monospace() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -735,7 +765,10 @@ function makeCard_Monospace() {
 // --------------------------------------------------------------
 // All Caps
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the All Caps global action card.
+ * @returns {Element}
+ */
 function makeCard_AllCaps() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -856,7 +889,10 @@ function makeCard_AllCaps() {
 // --------------------------------------------------------------
 // Diacritics
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Diacritics global action card.
+ * @returns {Element}
+ */
 function makeCard_Diacritics() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -924,7 +960,10 @@ function makeCard_Diacritics() {
 // --------------------------------------------------------------
 // Diacritics Advanced
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Diacritics Advanced global action card.
+ * @returns {Element}
+ */
 function makeCard_DiacriticsAdvanced() {
 	const card = makeElement({ className: 'global-actions__card' });
 

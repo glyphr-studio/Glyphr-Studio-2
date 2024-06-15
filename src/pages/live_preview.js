@@ -6,10 +6,9 @@ import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js
 
 /**
  * Page > Live preview
- * Preview text blocks made up of the font
- * currently being edited.
+ * Preview text blocks made up of the font currently being edited.
+ * @returns {Element} - page content
  */
-
 export function makePage_LivePreview() {
 	// log(`makePage_LivePreview`, 'start');
 	// const editor = getCurrentProjectEditor();
@@ -54,6 +53,9 @@ export function makePage_LivePreview() {
 	return content;
 }
 
+/**
+ * Event handler for when the page gets resized.
+ */
 export function livePreviewPageWindowResize() {
 	// log(`livePreviewPageWindowResize`, 'start');
 	const wrapper = document.querySelector('.live-preview-page__canvas-wrapper');
@@ -63,6 +65,9 @@ export function livePreviewPageWindowResize() {
 	// log(`livePreviewPageWindowResize`, 'end');
 }
 
+/**
+ * Redraws the Live Preview
+ */
 export function redrawLivePreviewPageDisplayCanvas() {
 	const editor = getCurrentProjectEditor();
 	if (editor.nav.page === 'Live preview') {

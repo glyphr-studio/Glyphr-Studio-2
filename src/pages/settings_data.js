@@ -1,3 +1,6 @@
+/**
+ * Data that describes all the settings
+ */
 export default {
 	project: {
 		name: {

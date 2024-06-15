@@ -4,6 +4,10 @@ import { addAsChildren, makeElement, textToNode } from '../common/dom';
 import { showToast } from '../controls/dialogs/dialogs';
 import { makeOneSettingsRow } from './settings';
 
+/**
+ * Makes the content for the Settings > App tab
+ * @returns {Element}
+ */
 export function makeSettingsTabContentApp() {
 	const tabContent = makeElement({
 		tag: 'div',
@@ -31,7 +35,7 @@ export function makeSettingsTabContentApp() {
 			attributes: { danger: '', style: 'height: 24px;' },
 			innerHTML: 'Delete',
 			onClick: () => {
-				getGlyphrStudioApp().setLocalStorage('autoSaves', {});
+				getGlyphrStudioApp().setLocalStorage('autoSaves', '');
 				showToast('Auto-saved backups were deleted for this browser.');
 			},
 		}),

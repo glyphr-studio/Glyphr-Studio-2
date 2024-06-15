@@ -4,8 +4,9 @@ import { TabControl } from '../controls/tabs/tab_control.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
- * Page > About
- * Information about Glyphr Studio
+ * Page > Help
+ * Help content for Glyphr Studio.
+ * @returns {Element} - page content
  */
 export function makePage_Help() {
 	const content = makeElement({
@@ -43,6 +44,10 @@ export function makePage_Help() {
 	return content;
 }
 
+/**
+ * Makes the overview content
+ * @returns {Element}
+ */
 function makeHelpOverview() {
 	const content = makeElement({
 		innerHTML: `
@@ -62,6 +67,10 @@ function makeHelpOverview() {
 	return content;
 }
 
+/**
+ * Makes the keyboard shortcut table content
+ * @returns {Element}
+ */
 export function makeKeyboardShortcutReference() {
 	let content = makeElement({
 		innerHTML: `
