@@ -14,8 +14,8 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 
 /**
  * Page > Characters
- * The main edit surface for Glyphr Studio
- * Comprised of Panels of tools, and the Edit Canvas
+ * The main edit surface for Glyphr Studio, comprised of Panels of tools, and the Edit Canvas.
+ * @returns {Element} - page content
  */
 export function makePage_Characters() {
 	// log(`makePage_Characters`, 'start');

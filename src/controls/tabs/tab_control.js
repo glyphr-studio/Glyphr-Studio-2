@@ -11,7 +11,7 @@ export class TabControl {
 	/**
 	 * Saves a new tab object to this tab group
 	 * @param {String} tabName - name for the tab
-	 * @param {HTMLElement | String} tabContent - what to put in the tab
+	 * @param {Element | String} tabContent - what to put in the tab
 	 */
 	registerTab(tabName = 'Tab Name', tabContent = '') {
 		let newTab = {

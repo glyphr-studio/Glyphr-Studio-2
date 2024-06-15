@@ -58,7 +58,7 @@ export function XMLtoJSON(inputXML) {
 		let tagAttributes;
 
 		for (const node of kids) {
-			tagResult = {};
+			tagResult = { name: '', attributes: {} , content: ''};
 			if (node.nodeName === '#comment') continue;
 
 			tagContent = tag_getContent(node);

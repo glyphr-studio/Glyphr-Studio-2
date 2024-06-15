@@ -8,8 +8,8 @@ import { makeContributeContent, makeReleaseNote } from './about.js';
 
 /**
  * Page > Overview
- * The first page you land on, with project
- * and glyph information
+ * The first page you land on, with project and glyph information.
+ * @returns {Element} - page content
  */
 export function makePage_Overview() {
 	const content = makeElement({

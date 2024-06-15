@@ -426,8 +426,8 @@ export function showError(message) {
 /**
  * Shows a big dialog that blurs the UI behind it.
  * @param {Element} contentNode - HTML to show in the dialog
- * @param {Number} maxWidth - limit the dialog width
- * @param {Boolean} noPadding - turn on or off padding
+ * @param {Number =} maxWidth - limit the dialog width
+ * @param {Boolean =} noPadding - turn on or off padding
  */
 export function showModalDialog(contentNode, maxWidth, noPadding) {
 	let modal = makeModalDialog(contentNode, maxWidth, noPadding);

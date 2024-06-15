@@ -19,8 +19,8 @@ import {
 
 /**
  * Page > Components
- * Edit surface for Components
- * Comprised of Panels of tools, and the Edit Canvas
+ * Edit surface for Components, comprised of Panels of tools, and the Edit Canvas.
+ * @returns {Element} - page content
  */
 export function makePage_Components() {
 	// log(`makePage_Components`, 'start');
@@ -191,6 +191,10 @@ export function makePage_Components() {
 	return content;
 }
 
+/**
+ * Makes the first run / get started content
+ * @returns {Element}
+ */
 function makeComponentsFirstRunContent() {
 	let componentExampleTable = '';
 	[
@@ -244,12 +248,21 @@ function makeComponentsFirstRunContent() {
 	return content;
 }
 
+/**
+ * Button handler for adding a new component
+ * @param {Object} newComponent - new component to add
+ * @returns {Glyph}
+ */
 export function addComponent(newComponent) {
 	const project = getCurrentProject();
 	let added = project.addItemByType(new Glyph(newComponent), 'Component');
 	return added;
 }
 
+/**
+ * Makes a new Component ID that doesn't collide with old ones.
+ * @returns {String}
+ */
 export function makeComponentID() {
 	// log(`makeComponentID`, 'start');
 
@@ -260,6 +273,9 @@ export function makeComponentID() {
 	return `comp-${counter}`;
 }
 
+/**
+ * Makes and shows the Add Component dialog
+ */
 export function showAddComponentDialog() {
 	const content = makeElement({
 		innerHTML: `

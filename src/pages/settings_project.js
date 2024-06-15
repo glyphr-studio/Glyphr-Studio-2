@@ -18,6 +18,10 @@ import { CharacterRange } from '../project_data/character_range.js';
 import { resolveItemLinks } from '../project_editor/cross_item_actions';
 import { makeOneSettingsRow } from './settings.js';
 
+/**
+ * Makes the content for the Settings > Project tab
+ * @returns {Element}
+ */
 export function makeSettingsTabContentProject() {
 	const tabContent = makeElement({
 		tag: 'div',

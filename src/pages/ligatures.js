@@ -24,8 +24,8 @@ import {
 
 /**
  * Page > Ligatures
- * Edit surface for Ligatures
- * Comprised of Panels of tools, and the Edit Canvas
+ * Edit surface for Ligatures, comprised of Panels of tools, and the Edit Canvas.
+ * @returns {Element} - page content
  */
 export function makePage_Ligatures() {
 	// log(`makePage_Ligatures`, 'start');
@@ -186,6 +186,10 @@ export function makePage_Ligatures() {
 	return content;
 }
 
+/**
+ * Makes the first run / get started content
+ * @returns {Element}
+ */
 function makeLigaturesFirstRunContent() {
 	let commonLigatureTable = '';
 	ligaturesWithCodePoints.forEach((lig) => {
@@ -253,6 +257,9 @@ const ligaturesWithCodePoints = [
 	{ chars: 'ffl', display: 'f‌f‌l', point: '0xFB04' },
 ];
 
+/**
+ * Adds the list of common ligatures to the current project
+ */
 function addCommonLigaturesToProject() {
 	ligaturesWithCodePoints.forEach((lig) => addLigature(lig.chars));
 	const editor = getCurrentProjectEditor();
@@ -261,6 +268,12 @@ function addCommonLigaturesToProject() {
 	editor.history.addWholeProjectChangePostState();
 }
 
+/**
+ * Given a text sequence of characters, creates a Ligature object,
+ * and adds it to the current project.
+ * @param {String} sequence - characters that make up this Ligature
+ * @returns {String | Glyph}
+ */
 function addLigature(sequence) {
 	// log(`addLigature`, 'start');
 
@@ -333,7 +346,12 @@ function addLigature(sequence) {
 	return project.ligatures[newID];
 }
 
-
+/**
+ * Given an input sequence of ligature source characters, creates a
+ * new unique ligature project id.
+ * @param {String} sequence - characters that make up this ligature
+ * @returns {String | false}
+ */
 export function makeLigatureID(sequence = '') {
 	// log(`makeLigatureID`, 'start');
 	// log(`sequence: ${sequence}`);
@@ -355,6 +373,10 @@ export function makeLigatureID(sequence = '') {
 	return newID;
 }
 
+
+/**
+ * Makes the Add Ligature dialog and shows it.
+ */
 export function showAddLigatureDialog() {
 	const content = makeElement({
 		innerHTML: `
