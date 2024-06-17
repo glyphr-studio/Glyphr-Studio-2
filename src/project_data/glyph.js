@@ -63,7 +63,7 @@ export class Glyph extends GlyphElement {
 
 		this.objType = objType;
 
-		if (this.id.startsWith('liga-') && this.gsub.length === 0) {
+		if (this.id && this.id.startsWith('liga-') && this.gsub.length === 0) {
 			// A ligature that is missing it's gsub property
 			let charArr = this.id.split('-');
 			charArr.shift();
