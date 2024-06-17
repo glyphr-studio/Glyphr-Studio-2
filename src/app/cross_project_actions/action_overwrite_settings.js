@@ -195,6 +195,16 @@ export function updateFooter_overwriteSettings(parent) {
 function overwriteSettings() {
 	// log(`Cross Project Actions - overwriteSettings`, 'start');
 
+	if (selectedItemIDs.length === 0) {
+		showToast(
+			`
+			No items selected.<br>Use the checkboxes on each row to select items,
+			or use the checkbox at the top of the column to select all.`,
+			6000
+		);
+		return;
+	}
+
 	destinationEditor.history.addWholeProjectChangePreState(
 		`Cross-project action: from ${sourceEditor.project.settings.project.name}<br>
 		Overwrote settings for ${selectedItemIDs.length} items`

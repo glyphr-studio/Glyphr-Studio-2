@@ -200,6 +200,17 @@ export function updateFooter_addKernGroups(parent) {
 
 function addKernGroups() {
 	// log(`Cross Project Actions - addKernGroups`, 'start');
+
+	if (selectedItemIDs.length === 0) {
+		showToast(
+			`
+			No items selected.<br>Use the checkboxes on each row to select items,
+			or use the checkbox at the top of the column to select all.`,
+			6000
+		);
+		return;
+	}
+
 	let emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
 	// log(`emRatio: ${emRatio}`);

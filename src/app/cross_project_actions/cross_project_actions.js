@@ -282,7 +282,7 @@ export function makeItemAndRangeChooser(
 
 		option.addEventListener('click', () => {
 			selectedRange = range;
-			let table = document.getElementById('cross-project-actions__character-copy-table');
+			let table = document.getElementById('cross-project-actions__character-action-table');
 			updateCharacterCopyTable(table);
 		});
 
