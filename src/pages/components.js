@@ -59,7 +59,7 @@ export function makePage_Components() {
 	});
 
 	if (editor.showPageTransitions) content.classList.add('app__page-animation');
-	
+
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
@@ -261,7 +261,7 @@ export function makeComponentID() {
 export function showAddComponentDialog() {
 	const content = makeElement({
 		innerHTML: `
-			<h2>Add a new component</h2>
+			<h2>Create a new component</h2>
 				Specify a name to create a new component:
 				<br><br>
 				<input id="components__new-component-input" type="text"

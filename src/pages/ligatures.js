@@ -64,7 +64,7 @@ export function makePage_Ligatures() {
 	});
 
 	if (editor.showPageTransitions) content.classList.add('app__page-animation');
-	
+
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
@@ -349,7 +349,7 @@ export function makeLigatureID(sequence) {
 export function showAddLigatureDialog() {
 	const content = makeElement({
 		innerHTML: `
-			<h2>Add a new ligature</h2>
+			<h2>Create a new ligature</h2>
 			Create a new ligature by specifying two or more individual characters:
 			<br><br>
 			<input id="ligatures__new-ligature-input" type="text"
