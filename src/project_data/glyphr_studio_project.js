@@ -703,12 +703,21 @@ export class GlyphrStudioProject {
  */
 export function sortLigatures(a, b) {
 	// log(`sortLigatures`, 'start');
-	// log(`a: ${a.chars}`);
-	// log(`b: ${b.chars}`);
+	// log(`\n⮟a⮟`);
+	// log(a);
+	// log(`\n⮟b⮟`);
+	// log(b);
+
+	if (a.chars === false || b.chars === false) {
+		console.warn('Ligature is missing root characters');
+		console.warn(a);
+		console.warn(b);
+		// log(`sortLigatures`, 'end');
+		return 0;
+	}
 
 	if (a.chars.length === b.chars.length) {
 		// log(`same length`);
-
 		// log(`sortLigatures`, 'end');
 		return a.chars.localeCompare(b.chars);
 	} else {

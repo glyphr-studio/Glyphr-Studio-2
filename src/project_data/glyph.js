@@ -1,4 +1,4 @@
-import { hexesToChars } from '../common/character_ids.js';
+import { hexesToChars, isHex } from '../common/character_ids.js';
 import {
 	calculateDeltasFromTransform,
 	hasNonValues,
@@ -62,6 +62,18 @@ export class Glyph extends GlyphElement {
 		this.contextCharacters = contextCharacters;
 
 		this.objType = objType;
+
+		if (this.id.startsWith('liga-') && this.gsub.length === 0) {
+			// A ligature that is missing it's gsub property
+			let charArr = this.id.split('-');
+			charArr.shift();
+			// log(`\n⮟charArr⮟`);
+			// log(charArr);
+			this.gsub = charArr.map((value) => {
+				if (isHex(value)) return Number(value);
+				else return value.codePointAt(0);
+			});
+		}
 		// log(`this.id: ${this.id}`);
 		// log(`this.ident: ${this.ident}`);
 		// log(this.print());
