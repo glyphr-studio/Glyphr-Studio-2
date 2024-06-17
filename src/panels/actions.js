@@ -27,6 +27,7 @@ import {
 } from '../project_editor/cross_item_actions.js';
 import { saveTextFile } from '../project_editor/file_io.js';
 import { makeActionButton } from './action_buttons.js';
+import { makeSingleLabel } from './cards.js';
 import { makeAllItemTypeChooserContent } from './item_chooser.js';
 import { refreshPanel } from './panels.js';
 
@@ -1001,19 +1002,28 @@ function showDialogChooseOtherItem(type) {
 	// log(`type: ${type}`);
 
 	let content = makeElement({
-		innerHTML: '<h2>Choose another glyph</h2>',
+		innerHTML: `<h2>Choose another glyph</h2>`,
 	});
 	let onClick = false;
 
 	if (type === 'copyPaths') {
 		content.innerHTML += `All the paths from the glyph you select will be copied and pasted into this glyph.<br><br>`;
+		addCopyActionsForChooseOtherItem(content);
 		onClick = (itemID) => {
 			const editor = getCurrentProjectEditor();
 			const otherItem = editor.project.getItem(itemID);
+			if (!otherItem || otherItem.shapes.length === 0) {
+				showToast(`Item doesn't exist, or has no shapes.`);
+				return;
+			}
 			const thisItem = editor.selectedItem;
+			const oldRSB = thisItem.rightSideBearing;
 			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
 			editor.multiSelect.shapes.clear();
 			newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+			if (document.querySelector('#checkbox-maintain-rsb').checked) {
+				thisItem.rightSideBearing = oldRSB;
+			}
 			editor.publish('currentItem', thisItem);
 			editor.history.addState(`Paths were copied from ${otherItem.name}.`);
 			closeEveryTypeOfDialog();
@@ -1024,6 +1034,8 @@ function showDialogChooseOtherItem(type) {
 	if (type === 'addAsComponentInstance') {
 		// log(`Dialog addAsComponentInstance`, 'start');
 		content.innerHTML += `The glyph you select will be treated as a root component, and added to this glyph as a component instance.<br><br>`;
+		addCopyActionsForChooseOtherItem(content);
+
 		onClick = (itemID) => {
 			const editor = getCurrentProjectEditor();
 			let otherItem = editor.project.getItem(itemID);
@@ -1032,6 +1044,7 @@ function showDialogChooseOtherItem(type) {
 				otherItem = editor.project.getItem(itemID);
 			}
 			const thisItem = editor.selectedItem;
+			const oldRSB = thisItem.rightSideBearing;
 
 			editor.history.addWholeProjectChangePreState(
 				`Component instance was linked from ${otherItem.name}.`
@@ -1040,6 +1053,9 @@ function showDialogChooseOtherItem(type) {
 			if (newInstance) {
 				editor.publish('currentItem', thisItem);
 				editor.multiSelect.shapes.add(newInstance);
+				if (document.querySelector('#checkbox-maintain-rsb').checked) {
+					thisItem.rightSideBearing = oldRSB;
+				}
 				editor.history.addWholeProjectChangePostState();
 				closeEveryTypeOfDialog();
 				showToast(`Component instance linked from<br>${otherItem.name}`);
@@ -1097,6 +1113,35 @@ function showDialogChooseOtherItem(type) {
 	content.appendChild(scrollArea);
 	showModalDialog(content);
 	// log(`showDialogChooseOtherItem`, 'end');
+}
+
+function addCopyActionsForChooseOtherItem(parent) {
+	parent.appendChild(
+		makeElement({
+			tag: 'strong',
+			content: 'Copy options:',
+			style: 'display: inline-block; margin-bottom: 10px;',
+		})
+	);
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(
+		makeElement({
+			tag: 'input',
+			attributes: { type: 'checkbox' },
+			className: 'copy-shapes-options__checkbox',
+			id: 'checkbox-maintain-rsb',
+		})
+	);
+	parent.appendChild(
+		makeSingleLabel(
+			`Maintain right side bearing, accounting for the width of the added items.`,
+			false,
+			'checkbox-maintain-rsb',
+			'copy-shapes-options__label'
+		)
+	);
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(makeElement({ tag: 'br' }));
 }
 
 function showDialogChooseItemFromOtherProject() {
