@@ -24,7 +24,9 @@ export class GlyphTile extends HTMLElement {
 		// log(`GlyphTile.constructor`, 'start');
 		// log(attributes);
 
-		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
+		Object.keys(attributes).forEach((key) => {
+			if (key !== 'project') this.setAttribute(key, attributes[key]);
+		});
 		this.project = attributes.project || getCurrentProject();
 		this.showingOtherProject = !!attributes.project;
 		const displayedItemID = this.getAttribute('displayed-item-id');
@@ -41,15 +43,16 @@ export class GlyphTile extends HTMLElement {
 
 		const overallSize = 50;
 
-		this.setAttribute('title', `${name}\n${displayedItemID}`);
 
 		this.wrapper = makeElement({ className: 'wrapper' });
 		this.wrapper.style.backgroundSize = `auto ${overallSize}px`;
+		this.wrapper.setAttribute('created', this.glyph? 'true':'false');
 
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
 		if (this.showingOtherProject) this.removeAttribute('selected');
 
-		if (this.glyph && this.glyph.advanceWidth) {
+		if (this.glyph) {
+			this.setAttribute('title', `${name}\n${displayedItemID}`);
 			this.thumbnail = makeElement({
 				tag: 'span',
 				className: 'thumbnail',
@@ -57,6 +60,7 @@ export class GlyphTile extends HTMLElement {
 			this.thumbnail.width = overallSize;
 			this.thumbnail.height = overallSize;
 		} else {
+			this.setAttribute('title', `${name}\n${displayedItemID}\n\nItem does not exist yet, click to create`);
 			this.thumbnail = makeElement({
 				className: 'thumbnail',
 			});
