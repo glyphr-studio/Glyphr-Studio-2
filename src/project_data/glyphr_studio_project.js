@@ -514,7 +514,7 @@ export class GlyphrStudioProject {
 		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;
 		const translateX = (size - itemWidth * scale) / 2;
 		const translateY = itemHeight * scale - padding;
-		const svg = item?.svgPathData || 'M0,0 H100 V100 H-100 V-100';
+		const svg = item?.svgPathData || 'M0,0Z';
 		// log(`itemWidth: ${itemWidth}`);
 		// log(svg);
 
