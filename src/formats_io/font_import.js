@@ -193,8 +193,9 @@ export async function ioFont_importFont(importedFont, testing = false) {
 		return editor.project;
 	} else {
 		setCurrentProjectEditor(editor);
-		editor.nav.page = 'Overview';
+		editor.project.resetSessionStateForAllItems();
 
+		editor.nav.page = 'Overview';
 		const app = getGlyphrStudioApp();
 		app.selectedProjectEditor = editor;
 		app.selectedProjectEditor.navigate();
@@ -281,7 +282,9 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 		importedGlyph = new Glyph();
 	}
 
-	if (importedGlyph) importedGlyph.advanceWidth = advance;
+	if (importedGlyph) {
+		importedGlyph.advanceWidth = advance;
+	}
 
 	// log(`makeGlyphrStudioGlyphObject`, 'end');
 	return importedGlyph;

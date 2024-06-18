@@ -43,16 +43,24 @@ export class GlyphTile extends HTMLElement {
 
 		const overallSize = 50;
 
-
 		this.wrapper = makeElement({ className: 'wrapper' });
 		this.wrapper.style.backgroundSize = `auto ${overallSize}px`;
-		this.wrapper.setAttribute('created', this.glyph? 'true':'false');
 
+		// Session-state information
+		const sessionState = this?.glyph?.sessionState || 'notCreated';
+		let sessionMessage = '';
+		this.wrapper.setAttribute('session-state', sessionState);
+		if (sessionState === 'notCreated') sessionMessage = '\n\nItem does not exist yet, click to create';
+		if (sessionState === 'new') sessionMessage = '\n\nItem was created, but has not yet been edited';
+		if (sessionState === 'changed') sessionMessage = '\n\nItem was recently edited';
+
+
+		// Selection
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
 		if (this.showingOtherProject) this.removeAttribute('selected');
 
-		if (this.glyph) {
-			this.setAttribute('title', `${name}\n${displayedItemID}`);
+		if (this.glyph && this.glyph.hasChangedThisSession === true) {
+			this.setAttribute('title', `${name}\n${displayedItemID}${sessionMessage}`);
 			this.thumbnail = makeElement({
 				tag: 'span',
 				className: 'thumbnail',
@@ -60,7 +68,10 @@ export class GlyphTile extends HTMLElement {
 			this.thumbnail.width = overallSize;
 			this.thumbnail.height = overallSize;
 		} else {
-			this.setAttribute('title', `${name}\n${displayedItemID}\n\nItem does not exist yet, click to create`);
+			this.setAttribute(
+				'title',
+				`${name}\n${displayedItemID}${sessionMessage}`
+			);
 			this.thumbnail = makeElement({
 				className: 'thumbnail',
 			});

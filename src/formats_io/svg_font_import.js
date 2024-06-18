@@ -243,6 +243,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 		return editor.project.save();
 	} else {
 		setCurrentProjectEditor(editor);
+		editor.project.resetSessionStateForAllItems();
 		editor.nav.page = 'Overview';
 		editor.navigate();
 	}

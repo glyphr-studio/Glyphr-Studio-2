@@ -372,6 +372,7 @@ export class GlyphrStudioProject {
 		newItem.id = newID;
 		newItem.objType = objType;
 		newItem.parent = this;
+		newItem.wasCreatedThisSession = false;
 		destination[newID] = newItem;
 
 		return destination[newID];
@@ -612,6 +613,14 @@ export class GlyphrStudioProject {
 		// log(result);
 		// log(`GlyphrStudioProject GET sortedKernGroups`, 'end');
 		return result;
+	}
+
+	resetSessionStateForAllItems() {
+		this.forEachItem((item) => {
+			item.wasCreatedThisSession = false;
+			item.hasChangedThisSession = false;
+			// log(item);
+		});
 	}
 
 	forEachItem(fun) {
