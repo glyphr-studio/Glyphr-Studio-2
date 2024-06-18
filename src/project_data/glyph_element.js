@@ -29,6 +29,8 @@ export class GlyphElement {
 			// log(this.cache);
 			// log('\tNo Parent!');
 		}
+
+		this.hasChangedThisSession = true;
 		// log(`~CHANGED`, 'end');
 	}
 

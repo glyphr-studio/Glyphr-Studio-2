@@ -405,6 +405,8 @@ export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	} else {
 		editor.project = importGlyphrProjectFromText(glyphrStudioProjectFile);
 	}
+
+	editor.project.resetSessionStateForAllItems();
 	editor.nav.page = 'Overview';
 	if (isSecondProject) showToast(`Switched to<br>${editor.project.settings.project.name}`);
 	updateWindowUnloadEvent();
