@@ -100,8 +100,8 @@ export class History {
 
 		if (editor.project.settings.app.autoSave) {
 			const app = getGlyphrStudioApp();
-			if (app.settings.dev.mode && app.settings.dev.autoSave) {
-				app.addAutoSaveState();
+			if (app.settings.dev.mode) {
+				if (app.settings.dev.autoSave) app.addAutoSaveState();
 			} else {
 				app.addAutoSaveState();
 			}
@@ -140,8 +140,8 @@ export class History {
 		if (q[0] && q[1]) {
 			if (q[0].itemID !== q[1].itemID) {
 				// Assumes navigate adds an entry to the queue
-				if(q[1].page) editor.nav.page = q[1].page;
-				if(q[1].itemID) editor.selectedItemID = q[1].itemID;
+				if (q[1].page) editor.nav.page = q[1].page;
+				if (q[1].itemID) editor.selectedItemID = q[1].itemID;
 				q.shift();
 				editor.navigate();
 

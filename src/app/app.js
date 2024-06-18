@@ -201,7 +201,7 @@ export class GlyphrStudioApp {
 			window.localStorage.setItem('GlyphrStudio', JSON.stringify(data));
 		} catch (error) {
 			showToast(
-				`This project is too large to be auto-saved. The auto-save option has been turned off in Settings > App.`
+				`There is not enough space for this project to be auto-saved. The auto-save option has been turned off in Settings > App.`
 			);
 			getCurrentProject().settings.app.autoSave = false;
 		}
