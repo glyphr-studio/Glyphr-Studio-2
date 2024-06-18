@@ -1,5 +1,6 @@
 import { addCrossProjectCopyShapeOptionControls } from '../app/cross_project_actions/action_copy_shapes.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getFilesFromFilePicker } from '../app/open_project.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import {
@@ -9,6 +10,7 @@ import {
 	showToast,
 } from '../controls/dialogs/dialogs.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
+import { importSVGtoCurrentItem } from '../edit_canvas/events_drag_drop_paste.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { addComponent } from '../pages/components.js';
 import {
@@ -216,6 +218,57 @@ export function getActionData(name) {
 					let content = makeGlyphSVGforExport(editor.selectedItem);
 					let name = editor.selectedItem.name;
 					saveTextFile(name + '.svg', content);
+				},
+			},
+			{
+				iconName: 'importGlyphSVG',
+				title: `Import paths from a SVG File\nUsing the file picker dialog, select a SVG file. Outlines will be imported and added to this glyph.`,
+				onClick: async () => {
+					getFilesFromFilePicker(
+						async (files) => {
+							// log(`ACTION importGlyphSVG`, 'start');
+							// log(files);
+							let file;
+							if (files[0]) {
+								let fileInput = files[0];
+								// log(fileInput);
+								if (fileInput.getFile) file = await fileInput.getFile();
+								else if (fileInput.getAsFile) file = await fileInput.getAsFile();
+								else file = fileInput;
+							} else {
+								showError(`No files were found that could be imported.`);
+							}
+							// log(file);
+							let fileSuffix = file.name.split('.');
+							fileSuffix = fileSuffix[fileSuffix.length - 1].toLowerCase();
+							// log('\t fileSuffix = ' + fileSuffix);
+
+							const reader = new FileReader();
+
+							if (fileSuffix === 'svg') {
+								reader.onload = function () {
+									importSVGtoCurrentItem(reader.result, '<br>from the imported SVG file');
+								};
+
+								reader.readAsText(file);
+							} else {
+								showToast('Only SVG files can be imported to a glyph.');
+							}
+						},
+						{
+							types: [
+								{
+									description: 'SVG Files',
+									accept: {
+										'image/svg+xml': ['.svg'],
+									},
+								},
+							],
+							excludeAcceptAllOption: true,
+							multiple: false,
+						}
+					);
+					// log(`ACTION importGlyphSVG`, 'end');
 				},
 			},
 		];
