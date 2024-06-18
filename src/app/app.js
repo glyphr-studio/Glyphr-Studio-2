@@ -1,10 +1,12 @@
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
+import { parseSemVer } from '../formats_io/validate_file_input.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
+import * as config from './app_config.json';
 import { _DEV } from './dev_mode_includes.js';
 import {
 	GSApp,
@@ -15,9 +17,6 @@ import {
 	setCurrentProjectEditor,
 } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
-import * as config from './app_config.json';
-import { parseSemVer } from '../formats_io/validate_file_input.js';
-
 
 /**
  * Creates a new Glyphr Studio Application
@@ -28,7 +27,7 @@ export class GlyphrStudioApp {
 	 */
 	constructor() {
 		// Version
-		this.version = config.version
+		this.version = config.version;
 		this.versionDate = config.versionDate;
 		const semVer = parseSemVer(config.version);
 		this.versionName = `Version ${semVer.major}.${semVer.minor}`;
@@ -48,7 +47,7 @@ export class GlyphrStudioApp {
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Overview', // {Sentence case page name} navigate straight to a page
+				currentPage: false, // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
