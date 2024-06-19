@@ -44,7 +44,7 @@ export class GlyphrStudioApp {
 			dev: {
 				// Internal Dev Stuff
 				mode: config.devMode, // {bool} global switch for all the stuff below
-				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
+				overwriteTitle: false, // {bool} Use a 'Dev Mode' window title
 				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
 				currentPage: false, // {Sentence case page name} navigate straight to a page
