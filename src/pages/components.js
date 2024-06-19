@@ -292,6 +292,8 @@ export function showAddComponentDialog() {
 			editor.selectedComponentID = result.id;
 			editor.navigate();
 			editor.history.addWholeProjectChangePostState();
+			result.hasChangedThisSession = false;
+			result.wasCreatedThisSession = true;
 			closeEveryTypeOfDialog();
 		}
 	});
