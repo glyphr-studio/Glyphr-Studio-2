@@ -96,6 +96,9 @@
 }
 
 .wrapper[selected] .name,
+.wrapper[selected][session-state='notCreated'] .name,
+.wrapper[selected][session-state='new'] .name,
+.wrapper[selected][session-state='changed'] .name,
 .wrapper:hover .name {
 	color: var(--blue-l40);
 	background-color: var(--blue-l90);
@@ -107,7 +110,7 @@
 }
 
 .wrapper[session-state='new'] .name {
-	color: var(--green-l40);
+	color: var(--green-l60);
 }
 
 .wrapper[session-state='changed'] .name {

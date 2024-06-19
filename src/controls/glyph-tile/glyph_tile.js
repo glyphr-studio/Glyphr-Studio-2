@@ -1,4 +1,4 @@
-import { getCurrentProject } from '../../app/main.js';
+import { getCurrentProject, log } from '../../app/main.js';
 import { hexesToChars } from '../../common/character_ids.js';
 import { makeElement } from '../../common/dom.js';
 import { remove } from '../../common/functions.js';
@@ -28,7 +28,6 @@ export class GlyphTile extends HTMLElement {
 			if (key !== 'project') this.setAttribute(key, attributes[key]);
 		});
 		this.project = attributes.project || getCurrentProject();
-		this.showingOtherProject = !!attributes.project;
 		const displayedItemID = this.getAttribute('displayed-item-id');
 		this.glyph = this.project.getItem(displayedItemID);
 		const chars = this.glyph?.chars || hexesToChars(remove(displayedItemID, 'glyph-'));
@@ -50,14 +49,15 @@ export class GlyphTile extends HTMLElement {
 		const sessionState = this?.glyph?.sessionState || 'notCreated';
 		let sessionMessage = '';
 		this.wrapper.setAttribute('session-state', sessionState);
-		if (sessionState === 'notCreated') sessionMessage = '\n\nItem does not exist yet, click to create';
-		if (sessionState === 'new') sessionMessage = '\n\nItem was created, but has not yet been edited';
+		if (sessionState === 'notCreated')
+			sessionMessage = '\n\nItem does not exist yet, click to create';
+		if (sessionState === 'new')
+			sessionMessage = '\n\nItem was created, but has not yet been edited';
 		if (sessionState === 'changed') sessionMessage = '\n\nItem was recently edited';
-
 
 		// Selection
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
-		if (this.showingOtherProject) this.removeAttribute('selected');
+		if (this.isSecondaryProject) this.removeAttribute('selected');
 
 		if (this.glyph && this.glyph.hasChangedThisSession === true) {
 			this.setAttribute('title', `${name}\n${displayedItemID}${sessionMessage}`);
@@ -68,10 +68,7 @@ export class GlyphTile extends HTMLElement {
 			this.thumbnail.width = overallSize;
 			this.thumbnail.height = overallSize;
 		} else {
-			this.setAttribute(
-				'title',
-				`${name}\n${displayedItemID}${sessionMessage}`
-			);
+			this.setAttribute('title', `${name}\n${displayedItemID}${sessionMessage}`);
 			this.thumbnail = makeElement({
 				className: 'thumbnail',
 			});
@@ -112,7 +109,8 @@ export class GlyphTile extends HTMLElement {
 	attributeChangedCallback() {
 		// log(`GlyphTile.attributeChangedCallback`, 'start');
 		const wrapper = this.shadowRoot ? this.shadowRoot.querySelector('.wrapper') : false;
-		if (wrapper && !this.showingOtherProject) {
+		// log(wrapper);
+		if (wrapper) {
 			if (this.hasAttribute('selected')) wrapper.setAttribute('selected', '');
 			else wrapper.removeAttribute('selected');
 		}

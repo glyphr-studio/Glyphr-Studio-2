@@ -1258,7 +1258,8 @@ function showDialogChooseItemFromOtherProject() {
 	const chooserArea = makeAllItemTypeChooserContent(
 		onClick,
 		'Characters',
-		getGlyphrStudioApp().otherProjectEditor
+		getGlyphrStudioApp().otherProjectEditor,
+		true
 	);
 	scrollArea.appendChild(chooserArea);
 	content.appendChild(scrollArea);
