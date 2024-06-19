@@ -114,7 +114,7 @@
 }
 
 .wrapper[session-state='changed'] .name {
-	color: var(--purple-l40);
+	color: var(--purple-l50);
 }
 /*
 .wrapper[has-changed = "false"] .thumbnail {
