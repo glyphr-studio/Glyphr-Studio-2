@@ -20,7 +20,8 @@ let savedRegisterSubscriptions;
 export function makeAllItemTypeChooserContent(
 	clickHandler,
 	type = false,
-	editor = getCurrentProjectEditor()
+	editor = getCurrentProjectEditor(),
+	isSecondaryProject = false
 ) {
 	// log(`makeAllItemTypeChooserContent`, 'start');
 	// log(`\n⮟editor⮟`);
@@ -36,13 +37,13 @@ export function makeAllItemTypeChooserContent(
 	let show = type || editor.nav.page;
 	if (show === 'Ligatures') {
 		// Ligature Chooser
-		wrapper.appendChild(makeLigatureChooserTileGrid(editor));
+		wrapper.appendChild(makeLigatureChooserTileGrid(editor, !isSecondaryProject));
 	} else if (show === 'Components') {
 		// Component Chooser
-		wrapper.appendChild(makeComponentChooserTileGrid(editor));
+		wrapper.appendChild(makeComponentChooserTileGrid(editor, !isSecondaryProject));
 	} else {
 		// Overview and Glyph = Glyph Chooser
-		wrapper.appendChild(makeGlyphChooserTileGrid(editor));
+		wrapper.appendChild(makeGlyphChooserTileGrid(editor, !isSecondaryProject));
 	}
 
 	// log(`makeAllItemTypeChooserContent`, 'end');
@@ -207,7 +208,7 @@ function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjec
 	});
 }
 
-function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor()) {
+function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor(), showSelected = true) {
 	// log(`makeGlyphChooserTileGrid`, 'start');
 	// console.time('makeGlyphChooserTileGrid');
 	// log(editor.project.settings.project.characterRanges);
@@ -223,7 +224,9 @@ function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor()) {
 			const glyphID = `glyph-${charID}`;
 			// log(`glyphID: ${glyphID}`);
 			let oneTile = new GlyphTile({ 'displayed-item-id': glyphID, project: editor.project });
-			if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');
+			if (showSelected && editor.selectedGlyphID === glyphID) {
+				oneTile.setAttribute('selected', '');
+			}
 
 			oneTile.addEventListener('click', () => savedClickHandler(glyphID));
 
@@ -236,7 +239,7 @@ function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor()) {
 						// log(`checking if ${newGlyphID} === ${glyphID}`);
 						if (parseInt(newGlyphID) === parseInt(glyphID)) {
 							// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
-							oneTile.setAttribute('selected', '');
+							if (showSelected) oneTile.setAttribute('selected', '');
 						} else {
 							// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
 							oneTile.removeAttribute('selected');
@@ -253,7 +256,7 @@ function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor()) {
 	return tileGrid;
 }
 
-function makeLigatureChooserTileGrid(editor = getCurrentProjectEditor()) {
+function makeLigatureChooserTileGrid(editor = getCurrentProjectEditor(), showSelected = true) {
 	// log(`makeLigatureChooserTileGrid`, 'start');
 
 	const tileGrid = makeElement({ tag: 'div', className: 'item-chooser__tile-grid' });
@@ -266,7 +269,9 @@ function makeLigatureChooserTileGrid(editor = getCurrentProjectEditor()) {
 
 	pagedLigatures.forEach((ligature) => {
 		let oneTile = new GlyphTile({ 'displayed-item-id': ligature.id });
-		if (editor.selectedLigatureID === ligature.id) oneTile.setAttribute('selected', '');
+		if (showSelected && editor.selectedLigatureID === ligature.id) {
+			oneTile.setAttribute('selected', '');
+		}
 
 		oneTile.addEventListener('click', () => savedClickHandler(ligature.id));
 
@@ -279,7 +284,7 @@ function makeLigatureChooserTileGrid(editor = getCurrentProjectEditor()) {
 					// log(`checking if ${glyph.id} === ${ligature}`);
 					if (newLigatureID === ligature.id) {
 						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
-						oneTile.setAttribute('selected', '');
+						if (showSelected) oneTile.setAttribute('selected', '');
 					} else {
 						// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
 						oneTile.removeAttribute('selected');
@@ -295,7 +300,7 @@ function makeLigatureChooserTileGrid(editor = getCurrentProjectEditor()) {
 	return tileGrid;
 }
 
-function makeComponentChooserTileGrid(editor = getCurrentProjectEditor()) {
+function makeComponentChooserTileGrid(editor = getCurrentProjectEditor(), showSelected = true) {
 	// log(`makeComponentChooserTileGrid`, 'start');
 
 	let tileGrid = makeElement({ tag: 'div', className: 'item-chooser__tile-grid' });
@@ -308,7 +313,9 @@ function makeComponentChooserTileGrid(editor = getCurrentProjectEditor()) {
 
 	pagedComponents.forEach((component) => {
 		let oneTile = new GlyphTile({ 'displayed-item-id': component.id });
-		if (editor.selectedComponentID === component.id) oneTile.setAttribute('selected', '');
+		if (showSelected && editor.selectedComponentID === component.id) {
+			oneTile.setAttribute('selected', '');
+		}
 
 		oneTile.addEventListener('click', () => savedClickHandler(component.id));
 
@@ -321,7 +328,7 @@ function makeComponentChooserTileGrid(editor = getCurrentProjectEditor()) {
 					// log(`checking if ${glyph.id} === ${Component}`);
 					if (newComponentID === component.id) {
 						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
-						oneTile.setAttribute('selected', '');
+						if (showSelected) oneTile.setAttribute('selected', '');
 					} else {
 						// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
 						oneTile.removeAttribute('selected');
