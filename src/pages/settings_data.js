@@ -20,76 +20,6 @@ export default {
 			type: `Read only`,
 		},
 	},
-	app: {
-		stopPageNavigation: {
-			label: `Warn about unsaved changes on window close`,
-			description: `This will stop closing the window or tab with an "Are you sure?" message if you have unsaved changes.`,
-			type: `Boolean`,
-		},
-		formatSaveFile: {
-			label: `Format project file for reading`,
-			description: `Glyphr Studio Project files (.gs2) are text files in JSON format. By default, this file is saved to optimize for smaller file size. Setting this option to true formats the file to be more easily read by a human, but could increase the file size by 2x or more.`,
-			type: `Boolean`,
-		},
-		saveLivePreviews: {
-			label: `Save live previews`,
-			description: `Save the text blocks that you have defined for your Live Previews (both the page, and the 2nd window). These could be long, so you may want to turn them off for file size reasons.`,
-			type: `Boolean`,
-		},
-		autoSave: {
-			label: `Auto-save a copy of the project with each change`,
-			description: `When enabled, this option will use your browser's local storage to keep backups. These backups can be restored from the Open Projects page. Your browser's local storage is confined to this browser on this computer. If you use Glyphr Studio from another browser or on another computer, those backups will be available from there.`,
-			type: `Boolean`,
-		},
-		savePreferences: {
-			label: `Save app preferences locally`,
-			description: `App preferences can be saved locally to your computer, then loaded automatically when you come back to this project.`,
-			type: `Boolean`,
-		},
-		unlinkComponentInstances: {
-			label: `Unlink component instances when deleting their root`,
-			description: `When selected, this option will unlink component instances and turn them into normal paths if their component root is deleted (the glyph will look the same, but some component instances will end up as stand-alone path objects).<br>If this option is unselected, component instances will be deleted when their component root is deleted (the glyph will look different because it will have less shapes).`,
-			type: `Boolean`,
-		},
-		showNonCharPoints: {
-			label: `Show non-graphic control characters`,
-			description: `Show the Unicode code points represent things that aren't letters. In Unicode, the C0 and C1 control code or control character sets define control codes for use in text by computer systems that use ASCII and derivatives of ASCII.<br><br>This setting should probably stay turned off, control characters can probably be safely ignored.`,
-			type: `Boolean`,
-		},
-		itemChooserPageSize: {
-			label: `Number of items to show in the chooser`,
-			description: `For Ligatures, Components, and Kern Groups, this is how many items to show in the chooser menu. For projects with large numbers of items, splitting the items apart into pages can help the UI perform better.`,
-			type: `Number`,
-		},
-		previewText: {
-			label: `Project preview text`,
-			description: `What text to show when previewing a project or switching between projects. If left blank, the string 'Aa Bb Cc Xx Yy Zz' will be used.`,
-		},
-		exportLigatures: {
-			label: `Export Ligatures to fonts (.otf and .svg)`,
-			description: `Uncheck this option if don't want ligature data exported to fonts.`,
-			type: `Boolean`,
-		},
-		exportKerning: {
-			label: `Export Kern information to fonts (.svg only)`,
-			description: `Uncheck this option if don't want kern data exported to fonts.`,
-			type: `Boolean`,
-		},
-		exportUneditedItems: {
-			label: `Export items that were created, but not edited`,
-			description: `When you create a Ligature or Component, or navigate to a Character, an empty glyph item is created
-			for you. It's possible to leave these items in an unedited state, essentially empty.<br><br>
-			If this option is checked, these empty items will be exported to fonts. If this option is unchecked,
-			these empty items will be filtered out, and not exported to fonts.<br><br>
-			In the glyph chooser, these empty items' names are shown in a green color.`,
-			type: `Boolean`,
-		},
-		moveShapesOnSVGDragDrop: {
-			label: `Move shapes when drag+dropping an SVG file`,
-			description: `When importing SVG by dragging and dropping a .svg file onto the canvas, move the imported shapes to the origin (x = 0, y = shapes height).`,
-			type: `Boolean`,
-		},
-	},
 	font: {
 		family: {
 			label: `Font family`,
@@ -232,6 +162,76 @@ export default {
 			label: `Overline thickness`,
 			description: `The ideal height of an overline.`,
 			type: `Em`,
+		},
+	},
+	app: {
+		stopPageNavigation: {
+			label: `Warn about unsaved changes on window close`,
+			description: `This will stop closing the window or tab with an "Are you sure?" message if you have unsaved changes.`,
+			type: `Boolean`,
+		},
+		formatSaveFile: {
+			label: `Format project file for reading`,
+			description: `Glyphr Studio Project files (.gs2) are text files in JSON format. By default, this file is saved to optimize for smaller file size. Setting this option to true formats the file to be more easily read by a human, but could increase the file size by 2x or more.`,
+			type: `Boolean`,
+		},
+		saveLivePreviews: {
+			label: `Save live previews`,
+			description: `Save the text blocks that you have defined for your Live Previews (both the page, and the 2nd window). These could be long, so you may want to turn them off for file size reasons.`,
+			type: `Boolean`,
+		},
+		autoSave: {
+			label: `Auto-save a copy of the project with each change`,
+			description: `When enabled, this option will use your browser's local storage to keep backups. These backups can be restored from the Open Projects page. Your browser's local storage is confined to this browser on this computer. If you use Glyphr Studio from another browser or on another computer, those backups will be available from there.`,
+			type: `Boolean`,
+		},
+		savePreferences: {
+			label: `Save app preferences locally`,
+			description: `App preferences can be saved locally to your computer, then loaded automatically when you come back to this project.`,
+			type: `Boolean`,
+		},
+		unlinkComponentInstances: {
+			label: `Unlink component instances when deleting their root`,
+			description: `When selected, this option will unlink component instances and turn them into normal paths if their component root is deleted (the glyph will look the same, but some component instances will end up as stand-alone path objects).<br>If this option is unselected, component instances will be deleted when their component root is deleted (the glyph will look different because it will have less shapes).`,
+			type: `Boolean`,
+		},
+		showNonCharPoints: {
+			label: `Show non-graphic control characters`,
+			description: `Show the Unicode code points represent things that aren't letters. In Unicode, the C0 and C1 control code or control character sets define control codes for use in text by computer systems that use ASCII and derivatives of ASCII.<br><br>This setting should probably stay turned off, control characters can probably be safely ignored.`,
+			type: `Boolean`,
+		},
+		itemChooserPageSize: {
+			label: `Number of items to show in the chooser`,
+			description: `For Ligatures, Components, and Kern Groups, this is how many items to show in the chooser menu. For projects with large numbers of items, splitting the items apart into pages can help the UI perform better.`,
+			type: `Number`,
+		},
+		previewText: {
+			label: `Project preview text`,
+			description: `What text to show when previewing a project or switching between projects. If left blank, the string 'Aa Bb Cc Xx Yy Zz' will be used.`,
+		},
+		exportLigatures: {
+			label: `Export Ligatures to fonts (.otf and .svg)`,
+			description: `Uncheck this option if don't want ligature data exported to fonts.`,
+			type: `Boolean`,
+		},
+		exportKerning: {
+			label: `Export Kern information to fonts (.svg only)`,
+			description: `Uncheck this option if don't want kern data exported to fonts.`,
+			type: `Boolean`,
+		},
+		exportUneditedItems: {
+			label: `Export items that were created, but not edited`,
+			description: `When you create a Ligature or Component, or navigate to a Character, an empty glyph item is created
+			for you. It's possible to leave these items in an unedited state, essentially empty.<br><br>
+			If this option is checked, these empty items will be exported to fonts. If this option is unchecked,
+			these empty items will be filtered out, and not exported to fonts.<br><br>
+			In the glyph chooser, these empty items' names are shown in a green color.`,
+			type: `Boolean`,
+		},
+		moveShapesOnSVGDragDrop: {
+			label: `Move shapes when drag+dropping an SVG file`,
+			description: `When importing SVG by dragging and dropping a .svg file onto the canvas, move the imported shapes to the origin (x = 0, y = shapes height).`,
+			type: `Boolean`,
 		},
 	},
 };
