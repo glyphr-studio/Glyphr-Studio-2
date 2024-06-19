@@ -68,6 +68,7 @@ export function initEventHandlers(canvas) {
 	canvas.addEventListener('drop', handleDropSVGonEditCanvas, false);
 	canvas.addEventListener('dragenter', handleDragEnterCanvas, false);
 	canvas.addEventListener('dragover', cancelDefaultEventActions, false);
+	canvas.addEventListener('drag', cancelDefaultEventActions, false);
 
 	// Document Key Listeners
 	document.addEventListener('keydown', handleKeyPress, false);
