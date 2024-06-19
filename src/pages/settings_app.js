@@ -51,6 +51,7 @@ export function makeSettingsTabContentApp() {
 		textToNode('<h3>Importing & exporting</h3>'),
 		makeOneSettingsRow('app', 'exportLigatures'),
 		makeOneSettingsRow('app', 'exportKerning'),
+		makeOneSettingsRow('app', 'exportUneditedItems'),
 		makeOneSettingsRow('app', 'moveShapesOnSVGDragDrop'),
 	]);
 

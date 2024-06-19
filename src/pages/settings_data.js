@@ -61,6 +61,10 @@ export default {
 			description: `For Ligatures, Components, and Kern Groups, this is how many items to show in the chooser menu. For projects with large numbers of items, splitting the items apart into pages can help the UI perform better.`,
 			type: `Number`,
 		},
+		previewText: {
+			label: `Project preview text`,
+			description: `What text to show when previewing a project or switching between projects. If left blank, the string 'Aa Bb Cc Xx Yy Zz' will be used.`,
+		},
 		exportLigatures: {
 			label: `Export Ligatures to fonts (.otf and .svg)`,
 			description: `Uncheck this option if don't want ligature data exported to fonts.`,
@@ -71,14 +75,19 @@ export default {
 			description: `Uncheck this option if don't want kern data exported to fonts.`,
 			type: `Boolean`,
 		},
+		exportUneditedItems: {
+			label: `Export items that were created, but not edited`,
+			description: `When you create a Ligature or Component, or navigate to a Character, an empty glyph item is created
+			for you. It's possible to leave these items in an unedited state, essentially empty.<br><br>
+			If this option is checked, these empty items will be exported to fonts. If this option is unchecked,
+			these empty items will be filtered out, and not exported to fonts.<br><br>
+			In the glyph chooser, these empty items' names are shown in a green color.`,
+			type: `Boolean`,
+		},
 		moveShapesOnSVGDragDrop: {
 			label: `Move shapes when drag+dropping an SVG file`,
 			description: `When importing SVG by dragging and dropping a .svg file onto the canvas, move the imported shapes to the origin (x = 0, y = shapes height).`,
 			type: `Boolean`,
-		},
-		previewText: {
-			label: `Project preview text`,
-			description: `What text to show when previewing a project or switching between projects. If left blank, the string 'Aa Bb Cc Xx Yy Zz' will be used.`,
 		},
 	},
 	font: {

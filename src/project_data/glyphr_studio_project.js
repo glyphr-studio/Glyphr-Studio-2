@@ -47,6 +47,7 @@ export class GlyphrStudioProject {
 				previewText: false,
 				exportLigatures: true,
 				exportKerning: true,
+				exportUneditedItems: true,
 				moveShapesOnSVGDragDrop: false,
 				guides: {
 					drawGuidesOnTop: false,
@@ -617,7 +618,11 @@ export class GlyphrStudioProject {
 
 	resetSessionStateForAllItems() {
 		this.forEachItem((item) => {
-			item.wasCreatedThisSession = false;
+			if (item.shapes.length === 0 && item.advanceWidth === 0) {
+				item.wasCreatedThisSession = true;
+			} else {
+				item.wasCreatedThisSession = false;
+			}
 			item.hasChangedThisSession = false;
 			// log(item);
 		});

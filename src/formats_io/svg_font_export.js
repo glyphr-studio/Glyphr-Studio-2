@@ -4,6 +4,7 @@ import { escapeXMLValues, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 import { makeFileDateString, saveTextFile } from '../project_editor/file_io.js';
+import { shouldExportItem } from './font_export.js';
 /**
 	IO > Export > SVG Font
 	Converting a Glyphr Studio Project to XML in
@@ -170,7 +171,7 @@ function ioSVG_makeAllGlyphs() {
 			range.getMemberIDs().forEach((hexID) => {
 				if (checklist.indexOf(hexID) === -1) {
 					const thisGlyph = project.getItem(`glyph-${hexID}`);
-					if (thisGlyph) {
+					if (shouldExportItem(thisGlyph)) {
 						exportGlyphs.push({ xg: thisGlyph, xc: hexID });
 						checklist.push(hexID);
 					}
@@ -191,7 +192,9 @@ function ioSVG_makeAllGlyphs() {
 
 		con += '\t\t\t<!-- Ligatures -->\n';
 		for (const key of Object.keys(project.ligatures)) {
-			con += ioSVG_makeOneGlyph(project.ligatures[key], key);
+			if (shouldExportItem(project.ligatures[key])) {
+				con += ioSVG_makeOneGlyph(project.ligatures[key], key);
+			}
 		}
 	}
 

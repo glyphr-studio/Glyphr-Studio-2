@@ -397,6 +397,8 @@ export function showAddLigatureDialog() {
 			editor.selectedLigatureID = result.id;
 			editor.navigate();
 			editor.history.addWholeProjectChangePostState();
+			result.hasChangedThisSession = false;
+			result.wasCreatedThisSession = true;
 			closeEveryTypeOfDialog();
 		}
 		// log(`showAddLigatureDialog button click handler`, 'end');
