@@ -1061,8 +1061,13 @@ export class ProjectEditor {
 		// log(`ProjectEditor.saveProjectFile`, 'end');
 	}
 
-	setProjectAsSaved() {}
-	setProjectAsUnsaved() {}
+	setProjectAsSaved() {
+		this.project.resetSessionStateForAllItems();
+		document.title = document.title.slice(0, document.title.indexOf(' •'));
+	}
+	setProjectAsUnsaved() {
+		if (document.title.indexOf(' •') < 0) document.title += ' •';
+	}
 }
 
 function removeDefaultValues(target, defaults, filterName) {
