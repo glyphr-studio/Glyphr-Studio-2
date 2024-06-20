@@ -24,8 +24,8 @@ import {
 
 /**
  * Page > Ligatures
- * Edit surface for Ligatures
- * Comprised of Panels of tools, and the Edit Canvas
+ * Edit surface for Ligatures, comprised of Panels of tools, and the Edit Canvas.
+ * @returns {Element} - page content
  */
 export function makePage_Ligatures() {
 	// log(`makePage_Ligatures`, 'start');
@@ -66,11 +66,13 @@ export function makePage_Ligatures() {
 	if (editor.showPageTransitions) content.classList.add('app__page-animation');
 
 	// Page Selector
+	/** @type {HTMLElement} */
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
 		toggleNavDropdown(l1);
 	});
 
+	/** @type {HTMLElement} */
 	const navArea = content.querySelector('.editor-page__nav-area');
 	const canvasArea = content.querySelector('.editor-page__edit-canvas-wrapper');
 
@@ -168,7 +170,7 @@ export function makePage_Ligatures() {
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
 			removeStopCreatingNewPathButton();
-			editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath' });
+			editor.editCanvas.redraw();
 		},
 	});
 
@@ -176,7 +178,7 @@ export function makePage_Ligatures() {
 		topic: 'whichPathPointIsSelected',
 		subscriberID: 'editCanvas.selectedPathPoint',
 		callback: () => {
-			editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPathPoint' });
+			editor.editCanvas.redraw();
 		},
 	});
 
@@ -184,6 +186,10 @@ export function makePage_Ligatures() {
 	return content;
 }
 
+/**
+ * Makes the first run / get started content
+ * @returns {Element}
+ */
 function makeLigaturesFirstRunContent() {
 	let commonLigatureTable = '';
 	ligaturesWithCodePoints.forEach((lig) => {
@@ -251,13 +257,23 @@ const ligaturesWithCodePoints = [
 	{ chars: 'ffl', display: 'f‌f‌l', point: '0xFB04' },
 ];
 
+/**
+ * Adds the list of common ligatures to the current project
+ */
 function addCommonLigaturesToProject() {
 	ligaturesWithCodePoints.forEach((lig) => addLigature(lig.chars));
 	const editor = getCurrentProjectEditor();
-	editor.navigate('Ligatures');
+	editor.nav.page = 'Ligatures';
+	editor.navigate();
 	editor.history.addWholeProjectChangePostState();
 }
 
+/**
+ * Given a text sequence of characters, creates a Ligature object,
+ * and adds it to the current project.
+ * @param {String} sequence - characters that make up this Ligature
+ * @returns {String | Glyph}
+ */
 function addLigature(sequence) {
 	// log(`addLigature`, 'start');
 
@@ -267,25 +283,26 @@ function addLigature(sequence) {
 	}
 
 	// Test to see if Unicode or Hex notation is being used
-	let prefix = false;
-	let workingSequence = normalizePrefixes(sequence);
+	let prefix = '';
+	const workingSequence = normalizePrefixes(sequence);
+	let workingArr = [];
 	if (workingSequence.startsWith('U+')) {
-		workingSequence = workingSequence.split('U+');
-		workingSequence = workingSequence.slice(1);
+		workingArr = workingSequence.split('U+');
+		workingArr = workingArr.slice(1);
 		prefix = 'U+';
 	} else if (workingSequence.startsWith('0x')) {
-		workingSequence = workingSequence.split('0x');
-		workingSequence = workingSequence.slice(1);
+		workingArr = workingSequence.split('0x');
+		workingArr = workingArr.slice(1);
 		prefix = '0x';
 	}
 
 	// log(`prefix: ${prefix}`);
-	// log(`workingSequence: ${workingSequence}`);
+	// log(`workingArr: ${workingArr}`);
 
-	if (prefix && workingSequence.length > 1) {
+	if (prefix && workingArr.length > 1) {
 		sequence = '';
-		for (let i = 0; i < workingSequence.length; i++) {
-			let id = workingSequence[i];
+		for (let i = 0; i < workingArr.length; i++) {
+			let id = workingArr[i];
 			// log(`id: ${id}`);
 			let validatedSuffix = validateDecOrHexSuffix(id);
 			// log(`validatedSuffix: ${validatedSuffix}`);
@@ -310,6 +327,10 @@ function addLigature(sequence) {
 		return 'Ligature already exists';
 	}
 
+	if (newID === false) {
+		return 'Characters could not be read for the ligature sequence';
+	}
+
 	project.addItemByType(
 		new Glyph({
 			id: newID,
@@ -325,10 +346,16 @@ function addLigature(sequence) {
 	return project.ligatures[newID];
 }
 
-export function makeLigatureID(sequence) {
+/**
+ * Given an input sequence of ligature source characters, creates a
+ * new unique ligature project id.
+ * @param {String} sequence - characters that make up this ligature
+ * @returns {String | false}
+ */
+export function makeLigatureID(sequence = '') {
 	// log(`makeLigatureID`, 'start');
 	// log(`sequence: ${sequence}`);
-
+	if (sequence === '') return false;
 	let newID = 'liga';
 	let chars = sequence.split('');
 	chars.forEach((char) => {
@@ -346,6 +373,10 @@ export function makeLigatureID(sequence) {
 	return newID;
 }
 
+
+/**
+ * Makes the Add Ligature dialog and shows it.
+ */
 export function showAddLigatureDialog() {
 	const content = makeElement({
 		innerHTML: `
@@ -374,7 +405,9 @@ export function showAddLigatureDialog() {
 		`,
 	});
 
+	/** @type {HTMLElement} */
 	const submitButton = content.querySelector('#ligatures__add-new-ligature-button');
+	/** @type {HTMLInputElement} */
 	const newLigatureInput = content.querySelector('#ligatures__new-ligature-input');
 
 	newLigatureInput.addEventListener('keyup', () => {

@@ -10,7 +10,7 @@ export function makeActionButton({
 	iconOptions = false,
 	title = '',
 	disabled = false,
-	onClick = false,
+	onClick = () => { },
 	id = false,
 } = {}) {
 	// log(`makeActionButton`, 'start');
@@ -28,7 +28,7 @@ export function makeActionButton({
 
 	if (onClick) newButton.addEventListener('click', onClick);
 	if (disabled) newButton.setAttribute('disabled', 'disabled');
-	if (id) newButton.setAttribute('id', id);
+	if (typeof id === 'string') newButton.setAttribute('id', id);
 
 	// log(`makeActionButton`, 'end');
 	return newButton;

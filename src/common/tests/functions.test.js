@@ -19,6 +19,7 @@ import {
 	makeCrisp,
 	niceAngleToRadians,
 	numSan,
+	parseNumber,
 	rad,
 	radiansToNiceAngle,
 	remove,
@@ -176,6 +177,19 @@ describe('Common Functions', () => {
 
 	it('isInteger should return false for a non-integer', () => {
 		expect(isInteger(3.14)).toBe(false);
+	});
+
+	// Test for parseNumber function
+	it('parseNumber should return a number for all different types', () => {
+		expect(parseNumber(123)).toBe(123);
+		expect(parseNumber('123')).toBe(123);
+		expect(parseNumber(2e3)).toBe(2000);
+		expect(parseNumber('2e3')).toBe(2000);
+		expect(parseNumber(0x41)).toBe(65);
+		expect(parseNumber('0x41')).toBe(65);
+		expect(parseNumber(false)).toBe(0);
+		expect(parseNumber('')).toBe(0);
+		expect(parseNumber()).toBe(0);
 	});
 
 	// Test for strSan function

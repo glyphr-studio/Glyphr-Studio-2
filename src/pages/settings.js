@@ -9,6 +9,11 @@ import settingsMap from './settings_data.js';
 import { makeSettingsTabContentFont } from './settings_font.js';
 import { makeSettingsTabContentProject } from './settings_project.js';
 
+/**
+ * Page > Settings
+ * One place to edit all the settings for Glyphr Studio.
+ * @returns {Element} - page content
+ */
 export function makePage_Settings() {
 	const content = makeElement({
 		tag: 'div',
@@ -52,7 +57,14 @@ export function makePage_Settings() {
 // --------------------------------------------------------------
 // Individual settings
 // --------------------------------------------------------------
-export function makeOneSettingsRow(groupName, propertyName, callback = false) {
+/**
+ * Centralized way to make one row in a settings table.
+ * @param {String} groupName - section
+ * @param {String} propertyName - property
+ * @param {Function =} callback - called after a change
+ * @returns {Array}
+ */
+export function makeOneSettingsRow(groupName, propertyName, callback) {
 	// log(`makeOneSettingsRow`, 'start');
 	// log(`groupName: ${groupName}`);
 	// log(`propertyName: ${propertyName}`);
@@ -83,6 +95,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback = false) {
 		});
 
 		input.addEventListener('change', (event) => {
+			// @ts-ignore
 			let newValue = parseInt(event.target.value);
 			if (isNaN(newValue)) {
 				showToast(`Could not save value - needs to be a number.`);
@@ -100,6 +113,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback = false) {
 		});
 
 		input.addEventListener('change', (event) => {
+			// @ts-ignore
 			let newValue = sanitizeValueWithJSON(event.target.value);
 			settings[groupName][propertyName] = newValue;
 			if (callback) callback();
@@ -146,6 +160,11 @@ export function makeOneSettingsRow(groupName, propertyName, callback = false) {
 	return [label, info, input, type];
 }
 
+/**
+ * Use JSON stringify / parse to sanitize input.
+ * @param {String} input - input from a form field
+ * @returns {String}
+ */
 function sanitizeValueWithJSON(input) {
 	let j = JSON.stringify(input);
 

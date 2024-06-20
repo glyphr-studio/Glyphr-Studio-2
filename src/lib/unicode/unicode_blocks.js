@@ -1,3 +1,5 @@
+import { parseNumber } from '../../common/functions.js';
+import { CharacterRange } from '../../project_data/character_range.js';
 import { unicodeBlocksBMP } from './unicode_blocks_0_bmp.js';
 import { unicodeBlocksSMP } from './unicode_blocks_1_smp.js';
 import { unicodeBlocksSIP } from './unicode_blocks_2_sip.js';
@@ -28,9 +30,9 @@ export const unicodeNonCharPoints = [
 	{ begin: 0x0080, end: 0x009f, name: 'Latin-1 Supplement Controls' },
 ];
 
-export function isControlChar(char) {
+export function isControlChar(id) {
 	for (let r = 0; r < unicodeNonCharPoints.length; r++) {
-		if (isCharInRange(char, unicodeNonCharPoints[r])) {
+		if (isCharInRange(id, unicodeNonCharPoints[r])) {
 			return true;
 		}
 	}
@@ -38,18 +40,29 @@ export function isControlChar(char) {
 	return false;
 }
 
-export function isCharInRange(char, range) {
-	char = parseInt(char);
-	if (isNaN(char)) return false;
-	let result = char <= range.end && char >= range.begin;
+/**
+ * Checks to see if a given char ID is in a range
+ * @param {Number} id - Unicode ID
+ * @param {Object} range - to check
+ * @returns {Boolean}
+ */
+export function isCharInRange(id, range) {
+	id = parseNumber(id);
+	if (isNaN(id)) return false;
+	let result = id <= range.end && id >= range.begin;
 	return result;
 }
 
-export function getParentRange(char) {
+/**
+ * For a given character ID, return the parent Unicode Block
+ * @param {Number} id
+ * @returns {Object | false}
+ */
+export function getParentRange(id = -1) {
 	for (let i = 0; i < allBlocks.length; i++) {
 		const currentBlock = allBlocks[i];
 		for (let b = 0; b < currentBlock.length; b++) {
-			if (char <= currentBlock[b].end && char >= currentBlock[b].begin) {
+			if (id <= currentBlock[b].end && id >= currentBlock[b].begin) {
 				return currentBlock[b];
 			}
 		}

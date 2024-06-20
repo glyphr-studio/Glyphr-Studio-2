@@ -25,7 +25,7 @@ describe('Colors', () => {
 	});
 
 	it('transparencyToAlpha', () => {
-		expect(transparencyToAlpha(45)).toBe(0.55);
+		expect(transparencyToAlpha('45')).toBe(0.55);
 	});
 
 	it('makeRandomSaturatedColor', () => {

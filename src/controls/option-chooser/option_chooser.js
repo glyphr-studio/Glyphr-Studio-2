@@ -21,10 +21,13 @@ export class OptionChooser extends HTMLElement {
 		// log(`OptionChooser.constructor`, 'start');
 		super();
 
+		this.disabled = false;
+
 		this.wrapper = makeElement({
 			className: 'wrapper',
 			tabIndex: !this.disabled,
 		});
+		// @ts-ignore
 		this.wrapper.elementRoot = this;
 
 		// this.options = makeElement({ tag: 'slot', className: 'options' });
@@ -35,6 +38,7 @@ export class OptionChooser extends HTMLElement {
 			attributes: { tabIndex: -1 },
 			innerHTML: this.getDisplayName(),
 		});
+		// @ts-ignore
 		this.selectionDisplay.elementRoot = this;
 
 		this.downArrow = makeElement({
@@ -42,6 +46,7 @@ export class OptionChooser extends HTMLElement {
 			content: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><polygon points="14.5 8.5 5.5 8.5 10 13 14.5 8.5"/></svg>`,
 			attributes: { tabIndex: -1 },
 		});
+		// @ts-ignore
 		this.downArrow.elementRoot = this;
 
 		// Put it all together
@@ -119,6 +124,10 @@ export class OptionChooser extends HTMLElement {
 		// log(`OptionChooser.attributeChangedCallback`, 'end');
 	}
 
+	/**
+	 * Figures out the name to display in the entry point
+	 * @returns {String}
+	 */
 	getDisplayName() {
 		let displayText = this.getAttribute('selected-name');
 		if (!displayText) return '';
@@ -132,12 +141,15 @@ export class OptionChooser extends HTMLElement {
 		return displayText;
 	}
 
+	/**
+	 * Shows the dropdown part of the control
+	 */
 	showOptions() {
 		// log(`OptionsChooser.showOptions`, 'start');
 
 		const currentSelection = this.getAttribute('selected-id');
 		let optionRows = [];
-		[...this.children].forEach((child) => {
+		[...this.children].forEach((/** @type {HTMLElement} */ child) => {
 			let tag = child.tagName.toLowerCase();
 			if (tag === 'option') {
 				let note = child.getAttribute('note') || '';

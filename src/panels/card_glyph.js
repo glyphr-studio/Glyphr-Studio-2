@@ -25,7 +25,7 @@ export function makeCard_glyphAttributes(glyph) {
 	let glyphCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>${glyph.displayType} ${glyph.ident}</h3>`,
+		innerHTML: `<h3>${glyph.displayType} ${glyph.ident || ''}</h3>`,
 	});
 
 	let advanceWidthLabel = makeSingleLabel('advance width');
@@ -187,8 +187,7 @@ export function makeCard_glyphNavigation(item) {
 		attributes: { minimal: '' },
 		title: `Navigate to:\n${nextItemName}\n${nextItem.id}`,
 	});
-	nextButton.innerHTML =
-		'<span>Next&nbsp;item</span>' + project.makeItemThumbnail(nextItem, 24);
+	nextButton.innerHTML = '<span>Next&nbsp;item</span>' + project.makeItemThumbnail(nextItem, 24);
 	nextButton.addEventListener('click', () => {
 		editor.selectedItemID = nextItem.id;
 		editor.history.addState(`Navigated to ${nextItemName}`);

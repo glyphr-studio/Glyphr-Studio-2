@@ -45,7 +45,6 @@ export class FancyButton extends HTMLElement {
 		shadow.appendChild(this.wrapper);
 
 		if (!this.disabled) {
-			this.addEventListener('click', this.toggle);
 			this.addEventListener('keydown', this.keyPress);
 		}
 	}

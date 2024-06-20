@@ -84,6 +84,7 @@ export class DisplayCanvas extends HTMLElement {
 		// log(this.getAttributeNames());
 		this.observedAttrs.forEach((key) => {
 			if (this.hasAttribute(key)) {
+				/** @type {String | Boolean | Number} */
 				let value = this.getAttribute(key);
 				if (key.startsWith('show')) {
 					if (value === 'false') value = false;
@@ -108,6 +109,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(this.canvas);
 
+		// @ts-ignore
 		this.ctx = this.canvas.getContext('2d');
 		this.drawCrisp = false;
 
@@ -121,20 +123,25 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
+	/**
+	 * Updates the TextBlock, canvas size, and redraws everything
+	 */
 	resizeAndRedraw() {
 		// log(`DisplayCanvas.resizeAndRedraw`, 'start');
 		// log(`this.getAttribute('text'): ${this.getAttribute('text')}`);
-		if (!this.isSetUp) {
+		if (this.isSetUp) {
+			this.updateTextBlock();
+			this.updateCanvasSize();
+			this.redraw();
+		} else {
 			// log('not set up!');
-			// log('DisplayCanvas.resizeAndRedraw', 'end');
-			return;
 		}
-		this.updateTextBlock();
-		this.updateCanvasSize();
-		this.redraw();
-		// log(`DisplayCanvas.resizeAndRedraw`, 'end');
+		// log('DisplayCanvas.resizeAndRedraw', 'end');
 	}
 
+	/**
+	 * Calculates and applies new canvas size
+	 */
 	updateCanvasSize() {
 		// log(`updateCanvasSize`, 'start');
 		// log(`this.textBlockOptions`);
@@ -174,13 +181,18 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`newWidth: ${newWidth}`);
 		this.height = newHeight;
 		this.width = newWidth;
+		// @ts-ignore
 		this.canvas.height = newHeight;
+		// @ts-ignore
 		this.canvas.width = newWidth;
 
 		// log(this);
 		// log(`updateCanvasSize`, 'end');
 	}
 
+	/**
+	 * Updates TextBlock based on new canvas dimensions and text
+	 */
 	updateTextBlock() {
 		// log(`DisplayCanvas.updateTextBlock`, 'start');
 		// log(`this.textBlockOptions:`);
@@ -206,6 +218,11 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`DisplayCanvas.updateTextBlock`, 'end');
 	}
 
+	/**
+	 * Calculates page maxes based on browser window and/or
+	 * text block height and width settings.
+	 * @returns {Object} - Maxes object for page dimensions
+	 */
 	calculatePageMaxes() {
 		// log(`DisplayCanvas.calculatePageMaxes`, 'start');
 		const clientRect = this?.parentElement?.getClientRects()[0];
@@ -246,6 +263,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
+		// @ts-ignore
 		return this.observedAttrs;
 	}
 
@@ -321,7 +339,7 @@ export class DisplayCanvas extends HTMLElement {
 		}
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
-
+		// @ts-ignore
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		// log('this.textBlock');
@@ -347,6 +365,12 @@ export class DisplayCanvas extends HTMLElement {
 		// log('DisplayCanvas.redraw', 'end');
 	}
 
+	/**
+	 * A function that makes it easy for external contexts to provide
+	 * their own draw function that leverages all the layout computations
+	 * from this TextBlock
+	 * @param {Function} drawFunction - handles drawing based on passed item
+	 */
 	iterator(drawFunction) {
 		const data = this.textBlock.data;
 		for (let block = 0; block < data.length; block++) {
@@ -360,6 +384,11 @@ export class DisplayCanvas extends HTMLElement {
 	// Draw functions for individual pieces
 	// --------------------------------------------------------------
 
+	/**
+	 * Draws page-specific things to a canvas
+	 * @param {CanvasRenderingContext2D} ctx - canvas context
+	 * @param {TextBlock} textBlock
+	 */
 	drawDisplayPageExtras(ctx, textBlock) {
 		// log(`displayCanvas.drawDisplayPageExtras`, 'start');
 		const canvasMaxes = textBlock.canvasMaxes;
@@ -382,6 +411,12 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`displayCanvas.drawDisplayPageExtras`, 'end');
 	}
 
+	/**
+	 * Draw line-specific things to a canvas
+	 * @param {CanvasRenderingContext2D} ctx - canvas context
+	 * @param {Object} charData - data for the first char of the line
+	 * @param {TextBlock} textBlock
+	 */
 	drawDisplayLineExtras(ctx, charData, textBlock) {
 		// log(`displayCanvas.drawDisplayLineExtras`, 'start');
 		ctx.strokeStyle = accentColors.gray.l85;
@@ -393,6 +428,11 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`displayCanvas.drawDisplayLineExtras`, 'end');
 	}
 
+	/**
+	 * Draws char-specific things to a canvas
+	 * @param {CanvasRenderingContext2D} ctx - canvas context
+	 * @param {Object} charData - data for the char
+	 */
 	drawDisplayCharacterExtras(ctx, charData) {
 		// log(`displayCanvas.drawDisplayCharacterExtras`, 'start');
 		const project = getCurrentProject();
@@ -429,6 +469,11 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`displayCanvas.drawDisplayCharacterExtras`, 'end');
 	}
 
+	/**
+	 * Draws a char to a canvas
+	 * @param {CanvasRenderingContext2D} ctx - canvas context
+	 * @param {Object} charData - data for the char
+	 */
 	drawDisplayCharacter(ctx, charData) {
 		// log(`displayCanvas.drawDisplayCharacter`, 'start');
 		// log(this);
@@ -447,7 +492,7 @@ export class DisplayCanvas extends HTMLElement {
 		if (item) {
 			ctx.fillStyle = uiColors.enabled.resting.text;
 			ctx.strokeStyle = 'transparent';
-			drawGlyph(item, ctx, view, 1, true);
+			drawGlyph(item, ctx, view, 1);
 		}
 
 		// log(`displayCanvas.drawDisplayCharacter`, 'end');

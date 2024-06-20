@@ -2,7 +2,7 @@ import { hexesToChars, isHex } from '../common/character_ids.js';
 import {
 	calculateDeltasFromTransform,
 	hasNonValues,
-	isVal,
+	parseNumber,
 	remove,
 	transformOrigins,
 	trim,
@@ -27,22 +27,27 @@ import { Path } from './path.js';
 export class Glyph extends GlyphElement {
 	/**
 	 * Create a Glyph
-	 * @param {String} id - unique identifier (Unicode code point)
-	 * @param {Object} parent - link to the Glyphr Studio Project
-	 * @param {Number} advanceWidth - manual setting for advance width
-	 * @param {String} transformOrigin - set the origin location for transforms
-	 * @param {Boolean} ratioLock - maintain aspect ratio while resizing
-	 * @param {Boolean} shapes - collection of Paths and Component Instances in this Glyph
-	 * @param {Array} usedIn - array of IDs where this Glyph is used as a component instance
+	 * @param {Object} args
+	 * @param {String =} args.id - unique identifier (Unicode code point)
+	 * @param {Object =} args.parent - link to the Glyphr Studio Project
+	 * @param {String =} args.objType - object type identifier
+	 * @param {String =} args.name - name of this glyph
+	 * @param {Number =} args.advanceWidth - manual setting for advance width
+	 * @param {String =} args.transformOrigin - set the origin location for transforms
+	 * @param {Boolean =} args.ratioLock - maintain aspect ratio while resizing
+	 * @param {Array =} args.usedIn - where this glyph is used as a component instance
+	 * @param {Array =} args.gsub - for ligatures, what characters does this lig replace
+	 * @param {Array =} args.shapes - collection of Paths and Component Instances in this Glyph
+	 * @param {String =} args.contextCharacters - what other glyphs to show around this one
 	 */
 	constructor({
-		id = false,
+		id = '',
 		parent = false,
 		objType = 'Glyph',
-		name = false,
+		name = '',
 		shapes = [],
 		advanceWidth = 0,
-		transformOrigin = false,
+		transformOrigin = '',
 		ratioLock = false,
 		usedIn = [],
 		gsub = [],
@@ -94,9 +99,7 @@ export class Glyph extends GlyphElement {
 	 */
 	save(verbose = false) {
 		const re = {
-			name: this.name,
-			id: this._id,
-			objType: this.objType,
+			id: this.id,
 		};
 
 		if (this.advanceWidth !== 0) re.advanceWidth = this.advanceWidth;
@@ -114,11 +117,11 @@ export class Glyph extends GlyphElement {
 			for (let s = 0; s < this.shapes.length; s++) re.shapes.push(this.shapes[s].save(verbose));
 		}
 
-		if (!verbose) {
-			if (this.objType === 'Glyph') delete re.name;
-			delete re.objType;
+		if (verbose) {
+			re.objType = this.objType;
+			re.name = this.name;
 		}
-		if (!verbose && this.__ID) delete this.__ID;
+		// if (!verbose && this?.__ID) delete this.__ID;
 
 		return re;
 	}
@@ -146,7 +149,7 @@ export class Glyph extends GlyphElement {
 
 		if (this.shapes && this.shapes.length) {
 			re += `${ind}shapes: [\n`;
-			this._shapes.forEach((shape) => {
+			this.shapes.forEach((shape) => {
 				re += shape.print(level + 2);
 				re += `\n`;
 			});
@@ -167,19 +170,11 @@ export class Glyph extends GlyphElement {
 	// --------------------------------------------------------------
 
 	/**
-	 * get id
-	 * @returns {String}
-	 */
-	get id() {
-		return this._id;
-	}
-
-	/**
 	 * get shapes
 	 * @returns {Array}
 	 */
 	get shapes() {
-		return this._shapes;
+		return this._shapes || [];
 	}
 
 	/**
@@ -187,16 +182,16 @@ export class Glyph extends GlyphElement {
 	 * @returns {Number}
 	 */
 	get advanceWidth() {
-		return this._advanceWidth;
+		return this._advanceWidth || 0;
 	}
 
 	/**
 	 * get transformOrigin
-	 * @returns {Boolean}
+	 * @returns {String | Boolean}
 	 */
 	get transformOrigin() {
 		if (!this._transformOrigin) this._transformOrigin = 'baseline-left';
-		return this._transformOrigin;
+		return this._transformOrigin || '';
 	}
 
 	/**
@@ -204,7 +199,7 @@ export class Glyph extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	get ratioLock() {
-		return this._ratioLock;
+		return this._ratioLock || false;
 	}
 
 	/**
@@ -324,9 +319,9 @@ export class Glyph extends GlyphElement {
 		if (!name) {
 			if (this.id.startsWith('liga-')) {
 				let suffix = remove(this.id, 'liga-');
-				suffix = suffix.split('-');
+				let suffixArr = suffix.split('-');
 				name = 'Ligature ';
-				suffix.forEach((char) => {
+				suffixArr.forEach((char) => {
 					if (char.length === 1) name += char;
 					else name += hexesToChars(char);
 				});
@@ -415,22 +410,10 @@ export class Glyph extends GlyphElement {
 	// --------------------------------------------------------------
 
 	/**
-	 * set id
-	 * @param {String} newID
-	 */
-	set id(newID) {
-		// log(`Glyph SET id`, 'start');
-		// log(`passed newID: ${newID}`);
-		this._id = newID;
-		// log(`this._id: ${this._id}`);
-		// log(`Glyph SET id`, 'end');
-	}
-
-	/**
 	 * set paths
 	 * @param {Array} newShapes - collection of Path or Component Instance
 	 */
-	set shapes(newShapes = []) {
+	set shapes(newShapes) {
 		// log(`Glyph.shapes setter - Start`);
 		// log(`passed length ${newShapes.length}`);
 
@@ -449,13 +432,14 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Adds a new path to this glyph, making sure linking is in place
-	 * @param {Path or ComponentInstance} newShape - Path to add to this glyph
+	 * @param {Path | ComponentInstance | Object} newShape - Path to add to this glyph
 	 */
-	addOneShape(newShape) {
+	addOneShape(newShape = {}) {
 		// log(`Glyph.addOneShape`, 'start');
 		// log(newShape);
-
-		if (isVal(newShape.link)) {
+		if (!newShape) return;
+		if (!Array.isArray(this._shapes)) this._shapes = [];
+		if (newShape?.link) {
 			// log(`hydrating ci - name: ${newShape.name}`);
 			newShape.parent = this;
 			this._shapes.push(new ComponentInstance(newShape));
@@ -477,8 +461,8 @@ export class Glyph extends GlyphElement {
 		// log(`Glyph SET advanceWidth`, 'start');
 		// log(`advanceWidth: ${advanceWidth}`);
 
-		this._advanceWidth = parseFloat(advanceWidth);
-		// log(`parseFloat(advanceWidth): ${parseFloat(advanceWidth)}`);
+		this._advanceWidth = parseNumber(advanceWidth);
+		// log(`parseNumber(advanceWidth): ${parseNumber(advanceWidth)}`);
 
 		if (isNaN(this._advanceWidth)) this._advanceWidth = 0;
 		// log(`this._advanceWidth: ${this._advanceWidth}`);
@@ -488,7 +472,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * set transformOrigin
-	 * @param {Boolean} transformOrigin - which point to set
+	 * @param {String} transformOrigin - which point to set
 	 */
 	set transformOrigin(transformOrigin) {
 		if (transformOrigins.indexOf(transformOrigin) > -1) {
@@ -530,7 +514,7 @@ export class Glyph extends GlyphElement {
 	 * set contextCharacters
 	 * @returns {String}
 	 */
-	set contextCharacters(chars = false) {
+	set contextCharacters(chars) {
 		if (!chars || chars === this.char || typeof chars !== 'string') delete this._contextCharacters;
 		else this._contextCharacters = chars;
 	}
@@ -608,17 +592,17 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Move all the Shapes in this glyph as one group
-	 * @param {Number} nx - new x
-	 * @param {Number} ny - new y
+	 * @param {Number | Boolean} nx - new x
+	 * @param {Number | Boolean} ny - new y
 	 */
-	setGlyphPosition(nx, ny, updateComponentInstances = true) {
+	setGlyphPosition(nx = false, ny = false, updateComponentInstances = true) {
 		// log('Glyph.setGlyphPosition', 'start');
 		// log(`nx/ny: ${nx} ${ny}`);
 		const m = this.maxes;
 		// log(this.maxes.print());
 
-		if (nx !== false) nx = parseFloat(nx);
-		if (ny !== false) ny = parseFloat(ny);
+		if (nx !== false) nx = parseNumber(nx);
+		if (ny !== false) ny = parseNumber(ny);
 		// log(`nx/ny: ${nx} ${ny}`);
 		const dx = nx !== false ? nx - m.xMin : 0;
 		const dy = ny !== false ? ny - m.yMax : 0;
@@ -632,13 +616,13 @@ export class Glyph extends GlyphElement {
 	 * @param {Number} dx - delta x
 	 * @param {Number} dy - delta y
 	 */
-	updateGlyphPosition(dx, dy, updateComponentInstances = true) {
+	updateGlyphPosition(dx = 0, dy = 0, updateComponentInstances = true) {
 		// log('Glyph.updateGlyphPosition', 'start');
 		// log('dx/dy: ' + dx + ' ' + dy);
 		// log('number of shapes: ' + this.shapes.length);
 
-		dx = parseFloat(dx) || 0;
-		dy = parseFloat(dy) || 0;
+		dx = parseNumber(dx) || 0;
+		dy = parseNumber(dy) || 0;
 		for (let i = 0; i < this.shapes.length; i++) {
 			const shape = this.shapes[i];
 			if (shape.objType === 'ComponentInstance' && !updateComponentInstances) continue;
@@ -653,25 +637,29 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Set all the sizes of the Shapes in this glyph as one group
-	 * @param {Number} width - new width
-	 * @param {Number} height - new height
-	 * @param {Boolean} ratioLock - true to scale width and height 1:1
-	 * @param {String} transformOrigin - name of transform origin point
+	 * @param {Object} args
+	 * @param {Number | Boolean =} args.width - new width
+	 * @param {Number | Boolean =} args.height - new height
+	 * @param {Boolean=} args.ratioLock - true to scale width and height 1:1
+	 * @param {Boolean=} args.updateComponentInstances
+	 * @param {String =} args.transformOrigin - name of transform origin point
 	 */
 	setGlyphSize({
 		width = false,
 		height = false,
 		ratioLock = false,
 		updateComponentInstances = true,
-		transformOrigin = false,
+		transformOrigin = '',
 	} = {}) {
 		const m = this.maxes;
-		if (width !== false) width = parseFloat(width);
-		if (height !== false) height = parseFloat(height);
+		if (width !== false) width = parseNumber(width);
+		if (height !== false) height = parseNumber(height);
 		const ch = m.yMax - m.yMin;
 		const cw = m.xMax - m.xMin;
 		let dw = width !== false ? width - cw : 0;
 		let dh = height !== false ? height - ch : 0;
+		height = parseNumber(height);
+		width = parseNumber(width);
 		if (ratioLock) {
 			if (Math.abs(height) > Math.abs(width)) dw = cw * (height / ch) - cw;
 			else dh = ch * (width / cw) - ch;
@@ -687,17 +675,19 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Update all the sizes of the Shapes in this glyph as one group
-	 * @param {Number} width - delta width
-	 * @param {Number} height - delta height
-	 * @param {Boolean} ratioLock - true to scale width and height 1:1
-	 * @param {String} transformOrigin - name of transform origin point
+	 * @param {Object} args
+	 * @param {Number =} args.width - delta width
+	 * @param {Number =} args.height - delta height
+	 * @param {Boolean =} args.ratioLock - true to scale width and height 1:1
+	 * @param {Boolean =} args.updateComponentInstances
+	 * @param {String =} args.transformOrigin - name of transform origin point
 	 */
 	updateGlyphSize({
 		width = 0,
 		height = 0,
 		ratioLock = false,
 		updateComponentInstances = true,
-		transformOrigin = false,
+		transformOrigin = '',
 	} = {}) {
 		// log('Glyph.updateGlyphSize', 'start');
 		// log(`width: ${width}`);
@@ -706,8 +696,8 @@ export class Glyph extends GlyphElement {
 		// log(`ratioLock: ${ratioLock}`);
 		// log('number of shapes: ' + this.shapes.length);
 		const glyphMaxes = this.maxes;
-		let dW = parseFloat(width) || 0;
-		let dH = parseFloat(height) || 0;
+		let dW = parseNumber(width) || 0;
+		let dH = parseNumber(height) || 0;
 		// log('adjust dW/dH:\t' + dW + '/' + dH);
 		const oldW = glyphMaxes.width;
 		const oldH = glyphMaxes.height;
@@ -748,13 +738,13 @@ export class Glyph extends GlyphElement {
 			const oldShapeWidth = shapeMaxes.xMax - shapeMaxes.xMin;
 			const newShapeWidth = oldShapeWidth * ratioWidth;
 
-			let deltaWidth = false;
+			let deltaWidth = 0;
 			if (ratioWidth !== 0) deltaWidth = newShapeWidth - oldShapeWidth;
 
 			const oldShapeHeight = shapeMaxes.yMax - shapeMaxes.yMin;
 			const newShapeHeight = oldShapeHeight * ratioHeight;
 
-			let deltaHeight = false;
+			let deltaHeight = 0;
 			if (ratioHeight !== 0) deltaHeight = newShapeHeight - oldShapeHeight;
 
 			// log(`deltaHeight: ${deltaHeight}`);
@@ -769,13 +759,13 @@ export class Glyph extends GlyphElement {
 			const oldShapeX = shapeMaxes.xMin - glyphMaxes.xMin;
 			const newShapeX = oldShapeX * ratioWidth;
 
-			let deltaX = false;
+			let deltaX = 0;
 			if (ratioWidth !== 0) deltaX = newShapeX - oldShapeX;
 
 			const oldShapeY = shapeMaxes.yMin - glyphMaxes.yMin;
 			const newShapeY = oldShapeY * ratioHeight;
 
-			let deltaY = false;
+			let deltaY = 0;
 			if (ratioHeight !== 0) deltaY = newShapeY - oldShapeY;
 
 			shape.updateShapePosition(deltaX, deltaY, true);
@@ -842,7 +832,7 @@ export class Glyph extends GlyphElement {
 	/**
 	 * Rotate about a point
 	 * @param {Number} angle - how much to rotate (radians)
-	 * @param {XYPoint} about - x/y center of rotation
+	 * @param {Object} about - x/y center of rotation
 	 * @returns {Glyph} - reference to this glyph
 	 */
 	rotate(angle, about) {
@@ -873,14 +863,13 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Get / Make the data (attribute d="") for an SVG path tag
-	 * @param {Glyph} - glyph object to get/make the path data for
 	 * @returns {String} - SVG definition for the path d="" attribute
 	 */
 	get svgPathData() {
 		// log(`Glyph GET svgPathData`, 'start');
 		// log(this);
 		if (!this?.cache?.svgPathData) {
-			this.cache.svgPathData = this.makeSVGPathData(this);
+			this.cache.svgPathData = this.makeSVGPathData();
 		}
 		// log(`Glyph GET svgPathData`, 'end');
 		return this.cache.svgPathData;

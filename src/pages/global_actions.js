@@ -23,9 +23,9 @@ import { addCharacterRangeToCurrentProject } from './settings_project.js';
 
 /**
  * Page > Global Actions
- * Various actions that can be applied to all glyphs
+ * Various actions that can be applied to all glyphs.
+ * @returns {Element} - page content
  */
-
 export function makePage_GlobalActions() {
 	const content = makeElement({
 		tag: 'div',
@@ -85,6 +85,12 @@ export function makePage_GlobalActions() {
 //	Glyph Iterator
 //	------------------
 
+/**
+ * Centralized way to iterate over specific items in the
+ * project, applying changes from a callback function, and
+ * optionally collecting errors.
+ * @param {Object} oa - options argument
+ */
 function glyphIterator(oa) {
 	// log(`glyphIterator`, 'start');
 	// log(oa);
@@ -93,9 +99,17 @@ function glyphIterator(oa) {
 	let listOfItemIDs = [];
 	let itemNumber = 0;
 	let title = oa.title || 'Iterating on Glyph';
-	let filter = () => {
-		return true;
+
+	/**
+	 * Filter function that gets overwritten by various things
+	 * to include or not include items in Global Actions
+	 * @param {String} itemID - check this ID against a filter function
+	 * @returns {Boolean} - include this Item or not
+	 */
+	let filter = (itemID = '') => {
+		return !!itemID;
 	};
+
 	let callback = oa.callback || false;
 	let currentItem, currentItemID;
 
@@ -195,7 +209,10 @@ function glyphIterator(oa) {
 // --------------------------------------------------------------
 // Move
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Move global action card.
+ * @returns {Element}
+ */
 function makeCard_Move() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -226,13 +243,14 @@ function makeCard_Move() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', content: 'Move all glyphs' });
+	const button = makeElement({ tag: 'fancy-button', content: 'Move all glyphs' });
 	button.addEventListener('click', () => {
-		let moveX = document.getElementById('moveX').value;
-		let moveY = document.getElementById('moveY').value;
-
-		moveX = parseFloat(moveX) || 0;
-		moveY = parseFloat(moveY) || 0;
+		/**@type {HTMLInputElement} */
+		const moveXInput = document.querySelector('#moveX');
+		const moveX = parseFloat(moveXInput.value) || 0;
+		/**@type {HTMLInputElement} */
+		const moveYInput = document.querySelector('#moveY');
+		const moveY = parseFloat(moveYInput.value) || 0;
 
 		glyphIterator({
 			title: 'Moving glyph',
@@ -256,7 +274,10 @@ function makeCard_Move() {
 // --------------------------------------------------------------
 // Scale Vertical
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Scale Vertical global action card.
+ * @returns {Element}
+ */
 function makeCard_ScaleVertical() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -274,7 +295,7 @@ function makeCard_ScaleVertical() {
 	});
 	card.appendChild(effect);
 
-	let table = makeElement({
+	const table = makeElement({
 		className: 'settings-table',
 		innerHTML: `
 			<label for="scaleVertical">Scale&nbsp;value:</label>
@@ -284,16 +305,17 @@ function makeCard_ScaleVertical() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
+	const button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
 	button.addEventListener('click', () => {
-		let scaleVertical = document.getElementById('scaleVertical').value;
-		scaleVertical = parseFloat(scaleVertical) || 1;
+		/** @type {HTMLInputElement} */
+		const scaleVerticalInput = document.querySelector('#scaleVertical');
+		const scaleVertical = parseFloat(scaleVerticalInput.value) || 1;
 
 		glyphIterator({
 			title: 'Vertically scaling glyph',
 			action: function (glyph) {
 				if (!glyph.shapes || !glyph.shapes.length) return;
-				let newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
+				const newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
 				glyph.setGlyphSize({
 					height: newHeight,
 					updateComponentInstances: false,
@@ -311,7 +333,10 @@ function makeCard_ScaleVertical() {
 // --------------------------------------------------------------
 // Scale Horizontal
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Scale Horizontal global action card.
+ * @returns {Element}
+ */
 function makeCard_ScaleHorizontal() {
 	const card = makeElement({ className: 'global-actions__card' });
 	card.appendChild(makeElement({ tag: 'h2', content: 'Horizontally scale all glyphs' }));
@@ -346,11 +371,15 @@ function makeCard_ScaleHorizontal() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
+	const button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
 	button.addEventListener('click', () => {
-		let scaleHorizontal = document.getElementById('scaleHorizontal').value;
-		scaleHorizontal = parseFloat(scaleHorizontal) || 1;
-		let updateAdvanceWidth = document.getElementById('scaleHorizontalUpdateAdvanceWidth').checked;
+		/** @type {HTMLInputElement} */
+		const scaleHorizontalInput = document.querySelector('#scaleHorizontal');
+		const scaleHorizontal = parseFloat(scaleHorizontalInput.value) || 1;
+
+		/** @type {HTMLInputElement} */
+		const updateAdvanceWidthBox = document.querySelector('#scaleHorizontalUpdateAdvanceWidth');
+		const updateAdvanceWidth = updateAdvanceWidthBox.checked;
 
 		glyphIterator({
 			title: 'Horizontally scaling glyph',
@@ -374,7 +403,10 @@ function makeCard_ScaleHorizontal() {
 // --------------------------------------------------------------
 // Resize
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Resize global action card.
+ * @returns {Element}
+ */
 function makeCard_Resize() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -419,16 +451,24 @@ function makeCard_Resize() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', content: 'Re-size all glyphs' });
+	const button = makeElement({ tag: 'fancy-button', content: 'Re-size all glyphs' });
 	button.addEventListener('click', () => {
 		// log('updateAllGlyphSizesByEm', 'start');
-		let resizeW = document.getElementById('resizeWidth').value;
-		let resizeH = document.getElementById('resizeHeight').value;
-		let ratio = document.getElementById('resizeMaintainAspectRatio').checked;
-		let updateAdvanceWidth = document.getElementById('resizeUpdateAdvanceWidth').checked;
+		/** @type {HTMLInputElement} */
+		const resizeWInput = document.querySelector('#resizeWidth');
+		let resizeW = parseFloat(resizeWInput.value) || 0;
 
-		resizeW = parseFloat(resizeW) || 0;
-		resizeH = parseFloat(resizeH) || 0;
+		/** @type {HTMLInputElement} */
+		const resizeHInput = document.querySelector('#resizeHeight');
+		const resizeH = parseFloat(resizeHInput.value) || 0;
+
+		/** @type {HTMLInputElement} */
+		const ratioBox = document.querySelector('#resizeMaintainAspectRatio');
+		const ratio = ratioBox.checked;
+
+		/** @type {HTMLInputElement} */
+		const updateAdvanceWidthBox = document.querySelector('#resizeUpdateAdvanceWidth');
+		const updateAdvanceWidth = updateAdvanceWidthBox.checked;
 
 		if (ratio && !resizeH && !resizeW) {
 			// For ratio lock to work, one delta value has to be zero
@@ -461,7 +501,10 @@ function makeCard_Resize() {
 // --------------------------------------------------------------
 // Flatten
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Flatten global action card.
+ * @returns {Element}
+ */
 function makeCard_Flatten() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -516,7 +559,10 @@ function makeCard_Flatten() {
 // --------------------------------------------------------------
 // Side Bearings
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Side Bearings global action card.
+ * @returns {Element}
+ */
 function makeCard_SideBearings() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -556,14 +602,23 @@ function makeCard_SideBearings() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Update Side Bearings' });
 	button.addEventListener('click', () => {
 		// log('updateSideBearings', 'start');
-		let left = document.getElementById('sideBearingLeft').getAttribute('value');
-		let leftCheckbox = document.getElementById('sideBearingLeftCheckbox').checked;
-		left = parseFloat(left);
+		/** @type {HTMLInputElement} */
+		const leftInput = document.querySelector('#sideBearingLeft');
+		const left = parseFloat(leftInput.value);
 		// log(`left input: ${left}`);
-		let right = document.getElementById('sideBearingRight').getAttribute('value');
-		let rightCheckbox = document.getElementById('sideBearingRightCheckbox').checked;
-		right = parseFloat(right);
+
+		/** @type {HTMLInputElement} */
+		const leftCheckboxBox = document.querySelector('#sideBearingLeftCheckbox');
+		let leftCheckbox = leftCheckboxBox.checked;
+
+		/** @type {HTMLInputElement} */
+		const rightInput = document.querySelector('#sideBearingRight');
+		const right = parseFloat(rightInput.value);
 		// log(`right input: ${right}`);
+
+		/** @type {HTMLInputElement} */
+		const rightCheckboxBox = document.querySelector('#sideBearingRightCheckbox');
+		let rightCheckbox = rightCheckboxBox.checked;
 
 		if (leftCheckbox || rightCheckbox) {
 			if (isNaN(left) || isNaN(right)) {
@@ -601,7 +656,10 @@ function makeCard_SideBearings() {
 // --------------------------------------------------------------
 // Round
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Round global action card.
+ * @returns {Element}
+ */
 function makeCard_Round() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -642,7 +700,10 @@ function makeCard_Round() {
 // --------------------------------------------------------------
 // Monospace
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Monospace global action card.
+ * @returns {Element}
+ */
 function makeCard_Monospace() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -673,8 +734,10 @@ function makeCard_Monospace() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Convert project to Monospace' });
 	button.addEventListener('click', () => {
 		// log('convertProjectToMonospace', 'start');
-		let width = document.getElementById('monospaceWidth').getAttribute('value');
-		width = parseFloat(width);
+
+		/** @type {HTMLInputElement} */
+		const widthInput = document.querySelector('#monospaceWidth');
+		const width = parseFloat(widthInput.value);
 		// log(`width input: ${width}`);
 
 		if (isNaN(width) || width === 0) {
@@ -702,7 +765,10 @@ function makeCard_Monospace() {
 // --------------------------------------------------------------
 // All Caps
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the All Caps global action card.
+ * @returns {Element}
+ */
 function makeCard_AllCaps() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -774,7 +840,9 @@ function makeCard_AllCaps() {
 		}
 
 		// Basic Latin range
-		if (document.getElementById('allCapsBasic').checked) {
+		/** @type {HTMLInputElement} */
+		const allCapsBasicBox = document.querySelector('#allCapsBasic');
+		if (allCapsBasicBox.checked) {
 			// log(`Converting range: allCapsBasic`);
 			let range = getUnicodeBlockByName('Basic Latin');
 			addCharacterRangeToCurrentProject(range);
@@ -782,7 +850,9 @@ function makeCard_AllCaps() {
 		}
 
 		// Latin-1 Supplement range
-		if (document.getElementById('allCapsSupplement').checked) {
+		/** @type {HTMLInputElement} */
+		const allCapsSupplementBox = document.querySelector('#allCapsSupplement');
+		if (allCapsSupplementBox.checked) {
 			// log(`Converting range: allCapsSupplement`);
 			let range = getUnicodeBlockByName('Latin-1 Supplement');
 			addCharacterRangeToCurrentProject(range);
@@ -790,7 +860,9 @@ function makeCard_AllCaps() {
 		}
 
 		// Latin Extended-A range
-		if (document.getElementById('allCapsLatinA').checked) {
+		/** @type {HTMLInputElement} */
+		const allCapsLatinABox = document.querySelector('#allCapsLatinA');
+		if (allCapsLatinABox.checked) {
 			// log(`Converting range: allCapsLatinA`);
 			let range = getUnicodeBlockByName('Latin Extended-A');
 			addCharacterRangeToCurrentProject(range);
@@ -798,7 +870,9 @@ function makeCard_AllCaps() {
 		}
 
 		// Latin Extended-A range
-		if (document.getElementById('allCapsLatinB').checked) {
+		/** @type {HTMLInputElement} */
+		const allCapsLatinBBox = document.querySelector('#allCapsLatinB');
+		if (allCapsLatinBBox.checked) {
 			// log(`Converting range: allCapsLatinB`);
 			let range = getUnicodeBlockByName('Latin Extended-B');
 			addCharacterRangeToCurrentProject(range);
@@ -815,7 +889,10 @@ function makeCard_AllCaps() {
 // --------------------------------------------------------------
 // Diacritics
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Diacritics global action card.
+ * @returns {Element}
+ */
 function makeCard_Diacritics() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -836,13 +913,21 @@ function makeCard_Diacritics() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Generate Diacritical Glyphs' });
 	button.addEventListener('click', () => {
 		let range = getUnicodeBlockByName('Latin-1 Supplement');
-		let currentItemHex = decToHex(range.begin);
+		let rangeBeginHex = '0x0';
+		let currentItemDec = 0;
+		if (range && range.begin) {
+			rangeBeginHex = range.beginHex;
+			currentItemDec = range.begin;
+		}
+		let currentItemHex = rangeBeginHex;
+		let rangeEndDec = 0;
+		if (range && range.end) rangeEndDec = Number(decToHex(range.end));
 		let sourceArray;
 		// const project = getCurrentProject();
 
 		function processOneDiacriticItem() {
 			// log(`processOneDiacriticItem - currentItemHex = ${currentItemHex}`);
-			sourceArray = findMappedValue(unicodeDiacriticsMapSimple, currentItemHex);
+			sourceArray = findMappedValue(unicodeDiacriticsMapSimple, '' + currentItemHex);
 			let currentItemID = `glyph-${currentItemHex}`;
 
 			if (sourceArray) {
@@ -851,10 +936,10 @@ function makeCard_Diacritics() {
 				insertComponentInstance(`glyph-${validateAsHex(sourceArray[1])}`, currentItemID, false);
 			}
 
-			currentItemHex++;
+			currentItemDec++;
 
-			if (currentItemHex <= range.end) {
-				currentItemHex = decToHex(currentItemHex);
+			if (currentItemDec <= rangeEndDec) {
+				currentItemDec = Number(currentItemHex);
 				setTimeout(processOneDiacriticItem, 10);
 			} else {
 				showToast('Done!', 1000);
@@ -875,7 +960,10 @@ function makeCard_Diacritics() {
 // --------------------------------------------------------------
 // Diacritics Advanced
 // --------------------------------------------------------------
-
+/**
+ * Makes the content for the Diacritics Advanced global action card.
+ * @returns {Element}
+ */
 function makeCard_DiacriticsAdvanced() {
 	const card = makeElement({ className: 'global-actions__card' });
 
@@ -900,8 +988,11 @@ function makeCard_DiacriticsAdvanced() {
 		addCharacterRangeToCurrentProject(rangeSupplement);
 		let rangeExtendedA = getUnicodeBlockByName('Latin Extended-A');
 		addCharacterRangeToCurrentProject(rangeExtendedA);
-		let range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
-		let currentItemHex = decToHex(range.begin);
+		let range = { begin: 0, end: 0 };
+		if (rangeSupplement && rangeExtendedA) range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
+		let currentItemDec = range.begin;
+		/** @type {String} */
+		let currentItemHex = decToHex(range.begin) || '0x0';
 		let sourceArray;
 		let targetCenter, currCenter;
 
@@ -921,10 +1012,10 @@ function makeCard_DiacriticsAdvanced() {
 				project.getItem(currentItemID).shapes[1].updateShapePosition(targetCenter - currCenter, 0);
 			}
 
-			currentItemHex++;
+			currentItemDec++;
 
-			if (currentItemHex <= range.end) {
-				currentItemHex = decToHex(currentItemHex);
+			if (currentItemDec <= range.end) {
+				currentItemHex = decToHex(currentItemDec) || '0x0';
 				setTimeout(processOneItem, 10);
 			} else {
 				showToast('Done!', 1000);

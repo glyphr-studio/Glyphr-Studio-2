@@ -5,7 +5,10 @@ import { panoseData } from '../lib/panose';
 import { makeOneSettingsRow } from './settings';
 
 let workingPanoseValue;
-
+/**
+ * Makes the content for the Settings > Font tab
+ * @returns {Element}
+ */
 export function makeSettingsTabContentFont() {
 	const tabContent = makeElement({
 		tag: 'div',
@@ -65,6 +68,10 @@ export function makeSettingsTabContentFont() {
 	return tabContent;
 }
 
+/**
+ * Special settings row for the PANOSE launcher
+ * @returns {Array}
+ */
 function makePanoseLauncherRow() {
 	const button = makeElement({ tag: 'a', content: 'Launch the interactive PANOSE builder' });
 	button.addEventListener('click', showPanoseBuilderDialog);
@@ -76,6 +83,9 @@ function makePanoseLauncherRow() {
 	];
 }
 
+/**
+ * Makes and shows the PANOSE builder dialog
+ */
 function showPanoseBuilderDialog() {
 	workingPanoseValue = getCurrentProject().settings.font.panose.split(' ');
 	let dialogWrapper = makeElement({
@@ -142,7 +152,9 @@ function showPanoseBuilderDialog() {
 		let result = workingPanoseValue.join(' ');
 		// log(`result: ${result}`);
 		getCurrentProject().settings.font.panose = result;
-		document.getElementById('settings-page-input__font-panose').value = result;
+		/** @type {HTMLInputElement} */
+		const setting = document.querySelector('#settings-page-input__font-panose');
+		setting.value = result;
 		closeEveryTypeOfDialog();
 		// log(`panose builder Save button`, 'end');
 	});
@@ -154,6 +166,9 @@ function showPanoseBuilderDialog() {
 	refreshPanoseBuilderTable();
 }
 
+/**
+ * Refreshes the PANOSE builder table
+ */
 function refreshPanoseBuilderTable() {
 	// log(`refreshPanoseBuilderTable`, 'start');
 	// log(workingPanoseValue);

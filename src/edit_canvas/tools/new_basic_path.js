@@ -1,10 +1,7 @@
-// ----------------------------------------------------------------
-// New Basic Path - adds many points to a new path
-// ----------------------------------------------------------------
-
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { isVal, round } from '../../common/functions.js';
 import { ControlPoint } from '../../project_data/control_point.js';
+import { Maxes } from '../../project_data/maxes.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
@@ -12,23 +9,64 @@ import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { addPathToCurrentItem, switchToolTo } from './tools.js';
 
+/**
+	// ----------------------------------------------------------------
+	// New Basic Path - adds many points to a new path
+	// ----------------------------------------------------------------
+ */
 export class Tool_NewBasicPath {
 	constructor() {
 		this.dragging = false;
+	}
+	mousedown() {
+		// log(`Tool_NewBasicPath.mousedown`, 'start');
+		const editor = getCurrentProjectEditor();
 
-		this.mousedown = function () {
-			// log(`Tool_NewBasicPath.mousedown`, 'start');
-			const editor = getCurrentProjectEditor();
-			const ehd = eventHandlerData;
-			ehd.newBasicPathMaxes = {
-				xMax: cXsX(ehd.mousePosition.x),
-				xMin: cXsX(ehd.mousePosition.x),
-				yMax: cYsY(ehd.mousePosition.y),
-				yMin: cYsY(ehd.mousePosition.y),
-			};
+		const ehd = eventHandlerData;
+		ehd.newBasicPathMaxes = {
+			xMax: cXsX(ehd.mousePosition.x),
+			xMin: cXsX(ehd.mousePosition.x),
+			yMax: cYsY(ehd.mousePosition.y),
+			yMin: cYsY(ehd.mousePosition.y),
+		};
 
-			// This is the fake path that shows up in the layers panel
-			// while dragging is happening
+		// This is the fake path that shows up in the layers panel
+		// while dragging is happening
+		if (editor.selectedTool === 'newOval') {
+			// log(`making Oval path`);
+			ehd.newBasicPath = ovalPathFromMaxes(ehd.newBasicPathMaxes, `New oval`);
+		} else {
+			// log(`making Rectangle path`);
+			ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New rectangle`);
+		}
+
+		this.dragging = true;
+		ehd.firstX = cXsX(ehd.mousePosition.x);
+		ehd.firstY = cYsY(ehd.mousePosition.y);
+		// log(`ehd.firstX: ${ehd.firstX}`);
+		// log(`ehd.firstY: ${ehd.firstY}`);
+
+		editor.multiSelect.shapes.clear();
+
+		editor.editCanvas.redraw();
+
+		// log(`Tool_NewBasicPath.mousedown`, 'end');
+	}
+
+	mousemove() {
+		// log(`Tool_NewBasicPath.mousemove`, 'start');
+		const editor = getCurrentProjectEditor();
+		const ehd = eventHandlerData;
+		// log(`EHFirst: x ${(ehd.firstX)}, y ${(ehd.firstY)}`);
+		// log(`Mouse:   x ${cXsX(ehd.mousePosition.x)}, y ${cYsY(ehd.mousePosition.y)}`);
+		// log(`ehd.newBasicPathMaxes before ${JSON.stringify(ehd.newBasicPathMaxes)}`);
+		if (ehd.newBasicPathMaxes) {
+			ehd.newBasicPathMaxes.xMax = Math.max(ehd.firstX, cXsX(ehd.mousePosition.x));
+			ehd.newBasicPathMaxes.xMin = Math.min(ehd.firstX, cXsX(ehd.mousePosition.x));
+			ehd.newBasicPathMaxes.yMax = Math.max(ehd.firstY, cYsY(ehd.mousePosition.y));
+			ehd.newBasicPathMaxes.yMin = Math.min(ehd.firstY, cYsY(ehd.mousePosition.y));
+			// log(`ehd.newBasicPathMaxes afters ${JSON.stringify(ehd.newBasicPathMaxes)}`);
+
 			if (editor.selectedTool === 'newOval') {
 				// log(`making Oval path`);
 				ehd.newBasicPath = ovalPathFromMaxes(ehd.newBasicPathMaxes, `New oval`);
@@ -37,104 +75,74 @@ export class Tool_NewBasicPath {
 				ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New rectangle`);
 			}
 
-			this.dragging = true;
-			ehd.firstX = cXsX(ehd.mousePosition.x);
-			ehd.firstY = cYsY(ehd.mousePosition.y);
-			// log(`ehd.firstX: ${ehd.firstX}`);
-			// log(`ehd.firstY: ${ehd.firstY}`);
+			ehd.undoQueueHasChanged = true;
+			editor.publish('currentPath', ehd.newBasicPath);
+			editor.editCanvas.redraw();
+		}
+		// log(`Tool_NewBasicPath.mousemove`, 'end');
+	}
 
-			editor.multiSelect.shapes.clear();
+	mouseup() {
+		// log(`Tool_NewBasicPath.mouseup`, 'start');
+		const editor = getCurrentProjectEditor();
+		const ehd = eventHandlerData;
 
-			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_NewBasicPath mousedown' });
+		// Only make the new path if it's not really small
+		let xSize = Math.abs(ehd.newBasicPathMaxes.xMax - ehd.newBasicPathMaxes.xMin);
+		let ySize = Math.abs(ehd.newBasicPathMaxes.yMax - ehd.newBasicPathMaxes.yMin);
+		// log(`xSize: ${xSize}`);
+		// log(`ySize: ${ySize}`);
 
-			// log(`Tool_NewBasicPath.mousedown`, 'end');
-		};
+		let path;
+		if (xSize > canvasUIPointSize && ySize > canvasUIPointSize) {
+			// log(`New path is large enough`);
+			let count = editor.selectedItem.shapes.length;
 
-		this.mousemove = function () {
-			// log(`Tool_NewBasicPath.mousemove`, 'start');
-			const editor = getCurrentProjectEditor();
-			const ehd = eventHandlerData;
-			// log(`EHFirst: x ${(ehd.firstX)}, y ${(ehd.firstY)}`);
-			// log(`Mouse:   x ${cXsX(ehd.mousePosition.x)}, y ${cYsY(ehd.mousePosition.y)}`);
-			// log(`ehd.newBasicPathMaxes before ${JSON.stringify(ehd.newBasicPathMaxes)}`);
-			if (ehd.newBasicPathMaxes) {
-				ehd.newBasicPathMaxes.xMax = Math.max(ehd.firstX, cXsX(ehd.mousePosition.x));
-				ehd.newBasicPathMaxes.xMin = Math.min(ehd.firstX, cXsX(ehd.mousePosition.x));
-				ehd.newBasicPathMaxes.yMax = Math.max(ehd.firstY, cYsY(ehd.mousePosition.y));
-				ehd.newBasicPathMaxes.yMin = Math.min(ehd.firstY, cYsY(ehd.mousePosition.y));
-				// log(`ehd.newBasicPathMaxes afters ${JSON.stringify(ehd.newBasicPathMaxes)}`);
-
-				if (editor.selectedTool === 'newOval') {
-					// log(`making Oval path`);
-					ehd.newBasicPath = ovalPathFromMaxes(ehd.newBasicPathMaxes, `New oval`);
-				} else {
-					// log(`making Rectangle path`);
-					ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New rectangle`);
-				}
-
-				ehd.undoQueueHasChanged = true;
-				editor.publish('currentPath', ehd.newBasicPath);
-				editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_NewBasicPath mousemove' });
+			if (editor.nav.page === 'components') {
+				count = Object.keys(editor.project.components).length;
 			}
-			// log(`Tool_NewBasicPath.mousemove`, 'end');
-		};
 
-		this.mouseup = function () {
-			// log(`Tool_NewBasicPath.mouseup`, 'start');
-			const editor = getCurrentProjectEditor();
-			const ehd = eventHandlerData;
-
-			// Only make the new path if it's not really small
-			let xSize = Math.abs(ehd.newBasicPathMaxes.xMax - ehd.newBasicPathMaxes.xMin);
-			let ySize = Math.abs(ehd.newBasicPathMaxes.yMax - ehd.newBasicPathMaxes.yMin);
-			// log(`xSize: ${xSize}`);
-			// log(`ySize: ${ySize}`);
-
-			let path;
-			if (xSize > canvasUIPointSize && ySize > canvasUIPointSize) {
-				// log(`New path is large enough`);
-				let count = editor.selectedItem.shapes.length;
-
-				if (editor.nav.page === 'components') {
-					count = Object.keys(editor.project.components).length;
-				}
-
-				// Update the fake ... path with new data
-				if (editor.selectedTool === 'newOval') {
-					// log(`making Oval path`);
-					path = ovalPathFromMaxes(ehd.newBasicPathMaxes, `Oval ${count}`);
-				} else {
-					// log(`making Rectangle path`);
-					path = rectPathFromMaxes(ehd.newBasicPathMaxes, `Rectangle ${count}`);
-				}
-
-				ehd.newBasicPathMaxes = false;
-				ehd.newBasicPath = false;
-				path = addPathToCurrentItem(path);
-				editor.multiSelect.shapes.select(path);
-				switchToolTo('resize');
+			// Update the fake ... path with new data
+			if (editor.selectedTool === 'newOval') {
+				// log(`making Oval path`);
+				path = ovalPathFromMaxes(ehd.newBasicPathMaxes, `Oval ${count}`);
 			} else {
-				// log(`New path too small`);
-				ehd.newBasicPathMaxes = false;
-				ehd.newBasicPath = false;
+				// log(`making Rectangle path`);
+				path = rectPathFromMaxes(ehd.newBasicPathMaxes, `Rectangle ${count}`);
 			}
 
-			this.dragging = false;
-			ehd.firstX = -100;
-			ehd.firstY = -100;
+			ehd.newBasicPathMaxes = false;
+			ehd.newBasicPath = false;
+			path = addPathToCurrentItem(path);
+			editor.multiSelect.shapes.select(path);
+			switchToolTo('resize');
+		} else {
+			// log(`New path too small`);
+			ehd.newBasicPathMaxes = false;
+			ehd.newBasicPath = false;
+		}
 
-			if (ehd.undoQueueHasChanged) {
-				editor.history.addState(`Added path: ${path.name}`);
-				ehd.undoQueueHasChanged = false;
-			}
+		this.dragging = false;
+		ehd.firstX = -100;
+		ehd.firstY = -100;
 
-			// clickTool('pathEdit');
-			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_NewBasicPath mouseup' });
-			// log(`Tool_NewBasicPath.mouseup`, 'end');
-		};
+		if (ehd.undoQueueHasChanged) {
+			editor.history.addState(`Added path: ${path.name}`);
+			ehd.undoQueueHasChanged = false;
+		}
+
+		// clickTool('pathEdit');
+		editor.editCanvas.redraw();
+		// log(`Tool_NewBasicPath.mouseup`, 'end');
 	}
 }
 
+/**
+ * Makes a rectangular path from a Maxes object
+ * @param {Maxes | Object} maxes - bound object to make the rectangle from
+ * @param {String} name
+ * @returns {Path}
+ */
 export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
 	// log(`rectPathFromMaxes`, 'start');
 	// log(JSON.stringify(maxes));
@@ -178,7 +186,13 @@ export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
 	return newPath;
 }
 
-export function ovalPathFromMaxes(maxes = {}, name = 'Oval') {
+/**
+ * Makes an oval path from a Maxes object
+ * @param {Maxes | Object} maxes - bound object to make the rectangle from
+ * @param {String} name
+ * @returns {Path}
+ */
+export function ovalPathFromMaxes(maxes, name = 'Oval') {
 	let fontSettings = getCurrentProject().settings.font;
 
 	//Default Circle size

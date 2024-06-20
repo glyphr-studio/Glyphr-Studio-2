@@ -3,6 +3,7 @@ import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';
+import { ComponentInstance } from '../../project_data/component_instance.js';
 import { Path } from '../../project_data/path.js';
 import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
@@ -11,6 +12,10 @@ import { stopCreatingNewPath } from './new_path.js';
 // --------------------------------------------------------------
 // Making tool buttons
 // --------------------------------------------------------------
+/**
+ * Makes the tools buttons
+ * @returns {Array}
+ */
 export function makeEditToolsButtons() {
 	// log('makeEditToolsButtons', 'start');
 	const editor = getCurrentProjectEditor();
@@ -18,13 +23,13 @@ export function makeEditToolsButtons() {
 	if (!editor.nav.isOnEditCanvasPage) {
 		// log('returning, !isOnEditCanvasPage');
 		// log('makeEditToolsButtons', 'end');
-		return '';
+		return [];
 	}
 
 	if (!editor.selectedItemID) {
 		// log('returning, !selectedItemID');
 		// log('makeEditToolsButtons', 'end');
-		return '';
+		return [];
 	}
 
 	// All the various permutations of states
@@ -122,6 +127,10 @@ export function makeEditToolsButtons() {
 	return content;
 }
 
+/**
+ * Makes the view control buttons
+ * @returns {Array} - an array of Elements
+ */
 export function makeViewToolsButtons() {
 	// log(`makeViewToolsButtons`, 'start');
 
@@ -172,7 +181,7 @@ export function makeViewToolsButtons() {
 	// text zoom control
 	let zoomReadoutNumber = '--';
 	let view = editor.view;
-	if (view) zoomReadoutNumber = round(editor.view.dz * 100, 2);
+	if (view) zoomReadoutNumber = '' + round(editor.view.dz * 100, 2);
 
 	let zoomReadout = makeElement({
 		tag: 'input',
@@ -193,8 +202,9 @@ export function makeViewToolsButtons() {
 		subscriberID: 'tools.zoomReadout',
 		callback: (newView) => {
 			let zoomReadoutNumber = round(newView.dz * 100, 2);
-			zoomReadout.setAttribute('value', zoomReadoutNumber);
+			zoomReadout.setAttribute('value', '' + zoomReadoutNumber);
 			zoomReadout.innerHTML = `${zoomReadoutNumber}%`;
+			// @ts-ignore
 			zoomReadout.value = `${zoomReadoutNumber}%`;
 		},
 	});
@@ -235,6 +245,10 @@ export function makeViewToolsButtons() {
 	return [viewButtonElements.pan, responsiveGroup, viewButtonElements.zoomEm, livePreviewPopOut];
 }
 
+/**
+ * Event handler for clicking a tool button
+ * @param {String} tool - which tool was clicked
+ */
 export function clickTool(tool) {
 	// log('clickTool', 'start');
 	const editor = getCurrentProjectEditor();
@@ -262,6 +276,10 @@ export function clickTool(tool) {
 	// log('clickTool', 'end');
 }
 
+/**
+ * Handle switching the tool on the current Editor
+ * @param {String} newTool - which tool to switch to
+ */
 export function switchToolTo(newTool) {
 	// log(`switchToolTo`, 'start');
 	// log(`newTool: ${newTool}`);
@@ -272,7 +290,11 @@ export function switchToolTo(newTool) {
 	// log(`switchToolTo`, 'end');
 }
 
-export function makeKernToolsButtons() {
+/**
+ * Makes the Kern Tool button
+ * @returns {Element}
+ */
+export function makeKernToolButton() {
 	// Kern
 	const editor = getCurrentProjectEditor();
 	const kernToolButton = makeElement({
@@ -303,6 +325,11 @@ export function makeKernToolsButtons() {
 // Button helper functions
 // --------------------------------------------------------------
 
+/**
+ * Adds a given path to the current work item
+ * @param {Path} newPath - Path to add
+ * @returns {Path} - Path that was added, with updated properties
+ */
 export function addPathToCurrentItem(newPath) {
 	// log(`addPathToCurrentItem`, 'start');
 	// log(`name: ${ewPath.name}`);
@@ -319,7 +346,7 @@ export function addPathToCurrentItem(newPath) {
 	} else {
 		// log(`passed null, creating new path.`);
 		newPath = new Path({});
-		newPath.name = 'Rectangle ' + (editor.selectedItemPaths.length * 1 + 1);
+		newPath.name = 'Rectangle ' + (editor.selectedItem.shapes.length * 1 + 1);
 	}
 
 	let sg = editor.selectedItem;
@@ -336,7 +363,7 @@ export function addPathToCurrentItem(newPath) {
  * a shape (or false) at the coordinate location
  * @param {Number} cx - x coordinate in canvas units
  * @param {Number} cy - y coordinate in canvas units
- * @returns {Shape or Boolean}
+ * @returns {Object | Boolean}
  */
 export function getShapeAtLocation(cx, cy) {
 	// log(`getShapeAtLocation`, 'start');
@@ -361,6 +388,13 @@ export function getShapeAtLocation(cx, cy) {
 	return false;
 }
 
+/**
+ * Returns a true if a clicked x/y is on a shape
+ * @param {Path | ComponentInstance} shape - shape to check
+ * @param {Number} cx - clicked x value
+ * @param {Number} cy - clicked y value
+ * @returns {Boolean}
+ */
 export function isShapeHere(shape, cx, cy) {
 	// log(`isShapeHere`, 'start');
 	// log(`cx: ${cx} / cy: ${cy}`);
@@ -404,24 +438,10 @@ export function isShapeHere(shape, cx, cy) {
 	// ctx.strokeAlign = 'outside';
 	// ctx.lineWidth = 4;
 	// ctx.strokeRect(xTest - 10, yTest - 10, 20, 20);
-	// openDebugPopOutWindow(ghc);
 
 	// log('red = ' + imageData.data[0] + '  returning: ' + (imageData.data[0] < 255));
 	// log(`isShapeHere`, 'end');
 	return imageData.data[0] < 255;
-}
-
-export function openDebugPopOutWindow(content) {
-	const editor = getCurrentProjectEditor();
-	if (!editor.debugPopOutWindow) {
-		editor.debugPopOutWindow = window.open('', 'glyphr-studio-debug-pop-out');
-		editor.debugPopOutWindow.document.body.style.backgroundColor = 'gray';
-	}
-
-	// Init window properties
-	let popDoc = editor.debugPopOutWindow.document;
-	popDoc.body.innerHTML = '';
-	popDoc.body.appendChild(content);
 }
 
 // --------------------------------------------------------------
@@ -430,6 +450,11 @@ export function openDebugPopOutWindow(content) {
 
 let icons = {};
 
+/**
+ * Makes a SVG icon based on options
+ * @param {Object} oa - options
+ * @returns {String} - SVG code
+ */
 export function makeToolButtonSVG(oa) {
 	// log(`makeToolButtonSVG`, 'start');
 	// log(`oa.name: ${oa.name}`);

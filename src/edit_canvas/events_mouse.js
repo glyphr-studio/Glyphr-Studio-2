@@ -15,6 +15,11 @@ import {
 // Mouse Events
 // --------------------------------------------------------------
 
+/**
+ * Handles mouse movements and clicking
+ * @param {MouseEvent} event - mouse event
+ * @returns nothing
+ */
 export function handleMouseEvents(event) {
 	// log(`handleMouseEvents`, 'start');
 	// log(`Raw mouse event x/y = ${event.layerX} / ${event.layerY}`);
@@ -91,8 +96,13 @@ export function handleMouseEvents(event) {
 // Helpers
 // --------------------------------------------------------------
 
+/**
+ * Extracts an x/y point from the mouse event
+ * @param {MouseEvent} event - mouse event
+ * @returns {Object} - x/y point
+ */
 export function getMousePositionData(event) {
-	let mouse = { x: false, y: false };
+	let mouse = {};
 
 	if (event.offsetX || event.offsetY) {
 		// IE, Chrome, (Opera?)
@@ -107,12 +117,20 @@ export function getMousePositionData(event) {
 	return mouse;
 }
 
+/**
+ * Stuff to do when the user clicks on an empty space
+ * on the Edit Canvas.
+ */
 export function clickEmptySpace() {
 	const editor = getCurrentProjectEditor();
 	editor.multiSelect.points.clear();
 	editor.multiSelect.shapes.clear();
 }
 
+/**
+ * Resizes the currently selected path(s) based
+ * on event handler data.
+ */
 export function resizePath() {
 	// log('resizePath', 'start');
 	const editor = getCurrentProjectEditor();
@@ -287,6 +305,13 @@ export function resizePath() {
 	// log(`resizePath`, 'end');
 }
 
+/**
+ * Given a mouse x/y position, checks to see if
+ * there is a hotspot there, and if there is,
+ * publishes an appropriate action.
+ * @param {Number} x - x position to check
+ * @param {Number} y - y position to check
+ */
 export function checkForMouseOverHotspot(x, y) {
 	const editor = getCurrentProjectEditor();
 
@@ -302,15 +327,29 @@ export function checkForMouseOverHotspot(x, y) {
 	}
 }
 
+/**
+ * Given a selected shape, and a specified handle,
+ * checks path locks to see if this handle can be used
+ * to resize the shape.
+ * @param {String} handle - compass letter for handle
+ * @returns {Boolean}
+ */
 export function canResize(handle) {
 	const editor = getCurrentProjectEditor();
 	const msShapes = editor.multiSelect.shapes;
 	let selected = msShapes;
-	if (msShapes.length > 1) selected = msShapes.virtualGlyph;
+	if (msShapes.length > 1) {
+		// @ts-ignore
+		selected = msShapes.virtualGlyph;
+	}
 	let rl = selected.ratioLock;
+	// @ts-ignore
 	let xl = selected.xLock;
+	// @ts-ignore
 	let yl = selected.yLock;
+	// @ts-ignore
 	let wl = selected.wLock;
+	// @ts-ignore
 	let hl = selected.hLock;
 	let yMax = selected.maxes.yMax;
 	let yMin = selected.maxes.yMin;
@@ -353,6 +392,10 @@ export function canResize(handle) {
 	return re;
 }
 
+/**
+ * Handling the user rolling the mouse wheel
+ * @param {MouseEvent | Object} event - mouse event
+ */
 export function handleMouseWheel(event) {
 	// log(event);
 	let delta = event.deltaY * -1;
@@ -361,7 +404,7 @@ export function handleMouseWheel(event) {
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
 	let canZoom = editor.nav.isOnEditCanvasPage;
-	// && document.getElementById('dialog_box').style.display !== 'block';
+	// && document.querySelector('#dialog_box').style.display !== 'block';
 
 	if (canZoom) {
 		if (event.ctrlKey || event.metaKey) {

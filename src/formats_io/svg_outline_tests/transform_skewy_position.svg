@@ -2,28 +2,10 @@
   <rect y="10" x="0" width="20" height="20" />
   <rect y="10" x="0" width="20" height="20" fill="rgba(255, 0, 0, 0.75)" transform="skewY(45)" />
 
-  <rect y="10" x="30" width="20" height="20" />
-  <rect y="10" x="30" width="20" height="20" fill="rgba(255, 0, 0, 0.75)" transform="skewY(45)" />
-  
-  <rect y="10" x="60" width="20" height="20" />
-  <rect y="10" x="60" width="20" height="20" fill="rgba(255, 0, 0, 0.75)" transform="skewY(45)" />
-  
-  <rect y="10" x="90" width="20" height="20" />
-  <rect y="10" x="90" width="20" height="20" fill="rgba(255, 0, 0, 0.75)" transform="skewY(45)" />
-  
   <rect y="10" x="120" width="20" height="20" />
   <rect y="10" x="120" width="20" height="20" fill="rgba(255, 0, 0, 0.75)" transform="skewY(45)" />
-  
-  <rect y="10" x="150" width="20" height="20" />
-  <rect y="10" x="150" width="20" height="20" fill="rgba(255, 0, 0, 0.75)" transform="skewY(45)" />
-  
-  <rect y="10" x="180" width="20" height="20" />
-  <rect y="10" x="180" width="20" height="20" fill="rgba(255, 0, 0, 0.75)" transform="skewY(45)" />
-  
-  <rect y="10" x="210" width="20" height="20" />
-  <rect y="10" x="210" width="20" height="20" fill="rgba(255, 0, 0, 0.75)" transform="skewY(45)" />
-  
+
   <rect y="10" x="240" width="20" height="20" />
   <rect y="10" x="240" width="20" height="20" fill="rgba(255, 0, 0, 0.75)" transform="skewY(45)" />
-  
+
 </svg>

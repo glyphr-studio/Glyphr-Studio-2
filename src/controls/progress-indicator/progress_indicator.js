@@ -4,10 +4,15 @@ import { pause } from '../../common/functions.js';
 // Animation
 let degrees = 0;
 
+/**
+ * Updates the currently displayed progress indicator
+ * @param {String} message - what text to show for this progress step
+ */
 export async function updateProgressIndicator(message) {
-	const container = document.getElementById('progress-indicator__message');
+	const container = document.querySelector('#progress-indicator__message');
 	if (container) {
-		const bar = document.getElementById('progress-indicator__bar');
+		/** @type {HTMLElement} */
+		const bar = document.querySelector('#progress-indicator__bar');
 		if (bar) {
 			degrees = (degrees + 0.95) % 100;
 			bar.style.backgroundPosition = `${degrees}%`;
@@ -17,6 +22,10 @@ export async function updateProgressIndicator(message) {
 	}
 }
 
+/**
+ * Makes a progress indicator control
+ * @returns {Element}
+ */
 export function makeProgressIndicator() {
 	// log('makeProgressIndicator', 'start');
 

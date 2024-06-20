@@ -100,7 +100,7 @@ export class Navigator {
 		// log(`editor.selectedItemID: ${getCurrentProjectEditor().selectedItemID}`);
 
 		closeEveryTypeOfDialog();
-		const wrapper = document.getElementById('app__wrapper');
+		const wrapper = document.querySelector('#app__wrapper');
 
 		// log(`wrapper before:`);
 		// log(wrapper);
@@ -226,7 +226,7 @@ export function toggleNavDropdown(parentElement) {
  *	this method gets called from other dropdowns, so we have to know if this is
  *	being called from a control inside a nav menu or from outside of it.
  */
-export function closeAllNavMenus(isChooserMenu) {
+export function closeAllNavMenus(isChooserMenu = false) {
 	// log(`closeAllNavMenus`, 'start');
 	let navMenus = document.querySelectorAll('nav');
 	// log(navMenus);
@@ -314,7 +314,7 @@ export function showNavDropdown(parentElement) {
 	// closeAllNavMenus();
 	closeEveryTypeOfDialog();
 
-	// let appWrapper = document.getElementById('app__wrapper');
+	// let appWrapper = document.querySelector('#app__wrapper');
 	// appWrapper.appendChild(dropDown).focus();
 	insertAfter(parentElement, dropDown);
 

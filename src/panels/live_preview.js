@@ -71,7 +71,7 @@ export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 	return result;
 }
 
-function makeButton(text, chars = false) {
+function makeButton(text, chars) {
 	chars = chars || text.replace('<br>', ' ');
 	let button = makeElement({
 		tag: 'button',
@@ -184,7 +184,9 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 		innerHTML: textBlockOptions.text,
 	});
 	textInput.addEventListener('keyup', (event) => {
+		// @ts-ignore
 		textBlockOptions.text = event.target.value;
+		// @ts-ignore
 		event.target.innerHTML = event.target.value;
 		redrawAllLivePreviews();
 	});
@@ -196,6 +198,7 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 		attributes: { value: textBlockOptions.fontSize },
 	});
 	fontSizeInput.addEventListener('change', (event) => {
+		// @ts-ignore
 		textBlockOptions.fontSize = event.target.value;
 		redrawAllLivePreviews();
 	});
@@ -207,6 +210,7 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 		attributes: { value: textBlockOptions.lineGap },
 	});
 	lineGapInput.addEventListener('change', (event) => {
+		// @ts-ignore
 		textBlockOptions.lineGap = event.target.value;
 		redrawAllLivePreviews();
 	});

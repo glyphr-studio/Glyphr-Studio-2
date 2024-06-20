@@ -19,8 +19,8 @@ import {
 
 /**
  * Page > Components
- * Edit surface for Components
- * Comprised of Panels of tools, and the Edit Canvas
+ * Edit surface for Components, comprised of Panels of tools, and the Edit Canvas.
+ * @returns {Element} - page content
  */
 export function makePage_Components() {
 	// log(`makePage_Components`, 'start');
@@ -61,11 +61,13 @@ export function makePage_Components() {
 	if (editor.showPageTransitions) content.classList.add('app__page-animation');
 
 	// Page Selector
+	/** @type {HTMLElement} */
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
 		toggleNavDropdown(l1);
 	});
 
+	/** @type {HTMLElement} */
 	const navArea = content.querySelector('.editor-page__nav-area');
 	const canvasArea = content.querySelector('.editor-page__edit-canvas-wrapper');
 
@@ -163,7 +165,7 @@ export function makePage_Components() {
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
 			removeStopCreatingNewPathButton();
-			editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath' });
+			editor.editCanvas.redraw();
 		},
 	});
 
@@ -171,7 +173,7 @@ export function makePage_Components() {
 		topic: 'whichPathPointIsSelected',
 		subscriberID: 'editCanvas.selectedPathPoint',
 		callback: () => {
-			editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPathPoint' });
+			editor.editCanvas.redraw();
 		},
 	});
 
@@ -189,6 +191,10 @@ export function makePage_Components() {
 	return content;
 }
 
+/**
+ * Makes the first run / get started content
+ * @returns {Element}
+ */
 function makeComponentsFirstRunContent() {
 	let componentExampleTable = '';
 	[
@@ -242,12 +248,21 @@ function makeComponentsFirstRunContent() {
 	return content;
 }
 
+/**
+ * Button handler for adding a new component
+ * @param {Object} newComponent - new component to add
+ * @returns {Glyph}
+ */
 export function addComponent(newComponent) {
 	const project = getCurrentProject();
 	let added = project.addItemByType(new Glyph(newComponent), 'Component');
 	return added;
 }
 
+/**
+ * Makes a new Component ID that doesn't collide with old ones.
+ * @returns {String}
+ */
 export function makeComponentID() {
 	// log(`makeComponentID`, 'start');
 
@@ -258,6 +273,9 @@ export function makeComponentID() {
 	return `comp-${counter}`;
 }
 
+/**
+ * Makes and shows the Add Component dialog
+ */
 export function showAddComponentDialog() {
 	const content = makeElement({
 		innerHTML: `
@@ -273,6 +291,7 @@ export function showAddComponentDialog() {
 	});
 
 	const submitButton = content.querySelector('#components__add-new-component-button');
+	/** @type {HTMLInputElement} */
 	const newComponentInput = content.querySelector('#components__new-component-input');
 
 	newComponentInput.addEventListener('keyup', () => {

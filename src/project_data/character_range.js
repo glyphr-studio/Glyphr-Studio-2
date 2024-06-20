@@ -1,14 +1,31 @@
 import { decToHex } from '../common/character_ids.js';
 import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 
+/**
+ * Create a Character Range
+ * @param {Object} arg
+ * @param {Number | String =} arg.begin - start of the range (inclusive)
+ * @param {Number | String =} arg.end - end of the range (inclusive)
+ * @param {String =} arg.name
+ * @param {Boolean =} arg.enabled
+ * @param {Number =} arg.count - how many glyph objects exist in this range
+ * @param {Boolean | Array =} arg.cachedArray
+ */
 export class CharacterRange {
-	constructor({ begin = 0, end = 0, name = '', enabled = true, count = 0 }) {
+	constructor({
+		begin = 0,
+		end = 0,
+		name = '',
+		enabled = true,
+		count = 0,
+		cachedArray = false,
+	} = {}) {
 		this.begin = begin;
 		this.end = end;
 		this.name = name;
 		this.enabled = !!enabled;
 		this.count = count;
-		this.cachedArray = false;
+		this.cachedArray = cachedArray;
 	}
 
 	get begin() {
@@ -37,12 +54,21 @@ export class CharacterRange {
 		this._count = parseInt(val);
 	}
 
+	get cachedArray() {
+		return this._cachedArray || false;
+	}
+
+	set cachedArray(arr) {
+		this._cachedArray = arr;
+	}
+
 	// --------------------------------------------------------------
 	// Generator
 	// --------------------------------------------------------------
 
 	/**
-	 * For this range, yields char points in order.
+	 * For this range, yields char points in order
+	 * @param {Boolean} showNonCharPoints - include control points in the output
 	 */
 	*generator(showNonCharPoints = false) {
 		if (this.begin <= 0x21 && (this.end === 0x7e || this.end === 0x7f)) {
@@ -107,6 +133,11 @@ export class CharacterRange {
 		return `${this.name} ${this.note}`;
 	}
 
+	/**
+	 * Generates an array of ids in order
+	 * @param {Boolean} showNonCharPoints - include control points in the output
+	 * @returns {Array}
+	 */
 	getMemberIDs(showNonCharPoints = false) {
 		if (this.cachedArray) return this.cachedArray;
 

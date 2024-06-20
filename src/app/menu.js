@@ -18,6 +18,10 @@ import { makePage_OpenProject } from './open_project.js';
 // Top bar for the App
 // --------------------------------------------------------------
 
+/**
+ * Makes the Top Bar for the App
+ * @returns {Element}
+ */
 export function makeAppTopBar() {
 	let topBar = makeElement({ tag: 'div', id: 'app__top-bar' });
 
@@ -64,6 +68,11 @@ export function makeAppTopBar() {
 // Menu
 // --------------------------------------------------------------
 
+/**
+ * Makes one menu, with an entry point and a hidden dropdown
+ * @param {String} menuName - Name for the menu entry point
+ * @returns {Element}
+ */
 function makeMenu(menuName) {
 	let entryPoint = makeElement({
 		tag: 'button',
@@ -73,10 +82,12 @@ function makeMenu(menuName) {
 	entryPoint.addEventListener('mouseover', closeEveryTypeOfDialog);
 	const editor = getCurrentProjectEditor();
 	if (menuName === 'File') {
+		/** @type {Array} */
 		let fileMenuData = [];
-		if (editor.loadedFileHandle) {
+		if (typeof editor.loadedFileHandle === 'object') {
 			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
-			if (editor.loadedFileHandle?.name) projectDisplayName = editor.loadedFileHandle.name;
+			// @ts-ignore
+			if ( typeof editor.loadedFileHandle?.name === 'string') projectDisplayName = editor.loadedFileHandle.name;
 			fileMenuData.push(
 				{
 					child: makeElement({
@@ -149,6 +160,7 @@ function makeMenu(menuName) {
 			},
 		]);
 		entryPoint.addEventListener('click', (event) => {
+			// @ts-ignore
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
 			insertAfter(entryPoint, makeContextMenu(fileMenuData, rect.x, rect.y + rect.height));
@@ -157,6 +169,7 @@ function makeMenu(menuName) {
 
 	if (menuName === 'Projects') {
 		entryPoint.addEventListener('click', (event) => {
+			// @ts-ignore
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
 			let menuRows = makeContextMenu(
@@ -209,6 +222,7 @@ function makeMenu(menuName) {
 
 	if (menuName === 'Help') {
 		entryPoint.addEventListener('click', (event) => {
+			// @ts-ignore
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
 			insertAfter(
@@ -252,6 +266,12 @@ function makeMenu(menuName) {
 	return entryPoint;
 }
 
+/**
+ * Makes a special row for a menu that displays a small
+ * project preview
+ * @param {Number} projectID - which project to show
+ * @returns {Element}
+ */
 function makeProjectPreviewRow(projectID = 0) {
 	// log(`makeProjectPreviewRow`, 'start');
 	// log(`projectID: ${projectID}`);
@@ -261,9 +281,9 @@ function makeProjectPreviewRow(projectID = 0) {
 	// log(projectEditor);
 
 	let rowWrapper = makeElement({ tag: 'div', className: 'project-preview__row-wrapper' });
-	let superTitle = false;
+	let superTitle;
 	let title = makeElement({ tag: 'h3' });
-	let thumbnail = false;
+	let thumbnail;
 
 	if (projectEditor) {
 		superTitle = makeElement({ className: 'project-preview__super-title' });

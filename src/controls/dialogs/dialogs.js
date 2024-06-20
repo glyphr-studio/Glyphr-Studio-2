@@ -9,6 +9,10 @@ import { closeAllNavMenus } from '../../project_editor/navigator.js';
 // --------------------------------------------------------------
 // Generic dialog stuff
 // --------------------------------------------------------------
+
+/**
+ * Closes all dialogs
+ */
 export function closeEveryTypeOfDialog() {
 	// log(`closeEveryTypeOfDialog`, 'start');
 	closeAllNavMenus();
@@ -21,12 +25,18 @@ export function closeEveryTypeOfDialog() {
 	// log(`closeEveryTypeOfDialog`, 'end');
 }
 
+/**
+ * Closes all Modal Dialog style dialogs
+ */
 export function closeAllModalDialogs() {
 	// log(`closeAllModalDialogs`, 'start');
 	animateRemoveAll('dialog');
 	// log(`closeAllModalDialogs`, 'end');
 }
 
+/**
+ * Closes all Option Chooser style dialogs
+ */
 export function closeAllOptionChoosers() {
 	// log(`closeAllOptionChoosers`, 'start');
 	closeAllContextMenus();
@@ -34,41 +44,55 @@ export function closeAllOptionChoosers() {
 	elements.forEach((elem) => elem.removeAttribute('deployed'));
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
+		// @ts-ignore
 		elements = editor.popOutWindow.document.querySelectorAll('option-chooser');
 		elements.forEach((elem) => elem.removeAttribute('deployed'));
 	}
 	// log(`closeAllOptionChoosers`, 'end');
 }
 
+/**
+ * Closes all Context Menu style dialogs
+ */
 export function closeAllContextMenus() {
 	// log(`closeAllContextMenus`, 'start');
 	animateRemoveAll('#context-menu');
 	// log(`closeAllContextMenus`, 'end');
 }
 
+/**
+ * Closes all Toast style dialogs
+ */
 export function closeAllToasts() {
 	// log(`closeAllToasts`, 'start');
 	animateRemoveAll('#toast');
 	// log(`closeAllToasts`, 'end');
 }
 
+/**
+ * Closes all Error style dialogs
+ */
 export function closeAllErrors() {
 	// log(`closeAllErrors`, 'start');
 	animateRemoveAll('#error');
 	// log(`closeAllErrors`, 'end');
 }
 
+/**
+ * Closes all Info Bubble style dialogs
+ */
 export function closeAllInfoBubbles() {
 	// log(`closeAllInfoBubbles`, 'start');
 	let bubbles = document.querySelectorAll('#bubble');
-	bubbles.forEach((elem) => {
+	bubbles.forEach((/** @type {HTMLElement} */ elem) => {
 		elem.querySelector('.content').dispatchEvent(new Event('mouseleave'));
 		elem.blur();
 	});
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
+		// @ts-ignore
 		bubbles = editor.popOutWindow.document.querySelectorAll('#bubble');
-		bubbles.forEach((elem) => {
+		bubbles.forEach((/** @type {HTMLElement} */ elem) => {
 			elem.querySelector('.content').dispatchEvent(new Event('mouseleave'));
 			elem.blur();
 		});
@@ -76,20 +100,37 @@ export function closeAllInfoBubbles() {
 	// log(`closeAllInfoBubbles`, 'end');
 }
 
+/**
+ * Closes all Notation style dialogs
+ */
 export function closeAllNotations() {
 	animateRemoveAll('#notation');
 }
 
+/**
+ * Query the current document for all types of elements,
+ * then remove them with an animated fade out
+ * @param {String} query - querySelector argument
+ */
 export function animateRemoveAll(query = '') {
+	/** @type {NodeListOf<HTMLElement>} */
 	let elements = document.querySelectorAll(query);
 	elements.forEach((elem) => animateRemove(elem));
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
+		// @ts-ignore
 		elements = editor.popOutWindow.document.querySelectorAll(query);
 		elements.forEach((elem) => animateRemove(elem));
 	}
 }
 
+/**
+ * Handle the animation and removal of one element
+ * @param {HTMLElement} element - what element to remove
+ * @param {Number =} animationLength - how long in milliseconds
+ * @param {Number =} scale - how much to shrink
+ * @param {String =} translateY - CSS value for how much to move vertically
+ */
 export function animateRemove(element, animationLength = 120, scale = 0.98, translateY = '-5px') {
 	element.animate(
 		{ opacity: 0, transform: `scale(${scale}) translateY(${translateY})` },
@@ -115,8 +156,9 @@ export function animateRemove(element, animationLength = 120, scale = 0.98, tran
 export function showToast(message = '0_o', duration = 3000, fancy = false) {
 	// log(`showToast`, 'start');
 	// log(`message: ${message}`);
-	// log(`duration: ${duration}`);
-	let element = document.getElementById('toast');
+	// log(`duration: ${duration}`);scaleItems
+	/** @type {HTMLElement} */
+	let element = document.querySelector('#toast');
 
 	// remove any current context menu, or create one if it doesn't exist
 	if (element) {
@@ -148,9 +190,16 @@ export function showToast(message = '0_o', duration = 3000, fancy = false) {
 // Notation
 // --------------------------------------------------------------
 
+/**
+ * Show a small dialog note
+ * @param {String} content - HTML content to show in the note
+ * @param {Number} x - screen x location
+ * @param {Number} y - screen y location
+ */
 export function showNotation(content, x, y) {
 	// document.body.focus();
-	let notation = document.getElementById('notation');
+	/** @type {HTMLElement} */
+	let notation = document.querySelector('#notation');
 	if (!notation) {
 		notation = makeElement({
 			id: 'notation',
@@ -165,6 +214,10 @@ export function showNotation(content, x, y) {
 	notation.style.display = 'block';
 }
 
+/**
+ * Shows a special case notation for the Path Add Point tool
+ * @param {Object} emPoint - x/y point for where to show it
+ */
 export function makeAndShowPathAddPointNotation(emPoint) {
 	let x = round(emPoint.x, 3);
 	let y = round(emPoint.y, 3);
@@ -196,19 +249,20 @@ export function makeAndShowPathAddPointNotation(emPoint) {
  *   * Top app File menus
  *   * Right-click menus
  *   * Drop-down menus
- * @param {Array} data - collection of objects representing each row
+ * @param {Array} rows - collection of objects representing each row
  * @param {Number} x - X position for the menu
  * @param {Number} y - Y position for the menu
- * @param {Number} width - width for the menu (defaults to auto-width)
- * @param {Boolean} isDropdown - triggers slight style adjustments for dropdown control
+ * @param {Number =} width - width for the menu (defaults to auto-width)
+ * @param {Number =} height - height for the menu (defaults to auto-width)
+ * @param {Boolean =} isDropdown - triggers slight style adjustments for dropdown control
  * @returns {HTMLElement}
  */
 export function makeContextMenu(
 	rows = [],
-	x = false,
-	y = false,
-	width = false,
-	height = false,
+	x,
+	y,
+	width,
+	height,
 	isDropdown = false
 ) {
 	// log(`makeContextMenu`, 'start');
@@ -246,7 +300,7 @@ export function makeContextMenu(
 			element.style.width = `${width}px`;
 		}
 		if (height) {
-			if(isDropdown) element.style.maxHeight = `${height}px`;
+			if (isDropdown) element.style.maxHeight = `${height}px`;
 			else element.style.height = `${height}px`;
 		}
 		element.addEventListener('mouseleave', closeAllOptionChoosers);
@@ -259,6 +313,11 @@ export function makeContextMenu(
 	return element;
 }
 
+/**
+ * Make one row for a context menu, based on options
+ * @param {Object} data - options for this row
+ * @returns {Element}
+ */
 function makeOneContextMenuRow(data = {}) {
 	// log(`makeOneContextMenuRow`, 'start');
 	// log(data);
@@ -356,7 +415,7 @@ export function showError(message) {
 	let body = makeElement({ className: 'error__body', innerHTML: message });
 	addAsChildren(element, [header, body]);
 
-	closeEveryTypeOfDialog(true);
+	closeEveryTypeOfDialog();
 	document.body.appendChild(element);
 }
 
@@ -366,7 +425,9 @@ export function showError(message) {
 
 /**
  * Shows a big dialog that blurs the UI behind it.
- * @param {DOM Node} contentNode - HTML to show in the dialog
+ * @param {Element} contentNode - HTML to show in the dialog
+ * @param {Number =} maxWidth - limit the dialog width
+ * @param {Boolean =} noPadding - turn on or off padding
  */
 export function showModalDialog(contentNode, maxWidth, noPadding) {
 	let modal = makeModalDialog(contentNode, maxWidth, noPadding);
@@ -374,7 +435,14 @@ export function showModalDialog(contentNode, maxWidth, noPadding) {
 	document.body.appendChild(modal);
 }
 
-export function makeModalDialog(contentNode, maxWidth = false, openProjectDialog = false) {
+/**
+ * Makes a modal dialog and returns it
+ * @param {Element} contentNode - Main content area for the dialog
+ * @param {Number =} maxWidth - limit the width of the dialog
+ * @param {Boolean} openProjectDialog - is this the Open Project dialog?
+ * @returns {Element}
+ */
+export function makeModalDialog(contentNode, maxWidth, openProjectDialog = false) {
 	// log(`makeModalDialog`, 'start');
 	// log(`\n⮟contentNode⮟`);
 	// log(contentNode);
@@ -397,7 +465,9 @@ export function makeModalDialog(contentNode, maxWidth = false, openProjectDialog
 		.querySelector('.modal-dialog__close-button')
 		.addEventListener('click', closeEveryTypeOfDialog);
 	modal.addEventListener('click', (event) => {
-		if (event.target.id === 'modal-dialog') closeEveryTypeOfDialog();
+		const elem = event.currentTarget;
+		// @ts-ignore
+		if (elem.getAttribute('id') === 'modal-dialog') closeEveryTypeOfDialog();
 	});
 
 	if (openProjectDialog) {
@@ -407,7 +477,9 @@ export function makeModalDialog(contentNode, maxWidth = false, openProjectDialog
 
 	addAsChildren(modal.querySelector('.modal-dialog__body'), contentNode);
 	if (maxWidth) {
-		modal.querySelector('.modal-dialog__content').style.maxWidth = `${maxWidth}px`;
+		/** @type {HTMLElement} */
+		const content = modal.querySelector('.modal-dialog__content');
+		content.style.maxWidth = `${maxWidth}px`;
 	}
 
 	// log(`\n⮟modal⮟`);

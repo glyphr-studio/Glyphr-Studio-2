@@ -11,6 +11,7 @@ import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 /* Other stuff */
 import asciiLogo from '../common/graphics/ascii-wordmark-vertical.txt?raw';
 import { closeAllInfoBubbles, closeAllOptionChoosers } from '../controls/dialogs/dialogs.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { closeAllNavMenus } from '../project_editor/navigator.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp, showAppErrorPage } from './app.js';
@@ -96,6 +97,8 @@ function addGlobalEventListeners() {
 	// if (!getGlyphrStudioApp().settings.dev.mode) {
 	window.addEventListener('mouseup', (event) => {
 		let navElement = document.querySelector('nav');
+
+		// @ts-ignore
 		if (!(navElement && navElement.contains(event.target))) {
 			closeAllNavMenus();
 			closeAllOptionChoosers();
@@ -107,6 +110,7 @@ function addGlobalEventListeners() {
 		closeAllOptionChoosers();
 		closeAllInfoBubbles();
 	});
+	// @ts-ignore
 	window.getShipDate = getShipDate;
 	// }
 }
@@ -114,7 +118,7 @@ function addGlobalEventListeners() {
 /**
  * An epoch date number that looks nice
  * @param {Number} dayOffset - how many days to add to the result
- * @returns - nice number for the day a version was shipped
+ * @returns {Number} - nice number for the day a version was shipped
  */
 export function getShipDate(dayOffset = 0) {
 	const shipDate = new Date();
@@ -151,10 +155,6 @@ export function getCurrentProject() {
  */
 export function getCurrentProjectEditor() {
 	const app = getGlyphrStudioApp();
-	if (!app.selectedProjectEditor) {
-		if (!app.projectEditors[0]) app.projectEditors[0] = new ProjectEditor();
-		app.selectedProjectEditor = app.projectEditors[0];
-	}
 	return app.selectedProjectEditor;
 }
 
@@ -174,7 +174,6 @@ export function setCurrentProjectEditor(newEditor) {
 export function getProjectEditorImportTarget() {
 	// log(`getProjectEditorImportTarget`, 'start');
 	const app = getGlyphrStudioApp();
-	if (!app.editorImportTarget) app.editorImportTarget = getCurrentProjectEditor();
 	// log(`getProjectEditorImportTarget`, 'end');
 	return app.editorImportTarget;
 }
@@ -196,15 +195,14 @@ export function addProjectEditorAndSetAsImportTarget() {
 // Fancy Logging
 // --------------------------------------------------------------
 
+let colors = {};
+let depth = 0;
 /**
  * Wrapper for console.log that does some extra fancy stuff, and
  * also adheres to a global switch in settings
  * @param {String} message - message to show in the console
- * @param {Boolean} type - 'start' or 'end'
+ * @param {String} type - 'start' or 'end'
  */
-
-let colors = {};
-let depth = 0;
 export function log(message, type) {
 	let dev = GSApp.settings.dev;
 	// if (!dev.mode) return;

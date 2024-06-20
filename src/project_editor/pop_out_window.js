@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { getCurrentProjectEditor } from '../app/main';
 import colorStyle from '../common/colors.css?inline';
 import { addAsChildren, makeElement } from '../common/dom';
@@ -116,7 +117,7 @@ export function updatePopOutWindowContent() {
 	popWrapper.appendChild(footer);
 
 	// Update buttons
-	const popButton = document.getElementById('editor-page__tool__open-live-preview-pop-out');
+	const popButton = document.querySelector('#editor-page__tool__open-live-preview-pop-out');
 	if (popButton) {
 		popButton.innerHTML = makeToolButtonSVG({
 			name: 'closeLivePreview',
@@ -145,7 +146,7 @@ export function closePopOutWindow(event) {
 	window.removeEventListener('beforeunload', closePopOutWindow);
 
 	// Update buttons
-	const popButton = document.getElementById('editor-page__tool__open-live-preview-pop-out');
+	const popButton = document.querySelector('#editor-page__tool__open-live-preview-pop-out');
 	if (popButton) {
 		popButton.innerHTML = makeToolButtonSVG({
 			name: 'openLivePreview',
