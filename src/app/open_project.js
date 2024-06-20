@@ -320,12 +320,21 @@ export function makeOpenProjectTabs() {
 	return tabWrapper;
 }
 
+/**
+ * Shows an OS File Picker, then returns the selected files
+ * to a provided callback function.
+ * @param {Function} callback - what to do with the files
+ * @param {Object} pickerOptions - OS File Picker Options Object
+ */
 export async function getFilesFromFilePicker(callback, pickerOptions = {}) {
+	/** @ts-ignore */
 	if (window.showOpenFilePicker) {
+		/** @ts-ignore */
 		const files = await window.showOpenFilePicker(pickerOptions);
 		callback(files);
 	} else {
 		// showError(`Can't open OS File Picker. Try dragging and dropping a file instead.`);
+		/** @type {any} */
 		const fallbackFileChooser = makeElement({ tag: 'input', attributes: { type: 'file' } });
 		fallbackFileChooser.addEventListener('change', (event) => {
 			// log(fallbackFileChooser.files);
@@ -381,6 +390,10 @@ async function handleOpenProjectPageFileInput(files) {
 	// log('handleOpenProjectPageFileInput', 'end');
 }
 
+/**
+ * What to do after a file has been validated
+ * @param {Object} validationResult - validation object
+ */
 function postValidationCallback(validationResult) {
 	// log(`postValidationCallback`, 'start');
 	if (isSecondProject) addProjectEditorAndSetAsImportTarget();
@@ -405,6 +418,11 @@ function postValidationCallback(validationResult) {
 	// log(`postValidationCallback`, 'end');
 }
 
+/**
+ * Do all the stuff necessary to import a text file and
+ * get the UI to the right page.
+ * @param {GlyphrStudioProject | Object} glyphrStudioProjectFile
+ */
 export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	// log(`importProjectDataAndNavigate`, 'start');
 	closeEveryTypeOfDialog();
@@ -429,6 +447,11 @@ export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	// log(`importProjectDataAndNavigate`, 'end');
 }
 
+/**
+ * Finds and loads a project by ID from local storage
+ * @param {String} projectID - internal Glyphr Studio Project ID
+ * @returns nothing
+ */
 function loadProjectFromAutoSave(projectID) {
 	const saves = getGlyphrStudioApp().getLocalStorage().autoSaves;
 	for (let id in saves) {
@@ -439,6 +462,7 @@ function loadProjectFromAutoSave(projectID) {
 		}
 	}
 }
+
 /**
  * Handle Message event
  * @param {Object} event - event

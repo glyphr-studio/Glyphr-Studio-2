@@ -123,13 +123,18 @@ function createOptionsObject() {
 	// log('createOptionsObject', 'end');
 }
 
+/**
+ * Using a combination of a provided item's Session State,
+ * and the project setting for exporting empty items,
+ * figures out if this item should be exported or not.
+ * @param {Glyph | Object} item - item to check
+ * @returns {Boolean}
+ */
 export function shouldExportItem(item) {
 	if (item.sessionState === 'new') {
 		return !!getCurrentProject().settings.app.exportUneditedItems;
 	}
-
 	if (item) return true;
-
 	return false;
 }
 

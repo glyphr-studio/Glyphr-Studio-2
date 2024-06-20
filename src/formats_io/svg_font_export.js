@@ -111,6 +111,7 @@ function ioSVG_makeFontFace() {
 	// log('ioSVG_makeFontFace', 'end');
 	return con;
 }
+
 /**
  * Calculate the overall bounds given every glyph in this font
  * @returns {Object} - font maxes
