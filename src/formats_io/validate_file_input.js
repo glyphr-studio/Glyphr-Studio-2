@@ -7,11 +7,11 @@ import { getFirstTagInstance } from './svg_font_import.js';
  * Build the result
  */
 const validationResult = {
-	fileName: false,
-	fileSuffix: false,
-	fileType: false,
+	fileName: '',
+	fileSuffix: '',
+	fileType: '',
 	fileHandle: false,
-	errorMessage: false,
+	errorMessage: '',
 	content: false,
 };
 
@@ -29,13 +29,14 @@ let postValidationCallback;
  *  - SVG Font (.svg)
  *  - SVG (.svg)
  * @param {*} fileInput - Any input from the user, hopefully a File
- * @returns {Object} - processed stuff to use
+ * @returns {Promise<any>} - processed stuff to use
  */
 export async function validateSingleFileInput(fileInput, callback) {
 	// log(`validateSingleFileInput`, 'start');
 	postValidationCallback = callback;
 
 	let file;
+	// @ts-ignore
 	if (window.showOpenFilePicker && window.showSaveFilePicker) {
 		validationResult.fileHandle = fileInput;
 		file = await fileInput.getFile();
@@ -93,7 +94,7 @@ export async function validateSingleFileInput(fileInput, callback) {
 
 /**
  * Validate the file as OTF, TTF, or WOFF
- * @returns Validated data object
+ * @returns {Object} - Validated data object
  */
 function readerValidateFont() {
 	// log(`readerValidateFont`, 'start');
@@ -112,6 +113,7 @@ function readerValidateFont() {
 	}
 
 	if (font) {
+		// @ts-ignore
 		if (!font?.glyphs?.length) {
 			return failWithError('Font file does not have any glyph data. [FF1]');
 		} else {
@@ -125,7 +127,7 @@ function readerValidateFont() {
 
 /**
  * Validate file content as SVG
- * @returns Validated data object
+ * @returns {Object} - Validated data object
  */
 function readerValidateSVG() {
 	// log(`readerValidateSVG`, 'start');
@@ -162,7 +164,7 @@ function readerValidateSVG() {
 /**
  * Validate file content as TXT File
  * This is (hopefully) a Glyphr Studio Project File
- * @returns Validated data object
+ * @returns {Object} - Validated data object
  */
 function readerValidateTXTandGS2() {
 	// log(`readerValidateTXTandGS2`, 'start');
@@ -252,6 +254,11 @@ export function tryToGetProjectVersion(projectData) {
 	return version;
 }
 
+/**
+ * finalizes validation in an error-like way
+ * @param {String} message - description of the error
+ * @returns {false} - because it's an error
+ */
 function failWithError(message) {
 	validationResult.errorMessage = message;
 	// console.warn(message.replace(/[\t\n\r]/gm, ' '));
@@ -263,8 +270,8 @@ function failWithError(message) {
 /**
  * Tests a semantic version against a threshold
  * @param {Object} test - semVer object to test
- * @param {Object or Array} threshold - semVer as a threshold
- * @returns {Boolean}
+ * @param {Object | Array} threshold - semVer as a threshold
+ * @returns {String}
  */
 export function isSemVerLessThan(test, threshold) {
 	// log(`isSemVerLessThan`, 'start');
@@ -277,7 +284,7 @@ export function isSemVerLessThan(test, threshold) {
 		};
 	}
 
-	let result = false;
+	let result = '';
 	if (test.major < threshold.major) result = 'major';
 	else if (test.major === threshold.major) {
 		if (test.minor < threshold.minor) result = 'minor';
@@ -292,6 +299,11 @@ export function isSemVerLessThan(test, threshold) {
 	return result;
 }
 
+/**
+ * Turns a SemVer string into an object
+ * @param {String} versionString - string to parse
+ * @returns {Object}
+ */
 export function parseSemVer(versionString) {
 	// log(`parseSemVer`, 'start');
 	// log(`versionString: ${versionString}`);
@@ -303,19 +315,23 @@ export function parseSemVer(versionString) {
 	if (versions.length !== 3) return false;
 
 	const result = {
-		preRelease: false,
 		major: parseInt(versions[0]),
 		minor: parseInt(versions[1]),
 		patch: parseInt(versions[2]),
 	};
 
-	if (prePostDash[1]) result.preRelease = prePostDash[1];
+	if (prePostDash[1]) result.preRelease = prePostDash[1] || false;
 	// log(`Result:`);
 	// log(json(result));
 	// log(`parseSemVer`, 'end');
 	return result;
 }
 
+/**
+ * Turns a SemVer object into a string
+ * @param {Object} versionObject - object with major, minor, patch, and optionally preRelease info
+ * @returns {String}
+ */
 export function makeSemVerString(versionObject) {
 	const major = versionObject?.major || '0';
 	const minor = versionObject?.minor || '0';

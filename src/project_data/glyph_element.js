@@ -4,9 +4,13 @@ import { clone, json } from '../common/functions.js';
  * Base for all Glyph Elements
  */
 export class GlyphElement {
-	/** Yay! */
 	constructor() {
 		// this.__ID = makeRandomID();
+		/**
+		 * @type {Object} this.parent
+		 */
+		this.parent;
+		this.id = '';
 	}
 
 	/**
@@ -34,9 +38,9 @@ export class GlyphElement {
 		// log(`~CHANGED`, 'end');
 	}
 
-	get ident() {
-		return this.__ID || '';
-	}
+	// get ident() {
+	// 	return this.__ID || '';
+	// }
 
 	/**
 	 * Find out what type of Element this is
@@ -83,8 +87,8 @@ export class GlyphElement {
 	 * @param {Object} cache
 	 * @returns {Object}
 	 */
-	set cache(cache = {}) {
-		this._cache = cache;
+	set cache(cache) {
+		this._cache = cache || {};
 	}
 
 	/**
@@ -109,7 +113,8 @@ export class GlyphElement {
 	 * @returns {Object}
 	 */
 	clone() {
-		return new this.constructor(this.save(true));
+		// return new this.constructor(this.save(true));
+		return this.save(true);
 	}
 
 	/**
@@ -124,7 +129,7 @@ export class GlyphElement {
 	/**
 	 * Create a nicely-formatted string for this object
 	 * @param {Number} level - how far down we are
-	 * @param {Number} num - increment designator for arrays
+	 * @param {Number | Boolean} num - increment designator for arrays
 	 * @returns {String}
 	 */
 	print(level = 0, num = false) {
@@ -180,26 +185,23 @@ export class GlyphElement {
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to return a boolean.
 	 * By default, properties are all unlocked.
-	 * @param {String} propertyName - property to check if locked
 	 * @returns {Boolean}
 	 */
-	isLocked() {
-		return false;
-	}
+	// isLocked() {
+	// 	return false;
+	// }
 
 	/**
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to lock properties.
-	 * @param {String} propertyName - property to lock
 	 */
-	lock() {}
+	// lock() {}
 
 	/**
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to lock properties.
-	 * @param {String} propertyName - property to unlock
 	 */
-	unlock() {}
+	// unlock() {}
 }
 
 /**

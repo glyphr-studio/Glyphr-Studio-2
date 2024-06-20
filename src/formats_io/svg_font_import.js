@@ -22,6 +22,14 @@ import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 let glyphTags = [];
 let kernTags = [];
 
+/**
+ * Takes SVG code representing a SVG Font, and imports all it's
+ * data into a Glyphr Studio Project. Also updates the import
+ * progress UI.
+ * @param {Object} font - Opentype.js font object
+ * @param {Boolean} testing - is this a vitest test?
+ * @returns {Promise}
+ */
 export async function ioSVG_importSVGfont(font, testing = false) {
 	// log('ioSVG_importSVGfont', 'start');
 
@@ -72,7 +80,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 			}
 			// log(`attributes.unicode: |${attributes.unicode}| parsed as ${uni}`);
 
-			if (uni === false || uni === '0x0') {
+			if (uni[0] === '0x0') {
 				// Check for .notdef
 				// log('!!! Skipping '+glyphName+' NO UNICODE !!!');
 				glyphTags.splice(charCounter, 1);
@@ -92,26 +100,30 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 					// It's a GLYPH
 					await updateSVGImportProgressIndicator('character', charCounter);
 					// log(`Detected Glyph`);
-					uni = uni[0];
-					project.incrementRangeCountFor(uni);
-					newGlyph.id = `glyph-${uni}`;
+					const single = uni[0];
+					project.incrementRangeCountFor(single);
+					newGlyph.id = `glyph-${single}`;
 					// log(newGlyph);
-					finalGlyphs[`glyph-${uni}`] = newGlyph;
-					if (getUnicodeName(uni) === '[name not found]') {
+					finalGlyphs[`glyph-${single}`] = newGlyph;
+					if (getUnicodeName(single) === '[name not found]') {
 						project.settings.app.showNonCharPoints = true;
 					}
 				} else {
 					// It's a LIGATURE
 					await updateSVGImportProgressIndicator('ligature', charCounter);
 					// log(`Detected Ligature`);
-					uni = uni.join('');
-					// log(`uni: ${uni}`);
-					const chars = hexesToChars(uni);
+					const joined = uni.join('');
+					// log(`joined: ${joined}`);
+					const chars = hexesToChars(joined);
 					// log(`chars: ${chars}`);
-					const newID = makeLigatureID(chars);
-					newGlyph.id = newID;
-					newGlyph.gsub = hexesToHexArray(uni);
-					finalLigatures[newID] = newGlyph;
+					if (chars) {
+						const newID = makeLigatureID(chars);
+						if (newID) {
+							newGlyph.id = newID;
+							newGlyph.gsub = hexesToHexArray(joined);
+							finalLigatures[newID] = newGlyph;
+						}
+					}
 				}
 			}
 			// Done with loop, advance charCounter
@@ -135,7 +147,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 		const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG, false);
 		const advanceWidth = parseInt(missingGlyphAttributes['horiz-adv-x']);
 		newGlyph.advanceWidth = advanceWidth;
-		project.incrementRangeCountFor('0x0');
+		project.incrementRangeCountFor(0);
 		newGlyph.id = `glyph-0x0`;
 		finalGlyphs[`glyph-0x0`] = newGlyph;
 		// log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
@@ -270,8 +282,8 @@ async function updateSVGImportProgressIndicator(type, counter) {
 /**
  * Recursively looks through data and returns any data that matches
  * a specified list of tag names.
- * @param {Object} obj - object to look through
- * @param {Array or String} grabTags - list of tags to collect
+ * @param {Object} obj - object to look through (in XMLtoJSON format)
+ * @param {Array | String} grabTags - list of tags to collect
  * @returns {Array} - collection of objects representing tags
  */
 function getTagsByName(obj, grabTags) {
@@ -297,6 +309,13 @@ function getTagsByName(obj, grabTags) {
 	return result;
 }
 
+/**
+ * Returns the first instance of a given tag name
+ * from a XMLtoJSON object.
+ * @param {Object} obj - object to look through (in XMLtoJSON format)
+ * @param {String} tagname - tag to look for
+ * @returns {Object}
+ */
 export function getFirstTagInstance(obj, tagname) {
 	// log('getFirstTagInstance', 'start');
 	// log('finding ' + tagname + ' in:');
@@ -319,21 +338,30 @@ export function getFirstTagInstance(obj, tagname) {
 	}
 }
 
+/**
+ * Given names from a kern attribute value, go find the actual
+ * char from the font and collect all applicable Unicode IDs.
+ * @param {String} names - list of comma separated kern members
+ * @param {Array} chars - list of chars to check
+ * @param {Array} arr - result array to add to
+ * @param {Number =} limit - max char to check
+ * @returns {Array}
+ */
 function getKernMembersByName(names, chars, arr, limit) {
 	limit = limit || 0xffff;
 	let uni;
 	if (names) {
-		names = names.split(',');
+		const namesArr = names.split(',');
 
 		// Check all the glyph names
-		for (let n = 0; n < names.length; n++) {
+		for (let n = 0; n < namesArr.length; n++) {
 			// Check all the chars
 			for (let c = 0; c < chars.length; c++) {
 				if (chars[c].attributes.unicode) {
 					// Push the match
-					if (names[n] === chars[c].attributes['glyph-name']) {
+					if (namesArr[n] === chars[c].attributes['glyph-name']) {
 						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
-						if (1 * uni < limit) arr = arr.concat(uni);
+						if (1 * uni[0] < limit) arr = arr.concat(uni);
 					}
 				}
 			}
@@ -343,21 +371,30 @@ function getKernMembersByName(names, chars, arr, limit) {
 	return arr;
 }
 
+/**
+ * Given unicode ids from a kern attribute value, go find the actual
+ * char from the font and collect all applicable Unicode IDs.
+ * @param {String} ids - list of comma separated unicode ids
+ * @param {Array} chars - list of chars to check
+ * @param {Array} arr - result array to add to
+ * @param {Number =} limit - max char to check
+ * @returns {Array}
+ */
 function getKernMembersByUnicodeID(ids, chars, arr, limit) {
 	limit = limit || 0xffff;
 	let uni;
 	if (ids) {
-		ids = ids.split(',');
+		const idArr = ids.split(',');
 
 		// Check all the IDs
-		for (let i = 0; i < ids.length; i++) {
+		for (let i = 0; i < idArr.length; i++) {
 			// Check all the chars
 			for (let c = 0; c < chars.length; c++) {
 				if (chars[c].attributes.unicode) {
 					// Push the match
-					if (ids[i] === chars[c].attributes.unicode) {
+					if (idArr[i] === chars[c].attributes.unicode) {
 						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
-						if (1 * uni < limit) arr = arr.concat(uni);
+						if (1 * uni[0] < limit) arr = arr.concat(uni);
 					}
 				}
 			}

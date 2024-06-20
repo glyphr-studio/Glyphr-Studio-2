@@ -10,6 +10,10 @@ import {
 	snapRadiansToDegrees,
 } from '../common/functions.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
+import { ControlPoint } from '../project_data/control_point.js';
+import { Maxes } from '../project_data/maxes.js';
+import { Path } from '../project_data/path.js';
+import { PathPoint } from '../project_data/path_point.js';
 import { cXsX, cYsY, sXcX, sYcY } from './edit_canvas.js';
 import { eventHandlerData } from './events.js';
 import { canResize } from './events_mouse.js';
@@ -31,6 +35,12 @@ let multiSelectThickness = 3;
 // Compute and Draw functions
 // --------------------------------------------------------------
 
+/**
+ * Gets the bounding box for the currently selected shape(s)
+ * and draws the bounding box for it (but no affordances).
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @returns nothing
+ */
 export function computeAndDrawBoundingBox(ctx) {
 	const editor = getCurrentProjectEditor();
 	let msShapes = editor.multiSelect.shapes;
@@ -40,6 +50,11 @@ export function computeAndDrawBoundingBox(ctx) {
 	drawBoundingBox(ctx, maxes, style.thickness, style.accent);
 }
 
+/**
+ * Draws the little circle handle affordance for rotating.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @returns nothing
+ */
 export function computeAndDrawRotationAffordance(ctx) {
 	// log(`computeAndDrawRotationAffordance`, 'start');
 	let style = computeSelectionStyle();
@@ -47,6 +62,11 @@ export function computeAndDrawRotationAffordance(ctx) {
 	// log(`computeAndDrawRotationAffordance`, 'end');
 }
 
+/**
+ * Draws the resize handle squares around the bounding box.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @returns nothing
+ */
 export function computeAndDrawBoundingBoxHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	let msShapes = editor.multiSelect.shapes;
@@ -56,6 +76,11 @@ export function computeAndDrawBoundingBoxHandles(ctx) {
 	drawBoundingBoxHandles(ctx, maxes, style.thickness, style.accent);
 }
 
+/**
+ * Chooses the right selection style based on the objects
+ * that are currently selected.
+ * @returns {Object} - with thickness and accent color
+ */
 function computeSelectionStyle() {
 	const editor = getCurrentProjectEditor();
 	let msShapes = editor.multiSelect.shapes;
@@ -76,6 +101,13 @@ function computeSelectionStyle() {
 // Bounding Box
 // --------------------------------------------------------------
 
+/**
+ * Draws a bounding box for selected stuff
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Object | Maxes} maxes - dimensions to draw
+ * @param {Number =} thickness - how thick the box line should be
+ * @param {String =} accent - color for the box
+ */
 export function drawBoundingBox(ctx, maxes, thickness, accent) {
 	// log(`drawBoundingBox`, 'start');
 	// log(`maxes.center.x: ${maxes.center.x}`);
@@ -89,12 +121,19 @@ export function drawBoundingBox(ctx, maxes, thickness, accent) {
 	let h = bb.topY - bb.bottomY;
 
 	ctx.fillStyle = 'transparent';
-	ctx.strokeStyle = accent;
-	ctx.lineWidth = thickness;
+	ctx.strokeStyle = accent || computeSelectionStyle().accent;
+	ctx.lineWidth = thickness || 1;
 	ctx.strokeRect(bb.leftX, bb.bottomY, w, h);
 	// log(`drawBoundingBox`, 'end');
 }
 
+/**
+ * Draws resize handle boxes around the bounding box
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Object | Maxes} maxes - dimensions to draw
+ * @param {Number} thickness - how thick the box line should be
+ * @param {String} accent - color for the box
+ */
 function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
 	// log(`drawBoundingBoxHandles`, 'start');
 	let bb = getBoundingBoxAndHandleDimensions(maxes, thickness);
@@ -144,6 +183,13 @@ function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
 	// log(`drawBoundingBoxHandles`, 'end');
 }
 
+/**
+ * Draws the rotation affordance, a short handle with a circle
+ * above the bounding box.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {String} accent - color for the handle
+ * @param {Number} thickness - how thick the line should be
+ */
 function drawRotationAffordance(ctx, accent = accentBlue, thickness = 1) {
 	// log(`drawRotationAffordance`, 'start');
 	// const editor = getCurrentProjectEditor();
@@ -224,6 +270,13 @@ function drawRotationAffordance(ctx, accent = accentBlue, thickness = 1) {
 	// log(`drawRotationAffordance`, 'end');
 }
 
+/**
+ * Hit / Hover detection for resize handles
+ * @param {Number} px - x location to check
+ * @param {Number} py - y location to check
+ * @param {Object | Maxes} maxes - location of the bounding box
+ * @returns {String | false} - letter representing the compass location of the hovered handle
+ */
 export function isOverBoundingBoxHandle(px, py, maxes) {
 	// log(`isOverBoundingBoxHandle`, 'start');
 	// log('\t px/py - ' + px + ' / ' + py);
@@ -236,7 +289,7 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	}
 
 	const editor = getCurrentProjectEditor();
-	let re = false;
+	let re = '';
 	let ps = canvasUIPointSize;
 	let bb = getBoundingBoxAndHandleDimensions(maxes);
 
@@ -312,10 +365,16 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	return re;
 }
 
-function getBoundingBoxAndHandleDimensions(maxes, thickness) {
+/**
+ * Does a bunch of math, given a bounding box, to calculate all the
+ * dimensions for each resize handle.
+ * @param {Object | Maxes} maxes - location of the bounding box
+ * @param {Number =} thickness - thickness of the bounding box
+ * @returns {Object} - container for a bunch of metrics for all of the resize handles
+ */
+function getBoundingBoxAndHandleDimensions(maxes, thickness = 1) {
 	const pt = canvasUIPointSize;
 	const hp = canvasUIPointSize / 2;
-	thickness = 1;
 	const pad = 1;
 
 	// Translation Fidelity - converting passed canvas values to saved value system
@@ -366,6 +425,12 @@ function getBoundingBoxAndHandleDimensions(maxes, thickness) {
 // --------------------------------------------------------------
 // Paths
 // --------------------------------------------------------------
+
+/**
+ * For the selected path, draw the outline in an accent color.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Object} view - view object (dx, dy, dz)
+ */
 export function drawSelectedPathOutline(ctx, view) {
 	// log(`drawSelectedPathOutline`, 'start');
 	const editor = getCurrentProjectEditor();
@@ -387,6 +452,13 @@ export function drawSelectedPathOutline(ctx, view) {
 	// log(`drawSelectedPathOutline`, 'end');
 }
 
+/**
+ * Special case draw the 'new basic path' - this is in the process
+ * of being created, but not really a path in the project just yet.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Path | Object} path - path to draw
+ * @param {Object} view - view object (dx, dy, dz)
+ */
 export function drawNewBasicPath(ctx, path, view) {
 	ctx.beginPath();
 	drawShape(path, ctx, view);
@@ -397,13 +469,20 @@ export function drawNewBasicPath(ctx, path, view) {
 	ctx.strokeStyle = accentBlue;
 	ctx.stroke();
 
-	drawBoundingBox(ctx, path.maxes, 1);
+	drawBoundingBox(ctx, path.maxes);
 }
 
 // --------------------------------------------------------------
 // Simple drawings
 // --------------------------------------------------------------
 
+/**
+ * Draws a line.
+ * Set stroke styles before this.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Object} p1 - x/y point
+ * @param {Object} p2 - x/y point
+ */
 function drawLine(ctx, p1, p2) {
 	ctx.beginPath();
 	ctx.moveTo(p1.x, p1.y);
@@ -412,11 +491,23 @@ function drawLine(ctx, p1, p2) {
 	ctx.stroke();
 }
 
+/**
+ * Draws a resize handle.
+ * Set stroke and fill styles before this.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Object} ul - x/y point for the upper left of the handle
+ */
 function drawSquareHandle(ctx, ul) {
 	ctx.fillRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
 	ctx.strokeRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
 }
 
+/**
+ * Draws a circle handle.
+ * Set stroke and fill styles before this.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Object} center - x/y point
+ */
 function drawCircleHandle(ctx, center) {
 	// log(`drawCircleHandle`, 'start');
 	// log(`center.x: ${center.x}`);
@@ -432,6 +523,12 @@ function drawCircleHandle(ctx, center) {
 // --------------------------------------------------------------
 // Paths and PathPoints
 // --------------------------------------------------------------
+
+/**
+ * Figures out how to draw path point handles for the currently
+ * selected path point(s) and draws them.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ */
 export function computeAndDrawPathPointHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
@@ -447,6 +544,11 @@ export function computeAndDrawPathPointHandles(ctx) {
 	});
 }
 
+/**
+ * For visual debugging, draws all path point handles
+ * for all points.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ */
 export function testDrawAllPathPointHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
@@ -468,6 +570,12 @@ export function testDrawAllPathPointHandles(ctx) {
 	});
 }
 
+/**
+ * Figures out how to draw all selected path points,
+ * and draws them.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Boolean =} drawAllPathPoints - for visual debugging
+ */
 export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 	const editor = getCurrentProjectEditor();
 	let msShapes = editor.multiSelect.shapes.members;
@@ -487,6 +595,12 @@ export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 	});
 }
 
+/**
+ * For adding a point to a path, draws a preview path point
+ * under where the mouse is hovering.
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {ControlPoint | Object} point - the 'p' control point
+ */
 export function drawPathPointHover(ctx, point) {
 	// log(`drawPathPointHover`, 'start');
 	// log(`\n⮟point⮟`);
@@ -539,7 +653,7 @@ export function drawPoint(point, ctx, isSelected) {
  * @param {PathPoint} point - point to draw
  * @param {Object} ctx - canvas context
  * @param {Boolean} isSelected - draw this as selected
- * @param {Point} next - next Point in the path sequence
+ * @param {Object} next - next Point in the path sequence
  */
 export function drawDirectionalityPoint(point, ctx, isSelected, next) {
 	// ctx.fillStyle = sel? 'white' : accent;
@@ -586,11 +700,11 @@ export function drawDirectionalityPoint(point, ctx, isSelected, next) {
 	ctx.beginPath();
 	ctx.moveTo(rotatedArrow[0][0] + sXcX(point.p.x), rotatedArrow[0][1] + sYcY(point.p.y));
 
-	for (const p of Object.keys(rotatedArrow)) {
-		if (p > 0) {
-			ctx.lineTo(rotatedArrow[p][0] + sXcX(point.p.x), rotatedArrow[p][1] + sYcY(point.p.y));
+	rotatedArrow.forEach((v, i) => {
+		if (i > 0) {
+			ctx.lineTo(rotatedArrow[i][0] + sXcX(point.p.x), rotatedArrow[i][1] + sYcY(point.p.y));
 		}
-	}
+	});
 
 	ctx.lineTo(rotatedArrow[0][0] + sXcX(point.p.x), rotatedArrow[0][1] + sYcY(point.p.y));
 	ctx.fill();
@@ -642,6 +756,12 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
 // Visual debugging
 // --------------------------------------------------------------
 
+/**
+ * Given a set of points, draws them to the canvas,
+ * used for visual debugging.
+ * @param {Array} xyPoints - collection of points
+ * @param {String =} color - what color to draw the points
+ */
 export function debugDrawPoints(xyPoints = [], color = 'rgb(200,50,60)') {
 	// log('debugDrawPoints', 'start');
 	// log(xyPoints);

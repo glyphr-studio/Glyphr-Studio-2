@@ -22,8 +22,7 @@ export function importGlyphrProjectFromText(importedProject) {
 	if (typeof importedProject === 'string') importedProject = JSON.parse(importedProject);
 	// log('passed:');
 	// log(importedProject);
-	if (!importedProject)
-		importedProject = new GlyphrStudioProject({}, 'importGlyphrProjectFromText - !importedProject');
+	if (!importedProject) importedProject = new GlyphrStudioProject({});
 
 	const version = tryToGetProjectVersion(importedProject);
 	// log(`version found: ${version.major}.${version.minor}.${version.patch}.${version.preRelease}`);
@@ -40,10 +39,7 @@ export function importGlyphrProjectFromText(importedProject) {
 	}
 
 	// Hydrate after all updates
-	const newProject = new GlyphrStudioProject(
-		importedProject,
-		'importGlyphrProjectFromText - hydrate'
-	);
+	const newProject = new GlyphrStudioProject(importedProject);
 
 	// Pull system guide visibility from project
 	const projectSystemGuides = newProject?.settings?.app?.guides?.systemGuides;
@@ -77,12 +73,13 @@ export function importGlyphrProjectFromText(importedProject) {
  * roll through updates to translate any old project file structure
  * to current project file structure.
  * Hopefully this is minimal.
- * @param {String} project - Old project object data
+ * @param {Object} oldProject - Old project object data
  * @returns {Object} - Latest Glyphr Studio v2 Project structure
  */
 function migrate_Project(oldProject) {
 	// log('migrate_Project', 'start');
-	const newProject = new GlyphrStudioProject({}, 'migrate_Project');
+
+	const newProject = new GlyphrStudioProject({});
 	const defaultLSB = oldProject.projectsettings.defaultlsb;
 	const defaultRSB = oldProject.projectsettings.defaultrsb;
 
@@ -101,10 +98,14 @@ function migrate_Project(oldProject) {
 	Object.keys(oldProject.ligatures).forEach((oldID) => {
 		const newID = migrate_ItemID(oldID);
 		const chars = hexesToChars(oldID);
-		let newGsub = chars.split('').map(charToHex);
-		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID, defaultLSB, defaultRSB);
-		newProject.ligatures[newID].objType = 'Ligature';
-		newProject.ligatures[newID].gsub = newGsub;
+
+		if (chars !== false) {
+			let newGsub = chars.split('').map(charToHex);
+			newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID, defaultLSB, defaultRSB);
+
+			newProject.ligatures[newID].objType = 'Ligature';
+			newProject.ligatures[newID].gsub = newGsub;
+		}
 	});
 
 	// Components
@@ -249,7 +250,7 @@ function migrate_Glyph(oldGlyph, newID, defaultLSB = 0, defaultRSB = 0) {
 			// Component Instance
 			// log(`import item as COMPONENT INSTANCE`);
 			// log(item);
-			newItem = new migrate_ComponentInstance(item);
+			newItem = migrate_ComponentInstance(item);
 			newGlyph.addOneShape(newItem);
 		}
 	});
@@ -340,43 +341,45 @@ function migrate_ComponentInstance(oldItem) {
 }
 
 function migrate_ItemID(oldID) {
-	log(`migrate_ItemID`, 'start');
-	log(`oldID: ${oldID}`);
+	// log(`migrate_ItemID`, 'start');
+	// log(`oldID: ${oldID}`);
 
-	let result = false;
+	let result = '';
 
 	// Component
 	if (oldID.startsWith('com')) {
-		log(`Detected as Component`);
+		// log(`Detected as Component`);
 		result = `comp-${oldID.split('com')[1]}`;
 	}
 
 	// Kern
 	if (oldID.startsWith('kern')) {
-		log(`Detected as Kern`);
+		// log(`Detected as Kern`);
 		result = `kern-${oldID.split('kern')[1]}`;
 	}
 
 	if (oldID.startsWith('id')) {
-		log(`Detected as Kern (old id format)`);
+		// log(`Detected as Kern (old id format)`);
 		result = `kern-${oldID.split('id')[1]}`;
 	}
 
 	const chars = hexesToChars(oldID);
 	// Ligature
-	if (chars.length > 1) {
-		log(`Detected as Ligature`);
-		result = makeLigatureID(chars);
+
+	if (chars !== false && chars.length > 1) {
+		// log(`Detected as Ligature`);
+		result = makeLigatureID(chars) || '';
 	}
 
 	// Glyph
-	if (chars.length === 1) {
-		log(`Detected as Glyph`);
+
+	if (chars !== false && chars.length === 1) {
+		// log(`Detected as Glyph`);
 		result = `glyph-${validateAsHex(oldID)}`;
-		log(`oldID: ${oldID} \t result: ${result}`);
+		// log(`oldID: ${oldID} \t result: ${result}`);
 	}
 
-	log(`result: ${result}`);
-	log(`migrate_ItemID`, 'end');
+	// log(`result: ${result}`);
+	// log(`migrate_ItemID`, 'end');
 	return result;
 }

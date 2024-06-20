@@ -9,7 +9,8 @@ import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js
 
 /**
  * Page > About
- * Information about Glyphr Studio
+ * Information about Glyphr Studio.
+ * @returns {Element} - page content
  */
 export function makePage_About() {
 	const content = makeElement({
@@ -49,6 +50,10 @@ export function makePage_About() {
 	return content;
 }
 
+/**
+ * Makes content for license info
+ * @returns {Element}
+ */
 function makeLicenseInfo() {
 	const content = makeElement({
 		innerHTML: `
@@ -142,8 +147,13 @@ function makeLicenseInfo() {
 	return content;
 }
 
+/**
+ * Makes content for version info
+ * @returns {Element}
+ */
 function makeVersionInfo() {
 	const editor = getCurrentProjectEditor();
+	// @ts-ignore
 	const app = window._GlyphrStudioApp;
 	const content = makeElement({
 		innerHTML: `
@@ -175,6 +185,11 @@ function makeVersionInfo() {
 	return content;
 }
 
+/**
+ * Makes content for a release note
+ * @param {Boolean} showLogo - put a big logo on it
+ * @returns {Element}
+ */
 export function makeReleaseNote(showLogo = false) {
 	let gsLogo = '';
 	if (showLogo) {
@@ -203,6 +218,10 @@ export function makeReleaseNote(showLogo = false) {
 	return content;
 }
 
+/**
+ * Makes content for contribution info in a card
+ * @returns {Element}
+ */
 export function makeContributeCard() {
 	const content = makeElement({
 		className: 'panel__card full-width more-padding',
@@ -211,6 +230,10 @@ export function makeContributeCard() {
 	return content;
 }
 
+/**
+ * Makes content for contribution info
+ * @returns {Element}
+ */
 export function makeContributeContent() {
 	return makeElement({
 		tag: 'div',
@@ -247,6 +270,10 @@ export function makeContributeContent() {
 	});
 }
 
+/**
+ * Makes content for contact info
+ * @returns {Element}
+ */
 function makeContactInfo() {
 	const content = makeElement({
 		innerHTML: `

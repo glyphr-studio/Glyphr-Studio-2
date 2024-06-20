@@ -8,8 +8,8 @@ import { makeContributeContent, makeReleaseNote } from './about.js';
 
 /**
  * Page > Overview
- * The first page you land on, with project
- * and glyph information
+ * The first page you land on, with project and glyph information.
+ * @returns {Element} - page content
  */
 export function makePage_Overview() {
 	const content = makeElement({
@@ -47,7 +47,7 @@ export function makePage_Overview() {
 
 		editor.history.addState(`Navigated to ${editor.project.getItemName(itemID, true)}`);
 		// log(`Overview page - Glyph Chooser tile click handler`, 'end');
-	}, false);
+	});
 
 	const project = getCurrentProject();
 	const rightArea = content.querySelector('.content-page__right-area');

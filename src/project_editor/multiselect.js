@@ -3,8 +3,10 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
+import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
+import { PathPoint } from '../project_data/path_point.js';
 // import { combinePaths } from './boolean_combine.js';
 import { combinePaths } from './boolean_combine.js';
 import { makeGlyphWithResolvedLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
@@ -65,6 +67,10 @@ class MultiSelect {
 		// log('MultiSelect.select', 'end');
 	}
 
+	clear() {
+		// overwritten by extended classes
+	}
+
 	add(obj) {
 		// log(`MultiSelect.add`, 'start');
 		// log(obj);
@@ -82,13 +88,6 @@ class MultiSelect {
 
 		// log(this.members);
 		// log(`MultiSelect.add`, 'end');
-	}
-
-	clear() {
-		this.members = [];
-		if (this.virtualGlyph) this.virtualGlyph.ratioLock = false;
-		this.singleHandle = false;
-		this.publishChanges();
 	}
 
 	remove(obj) {
@@ -119,6 +118,10 @@ class MultiSelect {
 		// log(`MultiSelectPoints.toggle`, 'end');
 	}
 
+	publishChanges() {
+		// overwritten by extended classes
+	}
+
 	get type() {
 		if (this.members.length === 0) return false;
 		else if (this.members.length === 1) return this.members[0].objType;
@@ -137,8 +140,11 @@ class MultiSelect {
 		return this._members || [];
 	}
 
+	/**
+	 * @returns {any}
+	 */
 	get singleton() {
-		let result = false;
+		let result;
 		// log(`MultiSelect GET singleton`, 'start');
 		if (this.members.length === 1) {
 			result = this.members[0];
@@ -146,7 +152,7 @@ class MultiSelect {
 		}
 
 		// log(`MultiSelect GET singleton`, 'end');
-		return result;
+		return result || false;
 	}
 }
 
@@ -190,6 +196,13 @@ export class MultiSelectPoints extends MultiSelect {
 		const editor = getCurrentProjectEditor();
 		editor.publish(topic, this.members);
 		// log(`MultiSelectPoints.publishChanges`, 'end');
+	}
+
+	clear() {
+		this.members = [];
+		// if (this.virtualGlyph) this.virtualGlyph.ratioLock = false;
+		this.singleHandle = false;
+		this.publishChanges();
 	}
 
 	changed() {
@@ -300,8 +313,8 @@ export class MultiSelectPoints extends MultiSelect {
 		// log(`dx, dy: ${dx}, ${dy}`);
 		// log(`this.singleHandle: ${this.singleHandle}`);
 
-		if (this.singleHandle) {
-			this.singleton.updatePathPointPosition(this.singleHandle, dx, dy);
+		if (this.singleHandle && this.singleton) {
+			this.members[0].updatePathPointPosition(this.singleHandle, dx, dy);
 		} else {
 			for (let m = 0; m < this.members.length; m++) {
 				this.members[m].updatePathPointPosition('p', dx, dy);
@@ -326,6 +339,9 @@ export class MultiSelectShapes extends MultiSelect {
 		});
 	}
 
+	/**
+	 * @returns {Glyph}
+	 */
 	get virtualGlyph() {
 		// log(`MultiSelectShapes GET virtualGlyph`, 'start');
 		// needs to be _shapes, otherwise Glyph.shapes setter
@@ -350,6 +366,13 @@ export class MultiSelectShapes extends MultiSelect {
 	publishChanges(topic = 'whichShapeIsSelected') {
 		const editor = getCurrentProjectEditor();
 		editor.publish(topic, this.members);
+	}
+
+	clear() {
+		this.members = [];
+		this.virtualGlyph.ratioLock = false;
+		this.singleHandle = false;
+		this.publishChanges();
 	}
 
 	changed() {
@@ -536,6 +559,7 @@ export class MultiSelectShapes extends MultiSelect {
 		// log('MultiSelectedShapes.isOverBoundingBoxHandle', 'start');
 		// log('passed x/y: ' + px + '/' + py);
 
+		/** @type {String | false} */
 		let re = false;
 		if (this.members.length === 0) {
 			// log('no members, returning false');

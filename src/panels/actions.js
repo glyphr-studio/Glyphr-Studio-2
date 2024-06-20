@@ -309,7 +309,7 @@ export function getActionData(name) {
 						name += ' ' + shape.name;
 					});
 					const addedComponent = addComponent(newComponent);
-					addLinkToUsedIn(addedComponent, editor.selectedItemID);
+					if (editor.selectedItemID) addLinkToUsedIn(addedComponent, editor.selectedItemID);
 					const newShape = editor.selectedItem.addOneShape(
 						new ComponentInstance({
 							link: addedComponent.id,
@@ -378,7 +378,7 @@ export function getActionData(name) {
 							newShapes = newShapes.concat(
 								copyShapesFromTo(shape.transformedGlyph, editor.selectedItem)
 							);
-							removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
+							if (editor.selectedItemID) removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
 						}
 					});
 					editor.multiSelect.shapes.deleteShapes();
@@ -782,6 +782,7 @@ export function makeActionsArea_ComponentInstance(test = false) {
 	// Path align actions
 	if (selectedPaths.length > 1 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
+		// @ts-ignore
 		alignActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
 		addChildActions(alignActions, getActionData('alignActions'));
 	}
@@ -952,7 +953,7 @@ export function clipboardPaste() {
 			}
 
 			if (offsetPaths) {
-				newShape.updateShapePosition(clipboard.dx, clipboard.dy, true);
+				newShape.updateShapePosition(clipboard.dx, clipboard.dy);
 			}
 
 			newName = newShape.name;
@@ -976,8 +977,9 @@ export function clipboardPaste() {
 			}
 			newShape.name = newName + newSuffix;
 
-			if (newShape.objType === 'ComponentInstance') {
-				addLinkToUsedIn(editor.project.getItem(newShape.link), editor.selectedItemID);
+			if (newShape.objType === 'ComponentInstance' && newShape?.link && editor.selectedItemID) {
+				let newShapeLink = '' + newShape.link;
+				addLinkToUsedIn(editor.project.getItem(newShapeLink), editor.selectedItemID);
 			}
 
 			newShapes.push(newShape);
@@ -1018,8 +1020,8 @@ export function clipboardClear() {
 
 function updateClipboardActionIcons(numberOfClipboardItems = 0) {
 	const editor = getCurrentProjectEditor();
-	let pasteButton = document.getElementById('actionButtonPaste');
-	let clearButton = document.getElementById('actionButtonClearClipboard');
+	let pasteButton = document.querySelector('#actionButtonPaste');
+	let clearButton = document.querySelector('#actionButtonClearClipboard');
 
 	if (editor.clipboard) {
 		pasteButton.removeAttribute('disabled');
@@ -1057,7 +1059,7 @@ function showDialogChooseOtherItem(type) {
 	let content = makeElement({
 		innerHTML: `<h2>Choose another glyph</h2>`,
 	});
-	let onClick = false;
+	let onClick;
 
 	if (type === 'copyPaths') {
 		content.innerHTML += `All the paths from the glyph you select will be copied and pasted into this glyph.<br><br>`;
@@ -1214,15 +1216,25 @@ function showDialogChooseItemFromOtherProject() {
 	let onClick = (itemID) => {
 		const otherItem = otherEditor.project.getItem(itemID);
 		const thisItem = thisEditor.selectedItem;
-		let emRatio = thisEditor.project.settings.font.upm / otherEditor.project.settings.font.upm;
+		const emRatio = thisEditor.project.settings.font.upm / otherEditor.project.settings.font.upm;
 		// log(`emRatio: ${emRatio}`);
-		let updateAdvanceWidth = document.getElementById('checkbox-advance-width').checked;
+
+		/**@type {HTMLInputElement} */
+		const updateAdvanceWidthBox = document.querySelector('#checkbox-advance-width');
+		const updateAdvanceWidth = updateAdvanceWidthBox.checked;
 		// log(`updateAdvanceWidth: ${updateAdvanceWidth}`);
-		let scaleItems = document.getElementById('checkbox-scale')?.checked;
+
+		/**@type {HTMLInputElement} */
+		const scaleItemsBox = document.querySelector('#checkbox-scale');
+		const scaleItems = scaleItemsBox.checked;
 		// log(`scaleItems: ${scaleItems}`);
-		let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
+
+		/**@type {HTMLInputElement} */
+		const reverseWindingsBox = document.querySelector('#checkbox-reverse-windings');
+		const reverseWindings = reverseWindingsBox.checked;
 		// log(`reverseWindings: ${reverseWindings}`);
-		let oldRSB = thisItem.rightSideBearing;
+
+		const oldRSB = thisItem.rightSideBearing;
 		const newShapes = copyShapesFromTo(otherItem, thisItem, false);
 		const msShapes = thisEditor.multiSelect.shapes;
 		msShapes.clear();

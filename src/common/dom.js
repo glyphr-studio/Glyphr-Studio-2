@@ -1,35 +1,41 @@
 /**
  * Nicer centralized way of creating DOM elements
- * @param {String} tag - HTML element to create
- * @param {String} className - class to add to the element
- * @param {String} id - id to add to the element
- * @param {String} content - If this is a text node, what text to add
- * @param {Boolean} tabIndex - make this elem a tab stop
- * @param {Object} attributes - key/value pairs for attr/values
- * @param {String} innerHTML - text HTML to add as the content of this element
+ * @param {Object} args
+ * @param {String=} args.tag - HTML element to create
+ * @param {String=} args.className - class to add to the element
+ * @param {String=} args.id - id to add to the element
+ * @param {String=} args.content - If this is a text node, what text to add
+ * @param {String=} args.title - title attribute for hover tooltips
+ * @param {Boolean=} args.tabIndex - make this elem a tab stop
+ * @param {Object=} args.attributes - key/value pairs for attr/values
+ * @param {Object=} args.style - key/value pairs of CSS
+ * @param {String=} args.innerHTML - text HTML to add as the content of this element
+ * @param {Function=} args.onClick - click handler
+ * @param {Document=} args.doc - which document this control is in
  * @returns {HTMLElement}
  */
 export function makeElement({
 	tag = 'span',
-	className,
-	id,
-	content,
-	title,
-	elementRoot,
+	className = '',
+	id = '',
+	content = '',
+	title = '',
 	tabIndex = false,
 	attributes = {},
 	style = false,
-	innerHTML = false,
-	onClick = false,
-	doc = document,
+	innerHTML = '',
+	onClick,
+	doc,
 } = {}) {
 	// log(`makeElement - ${tag}`, 'start');
 	// log(`tag: ${tag}`);
-	if (!doc || !doc.createElement) {
+
+	if (!doc) doc = document;
+	if (!doc.createElement) {
 		console.warn('no document or createElement');
 		console.warn(doc);
 		// log(`makeElement - ${tag}`, 'end');
-		return '';
+		return new HTMLElement();
 	}
 
 	const newElement = doc.createElement(tag);
@@ -39,13 +45,10 @@ export function makeElement({
 	if (className) newElement.setAttribute('class', className);
 
 	if (id) newElement.setAttribute('id', id);
-	else if (window.getUniqueControlID) newElement.setAttribute('id', document.getUniqueControlID());
 
 	if (content) newElement.innerHTML = content;
 
 	if (title) newElement.setAttribute('title', title);
-
-	if (elementRoot) newElement.elementRoot = elementRoot;
 
 	if (tabIndex === true) newElement.setAttribute('tabIndex', '0');
 	else if (tabIndex !== false) newElement.setAttribute('tabIndex', tabIndex);
@@ -66,7 +69,7 @@ export function makeElement({
 	}
 
 	if (onClick) {
-		newElement.addEventListener('click', onClick);
+		newElement.addEventListener('click', () => onClick());
 	}
 
 	// log(`makeElement - ${tag}`, 'end');
@@ -79,11 +82,8 @@ export function makeElement({
  * without regard for who the parent will be.
  * This function takes a parent and recursively adds collections of
  * children that are contained in arrays.
- * @param {HTML node} parentNode - wrapper to add children to
- * @param {HTML node,
- * 				Array of HTML nodes,
- * 				or mixed Array of HTML nodes and arrays} childNodes -
- * 						child nodes to recursively add to the wrapper
+ * @param {HTMLElement | Element} parentNode - wrapper to add children to
+ * @param {HTMLElement | Element | Array} childNodes - child nodes to recursively add to the wrapper
  */
 export function addAsChildren(parentNode, childNodes = []) {
 	// log(`addAsChildren`, 'start');
@@ -104,10 +104,11 @@ export function addAsChildren(parentNode, childNodes = []) {
 /**
  * Takes a string and reads it as an HTML Node
  * @param {String} textHTML - string representation of HTML
- * @returns {HTMLElement}
+ * @returns {Element | null}
  */
-export function textToNode(textHTML) {
-	let result = makeElement({ innerHTML: textHTML });
+export function textToNode(textHTML = '') {
+	let result = makeElement();
+	result.innerHTML = textHTML;
 	return result.firstElementChild;
 }
 
@@ -118,5 +119,7 @@ export function textToNode(textHTML) {
  * @param {HTMLElement} newNode - node to add after current node
  */
 export function insertAfter(baseNode, newNode) {
-	baseNode.parentNode.insertBefore(newNode, baseNode.nextSibling);
+	if (baseNode?.parentNode && newNode) {
+		baseNode.parentNode.insertBefore(newNode, baseNode.nextSibling);
+	}
 }

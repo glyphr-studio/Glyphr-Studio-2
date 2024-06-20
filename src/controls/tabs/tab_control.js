@@ -8,6 +8,11 @@ export class TabControl {
 		this.targetElement.addEventListener('scroll', closeAllInfoBubbles);
 	}
 
+	/**
+	 * Saves a new tab object to this tab group
+	 * @param {String} tabName - name for the tab
+	 * @param {Element | String} tabContent - what to put in the tab
+	 */
 	registerTab(tabName = 'Tab Name', tabContent = '') {
 		let newTab = {
 			name: tabName,
@@ -25,6 +30,10 @@ export class TabControl {
 		this.tabs.push(newTab);
 	}
 
+	/**
+	 * Makes the tabs
+	 * @returns {Element}
+	 */
 	makeTabs() {
 		const tabContainer = makeElement({
 			tag: 'div',
@@ -38,6 +47,10 @@ export class TabControl {
 		return tabContainer;
 	}
 
+	/**
+	 * Selects the specified tab
+	 * @param {String} tabName - which to select
+	 */
 	selectTab(tabName) {
 		this.targetElement.innerHTML = '';
 		this.tabs.forEach((tab) => {

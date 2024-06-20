@@ -2,6 +2,7 @@ import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { decToHex, hexesToXMLHexes } from '../common/character_ids.js';
 import { escapeXMLValues, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
+import { Glyph } from '../project_data/glyph.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 import { makeFileDateString, saveTextFile } from '../project_editor/file_io.js';
 import { shouldExportItem } from './font_export.js';
@@ -11,6 +12,11 @@ import { shouldExportItem } from './font_export.js';
 	a SVG Font format.
 **/
 
+/**
+ * Using the current project, generate SVG code in
+ * the format of a SVG Font. Then, trigger a text
+ * file download in the browser.
+ */
 export function ioSVG_exportSVGfont() {
 	// log('ioSVG_exportSVGfont', 'start');
 	const project = getCurrentProject();
@@ -22,13 +28,13 @@ export function ioSVG_exportSVGfont() {
 	let timeOutput = timestamp.split('-');
 	timeOutput[0] = timeOutput[0].replace(/\./g, '-');
 	timeOutput[1] = timeOutput[1].replace(/\./g, ':');
-	timeOutput = timeOutput.join(' at ');
+	let timeOutputString = timeOutput.join(' at ');
 
 	let con = `<?xml version="1.0"?>
 <svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<metadata>
 		Project: ${project.settings.project.name}
-		Font exported on ${timeOutput}
+		Font exported on ${timeOutputString}
 		Created with Glyphr Studio - the free, web-based font editor
 		Version: ${app.version}
 		Find out more at www.glyphrstudio.com
@@ -59,6 +65,10 @@ ${ioSVG_makeAllKernPairs()}
 	// log('ioSVG_exportSVGfont', 'end');
 }
 
+/**
+ * Makes the Font Face section of the data
+ * @returns {String}
+ */
 function ioSVG_makeFontFace() {
 	// log('ioSVG_makeFontFace', 'start');
 	const project = getCurrentProject();
@@ -141,6 +151,10 @@ function calcFontMaxes() {
 	return fm;
 }
 
+/**
+ * Makes a .notdef character in SVG format
+ * @returns {String}
+ */
 function ioSVG_makeMissingGlyph() {
 	// log('ioSVG_makeMissingGlyph', 'start');
 	const project = getCurrentProject();
@@ -160,6 +174,11 @@ function ioSVG_makeMissingGlyph() {
 	return con;
 }
 
+/**
+ * Loops through all the glyphs and ligatures in the project,
+ * and creates SVG code for them.
+ * @returns {String}
+ */
 function ioSVG_makeAllGlyphs() {
 	// log('ioSVG_makeAllGlyphs', 'start');
 	const project = getCurrentProject();
@@ -202,6 +221,13 @@ function ioSVG_makeAllGlyphs() {
 	return con;
 }
 
+/**
+ * Converts one glyph item into SVG code.
+ * @param {Glyph | Object} gl - item to convert
+ * @param {String} id - project ID for this item
+ * @param {String} tag - SVG tag to use
+ * @returns {String}
+ */
 function ioSVG_makeOneGlyph(gl, id, tag = 'glyph') {
 	// if(!gl.shapes.length && !gl.advanceWidth) return '';
 	// Results in lots of special unicode glyphs with no paths
@@ -240,6 +266,11 @@ function ioSVG_makeOneGlyph(gl, id, tag = 'glyph') {
 	return con;
 }
 
+/**
+ * Converts all the Kern Pair data in this project
+ * into SVG code.
+ * @returns {String}
+ */
 function ioSVG_makeAllKernPairs() {
 	// log('ioSVG_makeAllKernPairs', 'start');
 	const project = getCurrentProject();

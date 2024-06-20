@@ -65,7 +65,9 @@ export class GlyphTile extends HTMLElement {
 				tag: 'span',
 				className: 'thumbnail',
 			});
+			// @ts-ignore
 			this.thumbnail.width = overallSize;
+			// @ts-ignore
 			this.thumbnail.height = overallSize;
 		} else {
 			this.setAttribute('title', `${name}\n${displayedItemID}${sessionMessage}`);
@@ -106,6 +108,9 @@ export class GlyphTile extends HTMLElement {
 		// log(`GlyphTile.constructor`, 'end');
 	}
 
+	/**
+	 * what to do when an attribute is changed
+	 */
 	attributeChangedCallback() {
 		// log(`GlyphTile.attributeChangedCallback`, 'start');
 		const wrapper = this.shadowRoot ? this.shadowRoot.querySelector('.wrapper') : false;
@@ -117,6 +122,9 @@ export class GlyphTile extends HTMLElement {
 		// log(`GlyphTile.attributeChangedCallback`, 'end');
 	}
 
+	/**
+	 * redraw this thumbnail
+	 */
 	redraw() {
 		if (this.glyph?.shapes?.length) {
 			// const project = getCurrentProject();

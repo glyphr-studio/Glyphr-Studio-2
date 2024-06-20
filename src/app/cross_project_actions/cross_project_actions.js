@@ -1,5 +1,6 @@
 import { makeElement } from '../../common/dom';
 import { countItems, duplicates } from '../../common/functions';
+import { ProjectEditor } from '../../project_editor/project_editor';
 import { emailLink } from '../app';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../main';
 import { updateContent_addComponents, updateFooter_addComponents } from './action_add_components';
@@ -18,11 +19,19 @@ import {
 	updateFooter_overwriteSettings,
 } from './action_overwrite_settings';
 
+/** @type {ProjectEditor} */
 export let sourceEditor;
+/** @type {ProjectEditor} */
 export let destinationEditor;
+/** @type {Array} */
 export let selectedItemIDs = [];
+/** @type {Object | false} */
 export let selectedRange = false;
 
+/**
+ * Make the Cross-project Actions page
+ * @returns {HTMLElement}
+ */
 export function makePage_CrossProjectActions() {
 	const content = makeElement({
 		tag: 'div',
@@ -87,11 +96,16 @@ export function makePage_CrossProjectActions() {
 	return content;
 }
 
+/**
+ * Refresh the Cross-project Actions page
+ * @param {Element} content - page wrapper
+ */
 function updateCrossProjectActionsPage(content) {
 	// log(`updateCrossProjectActionsPage`, 'start');
 	let actionChooser = content.querySelector('#cross-project-actions__action-chooser');
 	let selectedAction = actionChooser.getAttribute('selected-id');
 	// log(`selectedAction: ${selectedAction}`);
+	/** @type {HTMLElement} */
 	let pageContent = content.querySelector('#cross-project-actions__page-content');
 	let pageFooter = content.querySelector('#cross-project-actions__page-footer');
 
@@ -120,6 +134,11 @@ function updateCrossProjectActionsPage(content) {
 	// log(`updateCrossProjectActionsPage`, 'end');
 }
 
+/**
+ * Control to switch source / destination projects
+ * @param {String} textPrefix - label for the text
+ * @returns {Element}
+ */
 export function makeProjectFlipper(textPrefix = 'From') {
 	let sourceProject = sourceEditor.project.settings.project;
 	let destinationProject = destinationEditor.project.settings.project;
@@ -150,6 +169,9 @@ export function makeProjectFlipper(textPrefix = 'From') {
 	return wrapper;
 }
 
+/**
+ * Switch source / destination projects
+ */
 function flipProjects() {
 	let temp = sourceEditor;
 	sourceEditor = destinationEditor;
@@ -160,38 +182,54 @@ function flipProjects() {
 		welcomeFlipper.innerHTML = '';
 		welcomeFlipper.appendChild(makeProjectFlipper());
 	} else {
+		// @ts-ignore
 		updateCrossProjectActionsPage(document);
 	}
 }
 
+/**
+ * Flip all checkboxes
+ */
 export function toggleCheckboxes() {
-	let state = document.getElementById('toggle-all-checkbox').checked;
+	/** @type {HTMLInputElement} */
+	const checkbox = document.querySelector('#toggle-all-checkbox');
+	let state = checkbox.checked;
 	const checkboxes = document.querySelectorAll('.item-select-checkbox');
-	checkboxes.forEach((box) => {
+	checkboxes.forEach((/** @type {HTMLInputElement} */ box) => {
 		box.checked = state;
 		updateSelectedIDs(box.getAttribute('item-id'), box.checked);
 	});
 }
 
+/**
+ * Clear checkboxes
+ */
 export function clearAllSelections() {
 	selectedItemIDs = [];
-	document.getElementById('cross-project-actions__item-count').innerHTML = '';
+	document.querySelector('#cross-project-actions__item-count').innerHTML = '';
 }
 
+/**
+ * Update the selected state of an item by ID
+ * @param {String} itemID - ID for the item to update
+ * @param {Boolean} add - should it be added or not
+ */
 export function updateSelectedIDs(itemID, add = true) {
 	if (add) selectedItemIDs.push(itemID);
 	else selectedItemIDs.splice(selectedItemIDs.indexOf(itemID), 1);
 	selectedItemIDs = selectedItemIDs.filter(duplicates);
 	selectedItemIDs = selectedItemIDs.filter((item) => !!item);
-	document.getElementById('cross-project-actions__item-count').innerHTML = `
+	document.querySelector('#cross-project-actions__item-count').innerHTML = `
 		${selectedItemIDs.length} item${selectedItemIDs.length === 1 ? '' : 's'} selected
 	`;
 }
 
-// --------------------------------------------------------------
-// Item and Range Chooser
-// --------------------------------------------------------------
-
+/**
+ * Makes the Item and Range Chooser control
+ * @param {Object} param0 - range chooser options
+ * @param {Function} updateHandler - callback for when this range is selected
+ * @returns {Element}
+ */
 export function makeItemAndRangeChooser(
 	{ showLigatures = false, showComponents = false, showKernGroups = false },
 	updateHandler

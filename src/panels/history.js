@@ -30,7 +30,7 @@ export function makePanel_History() {
 		historyArea.appendChild(
 			makeElement({
 				tag: 'h3',
-				innerHTML: editor.project.getItemName(editor.selectedItemID, true),
+				innerHTML: editor.project.getItemName(editor.selectedItemID, true) || '',
 			})
 		);
 	}
@@ -44,7 +44,7 @@ export function makePanel_History() {
 				historyArea.appendChild(
 					makeElement({
 						tag: 'h3',
-						innerHTML: editor.project.getItemName(entry.itemID, true),
+						innerHTML: editor.project.getItemName(entry.itemID, true) || '',
 					})
 				);
 				currentItemID = entry.itemID;

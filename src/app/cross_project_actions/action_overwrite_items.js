@@ -14,6 +14,10 @@ import {
 	updateSelectedIDs,
 } from './cross_project_actions';
 
+/**
+ * Cross-project actions: Overwrite Items page
+ * @param {HTMLElement} parent - wrapper element
+ */
 export function updateContent_overwriteItems(parent) {
 	parent.innerHTML = '';
 	parent.appendChild(
@@ -78,6 +82,11 @@ export function updateContent_overwriteItems(parent) {
 	parent.appendChild(updateOverwriteItemsTable(table));
 }
 
+/**
+ * Updates the items table
+ * @param {Element} table - wrapper
+ * @returns {Element}
+ */
 export function updateOverwriteItemsTable(table) {
 	table.innerHTML = '';
 	// Table column headers
@@ -125,6 +134,11 @@ export function updateOverwriteItemsTable(table) {
 	return table;
 }
 
+/**
+ * Make rows for the table
+ * @param {String | Object} range - Components, Ligatures, or Characters
+ * @param {Element} parent - wrapper
+ */
 function makeRows(range, parent) {
 	// log(`makeRows`, 'start');
 	let count = 0;
@@ -209,6 +223,10 @@ function makeRows(range, parent) {
 	// log(`makeRows`, 'end');
 }
 
+/**
+ * Updates the footer of the page
+ * @param {Element} parent - wrapper
+ */
 export function updateFooter_overwriteItems(parent) {
 	parent.appendChild(
 		makeElement({
@@ -219,6 +237,9 @@ export function updateFooter_overwriteItems(parent) {
 	);
 }
 
+/**
+ * Action for the page
+ */
 function overwriteItems() {
 	// log(`Cross Project Actions - overwriteItems`, 'start');
 	// log(`\n⮟selectedItemIDs⮟`);
@@ -238,10 +259,14 @@ function overwriteItems() {
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
 	// log(`emRatio: ${emRatio}`);
 
-	let scaleItems = document.getElementById('checkbox-scale')?.checked;
+	/** @type {HTMLInputElement} */
+	const scaleItemsBox = document.querySelector('#checkbox-scale');
+	const scaleItems = scaleItemsBox?.checked;
 	// log(`scaleItems: ${scaleItems}`);
 
-	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
+	/** @type {HTMLInputElement} */
+	const reverseWindingsBox = document.querySelector('#checkbox-reverse-windings');
+	const reverseWindings = reverseWindingsBox?.checked;
 	// log(`reverseWindings: ${reverseWindings}`);
 
 	destinationEditor.history.addWholeProjectChangePreState(

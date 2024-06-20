@@ -17,11 +17,12 @@ export class OptionToggle extends HTMLElement {
 	constructor() {
 		// log(`OptionToggle.constructor`, 'start');
 		super();
-
+		this.disabled = false;
 		this.wrapper = makeElement({
 			className: 'wrapper',
 			tabIndex: !this.disabled,
 		});
+		// @ts-ignore
 		this.wrapper.elementRoot = this;
 
 		this.selectionDisplay = makeElement({
@@ -29,6 +30,7 @@ export class OptionToggle extends HTMLElement {
 			attributes: { tabIndex: -1 },
 			innerHTML: this.getDisplayName(),
 		});
+		// @ts-ignore
 		this.selectionDisplay.elementRoot = this;
 
 		this.toggleIcon = makeElement({
@@ -36,6 +38,7 @@ export class OptionToggle extends HTMLElement {
 			content: this.makeIcon(),
 			attributes: { tabIndex: -1 },
 		});
+		// @ts-ignore
 		this.toggleIcon.elementRoot = this;
 
 		// Put it all together
@@ -71,6 +74,7 @@ export class OptionToggle extends HTMLElement {
 		[...this.children].forEach((child) => {
 			let tag = child.tagName.toLowerCase();
 			if (tag === 'option') {
+				// @ts-ignore
 				let name = child.innerText;
 				let value = child.getAttribute('value');
 				if (!value) value = name;
@@ -115,6 +119,10 @@ export class OptionToggle extends HTMLElement {
 		// log(`OptionToggle.attributeChangedCallback`, 'end');
 	}
 
+	/**
+	 * Figures out the name for this toggle
+	 * @returns {String}
+	 */
 	getDisplayName() {
 		let displayText = this.getAttribute('selected-name');
 		if (!displayText) return '';
@@ -122,6 +130,9 @@ export class OptionToggle extends HTMLElement {
 		return displayText;
 	}
 
+	/**
+	 * Toggle the toggle
+	 */
 	toggle() {
 		// log(`OptionToggle.toggle`, 'start');
 
@@ -140,6 +151,10 @@ export class OptionToggle extends HTMLElement {
 		// log(`OptionToggle.toggle`, 'end');
 	}
 
+	/**
+	 * Returns true if the first option is selected
+	 * @returns {Boolean}
+	 */
 	isFirstOptionSelected() {
 		const currentName = this.getAttribute('selected-name');
 		// log(`currentName: ${currentName}`);
@@ -191,6 +206,11 @@ export class OptionToggle extends HTMLElement {
 		}
 	}
 
+	/**
+	 * Creates the appropriate toggle icon
+	 * @param {Boolean} left - is it left?
+	 * @returns {String} - SVG Icon
+	 */
 	makeIcon(left = false) {
 		let svg = `
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

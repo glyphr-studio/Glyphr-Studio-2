@@ -4,6 +4,12 @@ import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import.js
 import { copyShapesFromTo } from '../panels/actions.js';
 import { cancelDefaultEventActions } from './events.js';
 
+/**
+ * Given some SVG code, parse it into Glyphr Studio shapes, and
+ * add it to the currently selected item.
+ * @param {String} svgData - code imported from dropped file
+ * @param {String} sourceText - title for the stuff that was imported
+ */
 export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 	// log(`importSVGtoCurrentItem`, 'start');
 
@@ -40,6 +46,11 @@ export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 	// log(`importSVGtoCurrentItem`, 'end');
 }
 
+/**
+ * Handle copy + pasted SVG code on the Edit Canvas
+ * @param {KeyboardEvent} event - paste key event
+ * @returns nothing
+ */
 export async function handlePasteSVGonEditCanvas(event) {
 	// log(`handlePasteSVGonEditCanvas`, 'start');
 	// log(event);
@@ -53,6 +64,7 @@ export async function handlePasteSVGonEditCanvas(event) {
 	// log(`\n⮟navigator.clipboard⮟`);
 	// log(navigator.clipboard);
 
+	// @ts-ignore
 	const clipboardData = event.clipboardData || window.clipboardData;
 	if (clipboardData) {
 		// log(clipboardData);
@@ -76,6 +88,10 @@ export async function handlePasteSVGonEditCanvas(event) {
 	// log(`handlePasteSVGonEditCanvas`, 'end');
 }
 
+/**
+ * Handles dragging + dropping a SVG file on the edit canvas.
+ * @param {DragEvent} event - drag + drop event
+ */
 export function handleDropSVGonEditCanvas(event) {
 	// log(`handleDropSVGonEditCanvas`, 'start');
 
@@ -92,7 +108,7 @@ export function handleDropSVGonEditCanvas(event) {
 
 	if (fileSuffix === 'svg') {
 		reader.onload = function () {
-			importSVGtoCurrentItem(reader.result, '<br>from the dropped SVG file');
+			importSVGtoCurrentItem(reader.result.toString(), '<br>from the dropped SVG file');
 		};
 
 		reader.readAsText(file);

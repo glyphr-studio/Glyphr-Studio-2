@@ -1,5 +1,5 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
-import { decToHex, hexesToChars } from '../common/character_ids';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { decToHex, hexesToChars } from '../common/character_ids.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { remove } from '../common/functions.js';
 import {
@@ -18,6 +18,10 @@ import { CharacterRange } from '../project_data/character_range.js';
 import { resolveItemLinks } from '../project_editor/cross_item_actions';
 import { makeOneSettingsRow } from './settings.js';
 
+/**
+ * Makes the content for the Settings > Project tab
+ * @returns {Element}
+ */
 export function makeSettingsTabContentProject() {
 	const tabContent = makeElement({
 		tag: 'div',
@@ -150,8 +154,8 @@ function makeEnabledRangesTable() {
 		projectRanges.unshift(
 			new CharacterRange({
 				name: 'Basic Latin',
-				begin: '0x20',
-				end: '0x7F',
+				begin: 0x20,
+				end: 0x7f,
 				enabled: true,
 			})
 		);
@@ -418,7 +422,7 @@ const characterRangeDeleteOptions = {
 };
 
 function updateDeleteButtonText() {
-	const button = document.getElementById('character-range-delete__button');
+	const button = document.querySelector('#character-range-delete__button');
 	if (characterRangeDeleteOptions.removeRange || characterRangeDeleteOptions.deleteCharacters) {
 		button.removeAttribute('disabled');
 		button.addEventListener('click', deleteCharactersFromRange);
@@ -511,6 +515,7 @@ function showEditCharacterRangeDialog(range = false) {
 		attributes: { type: 'text' },
 	});
 	inputName.addEventListener('change', (event) => {
+		// @ts-ignore
 		event.target.value = sanitizeUnicodeInput(event.target.value);
 	});
 
@@ -520,6 +525,7 @@ function showEditCharacterRangeDialog(range = false) {
 		attributes: { type: 'text' },
 	});
 	inputBegin.addEventListener('change', (event) => {
+		// @ts-ignore
 		event.target.value = sanitizeUnicodeInput(event.target.value);
 	});
 
@@ -529,12 +535,16 @@ function showEditCharacterRangeDialog(range = false) {
 		attributes: { type: 'text' },
 	});
 	inputEnd.addEventListener('change', (event) => {
+		// @ts-ignore
 		event.target.value = sanitizeUnicodeInput(event.target.value);
 	});
 
 	if (range) {
+		// @ts-ignore
 		inputName.value = range.name;
+		// @ts-ignore
 		inputBegin.value = '' + decToHex(range.begin);
+		// @ts-ignore
 		inputEnd.value = '' + decToHex(range.end);
 	}
 
@@ -574,13 +584,22 @@ function showEditCharacterRangeDialog(range = false) {
 	// log(`showEditCharacterRangeDialog`, 'end');
 }
 
-function validateAndSaveCharacterRange(range = false) {
+function validateAndSaveCharacterRange(range) {
 	// log(`validateAndSaveCharacterRange`, 'start');
 	// log(`\n⮟range⮟`);
 	// log(range);
-	let newName = document.getElementById('glyph-range-editor__name').value;
-	let newBegin = parseInt(document.getElementById('glyph-range-editor__begin').value);
-	let newEnd = parseInt(document.getElementById('glyph-range-editor__end').value);
+
+	/** @type {HTMLInputElement} */
+	const newNameInput = document.querySelector('#glyph-range-editor__name');
+	let newName = newNameInput.value;
+
+	/** @type {HTMLInputElement} */
+	const newBeginInput = document.querySelector('#glyph-range-editor__begin');
+	let newBegin = parseInt(newBeginInput.value);
+
+	/** @type {HTMLInputElement} */
+	const newEndInput = document.querySelector('#glyph-range-editor__end');
+	let newEnd = parseInt(newEndInput.value);
 
 	if (isNaN(newBegin)) {
 		showError(`Start must be a number, a Unicode code point, or a Hexadecimal number.`);
@@ -645,7 +664,7 @@ function enableRangesForOrphanedItems() {
 	let newRanges = 0;
 	for (const glyphID in project.glyphs) {
 		let hasParent = false;
-		let hex = remove(glyphID, 'glyph-');
+		let hex = Number(remove(glyphID, 'glyph-'));
 		// log(`hex: ${hex}`);
 		for (const range of project.settings.project.characterRanges) {
 			if (range.isWithinRange(hex)) {
@@ -677,8 +696,11 @@ function hideCharacterRange(range) {
 
 	range.enabled = false;
 
-	if (range.getMemberIDs().indexOf(editor.selectedGlyphID.substring(6)) > -1) {
-		editor.selectFallbackItem('Characters');
+	const glyphID = editor.selectedGlyphID;
+	if (glyphID !== false) {
+		if (range.getMemberIDs().indexOf(glyphID.substring(6)) > -1) {
+			editor.selectFallbackItem('Characters');
+		}
 	}
 
 	updateRangesTables();
@@ -798,7 +820,7 @@ function previewCharacterRange(range) {
 			makeElement({
 				className: 'glyph-range-chooser__preview-tile',
 				title: `${hexString}\n${name}`,
-				innerHTML: hexesToChars(hexString),
+				innerHTML: hexesToChars(hexString) || '',
 			})
 		);
 	}
@@ -830,7 +852,7 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 	// log(`addCharacterRangeToCurrentProject`, 'end');
 }
 
-export function findCharacterRange(range, ranges = false) {
+export function findCharacterRange(range, ranges) {
 	if (!ranges) ranges = getCurrentProject().settings.project.characterRanges;
 
 	for (let r = 0; r < ranges.length; r++) {

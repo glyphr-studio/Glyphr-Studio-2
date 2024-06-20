@@ -22,7 +22,8 @@ import { XYPoint } from './xy_point.js';
 export class PolySegment extends GlyphElement {
 	/**
 	 * Make a PolySegment
-	 * @param {Array} segments
+	 * @param {Object} arg
+	 * @param {Array =} arg.segments
 	 */
 	constructor({ segments = [] } = {}) {
 		super();
@@ -42,6 +43,9 @@ export class PolySegment extends GlyphElement {
 	 */
 	save(verbose = false) {
 		const re = {
+			/**
+			 * @type {Array}
+			 */
 			segments: [],
 		};
 
@@ -98,7 +102,7 @@ export class PolySegment extends GlyphElement {
 	 * set the Segments array
 	 * @param {Array} segments
 	 */
-	set segments(segments = []) {
+	set segments(segments) {
 		this._segments = [];
 		for (let s = 0; s < segments.length; s++) {
 			this._segments[s] = new Segment(segments[s]);
@@ -130,7 +134,7 @@ export class PolySegment extends GlyphElement {
 		 * Creates a single Point from two segments
 		 * @param {Segment} seg1 - First segment
 		 * @param {Segment} seg2 - Second segment
-		 * @returns {PathPoint}
+		 * @returns {Object}
 		 */
 		function makePathPointFromSegments(seg1, seg2) {
 			const newPP = {
@@ -275,7 +279,7 @@ export class PolySegment extends GlyphElement {
 	/**
 	 * Takes all the segments and orders them based on their
 	 * starting and ending points
-	 * @returns {Array} - collection of stitched PolySegments (hopefully just one)
+	 * @returns {Array | Boolean} - collection of stitched PolySegments (hopefully just one)
 	 */
 	stitchSegmentsTogether() {
 		// log('PolySegment.stitchSegmentsTogether', 'start');
@@ -286,7 +290,7 @@ export class PolySegment extends GlyphElement {
 		/**
 		 * Looks for a segment with a provided starting point
 		 * @param {XYPoint} co starting point to look for
-		 * @returns {Segment}
+		 * @returns {Segment | false}
 		 */
 		function getSegmentStartingAt(co) {
 			let ts;
@@ -317,7 +321,7 @@ export class PolySegment extends GlyphElement {
 
 		/**
 		 * Get the next unsorted segment's first point
-		 * @returns {XYPoint}
+		 * @returns {XYPoint | Object}
 		 */
 		function getNextUnusedSegmentP1() {
 			for (let s = 0; s < source.length; s++) {
@@ -328,13 +332,12 @@ export class PolySegment extends GlyphElement {
 		}
 
 		// Start ordering
-		let resultSegment;
 		let nextXYPoint = getNextUnusedSegmentP1();
 		// log('starting loop');
 		// log(nextXYPoint);
 		// log('source.length ' + source.length);
 		for (let i = 0; i < source.length; i++) {
-			resultSegment = getSegmentStartingAt(nextXYPoint);
+			let resultSegment = getSegmentStartingAt(nextXYPoint);
 			if (resultSegment) {
 				// log('LOOP ' + i + ' added a segment,  ' + result.length + '.' + sorted.length);
 				sorted.push(resultSegment);
@@ -550,9 +553,8 @@ export class PolySegment extends GlyphElement {
  * @param {Number} depth - How deep this recursive call has gone
  * @returns {Array} - collection of overlap points in ix format like ['x/y', 'x/y', 'x/y']
  */
-export function findSegmentIntersections(s1, s2, depth) {
+export function findSegmentIntersections(s1, s2, depth = 0) {
 	// log('findSegmentIntersections', 'start');
-	depth = depth || 0;
 	// log('depth ' + depth);
 
 	// if(depth > 15) {

@@ -100,7 +100,7 @@ describe('Character IDs - Format Detection', () => {
 	});
 
 	it('isHex - bad string format', () => {
-		expect(isHex(0x123f)).toBeFalsy();
+		expect(isHex('0x123jj')).toBeFalsy();
 	});
 
 	it('isXMLDec', () => {

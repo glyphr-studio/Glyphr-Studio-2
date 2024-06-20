@@ -48,15 +48,16 @@ export class EditCanvas extends HTMLElement {
 		this.height = this.getAttribute('height') || 2000;
 
 		// internal properties
-		this.canvas = makeElement({ tag: 'canvas' });
+		/** @type {HTMLCanvasElement} */
+		this.canvas = document.createElement('canvas');
 		this.ctx = this.canvas.getContext('2d');
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
 		shadow.appendChild(this.canvas);
 
-		this.canvas.height = this.height;
-		this.canvas.width = this.width;
+		this.canvas.height = Number(this.height);
+		this.canvas.width = Number(this.width);
 
 		const editor = getCurrentProjectEditor();
 
@@ -114,7 +115,7 @@ export class EditCanvas extends HTMLElement {
 			topic: '*',
 			subscriberID: `editCanvas-all`,
 			callback: () => {
-				this.redraw({ calledBy: `editCanvas-all` });
+				this.redraw();
 			},
 		});
 		// log(`EditCanvas.constructor`, 'end');
@@ -143,9 +144,7 @@ export class EditCanvas extends HTMLElement {
 			case 'editing-item-id':
 				this.editingItemID = newValue;
 				// getCurrentProjectEditor().autoFitIfViewIsDefault();
-				this.redraw({
-					calledBy: 'EditCanvas.attributeChangeCallback - attribute: editing-item-id',
-				});
+				this.redraw();
 				break;
 		}
 		// log(`EditCanvas.attributeChangeCallback`, 'end');
@@ -160,8 +159,8 @@ export class EditCanvas extends HTMLElement {
 		const project = getCurrentProject();
 		const view = editor.view;
 		const ctx = this.ctx;
-		const width = this.width;
-		const height = this.height;
+		const width = Number(this.width);
+		const height = Number(this.height);
 		const currentItemID = this.editingItemID;
 		// log(`currentItemID: ${currentItemID}`);
 		const advanceWidth = project.getItem(currentItemID)?.advanceWidth || 0;
@@ -226,7 +225,7 @@ export class EditCanvas extends HTMLElement {
 			}
 
 			// Draw temporary new paths
-			if (eventHandlerData.newBasicPath) {
+			if (eventHandlerData?.newBasicPath?.objType) {
 				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
 			}
 
@@ -269,8 +268,8 @@ export class EditCanvas extends HTMLElement {
 				);
 
 				ctx.fillStyle = accentColors.purple.l60;
-				drawEmVerticalLine(ctx, 0, view, false);
-				drawEmVerticalLine(ctx, kernGroup.value, view, true);
+				drawEmVerticalLine(ctx, 0, view);
+				drawEmVerticalLine(ctx, kernGroup.value, view);
 				drawCharacterKernExtra(ctx, kernGroup.value, view.dx, view.dz);
 
 				let drawItem;
@@ -426,6 +425,13 @@ export class EditCanvas extends HTMLElement {
 // Guides
 // --------------------------------------------------------------
 
+/**
+ * Draws a horizontal line, based on some Em values
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Number} emY - y value, in Em space units (not pixels)
+ * @param {Number} advanceWidth - width, in Em space units (not pixels)
+ * @param {Object} view - view object (dx, dy, dz)
+ */
 function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view) {
 	// log(`drawEmHorizontalLine`, 'start');
 	let pad = 50 * view.dz;
@@ -443,6 +449,12 @@ function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view) {
 	// log(`drawEmHorizontalLine`, 'end');
 }
 
+/**
+ * Draws a vertical line, based on some Em values
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ * @param {Number} emX - x value, in Em space units (not pixels)
+ * @param {Object} view - view object (dx, dy, dz)
+ */
 export function drawEmVerticalLine(ctx, emX = 0, view) {
 	// log(`drawEmVerticalLine`, 'start');
 	const project = getCurrentProject();
@@ -464,24 +476,51 @@ export function drawEmVerticalLine(ctx, emX = 0, view) {
 // --------------------------------------------------------------------------
 // Convert between Saved values and Canvas values
 // --------------------------------------------------------------------------
-// convert stored x-y point to canvas x-y
+
+/**
+ * Converts saved X value into a canvas pixel value, given
+ * a specified view.
+ * @param {Number} sx - Saved X value "sx"
+ * @param {Object} view - view object (dx, dy, dz)
+ * @returns {Number} - X value in Canvas units (pixels)
+ */
 export function sXcX(sx, view = getCurrentProjectEditor().view) {
 	let canvasX = view.dx;
 	canvasX += sx * view.dz;
 	return canvasX || view.dx;
 }
 
+/**
+ * Converts saved Y value into a canvas pixel value, given
+ * a specified view.
+ * @param {Number} sy - Saved Y value "sy"
+ * @param {Object} view - view object (dx, dy, dz)
+ * @returns {Number} - Y value in Canvas units (pixels)
+ */
 export function sYcY(sy, view = getCurrentProjectEditor().view) {
 	let canvasY = view.dy;
 	canvasY -= sy * view.dz;
 	return canvasY || view.dy;
 }
 
-// convert canvas x-y inputs to saved path x-y
+/**
+ * Converts canvas pixel X value into Em units that are
+ * saved to project data.
+ * @param {Number} cx - Canvas X value "cx"
+ * @param {Object} view - view object (dx, dy, dz)
+ * @returns {Number} - X value in Save units (Em units)
+ */
 export function cXsX(cx, view = getCurrentProjectEditor().view) {
 	return (cx - view.dx) / view.dz;
 }
 
+/**
+ * Converts canvas pixel Y value into Em units that are
+ * saved to project data.
+ * @param {Number} cy - Canvas Y value "cy"
+ * @param {Object} view - view object (dx, dy, dz)
+ * @returns {Number} - Y value in Save units (Em units)
+ */
 export function cYsY(cy, view = getCurrentProjectEditor().view) {
 	return (view.dy - cy) / view.dz;
 }

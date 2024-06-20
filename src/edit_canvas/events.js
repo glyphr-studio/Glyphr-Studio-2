@@ -17,14 +17,14 @@ import { Tool_Resize } from './tools/resize.js';
 // --------------------------------------------------------------
 
 export let eventHandlerData = {
-	currentToolHandler: false,
-	newBasicPathMaxes: false,
-	newBasicPath: false,
-	dragSelectArea: false,
-	mousePosition: false,
-	handle: false,
-	rotationStartCenter: false,
-	rotationStartMaxesTopY: false,
+	currentToolHandler: {},
+	newBasicPathMaxes: {},
+	newBasicPath: {},
+	dragSelectArea: {},
+	mousePosition: {},
+	handle: '',
+	rotationStartCenter: {},
+	rotationStartMaxesTopY: -100,
 	rotateHandleHeight: 40,
 	isMouseOverCanvas: false,
 	corner: false,
@@ -40,11 +40,16 @@ export let eventHandlerData = {
 	isShiftDown: false,
 	isCtrlDown: false,
 	isAltDown: false,
-	hoverPoint: false,
+	hoverPoint: {},
 	multi: false,
 	canvasHotspots: [],
 };
 
+/**
+ * Sets up the event listeners for a given edit canvas,
+ * and creates tools for each type of event handler.
+ * @param {Element} canvas
+ */
 export function initEventHandlers(canvas) {
 	// log('initEventHandlers', 'start');
 	// log(canvas);
@@ -76,6 +81,12 @@ export function initEventHandlers(canvas) {
 	// log(`initEventHandlers`, 'end');
 }
 
+/**
+ * Stops default event stuff from happening,
+ * so we can do custom stuff.
+ * @param {Event} event - input event
+ * @returns {false} - as per event spec
+ */
 export function cancelDefaultEventActions(event) {
 	// log(`cancelDefaultEventActions`, 'start');
 	// log(event);
@@ -85,6 +96,9 @@ export function cancelDefaultEventActions(event) {
 	return false;
 }
 
+/**
+ * Do stuff when the mouse goes over the Edit Canvas
+ */
 function handleMouseOverCanvas() {
 	// log('handleMouseOverCanvas', 'start');
 	eventHandlerData.isMouseOverCanvas = true;
@@ -92,6 +106,9 @@ function handleMouseOverCanvas() {
 	// log('handleMouseOverCanvas', 'end');
 }
 
+/**
+ * Do stuff when the mouse leaves the Edit Canvas
+ */
 function handleMouseLeaveCanvas() {
 	// log('handleMouseLeaveCanvas', 'start');
 	eventHandlerData.isMouseOverCanvas = false;
@@ -101,12 +118,20 @@ function handleMouseLeaveCanvas() {
 	// log('handleMouseLeaveCanvas', 'end');
 }
 
+/**
+ * Do stuff when the user drags a file over the Edit Canvas
+ * @param {DragEvent} event - drag event
+ */
 function handleDragEnterCanvas(event) {
 	event.preventDefault();
 	event.stopPropagation();
 	showToast('Drop a SVG file to import it');
 }
 
+/**
+ * Switch the Edit Canvas to pan mode
+ * @param {Event} event - mouse event
+ */
 export function togglePanOn(event) {
 	const editor = getCurrentProjectEditor();
 	editor.eventHandlers.tool_pan.mousedown(event);
@@ -117,6 +142,10 @@ export function togglePanOn(event) {
 	setCursor('move');
 }
 
+/**
+ * Switch the Edit Canvas out of pan mode
+ * @param {Event} event - mouse event
+ */
 export function togglePanOff(event) {
 	const editor = getCurrentProjectEditor();
 	editor.eventHandlers.tool_pan.mouseup(event);

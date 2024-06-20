@@ -1,5 +1,6 @@
 import { describe } from 'vitest';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outline_import.js';
+import { expected } from './svg_expected_results.js';
 
 // SVG Test Files
 import inherited_transforms_heart from './inherited_transforms_heart.svg?raw';
@@ -57,239 +58,255 @@ import transform_skewy_position from './transform_skewy_position.svg?raw';
 import transform_translate from './transform_translate.svg?raw';
 import transforms_attribute_order from './transforms_attribute_order.svg?raw';
 
+/**
+ * Simulates importing SVG code and converting it to a
+ * Glyphr Studio Glyph
+ * @param {String} testSVG - raw input from the SVG file
+ * @returns {String} - json save code from the GS Glyph
+ */
+function importAndMakeSVGTestString(testSVG) {
+	const resultGlyph = ioSVG_convertSVGTagsToGlyph(testSVG, false);
+	resultGlyph.id = 'glyph-0x41';
+	resultGlyph.flipNS();
+	resultGlyph.reverseWinding();
+	const saveString = JSON.stringify(resultGlyph.save());
+	return saveString;
+}
+
+/*
+	// TEST ACTION for app.js
+	{
+		name: 'Log SaveAs',
+		onClick: () => {
+			console.log(JSON.stringify(getCurrentProjectEditor().selectedGlyph.save()));
+		}
+	}
+*/
+
 describe('Import basic SVG shapes', () => {
 	it('Import shape_circle', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_circle, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_circle);
+		expect(test).toEqual(expected.shape_circle);
 	});
 	it('Import shape_ellipse', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_ellipse, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_ellipse);
+		expect(test).toEqual(expected.shape_ellipse);
 	});
 	it('Import shape_polygon', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_polygon, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_polygon);
+		expect(test).toEqual(expected.shape_polygon);
 	});
 	it('Import shape_polyline', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_polyline, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_polyline);
+		expect(test).toEqual(expected.shape_polyline);
 	});
 	it('Import shape_rect', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_rect, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_rect);
+		expect(test).toEqual(expected.shape_rect);
 	});
 	it('Import shape_circle_multi', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_circle_multi, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_circle_multi);
+		expect(test).toEqual(expected.shape_circle_multi);
 	});
 	it('Import shape_ellipse_multi', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_ellipse_multi, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_ellipse_multi);
+		expect(test).toEqual(expected.shape_ellipse_multi);
 	});
 	it('Import shape_polygon_multi', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_polygon_multi, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_polygon_multi);
+		expect(test).toEqual(expected.shape_polygon_multi);
 	});
 	it('Import shape_polyline_multi', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_polyline_multi, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_polyline_multi);
+		expect(test).toEqual(expected.shape_polyline_multi);
 	});
 	it('Import shape_rect_multi', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(shape_rect_multi, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(shape_rect_multi);
+		expect(test).toEqual(expected.shape_rect_multi);
 	});
 });
 
 describe('Import path SVG shapes', () => {
 	it('Import path_A', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_A, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_A);
+		expect(test).toEqual(expected.path_A);
 	});
 	it('Import path_A2', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_A2, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_A2);
+		expect(test).toEqual(expected.path_A2);
 	});
 	it('Import path_Ar', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_Ar, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_Ar);
+		expect(test).toEqual(expected.path_Ar);
 	});
 	it('Import path_Ar2', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_Ar2, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_Ar2);
+		expect(test).toEqual(expected.path_Ar2);
 	});
 	it('Import path_C', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_C, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_C);
+		expect(test).toEqual(expected.path_C);
 	});
 	it('Import path_Cr', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_Cr, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_Cr);
+		expect(test).toEqual(expected.path_Cr);
 	});
 	it('Import path_HV', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_HV, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_HV);
+		expect(test).toEqual(expected.path_HV);
 	});
 	it('Import path_HVr', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_HVr, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_HVr);
+		expect(test).toEqual(expected.path_HVr);
 	});
 	it('Import path_L', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_L, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_L);
+		expect(test).toEqual(expected.path_L);
 	});
 	it('Import path_Lr', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_Lr, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_Lr);
+		expect(test).toEqual(expected.path_Lr);
 	});
 	it('Import path_M', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_M, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_M);
+		expect(test).toEqual(expected.path_M);
 	});
 	it('Import path_Mr', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_Mr, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_Mr);
+		expect(test).toEqual(expected.path_Mr);
 	});
 	it('Import path_Q', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_Q, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_Q);
+		expect(test).toEqual(expected.path_Q);
 	});
 	it('Import path_Qr', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_Qr, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_Qr);
+		expect(test).toEqual(expected.path_Qr);
 	});
 	it('Import path_S', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_S, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_S);
+		expect(test).toEqual(expected.path_S);
 	});
 	it('Import path_Sr', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_Sr, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_Sr);
+		expect(test).toEqual(expected.path_Sr);
 	});
 	it('Import path_T', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_T, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_T);
+		expect(test).toEqual(expected.path_T);
 	});
 	it('Import path_Tr', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(path_Tr, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(path_Tr);
+		expect(test).toEqual(expected.path_Tr);
 	});
 });
 
 describe('Import multi SVG shapes', () => {
 	it('Import multi_shape_1', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(multi_shape_1, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(multi_shape_1);
+		expect(test).toEqual(expected.multi_shape_1);
 	});
 	it('Import multi_shape_2', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(multi_shape_2, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(multi_shape_2);
+		expect(test).toEqual(expected.multi_shape_2);
 	});
 	it('Import multi_shape_3', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(multi_shape_3, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(multi_shape_3);
+		expect(test).toEqual(expected.multi_shape_3);
 	});
 	it('Import multi_shape_4', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(multi_shape_4, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(multi_shape_4);
+		expect(test).toEqual(expected.multi_shape_4);
 	});
 	it('Import multi_shape_5', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(multi_shape_5, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(multi_shape_5);
+		expect(test).toEqual(expected.multi_shape_5);
 	});
 });
 
 describe('Import transformed SVG shapes', () => {
 	it('Import transform_matrix', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_matrix, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_matrix);
+		expect(test).toEqual(expected.transform_matrix);
 	});
 	it('Import transform_translate', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_translate, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_translate);
+		expect(test).toEqual(expected.transform_translate);
 	});
 	it('Import transform_scale', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_scale, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_scale);
+		expect(test).toEqual(expected.transform_scale);
 	});
 	it('Import transform_skewx_position', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_skewx_position, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_skewx_position);
+		expect(test).toEqual(expected.transform_skewx_position);
 	});
 	it('Import transform_skewy_position', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_skewy_position, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_skewy_position);
+		expect(test).toEqual(expected.transform_skewy_position);
 	});
 	it('Import transform_rotate', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_rotate, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_rotate);
+		expect(test).toEqual(expected.transform_rotate);
 	});
 	it('Import transform_skewx', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_skewx, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_skewx);
+		expect(test).toEqual(expected.transform_skewx);
 	});
 	it('Import transform_skewy', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_skewy, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_skewy);
+		expect(test).toEqual(expected.transform_skewy);
 	});
 	it('Import transforms_attribute_order', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transforms_attribute_order, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transforms_attribute_order);
+		expect(test).toEqual(expected.transforms_attribute_order);
 	});
 	it('Import inherited_transforms_one_level_one_transform', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(
-			inherited_transforms_one_level_one_transform,
-			false
-		);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(inherited_transforms_one_level_one_transform);
+		expect(test).toEqual(expected.inherited_transforms_one_level_one_transform);
 	});
 	it('Import inherited_transforms_hierarchy_order', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(inherited_transforms_hierarchy_order, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(inherited_transforms_hierarchy_order);
+		expect(test).toEqual(expected.inherited_transforms_hierarchy_order);
 	});
 	it('Import inherited_transforms_two_levels_one_transform', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(
-			inherited_transforms_two_levels_one_transform,
-			false
-		);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(inherited_transforms_two_levels_one_transform);
+		expect(test).toEqual(expected.inherited_transforms_two_levels_one_transform);
 	});
 	it('Import inherited_transforms_heart', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(inherited_transforms_heart, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(inherited_transforms_heart);
+		expect(test).toEqual(expected.inherited_transforms_heart);
 	});
 	it('Import inherited_transforms_mixed_levels_and_transforms', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(
-			inherited_transforms_mixed_levels_and_transforms,
-			false
-		);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(inherited_transforms_mixed_levels_and_transforms);
+		expect(test).toEqual(expected.inherited_transforms_mixed_levels_and_transforms);
 	});
 	it('Import transform_origin_matrix', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_origin_matrix, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_origin_matrix);
+		expect(test).toEqual(expected.transform_origin_matrix);
 	});
 	it('Import transform_origin_rotate', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_origin_rotate, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_origin_rotate);
+		expect(test).toEqual(expected.transform_origin_rotate);
 	});
 	it('Import transform_origin_rotate_two_origins', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_origin_rotate_two_origins, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_origin_rotate_two_origins);
+		expect(test).toEqual(expected.transform_origin_rotate_two_origins);
 	});
 	it('Import transform_origin_scale', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_origin_scale, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_origin_scale);
+		expect(test).toEqual(expected.transform_origin_scale);
 	});
 	it('Import transform_origin_skewx', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_origin_skewx, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_origin_skewx);
+		expect(test).toEqual(expected.transform_origin_skewx);
 	});
 	it('Import transform_origin_skewy', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_origin_skewy, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_origin_skewy);
+		expect(test).toEqual(expected.transform_origin_skewy);
 	});
 	it('Import transform_origin_translate', () => {
-		const resultGlyph = ioSVG_convertSVGTagsToGlyph(transform_origin_translate, false);
-		expect(resultGlyph?.shapes?.length).toBeTruthy();
+		const test = importAndMakeSVGTestString(transform_origin_translate);
+		expect(test).toEqual(expected.transform_origin_translate);
 	});
 });
