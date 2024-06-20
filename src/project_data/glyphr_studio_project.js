@@ -621,6 +621,10 @@ export class GlyphrStudioProject {
 		return result;
 	}
 
+	/**
+	 * Figures out what the Session State should be for each item
+	 * in the project.
+	 */
 	resetSessionStateForAllItems() {
 		this.forEachItem((item) => {
 			if (item.shapes.length === 0 && item.advanceWidth === 0) {
@@ -633,6 +637,12 @@ export class GlyphrStudioProject {
 		});
 	}
 
+	/**
+	 * Generic way of iterating over all Glyph items
+	 * (Characters, Components, Ligatures) in this project.
+	 * @param {Function} fun - function to run
+	 * @returns {Array} aggregate collection of stuff returned from each function
+	 */
 	forEachItem(fun) {
 		// log(`GlyphrStudioProject.forEachItem`, 'start');
 		// console.time('forEachItem');
