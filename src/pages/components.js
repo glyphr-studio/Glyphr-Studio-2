@@ -279,7 +279,7 @@ export function makeComponentID() {
 export function showAddComponentDialog() {
 	const content = makeElement({
 		innerHTML: `
-			<h2>Add a new component</h2>
+			<h2>Create a new component</h2>
 				Specify a name to create a new component:
 				<br><br>
 				<input id="components__new-component-input" type="text"
@@ -311,6 +311,8 @@ export function showAddComponentDialog() {
 			editor.selectedComponentID = result.id;
 			editor.navigate();
 			editor.history.addWholeProjectChangePostState();
+			result.hasChangedThisSession = false;
+			result.wasCreatedThisSession = true;
 			closeEveryTypeOfDialog();
 		}
 	});

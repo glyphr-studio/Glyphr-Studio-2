@@ -45,7 +45,7 @@ export class GlyphrStudioApp {
 			dev: {
 				// Internal Dev Stuff
 				mode: config.devMode, // {bool} global switch for all the stuff below
-				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
+				overwriteTitle: false, // {bool} Use a 'Dev Mode' window title
 				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
 				currentPage: false, // {Sentence case page name} navigate straight to a page
@@ -269,7 +269,7 @@ export class GlyphrStudioApp {
 			window.localStorage.setItem('GlyphrStudio', JSON.stringify(data));
 		} catch (error) {
 			showToast(
-				`This project is too large to be auto-saved. The auto-save option has been turned off in Settings > App.`
+				`There is not enough space for this project to be auto-saved. The auto-save option has been turned off in Settings > App.`
 			);
 			getCurrentProject().settings.app.autoSave = false;
 		}

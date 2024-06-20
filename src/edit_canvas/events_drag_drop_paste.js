@@ -29,7 +29,7 @@ export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 		// log(`updated item glyph`);
 		// log(editor.selectedItem);
 
-		editor.history.addState('Pasted SVG to glyph ' + editor.selectedItem.name);
+		editor.history.addState('Imported SVG to glyph ' + editor.selectedItem.name);
 		const msShapes = editor.multiSelect.shapes;
 		msShapes.clear();
 		newShapes.forEach((shape) => msShapes.add(shape));
@@ -39,7 +39,7 @@ export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 		}
 
 		editor.publish('currentItem', editor.selectedItem);
-		showToast(`Pasted ${tempGlyph.shapes.length} shapes from ${sourceText}`);
+		showToast(`Imported ${tempGlyph.shapes.length} shapes from ${sourceText}`);
 	} else {
 		showToast('Could not import pasted SVG code.');
 	}
@@ -97,16 +97,16 @@ export function handleDropSVGonEditCanvas(event) {
 
 	cancelDefaultEventActions(event);
 
-	const transfer = event.dataTransfer;
-	const file = transfer.files[0];
-	// log('\t filename: ' + file.name);
-	const fileName = file.name.split('.');
-	const fileType = fileName[fileName.length - 1].toLowerCase();
-	// log('\t fileName = ' + fileName);
+	const filesInput = event.dataTransfer;
+	const file = filesInput.files[0] || '';
+	// log('\t filename: ' + f.name);
+	let fileSuffix = file.name.split('.');
+	fileSuffix = fileSuffix[fileSuffix.length - 1].toLowerCase();
+	// log('\t fileSuffix = ' + fileSuffix);
 
 	const reader = new FileReader();
 
-	if (fileType === 'svg') {
+	if (fileSuffix === 'svg') {
 		reader.onload = function () {
 			importSVGtoCurrentItem(reader.result.toString(), '<br>from the dropped SVG file');
 		};

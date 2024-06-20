@@ -1,5 +1,6 @@
 import { addCrossProjectCopyShapeOptionControls } from '../app/cross_project_actions/action_copy_shapes.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getFilesFromFilePicker } from '../app/open_project.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import {
@@ -9,6 +10,7 @@ import {
 	showToast,
 } from '../controls/dialogs/dialogs.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
+import { importSVGtoCurrentItem } from '../edit_canvas/events_drag_drop_paste.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { addComponent } from '../pages/components.js';
 import {
@@ -27,6 +29,7 @@ import {
 } from '../project_editor/cross_item_actions.js';
 import { saveTextFile } from '../project_editor/file_io.js';
 import { makeActionButton } from './action_buttons.js';
+import { makeSingleLabel } from './cards.js';
 import { makeAllItemTypeChooserContent } from './item_chooser.js';
 import { refreshPanel } from './panels.js';
 
@@ -215,6 +218,57 @@ export function getActionData(name) {
 					let content = makeGlyphSVGforExport(editor.selectedItem);
 					let name = editor.selectedItem.name;
 					saveTextFile(name + '.svg', content);
+				},
+			},
+			{
+				iconName: 'importGlyphSVG',
+				title: `Import paths from a SVG File\nUsing the file picker dialog, select a SVG file. Outlines will be imported and added to this glyph.`,
+				onClick: async () => {
+					getFilesFromFilePicker(
+						async (files) => {
+							// log(`ACTION importGlyphSVG`, 'start');
+							// log(files);
+							let file;
+							if (files[0]) {
+								let fileInput = files[0];
+								// log(fileInput);
+								if (fileInput.getFile) file = await fileInput.getFile();
+								else if (fileInput.getAsFile) file = await fileInput.getAsFile();
+								else file = fileInput;
+							} else {
+								showError(`No files were found that could be imported.`);
+							}
+							// log(file);
+							let fileSuffix = file.name.split('.');
+							fileSuffix = fileSuffix[fileSuffix.length - 1].toLowerCase();
+							// log('\t fileSuffix = ' + fileSuffix);
+
+							const reader = new FileReader();
+
+							if (fileSuffix === 'svg') {
+								reader.onload = function () {
+									importSVGtoCurrentItem(reader.result, '<br>from the imported SVG file');
+								};
+
+								reader.readAsText(file);
+							} else {
+								showToast('Only SVG files can be imported to a glyph.');
+							}
+						},
+						{
+							types: [
+								{
+									description: 'SVG Files',
+									accept: {
+										'image/svg+xml': ['.svg'],
+									},
+								},
+							],
+							excludeAcceptAllOption: true,
+							multiple: false,
+						}
+					);
+					// log(`ACTION importGlyphSVG`, 'end');
 				},
 			},
 		];
@@ -1003,19 +1057,28 @@ function showDialogChooseOtherItem(type) {
 	// log(`type: ${type}`);
 
 	let content = makeElement({
-		innerHTML: '<h2>Choose another glyph</h2>',
+		innerHTML: `<h2>Choose another glyph</h2>`,
 	});
 	let onClick;
 
 	if (type === 'copyPaths') {
 		content.innerHTML += `All the paths from the glyph you select will be copied and pasted into this glyph.<br><br>`;
+		addCopyActionsForChooseOtherItem(content);
 		onClick = (itemID) => {
 			const editor = getCurrentProjectEditor();
 			const otherItem = editor.project.getItem(itemID);
+			if (!otherItem || otherItem.shapes.length === 0) {
+				showToast(`Item doesn't exist, or has no shapes.`);
+				return;
+			}
 			const thisItem = editor.selectedItem;
+			const oldRSB = thisItem.rightSideBearing;
 			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
 			editor.multiSelect.shapes.clear();
 			newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+			if (document.querySelector('#checkbox-maintain-rsb').checked) {
+				thisItem.rightSideBearing = oldRSB;
+			}
 			editor.publish('currentItem', thisItem);
 			editor.history.addState(`Paths were copied from ${otherItem.name}.`);
 			closeEveryTypeOfDialog();
@@ -1026,6 +1089,8 @@ function showDialogChooseOtherItem(type) {
 	if (type === 'addAsComponentInstance') {
 		// log(`Dialog addAsComponentInstance`, 'start');
 		content.innerHTML += `The glyph you select will be treated as a root component, and added to this glyph as a component instance.<br><br>`;
+		addCopyActionsForChooseOtherItem(content);
+
 		onClick = (itemID) => {
 			const editor = getCurrentProjectEditor();
 			let otherItem = editor.project.getItem(itemID);
@@ -1034,6 +1099,7 @@ function showDialogChooseOtherItem(type) {
 				otherItem = editor.project.getItem(itemID);
 			}
 			const thisItem = editor.selectedItem;
+			const oldRSB = thisItem.rightSideBearing;
 
 			editor.history.addWholeProjectChangePreState(
 				`Component instance was linked from ${otherItem.name}.`
@@ -1042,6 +1108,9 @@ function showDialogChooseOtherItem(type) {
 			if (newInstance) {
 				editor.publish('currentItem', thisItem);
 				editor.multiSelect.shapes.add(newInstance);
+				if (document.querySelector('#checkbox-maintain-rsb').checked) {
+					thisItem.rightSideBearing = oldRSB;
+				}
 				editor.history.addWholeProjectChangePostState();
 				closeEveryTypeOfDialog();
 				showToast(`Component instance linked from<br>${otherItem.name}`);
@@ -1099,6 +1168,35 @@ function showDialogChooseOtherItem(type) {
 	content.appendChild(scrollArea);
 	showModalDialog(content);
 	// log(`showDialogChooseOtherItem`, 'end');
+}
+
+function addCopyActionsForChooseOtherItem(parent) {
+	parent.appendChild(
+		makeElement({
+			tag: 'strong',
+			content: 'Copy options:',
+			style: 'display: inline-block; margin-bottom: 10px;',
+		})
+	);
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(
+		makeElement({
+			tag: 'input',
+			attributes: { type: 'checkbox' },
+			className: 'copy-shapes-options__checkbox',
+			id: 'checkbox-maintain-rsb',
+		})
+	);
+	parent.appendChild(
+		makeSingleLabel(
+			`Maintain right side bearing, accounting for the width of the added items.`,
+			false,
+			'checkbox-maintain-rsb',
+			'copy-shapes-options__label'
+		)
+	);
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(makeElement({ tag: 'br' }));
 }
 
 function showDialogChooseItemFromOtherProject() {
@@ -1172,7 +1270,8 @@ function showDialogChooseItemFromOtherProject() {
 	const chooserArea = makeAllItemTypeChooserContent(
 		onClick,
 		'Characters',
-		getGlyphrStudioApp().otherProjectEditor
+		getGlyphrStudioApp().otherProjectEditor,
+		true
 	);
 	scrollArea.appendChild(chooserArea);
 	content.appendChild(scrollArea);

@@ -90,13 +90,33 @@
 	width: 300px;
 	height: 28px;
 	padding: 2px 0px 0px 4px;
-	color: var(--gray-45);
 	position: relative;
 	left: -1px;
+	color: var(--enabled-restingLight-text);
 }
 
 .wrapper[selected] .name,
+.wrapper[selected][session-state='notCreated'] .name,
+.wrapper[selected][session-state='new'] .name,
+.wrapper[selected][session-state='changed'] .name,
 .wrapper:hover .name {
 	color: var(--blue-l40);
 	background-color: var(--blue-l90);
 }
+
+/* Metadata styles */
+.wrapper[session-state='notCreated'] .name {
+	color: var(--disabled-text-light);
+}
+
+.wrapper[session-state='new'] .name {
+	color: var(--green-l60);
+}
+
+.wrapper[session-state='changed'] .name {
+	color: var(--purple-l50);
+}
+/*
+.wrapper[has-changed = "false"] .thumbnail {
+	background-color: var(--gray-l99) !important;
+} */

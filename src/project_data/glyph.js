@@ -1,4 +1,4 @@
-import { hexesToChars } from '../common/character_ids.js';
+import { hexesToChars, isHex } from '../common/character_ids.js';
 import {
 	calculateDeltasFromTransform,
 	hasNonValues,
@@ -57,6 +57,7 @@ export class Glyph extends GlyphElement {
 		super();
 		this.id = id;
 		this.parent = parent;
+		this.objType = objType;
 		this.name = name;
 		this.shapes = shapes;
 		this.advanceWidth = advanceWidth;
@@ -66,7 +67,21 @@ export class Glyph extends GlyphElement {
 		this.gsub = gsub;
 		this.contextCharacters = contextCharacters;
 
-		this.objType = objType;
+		// Changed state metadata
+		this.hasChangedThisSession = false;
+		this.wasCreatedThisSession = true;
+
+		if (this.id && this.id.startsWith('liga-') && this.gsub.length === 0) {
+			// A ligature that is missing it's gsub property
+			let charArr = this.id.split('-');
+			charArr.shift();
+			// log(`\n⮟charArr⮟`);
+			// log(charArr);
+			this.gsub = charArr.map((value) => {
+				if (isHex(value)) return Number(value);
+				else return value.codePointAt(0);
+			});
+		}
 		// log(`this.id: ${this.id}`);
 		// log(`this.ident: ${this.ident}`);
 		// log(this.print());
@@ -215,6 +230,16 @@ export class Glyph extends GlyphElement {
 	}
 
 	// computed properties
+
+	/**
+	 * Calculates session edit state
+	 * @returns {String}
+	 */
+	get sessionState() {
+		if (this.hasChangedThisSession === true) return 'changed';
+		if (this.wasCreatedThisSession === true) return 'new';
+		return 'old';
+	}
 
 	/**
 	 * Get X position

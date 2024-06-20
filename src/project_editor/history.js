@@ -98,14 +98,12 @@ export class History {
 		const undoButton = document.querySelector('#actionButtonUndo');
 		if (undoButton) undoButton.removeAttribute('disabled');
 
-		if (typeof editor.project !== 'boolean') {
-			if (editor.project.settings.app.autoSave) {
-				const app = getGlyphrStudioApp();
-				if (app.settings.dev.mode && app.settings.dev.autoSave) {
-					app.addAutoSaveState();
-				} else {
-					app.addAutoSaveState();
-				}
+		if (editor.project.settings.app.autoSave) {
+			const app = getGlyphrStudioApp();
+			if (app.settings.dev.mode) {
+				if (app.settings.dev.autoSave) app.addAutoSaveState();
+			} else {
+				app.addAutoSaveState();
 			}
 		}
 	}
