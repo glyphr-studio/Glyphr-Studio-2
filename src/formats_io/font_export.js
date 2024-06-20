@@ -123,6 +123,16 @@ function createOptionsObject() {
 	// log('createOptionsObject', 'end');
 }
 
+export function shouldExportItem(item) {
+	if (item.sessionState === 'new') {
+		return !!getCurrentProject().settings.app.exportUneditedItems;
+	}
+
+	if (item) return true;
+
+	return false;
+}
+
 /**
  * Looks through the project and creates a list
  * of items that should be exported.
@@ -141,7 +151,7 @@ function populateExportList() {
 			range.getMemberIDs().forEach((hexID) => {
 				if (checklist.indexOf(hexID) === -1) {
 					const thisGlyph = project.getItem(`glyph-${hexID}`);
-					if (thisGlyph) {
+					if (shouldExportItem(thisGlyph)) {
 						exportGlyphs.push({ xg: thisGlyph, xc: hexID });
 						checklist.push(hexID);
 					}
@@ -161,9 +171,11 @@ function populateExportList() {
 			if (project.ligatures[key].gsub.length > 1) {
 				const thisLigature = project.ligatures[key];
 				// log(`\t adding ligature "${thisLigature.name}"`);
-				exportLigatures.push({ xg: thisLigature, xc: key, chars: thisLigature.chars });
 
-				/*
+				if (shouldExportItem(thisLigature)) {
+					exportLigatures.push({ xg: thisLigature, xc: key, chars: thisLigature.chars });
+
+					/*
 					When exporting to OTF, if a ligature depends on certain
 					characters, and one or more of those characters do not
 					exist in the font, it causes an error.
@@ -171,18 +183,19 @@ function populateExportList() {
 					Ligature source characters, and if some are missing, it
 					will create blank Glyphs for them.
 				 */
-				project.ligatures[key].gsub.forEach((charID) => {
-					const hexID = '' + decToHex(charID);
-					const id = `glyph-${hexID}`;
-					if (!project.glyphs[id]) {
-						// log(`No glyph found for charID ${charID} id ${id}`);
-						const newGlyph = project.addItemByType(new Glyph({ id: id }), 'Glyph', id);
-						if (!checklist.includes(hexID)) {
-							exportGlyphs.push({ xg: newGlyph, xc: hexID });
-							checklist.push(hexID);
+					project.ligatures[key].gsub.forEach((charID) => {
+						const hexID = '' + decToHex(charID);
+						const id = `glyph-${hexID}`;
+						if (!project.glyphs[id]) {
+							// log(`No glyph found for charID ${charID} id ${id}`);
+							const newGlyph = project.addItemByType(new Glyph({ id: id }), 'Glyph', id);
+							if (!checklist.includes(hexID)) {
+								exportGlyphs.push({ xg: newGlyph, xc: hexID });
+								checklist.push(hexID);
+							}
 						}
-					}
-				});
+					});
+				}
 			} else {
 				console.warn(`
 				Skipped exporting ligature ${project.ligatures[key].name}.

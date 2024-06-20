@@ -16,7 +16,7 @@ import {
 	drawPathPointHover,
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
-import { eventHandlerData, initEventHandlers } from './events.js';
+import { cancelDefaultEventActions, eventHandlerData, initEventHandlers } from './events.js';
 import { handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
 
 /**
@@ -66,6 +66,25 @@ export class EditCanvas extends HTMLElement {
 		this.canvas.setAttribute('contenteditable', 'true');
 		this.canvas.addEventListener('paste', handlePasteSVGonEditCanvas, false);
 		this.addEventListener('paste', handlePasteSVGonEditCanvas, false);
+
+		// These are handled by the EditCanvas element, not the canvas in the Element
+		// Fixes a FireFox default behavior that caused issues with dragging
+		[
+			'mousedown',
+			'mousemove',
+			'mouseup',
+			'mouseover',
+			'mouseout',
+			'wheel',
+			'drop',
+			'dragenter',
+			'dragover',
+			'drag',
+			'keydown',
+			'keyup',
+		].forEach((eventName) => {
+			this.canvas.addEventListener(eventName, cancelDefaultEventActions);
+		});
 
 		const styles = makeElement({
 			tag: 'style',

@@ -380,7 +380,7 @@ export function makeLigatureID(sequence = '') {
 export function showAddLigatureDialog() {
 	const content = makeElement({
 		innerHTML: `
-			<h2>Add a new ligature</h2>
+			<h2>Create a new ligature</h2>
 			Create a new ligature by specifying two or more individual characters:
 			<br><br>
 			<input id="ligatures__new-ligature-input" type="text"
@@ -430,6 +430,8 @@ export function showAddLigatureDialog() {
 			editor.selectedLigatureID = result.id;
 			editor.navigate();
 			editor.history.addWholeProjectChangePostState();
+			result.hasChangedThisSession = false;
+			result.wasCreatedThisSession = true;
 			closeEveryTypeOfDialog();
 		}
 		// log(`showAddLigatureDialog button click handler`, 'end');

@@ -78,7 +78,7 @@ export function makePage_OpenProject(secondProjectFlag = false) {
 
 	dropNote.addEventListener('drop', (/** @type {DragEvent} */ event) => {
 		cancelDefaultEventActions(event);
-		handleFileInput(event?.dataTransfer?.items || []);
+		handleOpenProjectPageFileInput(event?.dataTransfer?.items || []);
 	});
 	dropNote.addEventListener('dragleave', handleDragLeave);
 
@@ -171,23 +171,7 @@ export function makeOpenProjectTabs() {
 		attributes: { dark: '' },
 		innerHTML: 'or, open file chooser...',
 		onClick: async () => {
-			// @ts-ignore
-			if (window.showOpenFilePicker) {
-				// @ts-ignore
-				const files = await window.showOpenFilePicker();
-				handleFileInput(files);
-			} else {
-				// showError(`Can't open OS File Picker. Try dragging and dropping a file instead.`);
-				// @ts-ignore
-				const fallbackFileChooser = makeElement({ tag: 'input', attributes: { type: 'file' } });
-				fallbackFileChooser.addEventListener('change', (event) => {
-					// log(fallbackFileChooser.files);
-					cancelDefaultEventActions(event);
-					// @ts-ignore
-					handleFileInput(fallbackFileChooser.files);
-				});
-				fallbackFileChooser.click();
-			}
+			getFilesFromFilePicker(handleOpenProjectPageFileInput);
 		},
 	});
 
@@ -336,6 +320,22 @@ export function makeOpenProjectTabs() {
 	return tabWrapper;
 }
 
+export async function getFilesFromFilePicker(callback, pickerOptions = {}) {
+	if (window.showOpenFilePicker) {
+		const files = await window.showOpenFilePicker(pickerOptions);
+		callback(files);
+	} else {
+		// showError(`Can't open OS File Picker. Try dragging and dropping a file instead.`);
+		const fallbackFileChooser = makeElement({ tag: 'input', attributes: { type: 'file' } });
+		fallbackFileChooser.addEventListener('change', (event) => {
+			// log(fallbackFileChooser.files);
+			cancelDefaultEventActions(event);
+			callback(fallbackFileChooser.files);
+		});
+		fallbackFileChooser.click();
+	}
+}
+
 /**
  * Sets all the tabs to deselected and hides all the tab contents
  */
@@ -351,8 +351,8 @@ function deselectAllTabs() {
  * Handle file input or drop
  * @param {Object} files - event from drop, or fileHandle from showOpenFilePicker
  */
-async function handleFileInput(files) {
-	// log('handleFileInput', 'start');
+async function handleOpenProjectPageFileInput(files) {
+	// log('handleOpenProjectPageFileInput', 'start');
 	// log(`\n⮟files⮟`);
 	// log(files);
 
@@ -378,7 +378,7 @@ async function handleFileInput(files) {
 	// log(fileResult);
 	validateSingleFileInput(fileResult, postValidationCallback);
 
-	// log('handleFileInput', 'end');
+	// log('handleOpenProjectPageFileInput', 'end');
 }
 
 function postValidationCallback(validationResult) {
@@ -420,6 +420,8 @@ export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	} else {
 		editor.project = importGlyphrProjectFromText(glyphrStudioProjectFile);
 	}
+
+	editor.project.resetSessionStateForAllItems();
 	editor.nav.page = 'Overview';
 	if (isSecondProject) showToast(`Switched to<br>${editor.project.settings.project.name}`);
 	updateWindowUnloadEvent();

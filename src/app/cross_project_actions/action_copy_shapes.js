@@ -38,7 +38,7 @@ export function updateContent_copyShapes(parent) {
 	// Range chooser
 	parent.appendChild(
 		makeItemAndRangeChooser({ showLigatures: true }, () => {
-			let table = document.querySelector('#cross-project-actions__character-copy-table');
+			let table = document.getElementById('cross-project-actions__character-action-table');
 			updateCharacterCopyTable(table);
 		})
 	);
@@ -46,7 +46,7 @@ export function updateContent_copyShapes(parent) {
 	// Table
 	const table = makeElement({
 		className: 'cross-project-actions__column-layout',
-		id: 'cross-project-actions__character-copy-table',
+		id: 'cross-project-actions__character-action-table',
 	});
 	updateCharacterCopyTable(table);
 	parent.appendChild(table);
@@ -286,7 +286,18 @@ function copyShapes() {
 	// log(`Cross Project Actions - copyShapes`, 'start');
 	// log(`\n⮟selectedItemIDs⮟`);
 	// log(selectedItemIDs);
-	const emRatio =
+
+	if (selectedItemIDs.length === 0) {
+		showToast(
+			`
+			No items selected.<br>Use the checkboxes on each row to select items,
+			or use the checkbox at the top of the column to select all.`,
+			6000
+		);
+		return;
+	}
+
+	let emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
 	// log(`emRatio: ${emRatio}`);
 

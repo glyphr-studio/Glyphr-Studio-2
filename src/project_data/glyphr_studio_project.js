@@ -47,6 +47,7 @@ export class GlyphrStudioProject {
 				previewText: false,
 				exportLigatures: true,
 				exportKerning: true,
+				exportUneditedItems: true,
 				moveShapesOnSVGDragDrop: false,
 				guides: {
 					drawGuidesOnTop: false,
@@ -372,7 +373,8 @@ export class GlyphrStudioProject {
 		newItem.id = newID;
 		newItem.objType = objType;
 		newItem.parent = this;
-		if (destination) destination[newID] = newItem;
+		newItem.wasCreatedThisSession = false;
+		destination[newID] = newItem;
 
 		return destination[newID];
 	}
@@ -519,7 +521,7 @@ export class GlyphrStudioProject {
 		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;
 		const translateX = (size - itemWidth * scale) / 2;
 		const translateY = itemHeight * scale - padding;
-		const svg = item?.svgPathData || 'M0,0 H100 V100 H-100 V-100';
+		const svg = item?.svgPathData || 'M0,0Z';
 		// log(`itemWidth: ${itemWidth}`);
 		// log(svg);
 
@@ -619,6 +621,18 @@ export class GlyphrStudioProject {
 		return result;
 	}
 
+	resetSessionStateForAllItems() {
+		this.forEachItem((item) => {
+			if (item.shapes.length === 0 && item.advanceWidth === 0) {
+				item.wasCreatedThisSession = true;
+			} else {
+				item.wasCreatedThisSession = false;
+			}
+			item.hasChangedThisSession = false;
+			// log(item);
+		});
+	}
+
 	forEachItem(fun) {
 		// log(`GlyphrStudioProject.forEachItem`, 'start');
 		// console.time('forEachItem');
@@ -707,12 +721,21 @@ export class GlyphrStudioProject {
  */
 export function sortLigatures(a, b) {
 	// log(`sortLigatures`, 'start');
-	// log(`a: ${a.chars}`);
-	// log(`b: ${b.chars}`);
+	// log(`\n⮟a⮟`);
+	// log(a);
+	// log(`\n⮟b⮟`);
+	// log(b);
+
+	if (a.chars === false || b.chars === false) {
+		console.warn('Ligature is missing root characters');
+		console.warn(a);
+		console.warn(b);
+		// log(`sortLigatures`, 'end');
+		return 0;
+	}
 
 	if (a.chars.length === b.chars.length) {
 		// log(`same length`);
-
 		// log(`sortLigatures`, 'end');
 		return a.chars.localeCompare(b.chars);
 	} else {
