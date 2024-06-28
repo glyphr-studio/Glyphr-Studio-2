@@ -21,7 +21,9 @@ describe('OTF Font', () => {
 	});
 
 	it('Import: Oblegg Extended Test', async () => {
-		const loadResult = opentype.loadSync('./src/formats_io/font_tests/ObleggExtendedTestRegular.otf');
+		const loadResult = opentype.loadSync(
+			'./src/formats_io/font_tests/ObleggExtendedTestRegular.otf'
+		);
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 
