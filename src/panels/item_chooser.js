@@ -19,7 +19,7 @@ let savedRegisterSubscriptions;
 
 export function makeAllItemTypeChooserContent(
 	clickHandler,
-	type = false,
+	type = '',
 	editor = getCurrentProjectEditor(),
 	isSecondaryProject = false
 ) {
