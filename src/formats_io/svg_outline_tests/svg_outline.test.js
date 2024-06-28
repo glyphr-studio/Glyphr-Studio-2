@@ -1,5 +1,4 @@
 import { describe } from 'vitest';
-import 'vitest-canvas-mock';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outline_import.js';
 import { expected } from './svg_expected_results.js';
 
