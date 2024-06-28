@@ -98,22 +98,27 @@ export function handleDropSVGonEditCanvas(event) {
 	cancelDefaultEventActions(event);
 
 	const filesInput = event.dataTransfer;
-	const file = filesInput.files[0] || '';
+	const file = filesInput.files[0];
 	// log('\t filename: ' + f.name);
-	let fileSuffix = file.name.split('.');
-	fileSuffix = fileSuffix[fileSuffix.length - 1].toLowerCase();
-	// log('\t fileSuffix = ' + fileSuffix);
 
-	const reader = new FileReader();
+	if (file?.name) {
+		const fileNameParts = file.name.split('.');
+		const fileSuffix = fileNameParts[fileNameParts.length - 1].toLowerCase();
+		// log('\t fileSuffix = ' + fileSuffix);
 
-	if (fileSuffix === 'svg') {
-		reader.onload = function () {
-			importSVGtoCurrentItem(reader.result.toString(), '<br>from the dropped SVG file');
-		};
+		const reader = new FileReader();
 
-		reader.readAsText(file);
+		if (fileSuffix === 'svg') {
+			reader.onload = function () {
+				importSVGtoCurrentItem(reader.result.toString(), '<br>from the dropped SVG file');
+			};
+
+			reader.readAsText(file);
+		} else {
+			showToast('Only SVG files can be dropped on the canvas');
+		}
 	} else {
-		showToast('Only SVG files can be dropped on the canvas');
+		showToast('Error reading file.');
 	}
 	// log(`handleDropSVGonEditCanvas`, 'end');
 }

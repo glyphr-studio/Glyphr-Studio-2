@@ -247,7 +247,7 @@ export function getActionData(name) {
 
 							if (fileSuffix === 'svg') {
 								reader.onload = function () {
-									importSVGtoCurrentItem(reader.result, '<br>from the imported SVG file');
+									importSVGtoCurrentItem(reader.result.toString(), '<br>from the imported SVG file');
 								};
 
 								reader.readAsText(file);
@@ -1076,6 +1076,7 @@ function showDialogChooseOtherItem(type) {
 			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
 			editor.multiSelect.shapes.clear();
 			newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+			/** @ts-ignore */
 			if (document.querySelector('#checkbox-maintain-rsb').checked) {
 				thisItem.rightSideBearing = oldRSB;
 			}
@@ -1108,6 +1109,7 @@ function showDialogChooseOtherItem(type) {
 			if (newInstance) {
 				editor.publish('currentItem', thisItem);
 				editor.multiSelect.shapes.add(newInstance);
+				/** @ts-ignore */
 				if (document.querySelector('#checkbox-maintain-rsb').checked) {
 					thisItem.rightSideBearing = oldRSB;
 				}

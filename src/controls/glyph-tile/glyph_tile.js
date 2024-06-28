@@ -57,7 +57,6 @@ export class GlyphTile extends HTMLElement {
 
 		// Selection
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
-		if (this.isSecondaryProject) this.removeAttribute('selected');
 
 		if (this.glyph && this.glyph.hasChangedThisSession === true) {
 			this.setAttribute('title', `${name}\n${displayedItemID}${sessionMessage}`);
