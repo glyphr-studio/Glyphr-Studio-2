@@ -22,14 +22,14 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
   exporting OTF files.
   - This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js
     (except for shape combine actions).
-- The app build will output HTML, JavaScript, CSS, and asset files files:
+- The app build will output HTML, JavaScript, CSS, and asset files:
   - Continuing the ability to run on a local server (or online) without a back-end.
   - Build process using Vite for modules.
 
-## Timeline
+## Timeline / Retrospective
 
 While most user scenarios and functionality are the same as v1, the one main
-functionality improvement will be **multi-project editing** that will allow for
+functionality improvement for v2 was **multi-project editing** that allows for
 cross-project copy/paste and merging fonts.
 
 The overall goal for v2 is codebase modernization. Much of the v1 code hasn't been
