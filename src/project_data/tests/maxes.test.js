@@ -3,6 +3,7 @@ import {
 	Maxes,
 	getOverallMaxes,
 	isAllZeros,
+	isMaxes,
 	maxesMaxBounds,
 	maxesMinBounds,
 	maxesOverlap,
@@ -83,6 +84,25 @@ describe('Maxes', () => {
 		const formattedString = maxes.print();
 
 		expect(formattedString).toBe('{xMin:1 xMax:3 yMin:2 yMax:4}');
+	});
+});
+
+describe('isMaxes', () => {
+	it('should return true for a Maxes object', () => {
+		const maxes1 = new Maxes({ xMin: 1, xMax: 3, yMin: 2, yMax: 4 });
+		expect(isMaxes(maxes1)).toBe(true);
+	});
+
+	it('should return true for a Maxes-like object', () => {
+		expect(isMaxes({ xMin: 1, xMax: 3, yMin: 2, yMax: 4 })).toBe(true);
+	});
+
+	it('should return false for a nearly-Maxes-like object', () => {
+		expect(isMaxes({ xMin: 1, xMax: 3, yMin: 2})).toBe(false);
+	});
+
+	it('should return false for random objects', () => {
+		expect(isMaxes({'name': 'value'})).toBe(false);
 	});
 });
 
