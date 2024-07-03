@@ -2,7 +2,12 @@ import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { ioFont_exportFont } from '../formats_io/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
-import { clipboardCopy, clipboardPaste, deleteSelectedPaths, deleteSelectedPoints } from '../panels/actions.js';
+import {
+	clipboardCopy,
+	clipboardPaste,
+	deleteSelectedPaths,
+	deleteSelectedPoints,
+} from '../panels/actions.js';
 import {
 	cancelDefaultEventActions,
 	eventHandlerData,
@@ -77,7 +82,6 @@ export function handleKeyPress(event) {
 	}
 
 	// Ctrl+A - Select All
-
 	if (ehd.isCtrlDown && key === 'a') {
 		if (ehd.isMouseOverCanvas) {
 			if (editMode === 'arrow') {
@@ -98,24 +102,24 @@ export function handleKeyPress(event) {
 		if (!ehd.isPanning) togglePanOn(event);
 	}
 
-	if (key === 'esc') {
+	if (key === 'Escape') {
 		closeEveryTypeOfDialog();
 	}
 
 	// z
-	if (key === 'undo' || (ehd.isCtrlDown && key === 'z')) {
+	if (key === 'Undo' || (ehd.isCtrlDown && key === 'z')) {
 		cancelDefaultEventActions(event);
 		editor.history.restoreState();
 	}
 
 	// plus
-	if (ehd.isCtrlDown && key === 'plus') {
+	if (ehd.isCtrlDown && key === 'Plus') {
 		cancelDefaultEventActions(event);
 		editor.updateViewZoom(1.1);
 	}
 
 	// minus
-	if (ehd.isCtrlDown && key === 'minus') {
+	if (ehd.isCtrlDown && key === 'Minus') {
 		cancelDefaultEventActions(event);
 		editor.updateViewZoom(0.9);
 	}
@@ -127,25 +131,25 @@ export function handleKeyPress(event) {
 	}
 
 	// left
-	if (key === 'left' && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowLeft' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(-1, 0);
 	}
 
 	// right
-	if (key === 'right' && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowRight' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(1, 0);
 	}
 
 	// up
-	if (key === 'up' && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowUp' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, 1);
 	}
 
 	// down
-	if (key === 'down' && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowDown' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, -1);
 	}
@@ -157,7 +161,7 @@ export function handleKeyPress(event) {
 
 	if (ehd.isMouseOverCanvas) {
 		// del
-		if (key === 'del' || key === 'backspace') {
+		if (key === 'Delete' || key === 'Backspace') {
 			cancelDefaultEventActions(event);
 
 			if (editMode === 'pen') {
@@ -167,13 +171,13 @@ export function handleKeyPress(event) {
 			}
 		}
 
-		// ctrl + c
+		// control + c
 		if (ehd.isCtrlDown && key === 'c') {
 			cancelDefaultEventActions(event);
 			clipboardCopy();
 		}
 
-		// ctrl + v
+		// control + v
 		if (ehd.isCtrlDown && key === 'v') {
 			// log(`\n⮟editor.clipboard⮟`);
 			// log(editor.clipboard);
@@ -199,45 +203,43 @@ export function handleKeyPress(event) {
  */
 export function getKeyFromEvent(event) {
 	// log(`getKeyFromEvent`, 'start');
-	// log(`event.keyCode: ${event.keyCode}`);
-	// log(`event.which: ${event.which}`);
-	// for 91, 93, 224 'meta' keys, return 'ctrl'
-	let specialGlyphs = {
-		8: 'backspace',
-		9: 'tab',
-		13: 'enter',
-		16: 'shift',
-		17: 'ctrl',
-		18: 'alt',
-		20: 'capslock',
-		26: 'undo',
-		27: 'esc',
-		32: 'space',
-		33: 'pageup',
-		34: 'pagedown',
-		35: 'end',
-		36: 'home',
-		37: 'left',
-		38: 'up',
-		39: 'right',
-		40: 'down',
-		45: 'ins',
-		46: 'del',
-		48: '0',
-		91: 'ctrl',
-		93: 'ctrl',
-		96: '0',
-		107: 'plus',
-		187: 'plus',
-		109: 'minus',
-		189: 'minus',
-		224: 'ctrl',
-	};
+	// log(event);
+	// log(`event.key: ${event.key}`);
 
-	let result =
-		specialGlyphs[parseInt(event.code)] || String.fromCodePoint(Number(event.code)).toLowerCase();
+	/*
+		Keys used above. Names should conform to lowercase versions of event.key values:
+		https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
+		'Meta' keys on Mac (Option or Command) are converted to windows 'Control'
+		'Space', 'Plus' and 'Minus' keywords are added for convenience.
+
+	const handledCharacterKeys = ['0', 'a', 'b', 'c', 'e', 'g', 'o', 's', 'q', 'v', 'z'];
+
+	const handledSpecialKeys = [
+		'Alt',
+		'ArrowDown',
+		'ArrowLeft',
+		'ArrowRight',
+		'ArrowUp',
+		'Backspace',
+		'Control',
+		'Delete',
+		'Escape',
+		'Minus',
+		'Plus',
+		'Shift',
+		'Space',
+		'Undo',
+	];
+	*/
+
+	let result = event.key;
+	if (result.length === 1) result = result.toLocaleLowerCase();
+	if (result === 'Meta') result = 'Control';
+	if (result === '-') result = 'Minus';
+	if (result === '+') result = 'Plus';
+	if (result === ' ') result = 'Space';
+
 	// log(`result: ${result}`);
-
 	// log(`getKeyFromEvent`, 'end');
 	return result;
 }
@@ -326,20 +328,18 @@ export function handleKeyUp(event) {
 	if (!editor.nav.isOnEditCanvasPage) return;
 
 	// Ctrl
-	if (key === 'ctrl' && !ehd.isCtrlDown) {
+	if (key === 'Control' && !ehd.isCtrlDown) {
 		// updateCursor();
 		editor.editCanvas.redraw();
 	}
 
 	// Space
-	if (key === 'space' && !ehd.isSpaceDown && ehd.isMouseOverCanvas) {
+	if (key === 'Space' && !ehd.isSpaceDown && ehd.isMouseOverCanvas) {
 		togglePanOff(event);
 	}
 
 	// log(`handleKeyup`, 'end');
 }
-
-
 
 // --------------------------------------------------------------
 // Special Keys
@@ -360,38 +360,38 @@ function handleSpecialKeys(key, keyDirection) {
 
 	// Maybe not strong equals here?
 	if (keyDirection === 'down') {
-		if (key === 'ctrl') {
+		if (key === 'Control') {
 			ehd.isCtrlDown = true;
 			// log(`setting isCtrlDown to true`);
 		}
-		if (key === 'space') {
+		if (key === 'Space') {
 			ehd.isSpaceDown = true;
 			// log(`setting isSpaceDown to true`);
 		}
-		if (key === 'shift') {
+		if (key === 'Shift') {
 			ehd.isShiftDown = true;
 			// log(`setting isShiftDown to true`);
 		}
-		if (key === 'alt') {
+		if (key === 'Alt') {
 			ehd.isAltDown = true;
 			// log(`setting isAltDown to true`);
 		}
 	}
 
 	if (keyDirection === 'up') {
-		if (key === 'ctrl') {
+		if (key === 'Control') {
 			ehd.isCtrlDown = false;
 			// log(`setting isCtrlDown to false`);
 		}
-		if (key === 'space') {
+		if (key === 'Space') {
 			ehd.isSpaceDown = false;
 			// log(`setting isSpaceDown to false`);
 		}
-		if (key === 'shift') {
+		if (key === 'Shift') {
 			ehd.isShiftDown = false;
 			// log(`setting isShiftDown to false`);
 		}
-		if (key === 'alt') {
+		if (key === 'Alt') {
 			ehd.isAltDown = false;
 			// log(`setting isAltDown to false`);
 		}

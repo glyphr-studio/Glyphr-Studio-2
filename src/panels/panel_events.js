@@ -47,38 +47,38 @@ function handlePanelsSpecialKeys(key, keyDirection) {
 
 	// Maybe not strong equals here?
 	if (keyDirection === 'down') {
-		if (key === 'ctrl') {
+		if (key === 'Control') {
 			ehd.isCtrlDown = true;
 			// log(`setting isCtrlDown to true`);
 		}
-		if (key === 'space') {
+		if (key === 'Space') {
 			ehd.isSpaceDown = true;
 			// log(`setting isSpaceDown to true`);
 		}
-		if (key === 'shift') {
+		if (key === 'Shift') {
 			ehd.isShiftDown = true;
 			// log(`setting isShiftDown to true`);
 		}
-		if (key === 'alt') {
+		if (key === 'Alt') {
 			ehd.isAltDown = true;
 			// log(`setting isAltDown to true`);
 		}
 	}
 
 	if (keyDirection === 'up') {
-		if (key === 'ctrl') {
+		if (key === 'Control') {
 			ehd.isCtrlDown = false;
 			// log(`setting isCtrlDown to false`);
 		}
-		if (key === 'space') {
+		if (key === 'Space') {
 			ehd.isSpaceDown = false;
 			// log(`setting isSpaceDown to false`);
 		}
-		if (key === 'shift') {
+		if (key === 'Shift') {
 			ehd.isShiftDown = false;
 			// log(`setting isShiftDown to false`);
 		}
-		if (key === 'alt') {
+		if (key === 'Alt') {
 			ehd.isAltDown = false;
 			// log(`setting isAltDown to false`);
 		}
