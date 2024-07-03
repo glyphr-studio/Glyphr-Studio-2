@@ -225,6 +225,20 @@ export class Maxes extends GlyphElement {
 // --------------------------------------------------------------
 
 /**
+ * Takes a random object, and tests to see if it can be
+ * considered a Maxes object or not.
+ * @param {Object} test - object to test
+ * @returns {Boolean}
+ */
+export function isMaxes(test = {}) {
+	if (isNaN(test?.yMin)) return false;
+	if (isNaN(test?.xMin)) return false;
+	if (isNaN(test?.yMax)) return false;
+	if (isNaN(test?.xMax)) return false;
+	return true;
+}
+
+/**
  * Given two Maxes, check if they overlap
  * @param {Maxes} m1 - first maxes
  * @param {Maxes} m2 - second maxes
