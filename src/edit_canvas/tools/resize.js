@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { calculateAngle, clone } from '../../common/functions.js';
+import { isMaxes } from '../../project_data/maxes.js';
 import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
@@ -195,7 +196,7 @@ export class Tool_Resize {
 		const editor = getCurrentProjectEditor();
 
 		// New Basic Path
-		if (ehd.newBasicPathMaxes) {
+		if (isMaxes(ehd.newBasicPathMaxes)) {
 			ehd.newBasicPathMaxes = false;
 			ehd.lastX = ehd.firstX;
 			ehd.lastY = ehd.firstY;

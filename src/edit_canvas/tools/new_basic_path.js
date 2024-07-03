@@ -1,7 +1,8 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { isVal, round } from '../../common/functions.js';
+import { showToast } from '../../controls/dialogs/dialogs.js';
 import { ControlPoint } from '../../project_data/control_point.js';
-import { Maxes } from '../../project_data/maxes.js';
+import { Maxes, isMaxes } from '../../project_data/maxes.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
@@ -21,7 +22,6 @@ export class Tool_NewBasicPath {
 	mousedown() {
 		// log(`Tool_NewBasicPath.mousedown`, 'start');
 		const editor = getCurrentProjectEditor();
-
 		const ehd = eventHandlerData;
 		ehd.newBasicPathMaxes = {
 			xMax: cXsX(ehd.mousePosition.x),
@@ -60,7 +60,7 @@ export class Tool_NewBasicPath {
 		// log(`EHFirst: x ${(ehd.firstX)}, y ${(ehd.firstY)}`);
 		// log(`Mouse:   x ${cXsX(ehd.mousePosition.x)}, y ${cYsY(ehd.mousePosition.y)}`);
 		// log(`ehd.newBasicPathMaxes before ${JSON.stringify(ehd.newBasicPathMaxes)}`);
-		if (ehd.newBasicPathMaxes) {
+		if (isMaxes(ehd.newBasicPathMaxes)) {
 			ehd.newBasicPathMaxes.xMax = Math.max(ehd.firstX, cXsX(ehd.mousePosition.x));
 			ehd.newBasicPathMaxes.xMin = Math.min(ehd.firstX, cXsX(ehd.mousePosition.x));
 			ehd.newBasicPathMaxes.yMax = Math.max(ehd.firstY, cYsY(ehd.mousePosition.y));
@@ -114,12 +114,16 @@ export class Tool_NewBasicPath {
 			ehd.newBasicPathMaxes = false;
 			ehd.newBasicPath = false;
 			path = addPathToCurrentItem(path);
+			// log(`\n⮟Added path⮟`);
+			// log(path);
 			editor.multiSelect.shapes.select(path);
 			switchToolTo('resize');
 		} else {
 			// log(`New path too small`);
 			ehd.newBasicPathMaxes = false;
 			ehd.newBasicPath = false;
+			ehd.undoQueueHasChanged = false;
+			showToast('New shape was too small.');
 		}
 
 		this.dragging = false;
