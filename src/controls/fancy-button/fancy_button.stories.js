@@ -7,34 +7,34 @@ export default {
 	component: 'fancy-button',
 	render: (args) => {
 		const button = new FancyButton(args);
-		button.innerHTML = args.text;
+		button.innerHTML = 'Button text';
 		return button;
 	},
 };
 
 export const Primary = {
 	args: {
-		text: 'Primary',
+		title: 'Primary',
 	},
 };
 
 export const PrimaryDisabled = {
 	args: {
-		text: 'Primary Disabled',
+		title: 'Primary Disabled',
 		disabled: '',
 	},
 };
 
 export const Secondary = {
 	args: {
-		text: 'Secondary',
+		title: 'Secondary',
 		secondary: '',
 	},
 };
 
 export const SecondaryDisabled = {
 	args: {
-		text: 'Secondary Disabled',
+		title: 'Secondary Disabled',
 		secondary: '',
 		disabled: '',
 	},
@@ -42,14 +42,14 @@ export const SecondaryDisabled = {
 
 export const Danger = {
 	args: {
-		text: 'Danger',
+		title: 'Danger',
 		danger: '',
 	},
 };
 
 export const DangerDisabled = {
 	args: {
-		text: 'Danger Disabled',
+		title: 'Danger Disabled',
 		danger: '',
 		disabled: '',
 	},
@@ -57,14 +57,14 @@ export const DangerDisabled = {
 
 export const Minimal = {
 	args: {
-		text: 'Minimal',
+		title: 'Minimal',
 		minimal: '',
 	},
 };
 
 export const MinimalDisabled = {
 	args: {
-		text: 'Minimal Disabled',
+		title: 'Minimal Disabled',
 		minimal: '',
 		disabled: '',
 	},
