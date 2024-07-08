@@ -64,7 +64,7 @@ export class FancyButton extends HTMLElement {
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
-
+		if (!this.wrapper) return;
 		if (attributeName === 'disabled') {
 			if (newValue === '') {
 				// disabled

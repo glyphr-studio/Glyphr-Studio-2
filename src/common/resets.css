@@ -44,6 +44,11 @@ body {
 	overflow: hidden;
 }
 
+html[lang='en'],
+html[lang='en'] body {
+	overflow: auto;
+}
+
 ::-webkit-scrollbar {
 	width: 8px;
 	padding: 1px;
@@ -129,7 +134,7 @@ p {
 }
 
 span:disabled,
-span[disabled="disabled"] {
+span[disabled='disabled'] {
 	color: var(--disabled-text);
 }
 
