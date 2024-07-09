@@ -1,4 +1,4 @@
-import { makeProgressIndicator, updateProgressIndicator } from "./progress_indicator";
+import { makeProgressIndicator, updateProgressIndicator } from './progress_indicator.js';
 
 export default {
 	title: 'Controls/Progress Indicator',
