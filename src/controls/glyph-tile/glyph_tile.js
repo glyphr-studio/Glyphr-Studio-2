@@ -35,10 +35,11 @@ export class GlyphTile extends HTMLElement {
 		const name = this.glyph?.name || this.project.getItemName(displayedItemID, true);
 		this.view = {};
 
+		// log(this.project);
+		// log(this.glyph);
 		// log(`displayedItemID: ${displayedItemID}`);
 		// log(`chars: ${chars}`);
 		// log(`name: ${name}`);
-		// log(this.glyph);
 
 		const overallSize = 50;
 
@@ -46,7 +47,13 @@ export class GlyphTile extends HTMLElement {
 		this.wrapper.style.backgroundSize = `auto ${overallSize}px`;
 
 		// Session-state information
-		const sessionState = this?.glyph?.sessionState || 'notCreated';
+		let sessionState = 'notCreated';
+		if (attributes['session-state']) {
+			sessionState = attributes['session-state'];
+		} else if (this?.glyph?.sessionState) {
+			sessionState = this?.glyph?.sessionState;
+		}
+
 		let sessionMessage = '';
 		this.wrapper.setAttribute('session-state', sessionState);
 		if (sessionState === 'notCreated')
