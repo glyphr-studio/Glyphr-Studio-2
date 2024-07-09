@@ -8,14 +8,15 @@
 }
 
 :host {
+	display: inline-block;
 	box-sizing: border-box;
 	width: 52px;
 	height: 75px;
+	background-color: var(--offWhite);
 	overflow-y: hidden;
 	overflow-x: hidden;
 	margin: 0px;
 	padding: 0px;
-	background-color: rgba(255, 255, 255, 0.4);
 	box-shadow: var(--l1-shadow);
 	border-radius: 2px;
 	transition: opacity 500ms ease-in;
@@ -23,10 +24,12 @@
 
 .wrapper {
 	display: inline-block;
+	background-color: rgba(255, 255, 255, 0.4);
 	margin: 0px;
 	padding: 1px;
 	height: 100%;
 	width: 52px;
+	height: 75px;
 	text-align: center;
 	overflow-x: hidden;
 	overflow-y: hidden;

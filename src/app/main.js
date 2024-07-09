@@ -201,7 +201,7 @@ let depth = 0;
  * Wrapper for console.log that does some extra fancy stuff, and
  * also adheres to a global switch in settings
  * @param {String} message - message to show in the console
- * @param {String} type - 'start' or 'end'
+ * @param {String =} type - 'start', 'end', or undefined
  */
 export function log(message, type) {
 	let dev = GSApp.settings.dev;
