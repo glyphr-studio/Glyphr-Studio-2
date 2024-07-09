@@ -1,5 +1,3 @@
-import { makeOneSettingsRow } from '../../pages/settings.js';
-import { makeSingleLabel } from '../../panels/cards.js';
 import { InfoBubble } from './info_bubble.js';
 
 customElements.define('info-bubble', InfoBubble);
