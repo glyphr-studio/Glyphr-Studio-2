@@ -1,3 +1,4 @@
+import { makeElement } from '../../common/dom.js';
 import { OptionChooser } from './option_chooser.js';
 
 customElements.define('option-chooser', OptionChooser);
@@ -6,6 +7,7 @@ export default {
 	title: 'Controls/OptionChooser',
 	component: 'option-chooser',
 	render: (args) => {
+		const wrapper = makeElement({ tag: 'div', style: 'height: 500px; width: 250px;' });
 		const chooser = new OptionChooser();
 		if (args.disabled) chooser.setAttribute('disabled', '');
 		chooser.setAttribute('selected-prefix', 'Category:');
@@ -33,7 +35,9 @@ export default {
 		option3.setAttribute('note', '[123, 456]');
 		chooser.appendChild(option3);
 
-		return chooser;
+		wrapper.appendChild(chooser);
+
+		return wrapper;
 	},
 };
 
