@@ -140,6 +140,9 @@ export class InputNumber extends HTMLElement {
 		});
 		this.padlock.addEventListener('keydown', this.lockButtonKeyboardPress);
 
+		if(this.hasAttribute('disabled')) {
+			this.setToDisabled();
+		}
 		// log(`InputNumber.connectedCallback`, 'end');
 	}
 

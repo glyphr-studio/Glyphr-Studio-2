@@ -1,3 +1,5 @@
+import { makeElement } from '../../common/dom.js';
+import { makeEditToolsButtons } from '../../edit_canvas/tools/tools.js';
 import { OptionToggle } from './option_toggle.js';
 
 customElements.define('option-toggle', OptionToggle);
@@ -6,6 +8,7 @@ export default {
 	title: 'Controls/OptionToggle',
 	component: 'option-toggle',
 	render: (args) => {
+		const wrapper = makeElement({ tag: 'div', style: 'width: 250px;' });
 		const toggle = new OptionToggle();
 		if (args.disabled) toggle.setAttribute('disabled', '');
 		toggle.setAttribute('selected-value', args.selectedValue);
@@ -18,7 +21,9 @@ export default {
 		option2.textContent = 'Second thing';
 		toggle.appendChild(option1);
 		toggle.appendChild(option2);
-		return toggle;
+
+		wrapper.appendChild(toggle);
+		return wrapper;
 	},
 };
 
