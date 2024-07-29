@@ -56,11 +56,15 @@ export async function ioFont_exportFont() {
 	// log(options);
 	const font = new openTypeJS.Font(options);
 
+	// log(`\n⮟font⮟`);
+	// log(font);
+
 	if (exportLigatures) {
 		ligatureSubstitutions.forEach((sub) => {
 			// log(`Adding ligature to font`);
+			const subIndexes = sub.subChars.map((char) => font.charToGlyphIndex(char))
 			// log(sub);
-			font.substitution.addLigature('liga', sub);
+			font.substitution.addLigature('liga', {sub: subIndexes, by: sub.byIndex});
 		});
 	}
 
@@ -387,11 +391,10 @@ async function generateOneLigature(currentExportItem) {
 	thisLigature.advanceWidth = liga.advanceWidth;
 
 	// Add substitution info to font
-	const indexList = liga.gsub.map((v) => codePointGlyphIndexTable[decToHex(v)]);
-	// log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex}}`);
-	ligatureSubstitutions.push({ sub: indexList, by: thisIndex });
-	// log(thisLigature);
+	const charSubList = liga.gsub.map((v) => String.fromCharCode(v));
+	ligatureSubstitutions.push({ subChars: charSubList, byIndex: thisIndex });
 
+	// log(thisLigature);
 	await pause();
 	// log(`generateOneLigature`, 'end');
 	return thisLigature;
