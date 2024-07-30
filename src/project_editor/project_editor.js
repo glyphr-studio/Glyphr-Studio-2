@@ -334,7 +334,8 @@ export class ProjectEditor {
 	 * @returns {Object}
 	 */
 	get selectedKernGroup() {
-		const re = this.project.kerning[this.selectedKernGroupID];
+		const selectedID = this.selectedKernGroupID;
+		const re = this.project.kerning[selectedID];
 		return re;
 	}
 
@@ -344,14 +345,9 @@ export class ProjectEditor {
 	 */
 	get selectedKernGroupID() {
 		// log(`ProjectEditor GET selectedKernGroupID`, 'start');
-		// log(`\n⮟this.project.kerning⮟`);
-		// log(this.project.kerning);
 		if (!this._selectedKernGroupID) {
-			let firstID =
-				getFirstID(this.project.kerning) || generateNewID(this.project.kerning, 'kern-');
-			this._selectedKernGroupID = firstID;
+			this._selectedKernGroupID = getFirstID(this.project.kerning);
 		}
-
 		// log(`ProjectEditor GET selectedKernGroupID`, 'end');
 		if (typeof this._selectedKernGroupID === 'boolean') return false;
 		return this._selectedKernGroupID;

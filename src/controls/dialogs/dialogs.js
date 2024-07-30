@@ -465,9 +465,9 @@ export function makeModalDialog(contentNode, maxWidth, openProjectDialog = false
 		.querySelector('.modal-dialog__close-button')
 		.addEventListener('click', closeEveryTypeOfDialog);
 	modal.addEventListener('click', (event) => {
-		const elem = event.currentTarget;
+		const clickTarget = event.target;
 		// @ts-ignore
-		if (elem.getAttribute('id') === 'modal-dialog') closeEveryTypeOfDialog();
+		if (clickTarget.getAttribute('id') === 'modal-dialog') closeEveryTypeOfDialog();
 	});
 
 	if (openProjectDialog) {
