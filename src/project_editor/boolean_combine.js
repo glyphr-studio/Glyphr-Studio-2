@@ -17,7 +17,7 @@ export function combinePaths(gsPaths = [], operation = 'unite') {
 
 	// Initial checks
 	if (gsPaths.length === 0) return 'No paths were found to combine.';
-	if (['divide', 'subtract', 'intersect', 'unite', 'exclude', 'intersect'].indexOf(operation) < 0) {
+	if (['divide', 'subtract', 'intersect', 'unite', 'exclude'].indexOf(operation) < 0) {
 		return `Unknown combine operation: ${operation}`;
 	}
 
