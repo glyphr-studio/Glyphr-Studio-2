@@ -23,10 +23,10 @@
 		<link rel="shortcut icon" href="./common/graphics/logo-icon-color.ico" />
 		<script src="app/main.js" type="module"></script>
 		<script type="module">
-			import { glyphrStudioOnLoad, GSApp, log } from './app/main.js';
+			import { glyphrStudioOnLoad, getGlyphrStudioApp, log } from './app/main.js';
 			window.log = log;
 			document.addEventListener('DOMContentLoaded', glyphrStudioOnLoad);
-			window._GlyphrStudioApp = GSApp;
+			window._GlyphrStudioApp = getGlyphrStudioApp();
 		</script>
 		<style>
 			:root {

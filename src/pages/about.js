@@ -1,5 +1,5 @@
 import { emailLink } from '../app/app.js';
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import donateKofiSrc from '../common/graphics/donate-kofi.png';
 import donatePaypalSrc from '../common/graphics/donate-paypal.png';
@@ -153,8 +153,7 @@ function makeLicenseInfo() {
  */
 function makeVersionInfo() {
 	const editor = getCurrentProjectEditor();
-	// @ts-ignore
-	const app = window._GlyphrStudioApp;
+	const app = getGlyphrStudioApp();
 	const content = makeElement({
 		innerHTML: `
 			<h1>Version information</h1>
