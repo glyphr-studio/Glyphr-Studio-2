@@ -16,18 +16,16 @@ import { closeAllNavMenus } from '../project_editor/navigator.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp, showAppErrorPage } from './app.js';
 
-// The main app object
-export const GSApp = new GlyphrStudioApp();
-
 /**
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
 	console.info(`%c${asciiLogo}\n`, 'color: hsl(200, 100%, 41%);');
 	try {
-		if (GSApp.version) {
+		const app = getGlyphrStudioApp();
+		if (app.version) {
 			console.info(
-				`%cApp Version ${GSApp.version}%c\n`,
+				`%cApp Version ${app.version}%c\n`,
 				'color:hsl(200, 100%, 41%);; background-color:hsla(200, 100%, 49%, 10%); padding: 4px 8px; border-radius: 12px;',
 				'background-color: transparent;'
 			);
@@ -43,8 +41,8 @@ export function glyphrStudioOnLoad() {
 			registerCustomComponents();
 			addGlobalEventListeners();
 			// Load project
-			GSApp.setUp();
-			// log(GSApp);
+			app.setUp();
+			// log(app);
 		} else {
 			// log('did NOT pass pre-checks');
 		}
@@ -137,7 +135,13 @@ export function getShipDate(dayOffset = 0) {
  * Returns the overall App object
  * @returns {GlyphrStudioApp}
  */
+
+// The main app object
+let GSApp;
 export function getGlyphrStudioApp() {
+	if (!GSApp) {
+		GSApp = new GlyphrStudioApp();
+	}
 	return GSApp;
 }
 
@@ -204,7 +208,7 @@ let depth = 0;
  * @param {String =} type - 'start', 'end', or undefined
  */
 export function log(message, type) {
-	let dev = GSApp.settings.dev;
+	let dev = getGlyphrStudioApp().settings.dev;
 	// if (!dev.mode) return;
 
 	if (dev.mode) {

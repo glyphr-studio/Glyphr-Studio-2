@@ -10,7 +10,6 @@ import simpleExampleProject from '../samples/simpleExampleProject.json';
 import * as config from './app_config.json';
 import { _DEV } from './dev_mode_includes.js';
 import {
-	GSApp,
 	addProjectEditorAndSetAsImportTarget,
 	getCurrentProject,
 	getGlyphrStudioApp,
@@ -389,7 +388,7 @@ export function showAppErrorPage(friendlyMessage = '', errorObject = { message: 
 				<br>
 				Please send us an email, hopefully we'll be able to help:
 				<a
-					href="mailto:mail@glyphrstudio.com&subject=[${GSApp.version}] Feedback"
+					href="mailto:mail@glyphrstudio.com&subject=[${getGlyphrStudioApp().version}] Feedback"
 					>mail@glyphrstudio.com</a>
 				<br><br><br>
 				<pre>${errorObject.stack.replaceAll('<', '&lt;')}</pre>
