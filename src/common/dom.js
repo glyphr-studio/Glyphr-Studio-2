@@ -68,8 +68,9 @@ export function makeElement({
 		// log(newElement);
 	}
 
-	if (onClick) {
-		newElement.addEventListener('click', () => onClick());
+	if (onClick && typeof onClick === 'function') {
+		/** @ts-ignore */
+		newElement.addEventListener('click', onClick);
 	}
 
 	// log(`makeElement - ${tag}`, 'end');
