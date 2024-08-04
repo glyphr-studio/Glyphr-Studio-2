@@ -271,7 +271,7 @@ function importOneGlyph(otfGlyph, project) {
 		project.settings.app.showNonCharPoints = true;
 	}
 
-	if(typeof uni === 'number') project.incrementRangeCountFor(uni);
+	if(!isNaN(Number(uni))) project.incrementRangeCountFor(Number(uni));
 
 	// Successful loop, advance importItemCounter
 	importItemCounter++;

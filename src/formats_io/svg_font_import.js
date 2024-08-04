@@ -101,7 +101,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 					await updateSVGImportProgressIndicator('character', charCounter);
 					// log(`Detected Glyph`);
 					const single = uni[0];
-					project.incrementRangeCountFor(single);
+					if (!isNaN(Number(single))) project.incrementRangeCountFor(Number(single));
 					newGlyph.id = `glyph-${single}`;
 					// log(newGlyph);
 					finalGlyphs[`glyph-${single}`] = newGlyph;
