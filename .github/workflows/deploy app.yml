@@ -15,11 +15,11 @@ jobs:
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         local-dir: ./dist
-        server-dir: ${{ secrets.SSH_SERVER_NAME }}
+        server: ${{ secrets.SSH_SERVER_NAME }}
         #remote-user: ${{ secrets.SSH_USERNAME }}
         username: ${{ secrets.SSH_USERNAME }}
         #private-ssh-key: ${{ secrets.SSH_KEY }}
         password: ${{ secrets.SSH_KEY }}
-        destination-path: ${{ secrets.APP_DIRECTORY }}        
+        server-dir: ${{ secrets.APP_DIRECTORY }}        
         # rsync-options: --dry-run --archive --verbose --compress --delete-after --human-readable --exclude=.git* --exclude=.git/ --exclude=README.md --exclude=readme.md --exclude=.gitignore
         dry-run: true
