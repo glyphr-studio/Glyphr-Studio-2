@@ -14,7 +14,7 @@ jobs:
     - name: 📂 Sync Files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        local-dir: ./dist
+        local-dir: ./dist/
         server: ${{ secrets.SSH_SERVER_NAME }}
         #remote-user: ${{ secrets.SSH_USERNAME }}
         username: ${{ secrets.SSH_USERNAME }}
