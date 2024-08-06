@@ -19,4 +19,4 @@ jobs:
         remote-user: ${{ secrets.SSH_USERNAME }}
         private-ssh-key: ${{ secrets.SSH_KEY }}
         source-path: ./dist/
-        rsync-options: --dry-run --archive --verbose --compress --delete-after --human-readable --exclude=.git* --exclude=.git/ --exclude=README.md --exclude=readme.md --exclude=.gitignore
+        # rsync-options: --dry-run --archive --verbose --compress --delete-after --human-readable --exclude=.git* --exclude=.git/ --exclude=README.md --exclude=readme.md --exclude=.gitignore
