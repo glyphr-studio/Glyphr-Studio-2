@@ -9,6 +9,7 @@ import { drawCharacterKernExtra, drawContextCharacters } from './context_charact
 import {
 	computeAndDrawBoundingBox,
 	computeAndDrawBoundingBoxHandles,
+	computeAndDrawDragToSelectBox,
 	computeAndDrawPathPointHandles,
 	computeAndDrawPathPoints,
 	computeAndDrawRotationAffordance,
@@ -242,6 +243,10 @@ export class EditCanvas extends HTMLElement {
 				drawContextCharacters(ctx);
 			}
 
+			// Drag to select box
+			if (eventHandlerData.selecting) {
+				computeAndDrawDragToSelectBox(ctx, eventHandlerData);
+			}
 			// log(`EditCanvas.redrawGlyphEdit`, 'end');
 		}
 

@@ -43,6 +43,7 @@ export class Tool_Resize {
 		this.resizing = false;
 		this.dragging = false;
 		this.rotating = false;
+		ehd.selecting = false;
 
 		// log('clickedPath: ' + this.clickedPath);
 		// log('corner: ' + ehd.handle);
@@ -87,7 +88,7 @@ export class Tool_Resize {
 		} else {
 			// log('clicked on nothing');
 			clickEmptySpace();
-
+			ehd.selecting = true;
 			findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 		}
 		// log(`Tool_Resize.mousedown`, 'end');
@@ -146,6 +147,8 @@ export class Tool_Resize {
 				this.historyTitle = `Rotated ${msShapes.members.length} shapes`;
 			}
 			this.didStuff = true;
+		} else if (ehd.selecting) {
+			editor.editCanvas.redraw();
 		}
 
 		// Figure out cursor
@@ -213,6 +216,7 @@ export class Tool_Resize {
 		this.dragging = false;
 		this.resizing = false;
 		this.rotating = false;
+		ehd.selecting = false;
 		this.monitorForDeselect = false;
 		ehd.handle = '';
 		ehd.lastX = -100;

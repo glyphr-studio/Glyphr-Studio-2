@@ -753,6 +753,38 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
 }
 
 // --------------------------------------------------------------
+// Drag to select
+// --------------------------------------------------------------
+
+/**
+ * Draws the drag to select box
+ * @param {Object} ctx - canvas context
+ * @param {Object} eventHandlerData - event handler data object
+ */
+export function computeAndDrawDragToSelectBox(ctx, eventHandlerData) {
+	let mouseX = eventHandlerData.mousePosition.x;
+	let mouseY = eventHandlerData.mousePosition.y;
+
+	mouseX += mouseX < eventHandlerData.firstX ? 1 : 0;
+	mouseY += mouseY < eventHandlerData.firstY ? 1 : 0;
+
+	const box = new Maxes({
+		xMin: Math.min(eventHandlerData.firstX, mouseX),
+		xMax: Math.max(eventHandlerData.firstX, mouseX),
+		yMin: Math.min(eventHandlerData.firstY, mouseY),
+		yMax: Math.max(eventHandlerData.firstY, mouseY),
+	});
+
+	ctx.fillStyle = 'hsla(125, 100%, 36%, 0.05)';
+	ctx.strokeStyle = accentGreen;
+	ctx.lineWidth = 1;
+	ctx.setLineDash([3, 3]);
+	ctx.fillRect(box.xMin, box.yMin, box.width, box.height);
+	ctx.strokeRect(makeCrisp(box.xMin), makeCrisp(box.yMin), box.width, box.height);
+	ctx.setLineDash([]);
+}
+
+// --------------------------------------------------------------
 // Visual debugging
 // --------------------------------------------------------------
 
