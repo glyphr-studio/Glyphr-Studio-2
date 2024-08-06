@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
   release:
     types: [published]
-name: Deploy Glyphr Studio App
+name: Deploy Glyphr Studio App via FTP
 jobs:
   web-deploy:
     name: 🚀 Deploy Website
