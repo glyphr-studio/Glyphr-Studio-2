@@ -1,0 +1,22 @@
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+name: Deploy Glyphr Studio App via SSH
+jobs:
+  web-deploy:
+    name: 🚀 Deploy Website
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get Latest Code
+      uses: actions/checkout@v3
+    
+    - name: 📂 Sync Files
+      uses: SamKirkland/web-deploy@v1
+      with:
+        target-server: ${{ secrets.SSH_SERVER_NAME }}
+        destination-path: ${{ secrets.APP_DIRECTORY }}        
+        remote-user: ${{ secrets.SSH_USERNAME }}
+        private-ssh-key: ${{ secrets.SSH_KEY }}
+        source-path: ./dist/
+        # rsync-options: --dry-run --archive --verbose --compress --delete-after --human-readable --exclude=.git* --exclude=.git/ --exclude=README.md --exclude=readme.md --exclude=.gitignore
