@@ -206,7 +206,7 @@ export class EditCanvas extends HTMLElement {
 				}
 			} else if (editMode === 'pathEdit') {
 				drawSelectedPathOutline(ctx, view);
-				if (eventHandlerData.isCtrlDown || editor.multiSelect.points.count > 1) {
+				if (eventHandlerData.isCtrlDown  || eventHandlerData.selecting) {
 					computeAndDrawPathPoints(ctx, true);
 					// testDrawAllPathPointHandles(ctx);
 				} else {

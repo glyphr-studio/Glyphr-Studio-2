@@ -222,7 +222,7 @@ export function getActionData(name) {
 			},
 			{
 				iconName: 'importGlyphSVG',
-				title: `Import paths from a SVG File\nUsing the file picker dialog, select a SVG file. Outlines will be imported and added to this glyph.`,
+				title: `Import paths from a SVG File\nUsing the file picker dialog, select a SVG file. Outlines will be imported and added to this glyph.\nYou can also just drag and drop a SVG file onto the edit canvas to import it.`,
 				onClick: async () => {
 					getFilesFromFilePicker(
 						async (files) => {
