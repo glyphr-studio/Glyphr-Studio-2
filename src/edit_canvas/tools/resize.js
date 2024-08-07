@@ -18,6 +18,7 @@ export class Tool_Resize {
 		this.dragging = false;
 		this.resizing = false;
 		this.rotating = false;
+		eventHandlerData.selecting = false;
 		this.monitorForDeselect = false;
 		this.didStuff = false;
 		this.clickedPath = false;

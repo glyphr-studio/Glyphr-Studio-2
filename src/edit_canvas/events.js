@@ -20,7 +20,7 @@ export let eventHandlerData = {
 	currentToolHandler: {},
 	newBasicPathMaxes: {},
 	newBasicPath: {},
-	dragSelectArea: {},
+	selecting: false,
 	mousePosition: {},
 	handle: '',
 	rotationStartCenter: {},

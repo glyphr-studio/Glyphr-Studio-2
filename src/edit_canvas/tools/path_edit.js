@@ -15,6 +15,7 @@ import { getShapeAtLocation } from './tools.js';
 export class Tool_PathEdit {
 	constructor() {
 		this.dragging = false;
+		eventHandlerData.selecting = false;
 		this.monitorForDeselect = false;
 		this.controlPoint = {};
 		this.pathPoint = {};
@@ -29,7 +30,9 @@ export class Tool_PathEdit {
 		const msShapes = editor.multiSelect.shapes;
 		const view = editor.view;
 		ehd.lastX = ehd.mousePosition.x;
+		ehd.firstX = ehd.mousePosition.x;
 		ehd.lastY = ehd.mousePosition.y;
+		ehd.firstY = ehd.mousePosition.y;
 		this.historyTitle = 'Path edit tool';
 
 		const clickedPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
@@ -53,7 +56,7 @@ export class Tool_PathEdit {
 			if (clickDetection.controlPoint === 'h2') this.controlPoint = clickDetection.pathPoint.h2;
 		}
 
-		if (this.controlPoint) {
+		if (this.controlPoint?.type) {
 			// log('detected CONTROL POINT');
 			this.dragging = true;
 			const isPathPointSelected = msPoints.isSelected(this.pathPoint);
@@ -98,6 +101,7 @@ export class Tool_PathEdit {
 		} else {
 			// log('detected NOTHING');
 			clickEmptySpace();
+			ehd.selecting = true;
 			findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 		}
 
@@ -156,6 +160,8 @@ export class Tool_PathEdit {
 			ehd.lastY = ehd.mousePosition.y;
 			ehd.undoQueueHasChanged = true;
 			editor.publish(`currentPathPoint`, this.controlPoint.parent);
+		} else if (ehd.selecting) {
+			editor.editCanvas.redraw();
 		}
 
 		checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
@@ -234,8 +240,13 @@ export class Tool_PathEdit {
 			ehd.undoQueueHasChanged = false;
 		}
 
+		if (ehd.selecting) {
+			editor.editCanvas.redraw();
+		}
+
 		// set to defaults
 		this.dragging = false;
+		ehd.selecting = false;
 		this.controlPoint = false;
 		this.pathPoint = false;
 		this.monitorForDeselect = false;
@@ -243,6 +254,8 @@ export class Tool_PathEdit {
 		msPoints.singleHandle = false;
 		ehd.lastX = -100;
 		ehd.lastY = -100;
+		ehd.firstX = -100;
+		ehd.firstY = -100;
 
 		// log('Tool_PathEdit.mouseup', 'end');
 	}
