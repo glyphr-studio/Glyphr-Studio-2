@@ -4,7 +4,7 @@ import { setCursor } from '../cursors.js';
 import { isOverControlPoint } from '../detect_edit_affordances.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { checkForMouseOverHotspot, clickEmptySpace } from '../events_mouse.js';
+import { checkForMouseOverHotspot, clickEmptySpace, selectItemsInArea } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 
 /**
@@ -161,6 +161,7 @@ export class Tool_PathEdit {
 			ehd.undoQueueHasChanged = true;
 			editor.publish(`currentPathPoint`, this.controlPoint.parent);
 		} else if (ehd.selecting) {
+			selectItemsInArea(ehd.lastX, ehd.lastY, ehd.mousePosition.x, ehd.mousePosition.y, 'pathPoints');
 			editor.editCanvas.redraw();
 		}
 
@@ -241,6 +242,7 @@ export class Tool_PathEdit {
 		}
 
 		if (ehd.selecting) {
+			ehd.selecting = false;
 			editor.editCanvas.redraw();
 		}
 

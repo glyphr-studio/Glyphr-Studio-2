@@ -1,5 +1,6 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { closeAllNotations } from '../controls/dialogs/dialogs.js';
+import { Maxes } from '../project_data/maxes.js';
 import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
 import { canvasUIPointSize } from './draw_edit_affordances.js';
@@ -125,6 +126,33 @@ export function clickEmptySpace() {
 	const editor = getCurrentProjectEditor();
 	editor.multiSelect.points.clear();
 	editor.multiSelect.shapes.clear();
+}
+
+export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
+	x1 = cXsX(x1);
+	y1 = cYsY(y1);
+	x2 = cXsX(x2);
+	y2 = cYsY(y2);
+	const minX = Math.min(x1, x2);
+	const minY = Math.min(y1, y2);
+	const maxX = Math.max(x1, x2);
+	const maxY = Math.max(y1, y2);
+	const area = new Maxes({ xMin: minX, xMax: maxX, yMin: minY, yMax: maxY });
+	const editor = getCurrentProjectEditor();
+
+	if (type === 'pathPoints') {
+		editor.multiSelect.points.clear();
+		editor.selectedItem.shapes.forEach((shape) => {
+			if (shape.pathPoints) {
+				shape.pathPoints.forEach((point) => {
+					if (area.isPointInside(point.p.x, point.p.y)) {
+						editor.multiSelect.points.add(point);
+						editor.multiSelect.shapes.add(point.parent);
+					}
+				});
+			}
+		});
+	}
 }
 
 /**
