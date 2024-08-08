@@ -190,7 +190,7 @@ export function getActionData(name) {
 			{
 				iconName: 'combine_unite',
 				title: `Combine all paths: Unite\nMerges all paths in this glyph into as few paths as possible.`,
-				disabled: editor.selectedItem.shapes.length < 2,
+				disabled: editor.selectedItem?.shapes?.length < 2,
 				onClick: combineUniteAllGlyphPaths,
 			},
 			{
