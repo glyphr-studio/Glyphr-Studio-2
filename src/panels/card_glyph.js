@@ -82,7 +82,7 @@ export function makeCard_glyphAttributes(glyph) {
 	// Put it all together
 	if (glyph.displayType !== 'Component') {
 		addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
-		if (glyph.shapes.length) {
+		if (glyph?.shapes?.length) {
 			addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
 		}
 	} else {
@@ -91,7 +91,7 @@ export function makeCard_glyphAttributes(glyph) {
 			makeSingleInput(glyph, 'name', 'currentItem', 'input'),
 		]);
 	}
-	if (glyph.shapes.length) {
+	if (glyph?.shapes?.length) {
 		const showAsDisabled = !!getCurrentProjectEditor().multiSelect.shapes.length;
 		addAsChildren(glyphCard, rowPad());
 		addAsChildren(
@@ -115,7 +115,7 @@ export function makeCard_glyphLinks(item) {
 	// log(`item.id: ${item.id}`);
 
 	// log(item.usedIn);
-	if (!item.usedIn.length) {
+	if (!item?.usedIn?.length) {
 		// log(`makeCard_glyphLinks`, 'end');
 		return '';
 	}
@@ -202,15 +202,15 @@ function getAdjacentItem(item, delta) {
 	const project = getCurrentProject();
 	const thisID = item.id;
 
-	let collection;
-	if (item.id.startsWith('glyph-')) collection = project.glyphs;
-	else if (item.id.startsWith('liga-')) collection = project.ligatures;
-	else if (item.id.startsWith('comp-')) collection = project.components;
-	else if (item.id.startsWith('kern-')) collection = project.kerning;
+	let collection = {};
+	if (item?.id?.startsWith('glyph-')) collection = project.glyphs;
+	else if (item?.id?.startsWith('liga-')) collection = project.ligatures;
+	else if (item?.id?.startsWith('comp-')) collection = project.components;
+	else if (item?.id?.startsWith('kern-')) collection = project.kerning;
 
 	let allIDs = Object.keys(collection);
 	allIDs.sort();
-	if (item.id.startsWith('glyph-')) allIDs = allIDs.filter(isInEnabledRange);
+	if (item?.id?.startsWith('glyph-')) allIDs = allIDs.filter(isInEnabledRange);
 	// log(`\n⮟allIDs⮟`);
 	// log(allIDs);
 

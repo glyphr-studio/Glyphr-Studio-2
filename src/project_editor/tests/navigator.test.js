@@ -1,6 +1,6 @@
 import { Navigator } from '../navigator.js';
 
-describe('Navigator', () => {
+describe('Navigator: Page Navigation', () => {
 	let navigator;
 
 	beforeEach(() => {
@@ -13,6 +13,14 @@ describe('Navigator', () => {
 
 	it('Should have a default panel of "Attributes"', () => {
 		expect(navigator.panel).toBe('Attributes');
+	});
+
+	it('Navigate to page: Characters', () => {
+		navigator.page = 'Characters';
+		navigator.navigate();
+		const pageContent = navigator.makePageContent();
+		expect(pageContent.id).toBe('app__main-content');
+		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Characters');
 	});
 
 	it('Navigate to page: Ligatures', () => {
@@ -38,6 +46,14 @@ describe('Navigator', () => {
 		expect(pageContent.id).toBe('app__main-content');
 		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Kerning');
 	});
+
+	// it('Navigate to page: Live preview', () => {
+	// 	navigator.page = 'Live preview';
+	// 	navigator.navigate();
+	// 	const pageContent = navigator.makePageContent();
+	// 	expect(pageContent.id).toBe('app__main-content');
+	// 	expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Live preview');
+	// });
 
 	it('Navigate to page: Global actions', () => {
 		navigator.page = 'Global actions';
@@ -72,3 +88,46 @@ describe('Navigator', () => {
 	});
 
 });
+
+
+/*
+describe('Navigator: Panel Navigation', () => {
+	let navigator;
+
+	beforeEach(() => {
+		navigator = new Navigator();
+	});
+
+	it('Navigate to panel: Layers', () => {
+		navigator.page = 'Characters';
+		navigator.panel = 'Layers';
+		navigator.navigate();
+		const pageContent = navigator.makePageContent();
+		expect(pageContent.querySelector('#nav-button-l3 .nav-button__title').innerHTML).toBe('Layers');
+	});
+
+	it('Navigate to panel: Context characters', () => {
+		navigator.page = 'Characters';
+		navigator.panel = 'Context characters';
+		navigator.navigate();
+		const pageContent = navigator.makePageContent();
+		expect(pageContent.querySelector('#nav-button-l3 .nav-button__title').innerHTML).toBe('Context characters');
+	});
+
+	it('Navigate to panel: History', () => {
+		navigator.page = 'Characters';
+		navigator.panel = 'History';
+		navigator.navigate();
+		const pageContent = navigator.makePageContent();
+		expect(pageContent.querySelector('#nav-button-l3 .nav-button__title').innerHTML).toBe('History');
+	});
+
+	it('Navigate to panel: Guides', () => {
+		navigator.page = 'Characters';
+		navigator.panel = 'Guides';
+		navigator.navigate();
+		const pageContent = navigator.makePageContent();
+		expect(pageContent.querySelector('#nav-button-l3 .nav-button__title').innerHTML).toBe('Guides');
+	});
+});
+*/
