@@ -286,7 +286,7 @@ export function showAddComponentDialog() {
 					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 				/>
 				<br><br>
-				<fancy-button disabled id="components__add-new-component-button">Add new component to project</fancy-button>
+				<fancy-button disabled id="components__add-new-component-button">Create component</fancy-button>
 		`,
 	});
 

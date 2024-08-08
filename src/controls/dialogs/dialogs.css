@@ -280,6 +280,10 @@ dialog {
 	padding: 0px 20px 20px 20px;
 }
 
+.modal-dialog__body h2 {
+	margin-bottom: 10px;
+}
+
 .modal-dialog__close-button {
 	background-color: var(--blue-l95);
 	border-color: var(--blue-l85);

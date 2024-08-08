@@ -324,11 +324,11 @@ function addLigature(sequence) {
 	const project = getCurrentProject();
 	if (project.ligatures[newID]) {
 		// log(`addLigature`, 'end');
-		return 'Ligature already exists';
+		return 'Ligature already exists.';
 	}
 
 	if (newID === false) {
-		return 'Characters could not be read for the ligature sequence';
+		return 'Characters could not be read for the ligature sequence.';
 	}
 
 	project.addItemByType(
@@ -373,17 +373,20 @@ export function makeLigatureID(sequence = '') {
 	return newID;
 }
 
-
 /**
  * Makes the Add Ligature dialog and shows it.
  */
 export function showAddLigatureDialog() {
 	const content = makeElement({
 		innerHTML: `
-			<h2>Create a new ligature</h2>
-			Create a new ligature by specifying two or more individual characters:
-			<br><br>
-			<input id="ligatures__new-ligature-input" type="text"
+			<h2 id="ligatures__new-ligature-title">Create a new ligature</h2>
+			Create a new ligature by specifying two or more individual characters.
+			<br>
+			<div class="panel__card no-card">
+				<input type="checkbox" id="ligatures__multi-input-checkbox" style="margin: 0 0 15px 0;"/>
+				<label for="ligatures__multi-input-checkbox" style="grid-column-start: 2;">Create many ligatures at once with a comma separated list.<br>Ligatures cannot contain commas or spaces if you use this option.</label>
+			</div>
+			<input id="ligatures__new-ligature-input" type="text" style="width: 90%;"
 				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 			/>
 			<info-bubble style="display: inline-block; margin-left: 10px;">
@@ -401,7 +404,7 @@ export function showAddLigatureDialog() {
 				(above Unicode <code>U+FFFF</code>) will cause errors!
 			</info-bubble>
 			<br><br>
-			<fancy-button disabled id="ligatures__add-new-ligature-button">Add new ligature to project</fancy-button>
+			<fancy-button disabled id="ligatures__add-new-ligature-button">Create ligature</fancy-button>
 		`,
 	});
 
@@ -409,6 +412,10 @@ export function showAddLigatureDialog() {
 	const submitButton = content.querySelector('#ligatures__add-new-ligature-button');
 	/** @type {HTMLInputElement} */
 	const newLigatureInput = content.querySelector('#ligatures__new-ligature-input');
+	/** @type {HTMLInputElement} */
+	const multiLigatureCheckbox = content.querySelector('#ligatures__multi-input-checkbox');
+	/** @type {HTMLInputElement} */
+	const title = content.querySelector('#ligatures__new-ligature-title');
 
 	newLigatureInput.addEventListener('keyup', () => {
 		if (newLigatureInput.value.length < 2) {
@@ -418,20 +425,52 @@ export function showAddLigatureDialog() {
 		}
 	});
 
+	multiLigatureCheckbox.addEventListener('change', () => {
+		if (multiLigatureCheckbox.checked) {
+			title.innerHTML = 'Create new ligatures';
+			submitButton.innerHTML = 'Create ligatures';
+		} else {
+			title.innerHTML = 'Create a new ligature';
+			submitButton.innerHTML = 'Create ligature';
+		}
+	});
+
 	submitButton.addEventListener('click', () => {
 		// log(`showAddLigatureDialog button click handler`, 'start');
-		const result = addLigature(newLigatureInput.value);
+		let result;
+		let latestID;
+
+		if (multiLigatureCheckbox.checked) {
+			const sanitizedString = newLigatureInput.value.replaceAll(' ', '');
+			const inputList = sanitizedString.split(',');
+			inputList.forEach((input) => {
+				let oneResult = addLigature(input);
+				if (typeof oneResult === 'string') {
+					if (typeof result !== 'string') result = 'One or more ligature could not be created:<br><br>';
+					result = '' + result + oneResult + '<br><br>';
+				} else {
+					oneResult.hasChangedThisSession = false;
+					oneResult.wasCreatedThisSession = true;
+					latestID = oneResult.id;
+				}
+			});
+		} else {
+			result = addLigature(newLigatureInput.value);
+			if (typeof result !== 'string') {
+				result.hasChangedThisSession = false;
+				result.wasCreatedThisSession = true;
+				latestID = result.id;
+			}
+		}
 		// log(`result: ${result}`);
 
 		if (typeof result === 'string') {
 			showError(result);
 		} else {
 			const editor = getCurrentProjectEditor();
-			editor.selectedLigatureID = result.id;
+			editor.selectedLigatureID = latestID;
 			editor.navigate();
 			editor.history.addWholeProjectChangePostState();
-			result.hasChangedThisSession = false;
-			result.wasCreatedThisSession = true;
 			closeEveryTypeOfDialog();
 		}
 		// log(`showAddLigatureDialog button click handler`, 'end');
