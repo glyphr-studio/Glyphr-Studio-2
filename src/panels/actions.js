@@ -430,11 +430,6 @@ export function getActionData(name) {
 	if (name === 'otherKernGroupActions') {
 		actionData = [
 			{
-				iconName: 'createNewKernGroup',
-				title: 'Create a new Kern Group',
-				onClick: () => showAddEditKernGroupDialog(false),
-			},
-			{
 				iconName: 'findSingleLetterPair',
 				title: 'Find instances of a single letter pair across all kern groups',
 				onClick: showFindSingleLetterPairDialog,

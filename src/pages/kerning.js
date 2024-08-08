@@ -295,7 +295,7 @@ export function showAddEditKernGroupDialog(kernGroup) {
 		/>
 		<br><br>
 		<fancy-button disabled id="kerning__add-new-kern-group__submit-button">
-			${kernGroup ? 'Save changes' : 'Add new kern group'}
+			${kernGroup ? 'Save changes' : 'Create kern group'}
 		</fancy-button>
 		`,
 	});

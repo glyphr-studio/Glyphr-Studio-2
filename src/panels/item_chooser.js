@@ -62,7 +62,8 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 		wrapper.appendChild(
 			makeElement({
 				tag: 'fancy-button',
-				innerHTML: 'Create new ligature',
+				innerHTML: 'Create a new ligature',
+				attributes: {secondary: ''},
 				onClick: showAddLigatureDialog,
 			})
 		);
@@ -72,7 +73,8 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 		wrapper.appendChild(
 			makeElement({
 				tag: 'fancy-button',
-				innerHTML: 'Create new component',
+				innerHTML: 'Create a new component',
+				attributes: {secondary: ''},
 				onClick: showAddComponentDialog,
 			})
 		);
@@ -83,7 +85,9 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 			makeElement({
 				tag: 'fancy-button',
 				innerHTML: 'Create a new kern group',
+				attributes: { secondary: '' },
 				onClick: () => showAddEditKernGroupDialog(false),
+				style: 'margin-top: 10px;',
 			})
 		);
 	} else {

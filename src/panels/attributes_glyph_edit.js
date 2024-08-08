@@ -1,6 +1,13 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { makeElement } from '../common/dom.js';
+import { showAddComponentDialog } from '../pages/components.js';
+import { showAddLigatureDialog } from '../pages/ligatures.js';
 import { makeCard_componentInstanceAttributes } from './card_component_instance.js';
-import { makeCard_glyphAttributes, makeCard_glyphLinks, makeCard_glyphNavigation } from './card_glyph.js';
+import {
+	makeCard_glyphAttributes,
+	makeCard_glyphLinks,
+	makeCard_glyphNavigation,
+} from './card_glyph.js';
 import { makeCard_multiSelectPathAttributes, makeCard_pathAttributes } from './card_path.js';
 import {
 	makeCard_multiSelectPathPointAttributes,
@@ -55,6 +62,30 @@ export function makePanel_GlyphAttributes() {
 	content.push(makeCard_glyphNavigation(editor.selectedItem));
 	const linksCard = makeCard_glyphLinks(editor.selectedItem);
 	if (linksCard) content.push(linksCard);
+
+	// Create
+	if (editor.nav.page === 'Ligatures') {
+		content.push(
+			makeElement({
+				tag: 'fancy-button',
+				content: 'Create a new ligature',
+				attributes: { secondary: '' },
+				onClick: showAddLigatureDialog,
+				style: 'margin-top: 10px;',
+			})
+		);
+	}
+	if (editor.nav.page === 'Components') {
+		content.push(
+			makeElement({
+				tag: 'fancy-button',
+				content: 'Create a new component',
+				attributes: { secondary: '' },
+				onClick: showAddComponentDialog,
+				style: 'margin-top: 10px;',
+			})
+		);
+	}
 
 	// Subscribers
 	editor.subscribe({
