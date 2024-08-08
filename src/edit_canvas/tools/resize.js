@@ -5,7 +5,7 @@ import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { checkForMouseOverHotspot, clickEmptySpace, resizePath } from '../events_mouse.js';
+import { checkForMouseOverHotspot, clickEmptySpace, resizePath, selectItemsInArea } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 
 /**
@@ -149,6 +149,7 @@ export class Tool_Resize {
 			}
 			this.didStuff = true;
 		} else if (ehd.selecting) {
+			selectItemsInArea(ehd.lastX, ehd.lastY, ehd.mousePosition.x, ehd.mousePosition.y, 'shapes');
 			editor.editCanvas.redraw();
 		}
 

@@ -206,14 +206,8 @@ export class Tool_PathEdit {
 			);
 			hcpIsSelected = hoverDetection && msPoints.isSelected(hoverDetection.pathPoint);
 			if (hoverDetection.controlPoint === 'p') {
-				// Hovered over a Point
-				if (hcpIsSelected) {
-					// Point is selected
-					setCursor('penSquareMinus');
-				} else {
-					// Point is not selected
+				// Hovered over a point
 					setCursor('penSquare');
-				}
 			} else if (msPoints.singleton && hcpIsSelected) {
 				// Hovered over a handle
 				setCursor('penCircle');

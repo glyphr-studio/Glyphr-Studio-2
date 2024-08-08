@@ -128,6 +128,18 @@ export function clickEmptySpace() {
 	editor.multiSelect.shapes.clear();
 }
 
+
+/**
+ * Selects items in a given area. This is used to support the
+ * drag to select in an area edit canvas interaction.
+ * @param {number} x1 - The mouse / browser x-coordinate of the first point.
+ * @param {number} y1 - The mouse / browser y-coordinate of the first point.
+ * @param {number} x2 - The mouse / browser x-coordinate of the second point.
+ * @param {number} y2 - The mouse / browser y-coordinate of the second point.
+ * @param {string} type - The type of items to select, either 'pathPoints' or 'shapes'.
+ * @return {void}
+ */
+
 export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
 	x1 = cXsX(x1);
 	y1 = cYsY(y1);
@@ -142,6 +154,7 @@ export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
 
 	if (type === 'pathPoints') {
 		editor.multiSelect.points.clear();
+		editor.multiSelect.shapes.clear();
 		editor.selectedItem.shapes.forEach((shape) => {
 			if (shape.pathPoints) {
 				shape.pathPoints.forEach((point) => {
@@ -150,6 +163,14 @@ export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
 						editor.multiSelect.shapes.add(point.parent);
 					}
 				});
+			}
+		});
+	} else if (type === 'shapes') {
+		editor.multiSelect.points.clear();
+		editor.multiSelect.shapes.clear();
+		editor.selectedItem.shapes.forEach((shape) => {
+			if (area.isMaxesInside(shape.maxes)) {
+				editor.multiSelect.shapes.add(shape);
 			}
 		});
 	}

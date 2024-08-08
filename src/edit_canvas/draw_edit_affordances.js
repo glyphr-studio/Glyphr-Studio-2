@@ -775,8 +775,9 @@ export function computeAndDrawDragToSelectBox(ctx, eventHandlerData) {
 		yMax: Math.max(eventHandlerData.firstY, mouseY),
 	});
 
-	ctx.fillStyle = 'hsla(125, 100%, 36%, 0.05)';
-	ctx.strokeStyle = accentGreen;
+	// ctx.fillStyle = 'hsla(125, 100%, 36%, 0.05)';
+	ctx.fillStyle = 'hsl(200, 17%, 45%, 0.05)';
+	ctx.strokeStyle = accentGray;
 	ctx.lineWidth = 1;
 	ctx.setLineDash([3, 3]);
 	ctx.fillRect(box.xMin, box.yMin, box.width, box.height);
