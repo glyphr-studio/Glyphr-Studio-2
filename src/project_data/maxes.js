@@ -218,6 +218,19 @@ export class Maxes extends GlyphElement {
 		let result = x <= this.xMax && x >= this.xMin && y <= this.yMax && y >= this.yMin;
 		return result;
 	}
+
+	/**
+	 * Checks if the given otherMaxes object is completely inside this Maxes object.
+	 * @param {Object} otherMaxes - The Maxes object to check.
+	 * @return {boolean}
+	 */
+	isMaxesInside(otherMaxes) {
+		if (!this.isPointInside(otherMaxes.xMin, otherMaxes.yMin)) return false;
+		if (!this.isPointInside(otherMaxes.xMin, otherMaxes.yMax)) return false;
+		if (!this.isPointInside(otherMaxes.xMax, otherMaxes.yMax)) return false;
+		if (!this.isPointInside(otherMaxes.xMax, otherMaxes.yMin)) return false;
+		return true;
+	}
 }
 
 // --------------------------------------------------------------
