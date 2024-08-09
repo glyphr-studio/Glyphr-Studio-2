@@ -45,9 +45,9 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: config.devMode, // {bool} global switch for all the stuff below
 				overwriteTitle: false, // {bool} Use a 'Dev Mode' window title
-				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
+				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Ligatures', // {Sentence case page name} navigate straight to a page
+				currentPage: false, // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
