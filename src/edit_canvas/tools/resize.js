@@ -1,11 +1,17 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { calculateAngle, clone } from '../../common/functions.js';
+import { refreshPanel } from '../../panels/panels.js';
 import { isMaxes } from '../../project_data/maxes.js';
 import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { checkForMouseOverHotspot, clickEmptySpace, resizePath, selectItemsInArea } from '../events_mouse.js';
+import {
+	checkForMouseOverHotspot,
+	clickEmptySpace,
+	resizePath,
+	selectItemsInArea,
+} from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 
 /**
@@ -88,9 +94,9 @@ export class Tool_Resize {
 			this.dragging = true;
 		} else {
 			// log('clicked on nothing');
-			clickEmptySpace();
-			ehd.selecting = true;
-			findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
+			if (!ehd.isCtrlDown) clickEmptySpace();
+			const clickedHotspot = findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
+			if (!clickedHotspot) ehd.selecting = true;
 		}
 		// log(`Tool_Resize.mousedown`, 'end');
 	}
@@ -210,6 +216,11 @@ export class Tool_Resize {
 
 		if (this.monitorForDeselect) {
 			editor.multiSelect.shapes.remove(this.clickedPath);
+		}
+
+		if (ehd.selecting) {
+			ehd.selecting = false;
+			refreshPanel();
 		}
 
 		// Finish Up

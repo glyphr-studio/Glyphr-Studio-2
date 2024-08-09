@@ -574,6 +574,7 @@ export function isHotspotHere(cx, cy) {
  * If a hotspot is at the clicked location, call the function
  * @param {Number} cx - x value
  * @param {Number} cy - y value
+ * @returns {Boolean} - returns true if a hotspot was clicked
  */
 export function findAndCallHotspot(cx, cy) {
 	contextCharacters.canvasHotspots.forEach((spot) => {
@@ -584,8 +585,11 @@ export function findAndCallHotspot(cx, cy) {
 			cy >= spot.target.yMin
 		) {
 			spot.onclick();
+			return true;
 		}
 	});
+
+	return false;
 }
 
 /**

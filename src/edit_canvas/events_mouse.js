@@ -1,6 +1,6 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { closeAllNotations } from '../controls/dialogs/dialogs.js';
-import { Maxes } from '../project_data/maxes.js';
+import { Maxes, maxesOverlap } from '../project_data/maxes.js';
 import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
 import { canvasUIPointSize } from './draw_edit_affordances.js';
@@ -128,7 +128,6 @@ export function clickEmptySpace() {
 	editor.multiSelect.shapes.clear();
 }
 
-
 /**
  * Selects items in a given area. This is used to support the
  * drag to select in an area edit canvas interaction.
@@ -151,28 +150,45 @@ export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
 	const maxY = Math.max(y1, y2);
 	const area = new Maxes({ xMin: minX, xMax: maxX, yMin: minY, yMax: maxY });
 	const editor = getCurrentProjectEditor();
+	let shouldPublish = true;
+	const msPoints = editor.multiSelect.points;
+	const msShapes = editor.multiSelect.shapes;
+	const isCtrlDown = eventHandlerData.isCtrlDown;
 
 	if (type === 'pathPoints') {
-		editor.multiSelect.points.clear();
-		editor.multiSelect.shapes.clear();
+		msPoints.allowPublishing = false;
+		if(!isCtrlDown) msPoints.clear();
+		msShapes.allowPublishing = false;
+		if(!isCtrlDown) msShapes.clear();
 		editor.selectedItem.shapes.forEach((shape) => {
-			if (shape.pathPoints) {
+			if (maxesOverlap(shape.maxes, area) && shape.pathPoints) {
 				shape.pathPoints.forEach((point) => {
 					if (area.isPointInside(point.p.x, point.p.y)) {
-						editor.multiSelect.points.add(point);
-						editor.multiSelect.shapes.add(point.parent);
+						msPoints.add(point);
+						msShapes.add(point.parent);
+						shouldPublish = true;
 					}
 				});
 			}
 		});
 	} else if (type === 'shapes') {
-		editor.multiSelect.points.clear();
-		editor.multiSelect.shapes.clear();
+		msPoints.allowPublishing = false;
+		if(!isCtrlDown) msPoints.clear();
+		msShapes.allowPublishing = false;
+		if(!isCtrlDown) msShapes.clear();
 		editor.selectedItem.shapes.forEach((shape) => {
 			if (area.isMaxesInside(shape.maxes)) {
-				editor.multiSelect.shapes.add(shape);
+				msShapes.add(shape);
+				shouldPublish = true;
 			}
 		});
+	}
+
+	msPoints.allowPublishing = true;
+	msShapes.allowPublishing = true;
+	if (shouldPublish) {
+		msPoints.publishChanges();
+		msShapes.publishChanges();
 	}
 }
 
