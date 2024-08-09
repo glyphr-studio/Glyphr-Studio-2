@@ -215,8 +215,11 @@ export class Maxes extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	isPointInside(x, y) {
-		let result = x <= this.xMax && x >= this.xMin && y <= this.yMax && y >= this.yMin;
-		return result;
+		if (x >= this.xMax) return false;
+		if (x <= this.xMin) return false;
+		if (y >= this.yMax) return false;
+		if (y <= this.yMin) return false;
+		return true;
 	}
 
 	/**

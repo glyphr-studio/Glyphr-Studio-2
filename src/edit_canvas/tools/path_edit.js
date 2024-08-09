@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
+import { refreshPanel } from '../../panels/panels.js';
 import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
 import { isOverControlPoint } from '../detect_edit_affordances.js';
@@ -100,9 +101,9 @@ export class Tool_PathEdit {
 			msShapes.select(clickedPath);
 		} else {
 			// log('detected NOTHING');
-			clickEmptySpace();
-			ehd.selecting = true;
-			findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
+			if (!ehd.isCtrlDown) clickEmptySpace();
+			const clickedHotspot = findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
+			if (!clickedHotspot) ehd.selecting = true;
 		}
 
 		// if (msShapes.members.length) editor.nav.panel = 'Attributes';
@@ -161,7 +162,13 @@ export class Tool_PathEdit {
 			ehd.undoQueueHasChanged = true;
 			editor.publish(`currentPathPoint`, this.controlPoint.parent);
 		} else if (ehd.selecting) {
-			selectItemsInArea(ehd.lastX, ehd.lastY, ehd.mousePosition.x, ehd.mousePosition.y, 'pathPoints');
+			selectItemsInArea(
+				ehd.lastX,
+				ehd.lastY,
+				ehd.mousePosition.x,
+				ehd.mousePosition.y,
+				'pathPoints'
+			);
 			editor.editCanvas.redraw();
 		}
 
@@ -207,7 +214,7 @@ export class Tool_PathEdit {
 			hcpIsSelected = hoverDetection && msPoints.isSelected(hoverDetection.pathPoint);
 			if (hoverDetection.controlPoint === 'p') {
 				// Hovered over a point
-					setCursor('penSquare');
+				setCursor('penSquare');
 			} else if (msPoints.singleton && hcpIsSelected) {
 				// Hovered over a handle
 				setCursor('penCircle');
@@ -225,6 +232,7 @@ export class Tool_PathEdit {
 		const ehd = eventHandlerData;
 		const editor = getCurrentProjectEditor();
 		const msPoints = editor.multiSelect.points;
+		const msShapes = editor.multiSelect.shapes;
 
 		if (this.monitorForDeselect) {
 			msPoints.remove(this.pathPoint);
@@ -237,6 +245,7 @@ export class Tool_PathEdit {
 
 		if (ehd.selecting) {
 			ehd.selecting = false;
+			refreshPanel();
 			editor.editCanvas.redraw();
 		}
 

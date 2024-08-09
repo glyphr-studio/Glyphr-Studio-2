@@ -29,6 +29,7 @@ class MultiSelect {
 	constructor() {
 		this.members = [];
 		this.singleHandle = false;
+		this.allowPublishing = true;
 	}
 
 	isSelected(obj) {
@@ -193,8 +194,10 @@ export class MultiSelectPoints extends MultiSelect {
 
 	publishChanges(topic = 'whichPathPointIsSelected') {
 		// log(`MultiSelectPoints.publishChanges`, 'start');
-		const editor = getCurrentProjectEditor();
-		editor.publish(topic, this.members);
+		if(this.allowPublishing) {
+			const editor = getCurrentProjectEditor();
+			editor.publish(topic, this.members);
+		}
 		// log(`MultiSelectPoints.publishChanges`, 'end');
 	}
 
@@ -364,8 +367,10 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	publishChanges(topic = 'whichShapeIsSelected') {
-		const editor = getCurrentProjectEditor();
-		editor.publish(topic, this.members);
+		if(this.allowPublishing) {
+			const editor = getCurrentProjectEditor();
+			editor.publish(topic, this.members);
+		}
 	}
 
 	clear() {
