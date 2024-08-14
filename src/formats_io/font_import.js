@@ -38,6 +38,10 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
 
+	// TESTING
+	const palettes = importedFont.palettes.getAll();
+	console.log(palettes);
+
 	// Reset module data
 	finalGlyphs = {};
 	finalLigatures = {};
@@ -309,6 +313,7 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 
 	if (importedGlyph) {
 		importedGlyph.advanceWidth = advance;
+		importedGlyph.flipNS();
 	}
 
 	// log(`makeGlyphrStudioGlyphObject`, 'end');

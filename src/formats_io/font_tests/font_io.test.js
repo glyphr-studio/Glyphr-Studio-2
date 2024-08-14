@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import opentype from '../../lib/opentype.js-1.3.4/opentype.module.js';
+import opentype from '../../lib/opentype.js-july-2024/opentype.mjs';
 import { ioFont_importFont } from '../font_import.js';
 // import sampleFile from './ObleggExtendedTestRegular.otf';
 
@@ -21,7 +21,9 @@ describe('OTF Font', () => {
 	});
 
 	it('Import: Oblegg Extended Test', async () => {
-		const loadResult = opentype.loadSync('./src/formats_io/font_tests/ObleggExtendedTestRegular.otf');
+		const loadResult = opentype.loadSync(
+			'./src/formats_io/font_tests/ObleggExtendedTestRegular.otf'
+		);
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 

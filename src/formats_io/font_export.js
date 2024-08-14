@@ -2,7 +2,7 @@ import { getCurrentProject } from '../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../common/character_ids.js';
 import { pause, round } from '../common/functions.js';
 import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
-import openTypeJS from '../lib/opentype.js-1.3.4/opentype.module.js';
+import openTypeJS from '../lib/opentype.js-july-2024/opentype.mjs';
 import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { Glyph } from '../project_data/glyph.js';
 import { sortLigatures } from '../project_data/glyphr_studio_project.js';
@@ -62,9 +62,9 @@ export async function ioFont_exportFont() {
 	if (exportLigatures) {
 		ligatureSubstitutions.forEach((sub) => {
 			// log(`Adding ligature to font`);
-			const subIndexes = sub.subChars.map((char) => font.charToGlyphIndex(char))
+			const subIndexes = sub.subChars.map((char) => font.charToGlyphIndex(char));
 			// log(sub);
-			font.substitution.addLigature('liga', {sub: subIndexes, by: sub.byIndex});
+			font.substitution.addLigature('liga', { sub: subIndexes, by: sub.byIndex });
 		});
 	}
 

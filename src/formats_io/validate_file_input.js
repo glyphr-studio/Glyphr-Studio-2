@@ -1,5 +1,5 @@
 import { getGlyphrStudioApp } from '../app/main.js';
-import openTypeJS from '../lib/opentype.js-1.3.4/opentype.module.js';
+import openTypeJS from '../lib/opentype.js-july-2024/opentype.mjs';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { getFirstTagInstance } from './svg_font_import.js';
 
@@ -99,11 +99,12 @@ export async function validateSingleFileInput(fileInput, callback) {
 function readerValidateFont() {
 	// log(`readerValidateFont`, 'start');
 	const file = this.result;
+	/** @type {Object | false} */
 	let font = false;
 
 	try {
 		font = openTypeJS.parse(file);
-		// log(font);
+		console.log(font);
 	} catch (err) {
 		return failWithError(`
 			Font file could not be read. [FF0]
