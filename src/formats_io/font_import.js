@@ -6,6 +6,7 @@ import {
 import { decToHex } from '../common/character_ids.js';
 import { countItems } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
+import openTypeJS from '../lib/opentype.js-july-2024/opentype.mjs';
 import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
@@ -39,8 +40,18 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	const project = editor.project;
 
 	// TESTING
-	const palettes = importedFont.palettes.getAll();
-	console.log(palettes);
+	const svgTable = importedFont.tables.svg;
+	console.log('importedFont.tables.svg', svgTable);
+	console.log('importedFont.svgImages', importedFont.svgImages);
+	// 0x270B
+	const gIndex = importedFont.charToGlyphIndex('😂');
+	console.log(`getting index ${gIndex}`);
+	const svgBits = svgTable.get(gIndex);
+	const svgCode = await openTypeJS.decodeSvgDocument(svgBits);
+	console.log(svgCode);
+	console.log(importedFont.glyphs.glyphs[gIndex]);
+	console.log('getting from glyph object');
+	console.log(await importedFont.charToGlyph('😂').getSvgImage(importedFont));
 
 	// Reset module data
 	finalGlyphs = {};
@@ -163,7 +174,6 @@ export async function ioFont_importFont(importedFont, testing = false) {
 		importOneLigature({ glyph: thisLigature, gsub: liga.sub }, importedFont);
 	}
 
-
 	// --------------------------------------------------------------
 	// Import Kern Pairs
 	// --------------------------------------------------------------
@@ -275,7 +285,7 @@ function importOneGlyph(otfGlyph, project) {
 		project.settings.app.showNonCharPoints = true;
 	}
 
-	if(!isNaN(Number(uni))) project.incrementRangeCountFor(Number(uni));
+	if (!isNaN(Number(uni))) project.incrementRangeCountFor(Number(uni));
 
 	// Successful loop, advance importItemCounter
 	importItemCounter++;
@@ -367,7 +377,7 @@ function importOneLigature(otfLigature, otfFont) {
 		importedLigature.objType = 'Ligature';
 		const newLigatureID = makeLigatureID(String.fromCodePoint(...newGsub));
 		// log(`newLigatureID: ${newLigatureID}`);
-		if(newLigatureID) importedLigature.id = newLigatureID;
+		if (newLigatureID) importedLigature.id = newLigatureID;
 
 		// Finish up
 		finalLigatures[newLigatureID] = importedLigature;
@@ -443,7 +453,7 @@ function importFontMetadata(font, project) {
 	// log(font);
 	const fontSettings = project.settings.font;
 	const os2 = font.tables.os2;
-	const familyName = ''+getTableValue(font.names.fontFamily) || 'My Font';
+	const familyName = '' + getTableValue(font.names.fontFamily) || 'My Font';
 	project.settings.project.name = familyName;
 
 	fontSettings.name = familyName;
@@ -458,7 +468,7 @@ function importFontMetadata(font, project) {
 	let typoDescender = getTableValue(os2.sTypoDescender);
 	if (typoDescender) {
 		typoDescender = parseFloat(typoDescender);
-		fontSettings.descent = -1 * Math.abs(1* typoDescender);
+		fontSettings.descent = -1 * Math.abs(1 * typoDescender);
 	}
 	// fontSettings.descent = -1 * Math.abs(font.descender) || fontSettings.descent;
 

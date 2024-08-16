@@ -16232,4 +16232,5 @@ export default {
   load: load,
   loadSync: loadSync,
   parse: parseBuffer,
+  decodeSvgDocument: decodeSvgDocument,
 }
