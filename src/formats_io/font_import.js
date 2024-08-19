@@ -26,6 +26,7 @@ let finalLigatures = {};
 let finalKerns = {};
 let importItemCounter = 0;
 let importItemTotal = 0;
+let importedFont = {};
 
 /**
  * Takes the import result from Opentype.js, reads the data, and
@@ -34,26 +35,13 @@ let importItemTotal = 0;
  * @param {Boolean} testing - is this a vitest test
  * @returns nothing
  */
-export async function ioFont_importFont(importedFont, testing = false) {
+export async function ioFont_importFont(importFont, testing = false) {
 	// log(importedFont);
 	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
 
-	// TESTING
-	const svgTable = importedFont.tables.svg;
-	console.log('importedFont.tables.svg', svgTable);
-	console.log('importedFont.svgImages', importedFont.svgImages);
-	// 0x270B
-	const gIndex = importedFont.charToGlyphIndex('😂');
-	console.log(`getting index ${gIndex}`);
-	const svgBits = svgTable.get(gIndex);
-	const svgCode = await openTypeJS.decodeSvgDocument(svgBits);
-	console.log(svgCode);
-	console.log(importedFont.glyphs.glyphs[gIndex]);
-	console.log('getting from glyph object');
-	console.log(await importedFont.charToGlyph('😂').getSvgImage(importedFont));
-
 	// Reset module data
+	importedFont = importFont;
 	finalGlyphs = {};
 	finalLigatures = {};
 	finalKerns = {};
@@ -156,7 +144,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 
 	for (const key of Object.keys(fontGlyphs)) {
 		await updateFontImportProgressIndicator('character');
-		importOneGlyph(fontGlyphs[key], project);
+		await importOneGlyph(fontGlyphs[key], project);
 	}
 
 	// --------------------------------------------------------------
@@ -171,7 +159,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 		} catch {
 			console.warn(`Ligature import error: could not get ${liga.by} (${liga.sub})`);
 		}
-		importOneLigature({ glyph: thisLigature, gsub: liga.sub }, importedFont);
+		await importOneLigature({ glyph: thisLigature, gsub: liga.sub }, importedFont);
 	}
 
 	// --------------------------------------------------------------
@@ -249,7 +237,7 @@ async function updateFontImportProgressIndicator(type) {
  * @param {GlyphrStudioProject} project - current project
  * @returns nothing
  */
-function importOneGlyph(otfGlyph, project) {
+async function importOneGlyph(otfGlyph, project) {
 	// log('importOneGlyph', 'start');
 
 	// Get the appropriate unicode decimal for this glyph
@@ -267,7 +255,7 @@ function importOneGlyph(otfGlyph, project) {
 
 	const uni = decToHex(otfGlyph.unicode || 0);
 	// log(`uni: ${uni}`);
-	const importedGlyph = makeGlyphrStudioGlyphObject(otfGlyph);
+	const importedGlyph = await makeGlyphrStudioGlyphObject(otfGlyph);
 
 	if (!importedGlyph) {
 		console.warn(`Something went wrong with importing this glyph.`);
@@ -296,9 +284,9 @@ function importOneGlyph(otfGlyph, project) {
 /**
  * Converts one Opentype.js Glyph into a Glyphr Studio Glyph.
  * @param {Object} otfGlyph - Opentype.js Glyph object
- * @returns {Glyph}
+ * @returns {Promise}
  */
-function makeGlyphrStudioGlyphObject(otfGlyph) {
+async function makeGlyphrStudioGlyphObject(otfGlyph) {
 	// log(`makeGlyphrStudioGlyphObject`, 'start');
 	// log(otfGlyph);
 	const advance = otfGlyph.advanceWidth;
@@ -326,6 +314,16 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 		importedGlyph.flipNS();
 	}
 
+	const char = String.fromCodePoint(otfGlyph.unicode);
+	// log(`char: '${char}'`);
+	const colorSVGData = await importOneSVGColorGlyph(char);
+
+	if(colorSVGData !== '') {
+		importedGlyph.svgGlyphData = colorSVGData;
+		// log(`SVG Glyph for: ${char}`);
+		// log(colorSVGData);
+	}
+
 	// log(`makeGlyphrStudioGlyphObject`, 'end');
 	return importedGlyph;
 }
@@ -340,14 +338,14 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
  * @param {Object} otfFont - entire Opentype.js Font object
  * @returns nothing
  */
-function importOneLigature(otfLigature, otfFont) {
+async function importOneLigature(otfLigature, otfFont) {
 	// log(`importOneLigature`, 'start');
 	// log(`otfLigature.glyph.name: ${otfLigature.glyph.name}`);
 	// log(otfLigature);
 
 	if (otfLigature?.glyph) {
 		// make the Glyphr Studio Glyph
-		const importedLigature = makeGlyphrStudioGlyphObject(otfLigature.glyph);
+		const importedLigature = await makeGlyphrStudioGlyphObject(otfLigature.glyph);
 		if (!importedLigature) {
 			console.warn(`Something went wrong with importing this glyph.`);
 
@@ -387,6 +385,37 @@ function importOneLigature(otfLigature, otfFont) {
 		importItemTotal--;
 	}
 	// log(`importOneLigature`, 'end');
+}
+
+
+
+// --------------------------------------------------------------
+// SVG Color Glyphs
+// --------------------------------------------------------------
+async function importOneSVGColorGlyph(char) {
+	// log(`importOneSVGColorGlyph`, 'start');
+	const svgTable = importedFont?.tables?.svg;
+
+	if (svgTable) {
+		// log('importedFont.tables.svg', svgTable);
+
+		const gIndex = importedFont.charToGlyphIndex(char);
+		// log(`getting index ${gIndex}`);
+
+		if (gIndex) {
+			const svgBits = svgTable.get(gIndex);
+			// log('svgBits', svgBits);
+
+			if (svgBits) {
+				const svgCode = await openTypeJS.decodeSvgDocument(svgBits);
+				// log(svgCode);
+				// log(`importOneSVGColorGlyph`, 'end');
+				return JSON.stringify(svgCode);
+			}
+		}
+	}
+	// log(`importOneSVGColorGlyph`, 'end');
+	return '';
 }
 
 // --------------------------------------------------------------

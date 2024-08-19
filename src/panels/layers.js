@@ -131,7 +131,66 @@ export function makePanel_Layers() {
 	});
 
 	// log(`makePanel_Layers`, 'end');
-	return [rowsArea, makeActionArea_Layers()];
+	const result = [rowsArea];
+	const svgGlyph = makeSVGGlyphPreview(editor.selectedItem);
+	if (svgGlyph) result.push(svgGlyph);
+	result.push(makeActionArea_Layers());
+	return result;
+}
+
+function makeSVGGlyphPreview(glyph) {
+	if (!glyph.svgGlyphData) return;
+
+	let rowsArea = makeElement({ className: 'panel__card full-width item-links__rows-area' });
+	let row = makeElement({ className: 'item-link__row' });
+
+	// row.addEventListener('click', () => {
+	// 	if (panelsEventHandlerData.isCtrlDown) {
+	// 		editor.multiSelect.shapes.toggle(item);
+	// 	} else {
+	// 		editor.multiSelect.shapes.select(item);
+	// 	}
+	// 	editor.publish('whichShapeIsSelected', item);
+	// });
+
+	const thumbnail = makeElement({
+		className: 'item-link__thumbnail',
+		innerHTML: makeSVGGlyphThumbnail(glyph.svgGlyphData),
+	});
+	row.appendChild(thumbnail);
+
+	row.appendChild(
+		makeElement({
+			className: 'item-link__title',
+			innerHTML: `SVG Glyph`,
+		})
+	);
+
+	row.appendChild(
+		makeElement({
+			className: 'item-link__subtitle',
+			innerHTML: 'Layer used where Opentype SVG fonts are supported',
+		})
+	);
+
+	rowsArea.appendChild(row);
+
+	return rowsArea;
+}
+
+function makeSVGGlyphThumbnail(rawSVG) {
+	let svgContent = JSON.parse(rawSVG);
+
+	svgContent = svgContent.replace('<svg ', '<g ');
+	svgContent = svgContent.replace('</svg>', '</g>');
+	svgContent = svgContent.replaceAll('viewBox=', 'old-viewBox=');
+	svgContent = svgContent.replaceAll('transform=', 'old-transform=');
+	let re = `
+		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+			${svgContent}
+		</svg>`;
+
+	return re;
 }
 
 function makeActionArea_Layers() {

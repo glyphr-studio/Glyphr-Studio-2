@@ -39,6 +39,7 @@ export class Glyph extends GlyphElement {
 	 * @param {Array =} args.gsub - for ligatures, what characters does this lig replace
 	 * @param {Array =} args.shapes - collection of Paths and Component Instances in this Glyph
 	 * @param {String =} args.contextCharacters - what other glyphs to show around this one
+	 * @param {String =} args.svgGlyphData - SVG data for this glyph (color svg font)
 	 */
 	constructor({
 		id = '',
@@ -52,6 +53,7 @@ export class Glyph extends GlyphElement {
 		usedIn = [],
 		gsub = [],
 		contextCharacters = '',
+		svgGlyphData = ''
 	} = {}) {
 		// log(`Glyph.constructor`, 'start');
 		super();
@@ -66,6 +68,7 @@ export class Glyph extends GlyphElement {
 		this.usedIn = usedIn;
 		this.gsub = gsub;
 		this.contextCharacters = contextCharacters;
+		this.svgGlyphData = svgGlyphData;
 
 		// Changed state metadata
 		this.hasChangedThisSession = false;

@@ -1,6 +1,7 @@
 import { getCurrentProject } from '../app/main.js';
 import { round } from '../common/functions.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
+import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -18,7 +19,7 @@ import { Path } from '../project_data/path.js';
  * @param {String} fill - glyph fill color
  * @returns {Number} - Advance Width, according to view.z
  */
-export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fill = '#000') {
+export function drawGlyph(glyph, ctx, view = { dx: 0, dy: 0, dz: 1 }, alpha = 1, fill = '#000') {
 	// log('drawGlyph', 'start');
 	// log(glyph.name);
 	// log('view ' + json(view, true));
@@ -28,29 +29,45 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 		return 0;
 	}
 
-	let drewShape;
-	ctx.beginPath();
-	glyph.shapes.forEach((shape) => {
-		// log(`${glyph.name} drawing ${shape.objType} #${j} "${shape.name}"`);
-		drewShape = drawShape(shape, ctx, view);
-		if (!drewShape) {
-			// log('Could not draw shape ' + shape.name + ' in Glyph ' + glyph.name);
-			if (shape.objType === 'ComponentInstance' && !getCurrentProject().getItem(shape.link)) {
-				console.warn(`>>> Component Instance has bad link: ${shape.link} from ${glyph.id}`);
-				const i = glyph.shapes.indexOf(shape);
-				if (i > -1) {
-					glyph.shapes.splice(i, 1);
-					console.warn('>>> Deleted the Instance');
+	if (glyph.svgGlyphData) {
+		const img = new Image();
+		let svgCode = JSON.parse(glyph.svgGlyphData);
+		svgCode = svgCode.replaceAll('viewBox=', 'old-viewBox=');
+		svgCode = svgCode.replaceAll('transform=', 'old-transform=');
+		const svg64 = btoa(svgCode);
+		img.onload = function () {
+			log(`view.dx: ${view.dx}`);
+			log(`view.dy: ${view.dy}`);
+			log(svgCode);
+			// ctx.drawImage(img, view.dx, view.dy, view.dz, view.dz);
+			ctx.drawImage(img, view.dx, view.dy);
+		};
+		img.src = `data:image/svg+xml;base64,${svg64}`;
+
+	} else {
+		let drewShape;
+		ctx.beginPath();
+		glyph.shapes.forEach((shape) => {
+			// log(`${glyph.name} drawing ${shape.objType} #${j} "${shape.name}"`);
+			drewShape = drawShape(shape, ctx, view);
+			if (!drewShape) {
+				// log('Could not draw shape ' + shape.name + ' in Glyph ' + glyph.name);
+				if (shape.objType === 'ComponentInstance' && !getCurrentProject().getItem(shape.link)) {
+					console.warn(`>>> Component Instance has bad link: ${shape.link} from ${glyph.id}`);
+					const i = glyph.shapes.indexOf(shape);
+					if (i > -1) {
+						glyph.shapes.splice(i, 1);
+						console.warn('>>> Deleted the Instance');
+					}
 				}
 			}
-		}
-	});
-	ctx.closePath();
-	ctx.fillStyle = fill;
-	ctx.globalAlpha = alpha;
-	ctx.fill('nonzero');
-	ctx.globalAlpha = 1;
-
+		});
+		ctx.closePath();
+		ctx.fillStyle = fill;
+		ctx.globalAlpha = alpha;
+		ctx.fill('nonzero');
+		ctx.globalAlpha = 1;
+	}
 	// log(glyph.name);
 	// log('drawGlyph', 'end');
 

@@ -15,3 +15,4 @@ declare global {
 }
 
 declare var log: any;
+window.log = window.log || {};
