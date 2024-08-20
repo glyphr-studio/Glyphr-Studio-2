@@ -53,7 +53,7 @@ export class Glyph extends GlyphElement {
 		usedIn = [],
 		gsub = [],
 		contextCharacters = '',
-		svgGlyphData = ''
+		svgGlyphData = '',
 	} = {}) {
 		// log(`Glyph.constructor`, 'start');
 		super();
@@ -878,6 +878,15 @@ export class Glyph extends GlyphElement {
 		return this.cache.svgPathData;
 	}
 
+	/**
+	 * Generates the SVG path data for the glyph.
+	 *
+	 * This function iterates over the shapes in the glyph, transforming component instances
+	 * and appending their SVG path data to the result. If the resulting path data is empty,
+	 * it is set to a default value.
+	 *
+	 * @return {String} The SVG path data for the glyph.
+	 */
 	makeSVGPathData() {
 		// log(`makeSVGPathData()`, 'start');
 
@@ -905,6 +914,56 @@ export class Glyph extends GlyphElement {
 		// log(pathData);
 		// log(`makeSVGPathData()`, 'end');
 		return pathData;
+	}
+
+	/**
+	 * Returns an HTML Image object for this glyph, based on the
+	 * OpenType SVG data (if there is any).
+	 *
+	 * @return {String} The image for the glyph.
+	 */
+	get svgGlyphImage() {
+		if (!this?.cache?.svgGlyphImage) {
+			this.cache.svgGlyphImage = this.makeSVGGlyphImage();
+		}
+		return this.cache.svgGlyphImage;
+	}
+
+	/**
+	 * Generates an HTML Image object for this glyph, based on the OpenType SVG data.
+	 *
+	 * @return {HTMLImageElement} The image for the glyph.
+	 */
+	makeSVGGlyphImage() {
+		// log(`Glyph.makeSVGGlyphImage`, 'start');
+		const img = new Image();
+		if (!this.svgGlyphData) return img;
+
+		let svgCode = JSON.parse(this.svgGlyphData);
+
+		// REMOVE
+		// <?xml version="1.0" encoding="utf-8"?>
+		const metaStart = svgCode.indexOf('<?xml ');
+		if (metaStart > -1) {
+			const metaEnd = svgCode.indexOf('?>', metaStart);
+			svgCode = svgCode.substring(0, metaStart) + svgCode.substring(metaEnd + 2);
+		}
+
+		// Make the viewBox arbitrarily big to be able to draw outside
+		// the original viewBox. This scalar is also used in DisplayCanvas.drawPaths
+		const scalar = 8000;
+		svgCode = svgCode.replace(
+			'<svg ',
+			`<svg viewBox="-${scalar / 2} -${scalar / 2} ${scalar} ${scalar}" `
+		);
+		// log(`\n⮟svgCode⮟`);
+		// log(svgCode);
+
+		const svg64 = btoa(svgCode);
+		img.src = `data:image/svg+xml;base64,${svg64}`;
+		// log(`Glyph.makeSVGGlyphImage`, 'end');
+
+		return img;
 	}
 
 	// --------------------------------------------------------------

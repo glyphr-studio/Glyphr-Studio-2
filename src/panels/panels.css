@@ -449,6 +449,12 @@ nav .item-chooser__wrapper {
 	overflow: hidden;
 }
 
+.item-link__thumbnail img {
+        width: 150px;
+        height: 150px;
+        margin: -40px 0 0 -65px;
+}
+
 .item-link__title {
 	display: block;
 	height: min-content;

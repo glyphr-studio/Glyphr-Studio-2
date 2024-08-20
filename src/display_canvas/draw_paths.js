@@ -1,7 +1,6 @@
 import { getCurrentProject } from '../app/main.js';
 import { round } from '../common/functions.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
-import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -17,9 +16,15 @@ import { Path } from '../project_data/path.js';
  * @param {Object} view - x/y/z view object
  * @param {Number} alpha - transparency between 0 and 1
  * @param {String} fill - glyph fill color
- * @returns {Number} - Advance Width, according to view.z
+ * @returns {Promise} - Advance Width, according to view.z
  */
-export function drawGlyph(glyph, ctx, view = { dx: 0, dy: 0, dz: 1 }, alpha = 1, fill = '#000') {
+export async function drawGlyph(
+	glyph,
+	ctx,
+	view = { dx: 0, dy: 0, dz: 1 },
+	alpha = 1,
+	fill = '#000'
+) {
 	// log('drawGlyph', 'start');
 	// log(glyph.name);
 	// log('view ' + json(view, true));
@@ -29,21 +34,12 @@ export function drawGlyph(glyph, ctx, view = { dx: 0, dy: 0, dz: 1 }, alpha = 1,
 		return 0;
 	}
 
+	// log(glyph.svgGlyphData);
 	if (glyph.svgGlyphData) {
-		const img = new Image();
-		let svgCode = JSON.parse(glyph.svgGlyphData);
-		svgCode = svgCode.replaceAll('viewBox=', 'old-viewBox=');
-		svgCode = svgCode.replaceAll('transform=', 'old-transform=');
-		const svg64 = btoa(svgCode);
-		img.onload = function () {
-			log(`view.dx: ${view.dx}`);
-			log(`view.dy: ${view.dy}`);
-			log(svgCode);
-			// ctx.drawImage(img, view.dx, view.dy, view.dz, view.dz);
-			ctx.drawImage(img, view.dx, view.dy);
-		};
-		img.src = `data:image/svg+xml;base64,${svg64}`;
-
+		const img = await glyph.svgGlyphImage;
+		const boxScale = 8000 * view.dz;
+		ctx.drawImage(img, view.dx - boxScale / 2, view.dy - boxScale / 2, boxScale, boxScale);
+		// log('drew color svg glyph ' + glyph.name);
 	} else {
 		let drewShape;
 		ctx.beginPath();

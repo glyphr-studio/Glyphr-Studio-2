@@ -155,8 +155,10 @@ function makeSVGGlyphPreview(glyph) {
 
 	const thumbnail = makeElement({
 		className: 'item-link__thumbnail',
-		innerHTML: makeSVGGlyphThumbnail(glyph.svgGlyphData),
 	});
+	const img = glyph.svgGlyphImage;
+	thumbnail.appendChild(img);
+
 	row.appendChild(thumbnail);
 
 	row.appendChild(
@@ -176,21 +178,6 @@ function makeSVGGlyphPreview(glyph) {
 	rowsArea.appendChild(row);
 
 	return rowsArea;
-}
-
-function makeSVGGlyphThumbnail(rawSVG) {
-	let svgContent = JSON.parse(rawSVG);
-
-	svgContent = svgContent.replace('<svg ', '<g ');
-	svgContent = svgContent.replace('</svg>', '</g>');
-	svgContent = svgContent.replaceAll('viewBox=', 'old-viewBox=');
-	svgContent = svgContent.replaceAll('transform=', 'old-transform=');
-	let re = `
-		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-			${svgContent}
-		</svg>`;
-
-	return re;
 }
 
 function makeActionArea_Layers() {

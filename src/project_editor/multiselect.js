@@ -202,9 +202,10 @@ export class MultiSelectPoints extends MultiSelect {
 	}
 
 	clear() {
-		this.members = [];
 		// if (this.virtualGlyph) this.virtualGlyph.ratioLock = false;
 		this.singleHandle = false;
+		if (this.members.length === 0) return;
+		this.members = [];
 		this.publishChanges();
 	}
 
@@ -374,9 +375,10 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	clear() {
-		this.members = [];
 		this.virtualGlyph.ratioLock = false;
 		this.singleHandle = false;
+		if(this.members.length === 0) return;
+		this.members = [];
 		this.publishChanges();
 	}
 
