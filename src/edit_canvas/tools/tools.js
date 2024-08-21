@@ -35,14 +35,16 @@ export function makeEditToolsButtons() {
 	// All the various permutations of states
 	// log(`editor.selectedTool: ${editor.selectedTool}`);
 
+	let defaultDisabledState = editor.project.settings.app.displaySVGGlyphs;
+
 	// Button data
 	let toolButtonData = {
-		newRectangle: { title: 'New rectangle', disabled: false },
-		newOval: { title: 'New oval', disabled: false },
-		newPath: { title: 'New path', disabled: false },
-		pathAddPoint: { title: 'Add path point', disabled: false },
-		pathEdit: { title: 'Path edit', disabled: false },
-		resize: { title: 'Resize', disabled: false },
+		newRectangle: { title: 'New rectangle', disabled: defaultDisabledState },
+		newOval: { title: 'New oval', disabled: defaultDisabledState },
+		newPath: { title: 'New path', disabled: defaultDisabledState },
+		pathAddPoint: { title: 'Add path point', disabled: defaultDisabledState },
+		pathEdit: { title: 'Path edit', disabled: defaultDisabledState },
+		resize: { title: 'Resize', disabled: defaultDisabledState },
 	};
 
 	// Disable pen and add path point buttons for certain conditions
@@ -78,6 +80,10 @@ export function makeEditToolsButtons() {
 				disabled: toolButtonData[buttonName].disabled,
 			}),
 		});
+
+		if(toolButtonData[buttonName].disabled) {
+			newToolButton.setAttribute('disabled', 'disabled');
+		}
 
 		newToolButton.addEventListener('click', () => clickTool(buttonName));
 
@@ -371,6 +377,7 @@ export function getShapeAtLocation(cx, cy) {
 
 	let shape;
 	const editor = getCurrentProjectEditor();
+	if (editor.project.settings.app.displaySVGGlyphs) return false;
 	let sws = editor.selectedItem?.shapes;
 	if (!sws) return false;
 	// log(sws);
@@ -462,12 +469,15 @@ export function makeToolButtonSVG(oa) {
 	let colorFill = accentColors.gray.l95;
 	let icon = icons[oa.name];
 
-	if (oa.selected) {
+	if(oa.selected && oa.disabled) {
+		colorOutline = accentColors.gray.l30;
+		colorFill = accentColors.gray.l90;
+	}else if (oa.selected) {
 		colorOutline = accentColors.gray.l10;
 		colorFill = 'white';
 	} else if (oa.disabled) {
-		colorOutline = accentColors.gray.l40;
-		colorFill = accentColors.gray.l30;
+		colorOutline = accentColors.gray.l80;
+		colorFill = accentColors.gray.l90;
 	}
 
 	let innerHTML = '';

@@ -31,7 +31,7 @@ let importedFont = {};
 /**
  * Takes the import result from Opentype.js, reads the data, and
  * creates a new Glyphr Studio Project from it.
- * @param {Object} importedFont - result from Opentype.js import
+ * @param {Object} importFont - result from Opentype.js import
  * @param {Boolean} testing - is this a vitest test
  * @returns nothing
  */
@@ -269,8 +269,14 @@ async function importOneGlyph(otfGlyph, project) {
 	importedGlyph.id = glyphID;
 	finalGlyphs[glyphID] = importedGlyph;
 
+	// Update project stuff based on this glyph
 	if (isControlChar(uni) && uni !== '0x0') {
 		project.settings.app.showNonCharPoints = true;
+	}
+
+	if (importedGlyph.svgGlyphData) {
+		project.settings.app.enableSVGGlyphFeatures = true;
+		project.settings.app.displaySVGGlyphs = true;
 	}
 
 	if (!isNaN(Number(uni))) project.incrementRangeCountFor(Number(uni));

@@ -1,4 +1,4 @@
-import { getCurrentProject, log } from '../../app/main.js';
+import { getCurrentProject } from '../../app/main.js';
 import { hexesToChars } from '../../common/character_ids.js';
 import { makeElement } from '../../common/dom.js';
 import { remove } from '../../common/functions.js';
@@ -132,7 +132,11 @@ export class GlyphTile extends HTMLElement {
 	 * redraw this thumbnail
 	 */
 	redraw() {
-		if (this.glyph?.shapes?.length) {
+		if (getCurrentProject().settings.app.displaySVGGlyphs && this.glyph.svgGlyphData) {
+			const img = this.glyph.svgGlyphImage;
+			this.thumbnail.innerHTML = '';
+			this.thumbnail.appendChild(img);
+		} else if (this.glyph?.shapes?.length) {
 			// const project = getCurrentProject();
 			this.thumbnail.innerHTML = this.project.makeItemThumbnail(this.glyph);
 		}

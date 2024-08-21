@@ -49,6 +49,8 @@ export class GlyphrStudioProject {
 				exportKerning: true,
 				exportUneditedItems: true,
 				moveShapesOnSVGDragDrop: false,
+				enableSVGGlyphFeatures: false,
+				displaySVGGlyphs: false,
 				guides: {
 					drawGuidesOnTop: false,
 					systemShowGuides: true,

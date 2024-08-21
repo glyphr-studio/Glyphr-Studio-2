@@ -57,6 +57,11 @@ export function makeSettingsTabContentApp() {
 		makeOneSettingsRow('app', 'exportKerning'),
 		makeOneSettingsRow('app', 'exportUneditedItems'),
 		makeOneSettingsRow('app', 'moveShapesOnSVGDragDrop'),
+		textToNode('<br>'),
+		textToNode('<br>'),
+		textToNode('<h3>SVG Glyphs (Color Glyphs)</h3>'),
+		makeOneSettingsRow('app', 'enableSVGGlyphFeatures'),
+		makeOneSettingsRow('app', 'displaySVGGlyphs'),
 	]);
 
 	return tabContent;

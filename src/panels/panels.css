@@ -450,9 +450,9 @@ nav .item-chooser__wrapper {
 }
 
 .item-link__thumbnail img {
-        width: 150px;
-        height: 150px;
-        margin: -40px 0 0 -65px;
+	width: 150px;
+	height: 150px;
+	margin: -40px 0 0 -65px;
 }
 
 .item-link__title {

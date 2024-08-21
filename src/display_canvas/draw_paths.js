@@ -34,8 +34,10 @@ export async function drawGlyph(
 		return 0;
 	}
 
+	const project = getCurrentProject();
+
 	// log(glyph.svgGlyphData);
-	if (glyph.svgGlyphData) {
+	if (project.settings.app.displaySVGGlyphs && glyph.svgGlyphData) {
 		const img = await glyph.svgGlyphImage;
 		const boxScale = 8000 * view.dz;
 		ctx.drawImage(img, view.dx - boxScale / 2, view.dy - boxScale / 2, boxScale, boxScale);
@@ -48,7 +50,7 @@ export async function drawGlyph(
 			drewShape = drawShape(shape, ctx, view);
 			if (!drewShape) {
 				// log('Could not draw shape ' + shape.name + ' in Glyph ' + glyph.name);
-				if (shape.objType === 'ComponentInstance' && !getCurrentProject().getItem(shape.link)) {
+				if (shape.objType === 'ComponentInstance' && !project.getItem(shape.link)) {
 					console.warn(`>>> Component Instance has bad link: ${shape.link} from ${glyph.id}`);
 					const i = glyph.shapes.indexOf(shape);
 					if (i > -1) {
