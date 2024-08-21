@@ -81,7 +81,7 @@ export function makeEditToolsButtons() {
 			}),
 		});
 
-		if(toolButtonData[buttonName].disabled) {
+		if (toolButtonData[buttonName].disabled) {
 			newToolButton.setAttribute('disabled', 'disabled');
 		}
 
@@ -248,7 +248,14 @@ export function makeViewToolsButtons() {
 	]);
 
 	// log(`makeViewToolsButtons`, 'end');
-	return [viewButtonElements.pan, responsiveGroup, viewButtonElements.zoomEm, livePreviewPopOut];
+	let result = [
+		viewButtonElements.pan,
+		responsiveGroup,
+		makeColorStandardToggleButton(),
+		viewButtonElements.zoomEm,
+		livePreviewPopOut,
+	];
+	return result;
 }
 
 /**
@@ -325,6 +332,53 @@ export function makeKernToolButton() {
 		},
 	});
 	return kernToolButton;
+}
+
+export function makeColorStandardToggleButton() {
+	const src = `iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALxJREFUeNpiYBjsgBGZoyyvwHvH+/8nFBVX5FG4z74eROFLB0MZVYxgs5iQJe8+fPBZZSsjH8mGIQEmJNf9RzGUFMMCv2IaiGHow0d8pBqGYSA2Q0kxDKuB6IZKn2VkJNYwnAYiGwo2CGgoXsM0thE2EN1QWLLAZxhBA3EaisMwogzEMFSThxGXYUQbiNNQKLjIUE+6gRiGMoYxohtGsoG4DKXIQHRD9RmvM1JsID5DmSgp+1C8P2QAQIABAFCpVZv4PI0zAAAAAElFTkSuQmCC`;
+
+	let toggleButton = makeElement({
+		tag: 'button',
+		title: 'Toggle between viewing SVG Glyphs and Standard Glyphs',
+		className: 'editor-page__tool',
+	});
+
+	const editor = getCurrentProjectEditor();
+	const isColor = editor.project.settings.app.displaySVGGlyphs;
+	const imgWrapper = makeElement({
+		tag: 'div',
+		style: `
+			width: 20px;
+			height: 20px;
+			border: 0px solid black;
+			border-radius: ${isColor ? '0px 0px 0px 20px' : '0px 20px 0px 0px'};
+			margin: -1px 0px 0px -1px;
+			background-position: top left;
+			background-size: 20px 20px;
+			background-image: url(data:image/png;base64,${src});`,
+	});
+
+	// const img = new Image();
+	// img.src = `data:image/png;base64,${src}`;
+	// imgWrapper.appendChild(img);
+
+	toggleButton.appendChild(imgWrapper);
+
+	toggleButton.addEventListener('click', () => {
+		editor.project.settings.app.displaySVGGlyphs = !editor.project.settings.app.displaySVGGlyphs;
+		getCurrentProjectEditor().publish('glyphDisplayMode', editor.project.settings.app);
+	});
+
+	editor.subscribe({
+		topic: 'glyphDisplayMode',
+		subscriberID: `colorStandardToggleButton`,
+		callback: () => {
+			const isColor = editor.project.settings.app.displaySVGGlyphs;
+			imgWrapper.style.borderRadius = `${isColor ? '0px 0px 0px 20px' : '0px 20px 0px 0px'}`;
+		},
+	});
+
+	return toggleButton;
 }
 
 // --------------------------------------------------------------
@@ -469,10 +523,10 @@ export function makeToolButtonSVG(oa) {
 	let colorFill = accentColors.gray.l95;
 	let icon = icons[oa.name];
 
-	if(oa.selected && oa.disabled) {
+	if (oa.selected && oa.disabled) {
 		colorOutline = accentColors.gray.l30;
 		colorFill = accentColors.gray.l90;
-	}else if (oa.selected) {
+	} else if (oa.selected) {
 		colorOutline = accentColors.gray.l10;
 		colorFill = 'white';
 	} else if (oa.disabled) {

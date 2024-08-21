@@ -1,5 +1,5 @@
 import { decToHex } from '../common/character_ids.js';
-import { clone, generateNewID, getFirstID, json, round } from '../common/functions.js';
+import { clone, getFirstID, json, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';

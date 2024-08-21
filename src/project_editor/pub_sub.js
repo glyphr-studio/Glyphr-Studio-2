@@ -27,6 +27,7 @@ import { glyphChanged } from './cross_item_actions.js';
 */
 const allTopics = [
 	'editCanvasView',
+	'glyphDisplayMode',
 	'whichToolIsSelected',
 	'whichGlyphIsSelected',
 	'whichLigatureIsSelected',
