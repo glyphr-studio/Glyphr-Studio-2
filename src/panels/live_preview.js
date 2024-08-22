@@ -1,5 +1,6 @@
-import { getCurrentProjectEditor } from '../app/main';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
+import { makeColorStandardToggleButton } from '../edit_canvas/tools/tools';
 import { redrawLivePreviewPageDisplayCanvas } from '../pages/live_preview';
 import {
 	makeLivePreviewPopOutCard,
@@ -215,7 +216,18 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 		redrawAllLivePreviews();
 	});
 
-	return [textLabel, textInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
+	// Line gap
+	const project = getCurrentProject();
+	let glyphDisplayModeLabel = makeSingleLabel('Glyph display mode:');
+	let glyphDisplayModeInput = makeColorStandardToggleButton();
+
+	let result = [textLabel, textInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
+
+	if (project.settings.app.enableSVGGlyphFeatures) {
+		result.push(glyphDisplayModeLabel, glyphDisplayModeInput);
+	}
+
+	return result;
 }
 
 function makeTextBlockOptions_pageOptions(textBlockOptions) {

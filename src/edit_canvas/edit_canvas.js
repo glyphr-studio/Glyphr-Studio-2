@@ -194,42 +194,46 @@ export class EditCanvas extends HTMLElement {
 			// Draw glyphs
 			drawGlyph(currentItem, ctx, view);
 
-			// Draw selected shape
-			const editMode = editor.selectedTool;
-			// log(`editMode: ${editMode}`);
-			// log(`eventHandlerData.handle: ${eventHandlerData.handle}`);
-			if (editMode === 'resize') {
-				drawSelectedPathOutline(ctx, view);
-				if (eventHandlerData.handle === 'rotate') {
-					computeAndDrawRotationAffordance(ctx);
-				} else {
-					computeAndDrawBoundingBox(ctx);
-					computeAndDrawBoundingBoxHandles(ctx);
-				}
-			} else if (editMode === 'pathEdit') {
-				drawSelectedPathOutline(ctx, view);
-				if (eventHandlerData.isCtrlDown || eventHandlerData.selecting) {
-					computeAndDrawPathPoints(ctx, true);
-					// testDrawAllPathPointHandles(ctx);
-				} else {
+			const inSVGMode = editor.project.settings.app.displaySVGGlyphs;
+
+			if (!inSVGMode) {
+				// Draw selected shape
+				const editMode = editor.selectedTool;
+				// log(`editMode: ${editMode}`);
+				// log(`eventHandlerData.handle: ${eventHandlerData.handle}`);
+				if (editMode === 'resize') {
+					drawSelectedPathOutline(ctx, view);
+					if (eventHandlerData.handle === 'rotate') {
+						computeAndDrawRotationAffordance(ctx);
+					} else {
+						computeAndDrawBoundingBox(ctx);
+						computeAndDrawBoundingBoxHandles(ctx);
+					}
+				} else if (editMode === 'pathEdit') {
+					drawSelectedPathOutline(ctx, view);
+					if (eventHandlerData.isCtrlDown || eventHandlerData.selecting) {
+						computeAndDrawPathPoints(ctx, true);
+						// testDrawAllPathPointHandles(ctx);
+					} else {
+						computeAndDrawPathPointHandles(ctx);
+						computeAndDrawPathPoints(ctx);
+						// drawPathPointHover(ctx, eventHandlerData.hoverPoint);
+					}
+				} else if (editMode === 'pathAddPoint') {
+					drawSelectedPathOutline(ctx, view);
+					computeAndDrawPathPoints(ctx);
+					if (eventHandlerData.hoverPoint) {
+						drawPathPointHover(ctx, eventHandlerData.hoverPoint);
+					}
+				} else if (editMode === 'newPath') {
 					computeAndDrawPathPointHandles(ctx);
 					computeAndDrawPathPoints(ctx);
-					// drawPathPointHover(ctx, eventHandlerData.hoverPoint);
 				}
-			} else if (editMode === 'pathAddPoint') {
-				drawSelectedPathOutline(ctx, view);
-				computeAndDrawPathPoints(ctx);
-				if (eventHandlerData.hoverPoint) {
-					drawPathPointHover(ctx, eventHandlerData.hoverPoint);
-				}
-			} else if (editMode === 'newPath') {
-				computeAndDrawPathPointHandles(ctx);
-				computeAndDrawPathPoints(ctx);
-			}
 
-			// Draw temporary new paths
-			if (eventHandlerData?.newBasicPath?.objType) {
-				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
+				// Draw temporary new paths
+				if (eventHandlerData?.newBasicPath?.objType) {
+					drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
+				}
 			}
 
 			// Guides (if draw on top)
@@ -246,7 +250,7 @@ export class EditCanvas extends HTMLElement {
 			}
 
 			// Drag to select box
-			if (eventHandlerData.selecting) {
+			if (eventHandlerData.selecting && !inSVGMode) {
 				computeAndDrawDragToSelectBox(ctx, eventHandlerData);
 			}
 			// log(`EditCanvas.redrawGlyphEdit`, 'end');

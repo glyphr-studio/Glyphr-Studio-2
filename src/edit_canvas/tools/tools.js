@@ -1,8 +1,10 @@
-import { getCurrentProjectEditor } from '../../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';
+import { redrawLivePreviewPageDisplayCanvas } from '../../pages/live_preview.js';
+import { refreshPanel } from '../../panels/panels.js';
 import { ComponentInstance } from '../../project_data/component_instance.js';
 import { Path } from '../../project_data/path.js';
 import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
@@ -90,12 +92,23 @@ export function makeEditToolsButtons() {
 		if (isSelected) newToolButton.classList.add('editor-page__tool-selected');
 
 		editor.subscribe({
-			topic: 'whichToolIsSelected',
+			topic: ['whichToolIsSelected', 'glyphDisplayMode'],
 			subscriberID: `tools.${buttonName}`,
 			callback: (newSelectedTool) => {
+				if (typeof newSelectedTool !== 'string') {
+					newSelectedTool = getCurrentProjectEditor().selectedTool;
+				}
+				const shouldDisableButton = getCurrentProject().settings.app.displaySVGGlyphs;
+				// log(`${buttonName} should now be enabled:${shouldDisableButton}`);
+				if (shouldDisableButton) newToolButton.setAttribute('disabled', 'disabled');
+				else newToolButton.removeAttribute('disabled');
 				let isSelected = newSelectedTool === buttonName;
 				newToolButton.classList.toggle('editor-page__tool-selected', isSelected);
-				newToolButton.innerHTML = makeToolButtonSVG({ name: buttonName, selected: isSelected });
+				newToolButton.innerHTML = makeToolButtonSVG({
+					name: buttonName,
+					selected: isSelected,
+					disabled: shouldDisableButton,
+				});
 			},
 		});
 
@@ -339,7 +352,7 @@ export function makeColorStandardToggleButton() {
 
 	let toggleButton = makeElement({
 		tag: 'button',
-		title: 'Toggle between viewing SVG Glyphs and Standard Glyphs',
+		title: 'Glyph display mode:\nToggle between viewing SVG Glyphs and Standard Glyphs',
 		className: 'editor-page__tool',
 	});
 
@@ -366,7 +379,11 @@ export function makeColorStandardToggleButton() {
 
 	toggleButton.addEventListener('click', () => {
 		editor.project.settings.app.displaySVGGlyphs = !editor.project.settings.app.displaySVGGlyphs;
-		getCurrentProjectEditor().publish('glyphDisplayMode', editor.project.settings.app);
+		if(editor.project.settings.app.displaySVGGlyphs) {
+			editor.selectedTool = 'resize';
+		}
+		editor.publish('glyphDisplayMode', editor.project.settings.app);
+		redrawLivePreviewPageDisplayCanvas();
 	});
 
 	editor.subscribe({

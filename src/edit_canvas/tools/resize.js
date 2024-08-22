@@ -52,6 +52,8 @@ export class Tool_Resize {
 		this.rotating = false;
 		ehd.selecting = false;
 
+			const inSVGMode = editor.project.settings.app.displaySVGGlyphs;
+
 		// log('clickedPath: ' + this.clickedPath);
 		// log('corner: ' + ehd.handle);
 
@@ -96,7 +98,7 @@ export class Tool_Resize {
 			// log('clicked on nothing');
 			if (!ehd.isCtrlDown) clickEmptySpace();
 			const clickedHotspot = findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
-			if (!clickedHotspot) ehd.selecting = true;
+			if (!clickedHotspot && !inSVGMode) ehd.selecting = true;
 		}
 		// log(`Tool_Resize.mousedown`, 'end');
 	}

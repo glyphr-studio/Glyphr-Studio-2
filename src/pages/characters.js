@@ -2,6 +2,7 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { closeAllInfoBubbles } from '../controls/dialogs/dialogs.js';
 import { EditCanvas } from '../edit_canvas/edit_canvas.js';
+import { clickEmptySpace } from '../edit_canvas/events_mouse.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
@@ -140,6 +141,15 @@ export function makePage_Characters() {
 			/** @type {EditCanvas} */
 			const canvas = editor.editCanvas;
 			if (canvas.redraw) canvas.redraw();
+		},
+	});
+
+	// Color Mode and Panel
+	editor.subscribe({
+		topic: 'glyphDisplayMode',
+		subscriberID: 'colorModeButton',
+		callback: () => {
+			clickEmptySpace();
 		},
 	});
 
