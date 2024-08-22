@@ -306,6 +306,7 @@
 nav .item-chooser__wrapper {
 	padding: 20px;
 	margin-top: 5px;
+	min-height: 150px;
 }
 
 .content-page__right-area .item-chooser__wrapper {

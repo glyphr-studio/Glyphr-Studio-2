@@ -37,7 +37,7 @@ export async function drawGlyph(
 	const project = getCurrentProject();
 
 	// log(glyph.svgGlyphData);
-	if (project.settings.app.displaySVGGlyphs && glyph.svgGlyphData) {
+	if (project.settings.app.displaySVGGlyphs) {
 		const img = await glyph.svgGlyphImage;
 		const boxScale = 8000 * view.dz;
 		ctx.drawImage(img, view.dx - boxScale / 2, view.dy - boxScale / 2, boxScale, boxScale);

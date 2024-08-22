@@ -264,8 +264,8 @@ export function makeViewToolsButtons() {
 	let result = [
 		viewButtonElements.pan,
 		responsiveGroup,
-		makeColorStandardToggleButton(),
 		viewButtonElements.zoomEm,
+		makeColorStandardToggleButton(),
 		livePreviewPopOut,
 	];
 	return result;
@@ -348,6 +348,11 @@ export function makeKernToolButton() {
 }
 
 export function makeColorStandardToggleButton() {
+	const editor = getCurrentProjectEditor();
+	if (!editor.project.settings.app.enableSVGGlyphFeatures) {
+		return makeElement();
+	}
+
 	const src = `iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALxJREFUeNpiYBjsgBGZoyyvwHvH+/8nFBVX5FG4z74eROFLB0MZVYxgs5iQJe8+fPBZZSsjH8mGIQEmJNf9RzGUFMMCv2IaiGHow0d8pBqGYSA2Q0kxDKuB6IZKn2VkJNYwnAYiGwo2CGgoXsM0thE2EN1QWLLAZxhBA3EaisMwogzEMFSThxGXYUQbiNNQKLjIUE+6gRiGMoYxohtGsoG4DKXIQHRD9RmvM1JsID5DmSgp+1C8P2QAQIABAFCpVZv4PI0zAAAAAElFTkSuQmCC`;
 
 	let toggleButton = makeElement({
@@ -356,7 +361,6 @@ export function makeColorStandardToggleButton() {
 		className: 'editor-page__tool',
 	});
 
-	const editor = getCurrentProjectEditor();
 	const isColor = editor.project.settings.app.displaySVGGlyphs;
 	const imgWrapper = makeElement({
 		tag: 'div',
