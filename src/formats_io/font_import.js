@@ -293,24 +293,24 @@ async function importOneGlyph(otfGlyph, project) {
  * @returns {Promise}
  */
 async function makeGlyphrStudioGlyphObject(otfGlyph) {
-	log(`makeGlyphrStudioGlyphObject`, 'start');
-	log(otfGlyph);
+	// log(`makeGlyphrStudioGlyphObject`, 'start');
+	// log(otfGlyph);
 	const advance = otfGlyph.advanceWidth;
-	log(`advance: ${advance}`);
+	// log(`advance: ${advance}`);
 
 	// const newPaths = [];
 	// let pathCounter = 0;
 	// Import Path Data
 	let data = otfGlyph.path.toSVG();
-	log('Glyph has .toSVG data');
-	log(data);
+	// log('Glyph has .toSVG data');
+	// log(data);
 
 	let importedGlyph;
 
 	if (data) {
 		importedGlyph = ioSVG_convertSVGTagsToGlyph(`<svg>${data}</svg>`, false);
-		log(`importedGlyph`);
-		log(importedGlyph);
+		// log(`importedGlyph`);
+		// log(importedGlyph);
 	} else {
 		importedGlyph = new Glyph();
 	}
@@ -320,21 +320,24 @@ async function makeGlyphrStudioGlyphObject(otfGlyph) {
 		importedGlyph.flipNS();
 	}
 
-	log(`Imported Glyph: ${otfGlyph.unicode} ${otfGlyph.unicodes.length}`);
+	// log(`Imported Glyph: ${otfGlyph.unicode} ${otfGlyph.unicodes.length}`);
 	if (!otfGlyph.unicode) {
-		log(JSON.stringify(otfGlyph));
+		// log(JSON.stringify(otfGlyph));
 	}
-	const char = String.fromCodePoint(otfGlyph.unicode);
-	log(`char: '${char}'`);
-	const colorSVGData = await importOneSVGColorGlyph(char);
+	// TODO SVG Color Ligatures
+	if (otfGlyph.unicode) {
+		const char = String.fromCodePoint(otfGlyph.unicode);
+		// log(`char: '${char}'`);
+		const colorSVGData = await importOneSVGColorGlyph(char);
 
-	if(colorSVGData !== '') {
-		importedGlyph.svgGlyphData = colorSVGData;
-		log(`SVG Glyph for: ${char}`);
-		log(colorSVGData);
+		if (colorSVGData !== '') {
+			importedGlyph.svgGlyphData = colorSVGData;
+			// log(`SVG Glyph for: ${char}`);
+			// log(colorSVGData);
+		}
 	}
 
-	log(`makeGlyphrStudioGlyphObject`, 'end');
+	// log(`makeGlyphrStudioGlyphObject`, 'end');
 	return importedGlyph;
 }
 
@@ -397,13 +400,12 @@ async function importOneLigature(otfLigature, otfFont) {
 	// log(`importOneLigature`, 'end');
 }
 
-
-
 // --------------------------------------------------------------
 // SVG Color Glyphs
 // --------------------------------------------------------------
 async function importOneSVGColorGlyph(char) {
 	// log(`importOneSVGColorGlyph`, 'start');
+
 	const svgTable = importedFont?.tables?.svg;
 
 	if (svgTable) {

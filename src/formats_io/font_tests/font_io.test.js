@@ -62,5 +62,5 @@ async function runTestsForObleggExtended(loadResult) {
 		expect(kernOne.value).toEqual(219);
 
 		// Metadata
-		expect(result.settings.font.style).toEqual('ExtendedTestRegular');
+		expect(result.settings.font.style).toEqual('Regular');
 }
