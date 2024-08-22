@@ -3,9 +3,11 @@ import opentype from '../../lib/opentype.js-july-2024/opentype.mjs';
 import { ioFont_importFont } from '../font_import.js';
 // import sampleFile from './ObleggExtendedTestRegular.otf';
 
-describe('OTF Font', () => {
+describe('Font Imports', () => {
 	it('Import: Most Basic Test', async () => {
-		const loadResult = opentype.loadSync('./src/formats_io/font_tests/MostBasicTestRegular.otf');
+		const url = './src/formats_io/font_tests/MostBasicTestRegular.otf';
+		const opt = {};
+		const loadResult = opentype.parse(require('fs').readFileSync(url), opt);
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 
@@ -20,10 +22,29 @@ describe('OTF Font', () => {
 		expect(result.settings.font.style).toEqual('Regular');
 	});
 
-	it('Import: Oblegg Extended Test', async () => {
-		const loadResult = opentype.loadSync(
-			'./src/formats_io/font_tests/ObleggExtendedTestRegular.otf'
-		);
+	it('Import: Oblegg Extended Test OTF', async () => {
+		const url = './src/formats_io/font_tests/ObleggExtendedTestRegular.otf';
+		const opt = {};
+		const loadResult =opentype.parse(require('fs').readFileSync(url), opt);
+		await runTestsForObleggExtended(loadResult);
+	});
+
+	it('Import: Oblegg Extended Test TTF', async () => {
+		const url = './src/formats_io/font_tests/ObleggExtendedTestRegular.ttf';
+		const opt = {};
+		const loadResult =opentype.parse(require('fs').readFileSync(url), opt);
+		await runTestsForObleggExtended(loadResult);
+	});
+
+	it('Import: Oblegg Extended Test WOFF', async () => {
+		const url = './src/formats_io/font_tests/ObleggExtendedTestRegular.woff';
+		const opt = {};
+		const loadResult =opentype.parse(require('fs').readFileSync(url), opt);
+		await runTestsForObleggExtended(loadResult);
+	});
+});
+
+async function runTestsForObleggExtended(loadResult) {
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 
@@ -42,5 +63,4 @@ describe('OTF Font', () => {
 
 		// Metadata
 		expect(result.settings.font.style).toEqual('ExtendedTestRegular');
-	});
-});
+}
