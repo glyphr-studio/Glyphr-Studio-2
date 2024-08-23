@@ -268,6 +268,12 @@ export function makeViewToolsButtons() {
 		makeColorStandardToggleButton(),
 		livePreviewPopOut,
 	];
+
+	if (editor.nav.page === 'Components') {
+		editor.project.settings.app.displaySVGGlyphs = false;
+		result.splice(3, 1);
+	}
+
 	return result;
 }
 
@@ -383,8 +389,8 @@ export function makeColorStandardToggleButton() {
 
 	toggleButton.addEventListener('click', () => {
 		editor.project.settings.app.displaySVGGlyphs = !editor.project.settings.app.displaySVGGlyphs;
-		if(editor.project.settings.app.displaySVGGlyphs) {
-			editor.selectedTool = 'resize';
+		if (editor.project.settings.app.displaySVGGlyphs) {
+			if(editor.nav.page !== 'Kerning') editor.selectedTool = 'resize';
 		}
 		editor.publish('glyphDisplayMode', editor.project.settings.app);
 		redrawLivePreviewPageDisplayCanvas();

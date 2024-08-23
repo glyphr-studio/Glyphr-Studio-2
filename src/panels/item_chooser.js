@@ -2,6 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
+import { makeColorStandardToggleButton } from '../edit_canvas/tools/tools.js';
 import { showAddComponentDialog } from '../pages/components.js';
 import { makeKernGroupCharChips, showAddEditKernGroupDialog } from '../pages/kerning.js';
 import { showAddLigatureDialog } from '../pages/ligatures.js';
@@ -30,6 +31,7 @@ export function makeAllItemTypeChooserContent(
 	let wrapper = makeElement({ tag: 'div', className: 'item-chooser__wrapper' });
 	let header = makeElement({ tag: 'div', className: 'item-chooser__header' });
 	header.appendChild(makeRangeAndItemTypeChooser(editor, itemType));
+	header.append(makeColorStandardToggleButton());
 	wrapper.appendChild(header);
 
 	let show = itemType || editor.nav.page;
@@ -93,7 +95,8 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 		let header = makeElement({ tag: 'div', className: 'item-chooser__header' });
 		wrapper.appendChild(header);
 		header.appendChild(makeRangeChooser());
-		wrapper.appendChild(makeCharacterChooserTileGrid());
+		header.append(makeColorStandardToggleButton());
+		wrapper.appendChild(makeGlyphChooserTileGrid());
 	}
 
 	// log(`makeSingleItemTypeChooserContent`, 'end');
@@ -271,6 +274,14 @@ function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor()) {
 					},
 				});
 			}
+
+			editor.subscribe({
+				topic: 'glyphDisplayMode',
+				subscriberID: `glyphTile.${glyphID}`,
+				callback: (mode) => {
+					oneTile.redraw();
+				},
+			});
 			tileGrid.appendChild(oneTile);
 		});
 	} else {

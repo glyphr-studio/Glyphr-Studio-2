@@ -50,18 +50,27 @@ export function makePage_Overview() {
 		// log(`Overview page - Character Chooser tile click handler`, 'end');
 	});
 
+	const editor = getCurrentProjectEditor();
 	const project = getCurrentProject();
 	const rightArea = content.querySelector('.content-page__right-area');
 	let previewText = project.settings.app.previewText || 'Aa Bb Cc Xx Yy Zz';
 
-	rightArea.appendChild(
-		makeElement({
-			tag: 'display-canvas',
-			attributes: { text: previewText, 'font-size': '64', 'show-placeholder-message': 'true' },
-			title: 'You can customize the the project preview text from the Settings > App page.',
-		})
-	);
+	const overviewPreview = makeElement({
+		tag: 'display-canvas',
+		attributes: { text: previewText, 'font-size': '64', 'show-placeholder-message': 'true' },
+		title: 'You can customize the the project preview text from the Settings > App page.',
+	});
 
+	editor.subscribe({
+		topic: 'glyphDisplayMode',
+		subscriberID: 'overviewPreviewDisplayCanvas',
+		callback: () => {
+			/** @ts-ignore */
+			overviewPreview.redraw();
+		},
+	});
+
+	rightArea.appendChild(overviewPreview);
 	rightArea.appendChild(makeElement({ tag: 'hr', style: 'margin: 10px 0px 20px 0px;' }));
 	rightArea.appendChild(itemsContent);
 	// Page Selector

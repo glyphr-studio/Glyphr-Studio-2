@@ -36,7 +36,6 @@ let importedFont = {};
  * @returns nothing
  */
 export async function ioFont_importFont(importFont, testing = false) {
-	// log(importedFont);
 	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
 
@@ -405,6 +404,7 @@ async function importOneLigature(otfLigature, otfFont) {
 // --------------------------------------------------------------
 async function importOneSVGColorGlyph(char) {
 	// log(`importOneSVGColorGlyph`, 'start');
+	// log(`char: ${char}`);
 
 	const svgTable = importedFont?.tables?.svg;
 
@@ -415,11 +415,11 @@ async function importOneSVGColorGlyph(char) {
 		// log(`getting index ${gIndex}`);
 
 		if (gIndex) {
-			const svgBits = svgTable.get(gIndex);
-			// log('svgBits', svgBits);
+			const svgBuffer = svgTable.get(gIndex);
+			// log('svgBuffer', svgBuffer);
 
-			if (svgBits) {
-				const svgCode = await openTypeJS.decodeSvgDocument(svgBits);
+			if (svgBuffer) {
+				const svgCode = await openTypeJS.decodeSvgDocument(svgBuffer);
 				// log(svgCode);
 				// log(`importOneSVGColorGlyph`, 'end');
 				return JSON.stringify(svgCode);
