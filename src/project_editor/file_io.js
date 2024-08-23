@@ -119,6 +119,20 @@ export function makeFileName(suffix, includeDateString = false) {
 }
 
 /**
+ * Makes a standard OTF File Name
+ * @returns {String} OTF File Name
+ */
+export function makeOTFFileName() {
+	const project = getCurrentProject();
+	let familyName = project.settings.font.family || 'MyFont';
+	familyName = familyName.replaceAll(' ', '');
+	let styleName = project.settings.font.style || 'Regular';
+	styleName = styleName.replaceAll(' ', '');
+
+	return `${familyName}-${styleName}.otf`;
+}
+
+/**
  * Generates a date suffix for file saves
  * @returns {String}
  */

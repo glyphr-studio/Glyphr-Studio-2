@@ -5,9 +5,9 @@ import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
 import openTypeJS from '../lib/opentype.js-july-2024/opentype.mjs';
 import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { Glyph } from '../project_data/glyph.js';
-import { sortLigatures } from '../project_data/glyphr_studio_project.js';
 import { Path } from '../project_data/path.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
+import { makeOTFFileName } from '../project_editor/file_io.js';
 
 /**
 	IO > Export > OpenType
@@ -25,6 +25,7 @@ export async function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'start');
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
+	const project = getCurrentProject();
 	// Add .notdef
 	addNotdefToExport(options);
 
@@ -38,7 +39,7 @@ export async function ioFont_exportFont() {
 	// log(codePointGlyphIndexTable);
 
 	// Add Ligatures
-	let exportLigatures = getCurrentProject().settings.app.exportLigatures;
+	let exportLigatures = project.settings.app.exportLigatures;
 	if (exportLigatures) {
 		for (let l = 0; l < exportLists.ligatures.length; l++) {
 			exportedItem = await generateOneLigature(exportLists.ligatures[l]);
@@ -59,6 +60,7 @@ export async function ioFont_exportFont() {
 	// log(`\n⮟font⮟`);
 	// log(font);
 
+	// Add Ligature information
 	if (exportLigatures) {
 		ligatureSubstitutions.forEach((sub) => {
 			// log(`Adding ligature to font`);
@@ -68,6 +70,22 @@ export async function ioFont_exportFont() {
 		});
 	}
 
+	// Add SVG Glyph information
+	if (project.settings.app.enableSVGGlyphFeatures) {
+		const svgGlyphTable = new Map();
+		exportLists.glyphs.forEach((exportItem) => {
+			let glyph = exportItem.xg;
+			let glyphID = font.charToGlyphIndex(glyph.char);
+			if (glyph.svgGlyphData && glyphID) {
+				svgGlyphTable[glyphID] = JSON.parse(glyph.svgGlyphData);
+			}
+		});
+		log(`\n⮟svgGlyphTable⮟`);
+		log(svgGlyphTable);
+	}
+
+	// font.tables.svg = font.makeSVGTable(svgGlyphTable);
+
 	// TODO investigate advanced table values
 	/*
 	font.tables.os2.ySuperscriptYSize = 1234;
@@ -76,7 +94,12 @@ export async function ioFont_exportFont() {
 	// log(font.toTables());
 	*/
 
-	font.download();
+	// const href = window.URL.createObjectURL(new Blob([font.toArrayBuffer()]), {
+	// 	type: 'font/opentype',
+	// });
+	const href = window.URL.createObjectURL(new Blob([font.toArrayBuffer()]));
+	Object.assign(document.createElement('a'), { download: makeOTFFileName(), href }).click();
+
 	await pause();
 	showToast('Export complete!');
 	await pause(1000);
@@ -278,7 +301,7 @@ function addNotdefToExport(options) {
 	let thisAdvance = notdef.advanceWidth;
 
 	const notdefGlyph = new openTypeJS.Glyph({
-		name: 'null',
+		name: '.null',
 		unicode: 0,
 		index: 0,
 		xMin: round(notdef.maxes.xMin),

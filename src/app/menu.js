@@ -8,7 +8,7 @@ import {
 } from '../controls/dialogs/dialogs.js';
 import { ioFont_exportFont } from '../formats_io/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
-import { makeFileName } from '../project_editor/file_io.js';
+import { makeFileName, makeOTFFileName } from '../project_editor/file_io.js';
 import { emailLink } from './app.js';
 import { makePage_CrossProjectActions } from './cross_project_actions/cross_project_actions.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
@@ -130,11 +130,7 @@ function makeMenu(menuName) {
 			{
 				child: makeElement({
 					tag: 'h2',
-					content:
-						`${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`.replaceAll(
-							' ',
-							''
-						),
+					content: makeOTFFileName(),
 				}),
 				className: 'spanAll',
 			},
