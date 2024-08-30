@@ -4,7 +4,6 @@ import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';
 import { redrawLivePreviewPageDisplayCanvas } from '../../pages/live_preview.js';
-import { refreshPanel } from '../../panels/panels.js';
 import { ComponentInstance } from '../../project_data/component_instance.js';
 import { Path } from '../../project_data/path.js';
 import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
@@ -359,12 +358,13 @@ export function makeColorStandardToggleButton() {
 		return makeElement();
 	}
 
-	const src = `iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALxJREFUeNpiYBjsgBGZoyyvwHvH+/8nFBVX5FG4z74eROFLB0MZVYxgs5iQJe8+fPBZZSsjH8mGIQEmJNf9RzGUFMMCv2IaiGHow0d8pBqGYSA2Q0kxDKuB6IZKn2VkJNYwnAYiGwo2CGgoXsM0thE2EN1QWLLAZxhBA3EaisMwogzEMFSThxGXYUQbiNNQKLjIUE+6gRiGMoYxohtGsoG4DKXIQHRD9RmvM1JsID5DmSgp+1C8P2QAQIABAFCpVZv4PI0zAAAAAElFTkSuQmCC`;
+	const imgSrc = `iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAMAAAANmfvwAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACpQTFRFAAAA5TP/ANf0/z4+0f8pAP+q/2ofAIb/APW99I8iAMP3+Mz/nf9J////T7QkkAAAAA50Uk5T/////////////////wBFwNzIAAAAsUlEQVR42oTTSRZDIQhE0dLY/DTuf7sRMUa/gDXlzt4B5e1crnt5768Y4yeE8EwpPeqcoxtKKSQq8BXECkJaRAYbQ3g0YwkibFTRCBldMGGjiIhhNPEjbEQxCBlZ/AkbQQQsRhIzYbOJhZDZxUrY3KNiM1t2COYWFYK5ZYdolqgQzZIdipmiQjFTdqhmRIVqRnYYpkeFYXp2mKZFhWn4YQ8m26R3x9F4HM2JkMHZfAUYALM+DUcnYjwMAAAAAElFTkSuQmCC`;
 
 	let toggleButton = makeElement({
 		tag: 'button',
 		title: 'Glyph display mode:\nToggle between viewing SVG Glyphs and Standard Glyphs',
 		className: 'editor-page__tool',
+		style: 'top: 5px;',
 	});
 
 	const isColor = editor.project.settings.app.displaySVGGlyphs;
@@ -373,24 +373,35 @@ export function makeColorStandardToggleButton() {
 		style: `
 			width: 20px;
 			height: 20px;
-			border: 0px solid black;
-			border-radius: ${isColor ? '0px 0px 0px 20px' : '0px 20px 0px 0px'};
 			margin: -1px 0px 0px -1px;
-			background-position: top left;
-			background-size: 20px 20px;
-			background-image: url(data:image/png;base64,${src});`,
+			border: 0px solid black;
+			border-radius: 10px;
+			overflow: hidden;
+			`,
 	});
 
-	// const img = new Image();
-	// img.src = `data:image/png;base64,${src}`;
-	// imgWrapper.appendChild(img);
+	const bgDelta = '-10px';
+	const bgOffset = '-3px';
+	const img = new Image();
+	img.src = `data:image/png;base64,${imgSrc}`;
+	img.setAttribute(
+		'style',
+		`
+			width: 34px;
+			height: 34px;
+			position: relative;
+			left:${isColor ? bgDelta : bgOffset};
+			top:${isColor ? bgOffset : bgDelta};
+		`
+	);
+	imgWrapper.appendChild(img);
 
 	toggleButton.appendChild(imgWrapper);
 
 	toggleButton.addEventListener('click', () => {
 		editor.project.settings.app.displaySVGGlyphs = !editor.project.settings.app.displaySVGGlyphs;
 		if (editor.project.settings.app.displaySVGGlyphs) {
-			if(editor.nav.page !== 'Kerning') editor.selectedTool = 'resize';
+			if (editor.nav.page !== 'Kerning') editor.selectedTool = 'resize';
 		}
 		editor.publish('glyphDisplayMode', editor.project.settings.app);
 		redrawLivePreviewPageDisplayCanvas();
@@ -401,7 +412,8 @@ export function makeColorStandardToggleButton() {
 		subscriberID: `colorStandardToggleButton`,
 		callback: () => {
 			const isColor = editor.project.settings.app.displaySVGGlyphs;
-			imgWrapper.style.borderRadius = `${isColor ? '0px 0px 0px 20px' : '0px 20px 0px 0px'}`;
+			img.style.left = isColor ? bgDelta : bgOffset;
+			img.style.top = isColor ? bgOffset : bgDelta;
 		},
 	});
 
