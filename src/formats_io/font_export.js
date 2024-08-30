@@ -5,6 +5,7 @@ import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
 import openTypeJS from '../lib/opentype.js-july-2024/opentype.mjs';
 import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { Glyph } from '../project_data/glyph.js';
+import { sortLigatures } from '../project_data/glyphr_studio_project.js';
 import { Path } from '../project_data/path.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 import { makeOTFFileName } from '../project_editor/file_io.js';
@@ -72,19 +73,24 @@ export async function ioFont_exportFont() {
 
 	// Add SVG Glyph information
 	if (project.settings.app.enableSVGGlyphFeatures) {
-		const svgGlyphTable = new Map();
+		const svgGlyphMap = new Map();
 		exportLists.glyphs.forEach((exportItem) => {
 			let glyph = exportItem.xg;
 			let glyphID = font.charToGlyphIndex(glyph.char);
 			if (glyph.svgGlyphData && glyphID) {
-				svgGlyphTable[glyphID] = JSON.parse(glyph.svgGlyphData);
+				let svgDoc = JSON.parse(glyph.svgGlyphData);
+				let svgEncoded = [];
+				for (let i = 0; i < svgDoc.length; i += 1) {
+					svgEncoded[i] = svgDoc.charCodeAt(i);
+				}
+				let svgBuffer = new Uint8Array(svgEncoded);
+				svgGlyphMap.set(glyphID, svgBuffer);
 			}
 		});
-		log(`\n⮟svgGlyphTable⮟`);
-		log(svgGlyphTable);
+		log(`\n⮟svgGlyphMap⮟`);
+		log(svgGlyphMap);
+		font.tables.svg = svgGlyphMap;
 	}
-
-	// font.tables.svg = font.makeSVGTable(svgGlyphTable);
 
 	// TODO investigate advanced table values
 	/*
@@ -94,11 +100,8 @@ export async function ioFont_exportFont() {
 	// log(font.toTables());
 	*/
 
-	// const href = window.URL.createObjectURL(new Blob([font.toArrayBuffer()]), {
-	// 	type: 'font/opentype',
-	// });
-	const href = window.URL.createObjectURL(new Blob([font.toArrayBuffer()]));
-	Object.assign(document.createElement('a'), { download: makeOTFFileName(), href }).click();
+	saveOTF(font);
+	// testExportOTF();
 
 	await pause();
 	showToast('Export complete!');
@@ -106,6 +109,53 @@ export async function ioFont_exportFont() {
 
 	closeAllToasts();
 	// log('ioFont_exportFont', 'end');
+}
+
+/**
+ * Takes an Opentype.js font object and saves it to an .otf file
+ * @param {Object} openTypeJSFont
+ */
+export function saveOTF(openTypeJSFont) {
+	log(`saveOTF`, 'start');
+	log(openTypeJSFont);
+	const href = window.URL.createObjectURL(new Blob([openTypeJSFont.toArrayBuffer()]));
+	Object.assign(document.createElement('a'), { download: makeOTFFileName(), href }).click();
+	log(`saveOTF`, 'end');
+}
+
+function testExportOTF() {
+	// this .notdef glyph is required.
+	const notdefGlyph = new openTypeJS.Glyph({
+		name: '.notdef',
+		advanceWidth: 650,
+		path: new openTypeJS.Path()
+	});
+
+	const aPath = new openTypeJS.Path();
+	aPath.moveTo(100, 0);
+	aPath.lineTo(100, 700);
+	aPath.lineTo(0, 700);
+	aPath.lineTo(0, 0);
+	aPath.lineTo(100, 0);
+	aPath.close();
+
+	const aGlyph = new openTypeJS.Glyph({
+		name: 'A',
+		unicode: 65,
+		advanceWidth: 650,
+		path: aPath
+	});
+
+	const font = new openTypeJS.Font({
+		familyName: 'OpenTypeSans',
+		styleName: 'Medium',
+		unitsPerEm: 1000,
+		ascender: 800,
+		descender: -200,
+		glyphs: [notdefGlyph, aGlyph]
+	});
+
+	saveOTF(font);
 }
 
 /**
@@ -353,15 +403,19 @@ async function generateOneGlyph(currentExportItem) {
 	// log(`decToHex(num): ${decToHex(num)}`);
 	// log(`thisName: ${thisName}`);
 
+	// LSB
+	const thisLsb = round(glyph.leftSideBearing);
+
 	// Create OTF.js Glyph
 	const thisGlyph = new openTypeJS.Glyph({
 		name: thisName,
 		unicode: thisUnicode,
 		index: thisIndex,
-		xMin: round(maxes.xMin),
-		xMax: round(maxes.xMax),
-		yMin: round(maxes.yMin),
-		yMax: round(maxes.yMax),
+		leftSideBearing: thisLsb,
+		// xMin: round(maxes.xMin),
+		// xMax: round(maxes.xMax),
+		// yMin: round(maxes.yMin),
+		// yMax: round(maxes.yMax),
 		path: thisPath,
 	});
 

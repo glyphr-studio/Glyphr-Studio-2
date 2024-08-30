@@ -494,7 +494,10 @@ function importFontMetadata(font, project) {
 	// log(font);
 	const fontSettings = project.settings.font;
 	const os2 = font.tables.os2;
-	const familyName = '' + getTableValue(font.names.fontFamily) || 'My Font';
+	const familyName =
+		'' + getTableValue(font.names.windows.fontFamily.en) ||
+		'' + getTableValue(font.names.macintosh.fontFamily.en) ||
+		'My Font';
 	project.settings.project.name = familyName;
 
 	fontSettings.name = familyName;

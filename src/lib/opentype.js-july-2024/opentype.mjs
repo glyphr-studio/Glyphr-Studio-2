@@ -9392,15 +9392,17 @@ function fontToSfntTable(font) {
   const fontNamesUnicode = font.names.unicode || {};
   const fontNamesMacintosh = font.names.macintosh || {};
   const fontNamesWindows = font.names.windows || {};
-  for (const platform in ["unicode", "macintosh", "windows"]) {
-    names[platform] = names[platform] || {};
-    if (!names[platform].uniqueID) {
-      names.unicode.uniqueID = { en: font.getEnglishName("manufacturer") + ":" + englishFullName };
-    }
-    if (!names[platform].postScriptName) {
-      names.unicode.postScriptName = { en: postScriptName };
-    }
-  }
+  for (const platform in names) {
+		names[platform] = names[platform] || {};
+		if (!names[platform].uniqueID) {
+			names[platform].uniqueID = {
+				en: font.getEnglishName('manufacturer') + ':' + englishFullName,
+			};
+		}
+		if (!names[platform].postScriptName) {
+			names[platform].postScriptName = { en: postScriptName };
+		}
+	}
   if (!names.unicode.preferredFamily) {
     names.unicode.preferredFamily = fontNamesUnicode.fontFamily || fontNamesMacintosh.fontFamily || fontNamesWindows.fontFamily;
   }

@@ -3,6 +3,7 @@ import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import { closeEveryTypeOfDialog, showError, showToast } from '../controls/dialogs/dialogs.js';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
+import { saveOTF } from '../formats_io/font_export.js';
 import { ioFont_importFont } from '../formats_io/font_import.js';
 import { ioSVG_importSVGfont } from '../formats_io/svg_font_import.js';
 import { validateSingleFileInput } from '../formats_io/validate_file_input.js';
