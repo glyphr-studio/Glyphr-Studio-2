@@ -114,6 +114,7 @@ export class Glyph extends GlyphElement {
 		if (this.gsub.length) re.gsub = this.gsub;
 		let cc = this.contextCharacters;
 		if (cc.length && cc !== this.char) re.contextCharacters = cc;
+		if (this.svgGlyphData) re.svgGlyphData = this.svgGlyphData;
 
 		if (this.shapes && this.shapes.length) {
 			re.shapes = [];

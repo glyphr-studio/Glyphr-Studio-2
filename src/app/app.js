@@ -5,6 +5,7 @@ import { parseSemVer } from '../formats_io/validate_file_input.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
+import colorTestProject from '../samples/SVGinOTF.gs2?raw';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 import * as config from './app_config.json';
@@ -29,9 +30,9 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: config.devMode, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
-				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample project
+				sampleProject: 'color', // {true/false, 'oblegg', 'bool', 'color'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: false, // {Sentence case page name} navigate straight to a page
+				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
@@ -88,12 +89,13 @@ export class GlyphrStudioApp {
 				// editor.project = importGlyphrProjectFromText(obleggSampleProject);
 				if (typeof dev.currentPage === 'string') editor.nav.page = dev.currentPage;
 				updateWindowUnloadEvent();
-			} else if (dev.sampleProject === true) {
+			} else if (typeof dev.sampleProject === 'boolean' && dev.sampleProject === true) {
 				importGlyphrProjectFromText(simpleExampleProject);
 			} else if (typeof dev.sampleProject === 'string') {
 				let proj;
 				if (dev.sampleProject === 'oblegg') proj = obleggSampleProject;
 				if (dev.sampleProject === 'bool') proj = boolTestProject;
+				if (dev.sampleProject === 'color') proj = colorTestProject;
 				// if (dev.sampleProject === 'test') proj = test;
 				editor.project = importGlyphrProjectFromText(proj);
 			}
