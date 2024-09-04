@@ -135,9 +135,11 @@ export class GlyphTile extends HTMLElement {
 		if (getCurrentProject().settings.app.displaySVGGlyphs && this.glyph.svgGlyphData) {
 			const img = this.glyph.svgGlyphImage;
 			this.thumbnail.innerHTML = '';
+			const offsets = this.project.computeThumbnailOffsets(this.glyph);
+			const leftAdj = offsets.translateX - 2 * offsets.padding;
+			img.style.left = `${leftAdj}px`;
 			this.thumbnail.appendChild(img);
 		} else if (this.glyph?.shapes?.length) {
-			// const project = getCurrentProject();
 			this.thumbnail.innerHTML = this.project.makeItemThumbnail(this.glyph);
 		}
 	}

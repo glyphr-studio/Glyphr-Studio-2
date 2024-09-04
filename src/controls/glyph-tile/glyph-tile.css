@@ -64,6 +64,7 @@
 	height: 50px;
 	box-shadow: var(--l1-shadow);
 	border-radius: 1px;
+	transition: none;
 }
 
 .wrapper:hover .thumbnail,
@@ -84,7 +85,12 @@
 .thumbnail img {
 	width: 150px;
 	height: 150px;
-	margin: -40px 0 0 -65px;
+	position: relative;
+	left: 0px;
+	margin-top: -40px;
+	margin-right: 0;
+	margin-bottom: 0;
+	margin-left: -65px;
 }
 
 .whitespace-char-thumbnail {

@@ -27,7 +27,6 @@ export async function drawGlyph(
 ) {
 	// log('drawGlyph', 'start');
 	// log(glyph.name);
-	// log('view ' + json(view, true));
 	// log(ctx);
 	if (!glyph.shapes) {
 		console.warn(`Glyph ${glyph.id} has no shapes to draw`);

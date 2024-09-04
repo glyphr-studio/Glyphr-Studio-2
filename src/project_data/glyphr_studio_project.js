@@ -517,20 +517,14 @@ export class GlyphrStudioProject {
 	makeItemThumbnail(item, size = 50) {
 		// log('GlyphrStudioProject.makeItemThumbnail', 'start');
 		// log(item);
-		const padding = round(size / 10);
-		const scale = (size - padding * 2) / this.totalVertical;
-		const itemHeight = this.totalVertical;
-		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;
-		const translateX = (size - itemWidth * scale) / 2;
-		const translateY = itemHeight * scale - padding;
+		const offsets = this.computeThumbnailOffsets(item, size);
 		const svg = item?.svgPathData || 'M0,0Z';
-		// log(`itemWidth: ${itemWidth}`);
 		// log(svg);
 
 		let re = `
 		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50px" height="50px">
 			<path
-				transform="translate(${translateX},${translateY}) scale(${scale}, -${scale})"
+				transform="translate(${offsets.translateX},${offsets.translateY}) scale(${offsets.scale}, -${offsets.scale})"
 				d="${svg}"
 			/>
 		</svg>`;
@@ -538,6 +532,24 @@ export class GlyphrStudioProject {
 		// log(re);
 		// log('GlyphrStudioProject.makeItemThumbnail', 'end');
 		return re;
+	}
+
+	/**
+	 * Used for both the native Glyph thumbnail and SVG Color Glyph thumbnail placement
+	 * such that the glyph looks centered in the thumbnail image.
+	 * @param {Object} item - Glyph object to calculate offsets for
+	 * @param {Number} size - How big the thumbnail should be
+	 * @returns {Object}
+	 */
+	computeThumbnailOffsets(item, size = 50) {
+		const padding = round(size / 10);
+		const scale = (size - padding * 2) / this.totalVertical;
+		const itemHeight = this.totalVertical;
+		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;
+		const translateX = (size - itemWidth * scale) / 2;
+		const translateY = itemHeight * scale - padding;
+
+		return { scale, translateX, translateY, padding };
 	}
 
 	/**
