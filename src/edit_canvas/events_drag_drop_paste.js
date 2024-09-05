@@ -13,6 +13,13 @@ import { cancelDefaultEventActions } from './events.js';
 export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 	// log(`importSVGtoCurrentItem`, 'start');
 
+	const editor = getCurrentProjectEditor();
+
+	if(editor.project.settings.app.enableSVGGlyphFeatures && editor.project.settings.app.displaySVGGlyphs) {
+		editor.selectedItem.svgGlyphData = JSON.stringify(svgData);
+		return;
+	}
+
 	const tempGlyph = ioSVG_convertSVGTagsToGlyph(svgData);
 
 	if (tempGlyph && tempGlyph.shapes.length) {
@@ -21,7 +28,6 @@ export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 		tempGlyph.reverseWinding();
 
 		// Add new Glyph Shapes
-		const editor = getCurrentProjectEditor();
 		const newShapes = copyShapesFromTo(tempGlyph, editor.selectedItem);
 		// log('tempGlyph');
 		// log(tempGlyph);

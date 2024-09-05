@@ -33,7 +33,8 @@ export function makePage_Components() {
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
 	const selectedComponentID = editor.selectedComponentID;
-
+	editor.project.settings.app.displaySVGGlyphs = false;
+	
 	const editingContent = `
 		<div class="editor-page__tools-area"></div>
 		<div class="editor-page__edit-canvas-wrapper"></div>

@@ -55,6 +55,12 @@ export function glyphChanged(glyph) {
 export function makeGlyphSVGforExport(glyph) {
 	// log('Glyph.makeSVGforExport', 'start');
 	// log(glyph);
+	const project = getCurrentProject();
+	if(project.settings.app.enableSVGGlyphFeatures && project.settings.app.displaySVGGlyphs) {
+		// log('Glyph.makeSVGforExport', 'end');
+		return JSON.parse(glyph.svgGlyphData);
+	}
+
 	let exportGlyph = new Glyph(glyph);
 	exportGlyph.flipNS();
 	let size = Math.max(exportGlyph.maxes.height, exportGlyph.maxes.width);
