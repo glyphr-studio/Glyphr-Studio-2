@@ -99,14 +99,7 @@ export function makePanel_GlyphAttributes() {
 
 	// Subscribers
 	editor.subscribe({
-		topic: 'whichShapeIsSelected',
-		subscriberID: 'attributesPanel',
-		callback: () => {
-			refreshPanel();
-		},
-	});
-	editor.subscribe({
-		topic: 'whichPathPointIsSelected',
+		topic: ['whichShapeIsSelected', 'whichPathPointIsSelected', 'glyphDisplayMode'],
 		subscriberID: 'attributesPanel',
 		callback: () => {
 			refreshPanel();

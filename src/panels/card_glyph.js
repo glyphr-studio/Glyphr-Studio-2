@@ -28,6 +28,8 @@ export function makeCard_glyphAttributes(glyph) {
 		innerHTML: `<h3>${glyph.displayType} ${glyph.ident || ''}</h3>`,
 	});
 
+	const editor = getCurrentProjectEditor();
+	const showingSVGGlyphs = editor.project.settings.app.displaySVGGlyphs;
 	let advanceWidthLabel = makeSingleLabel('advance width');
 	let halfSizeAdvanceWidthInput = makeElement({ tag: 'div', className: 'doubleInput' });
 	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentItem', 'input-number');
@@ -74,6 +76,7 @@ export function makeCard_glyphAttributes(glyph) {
 	});
 	let doubleBearingInput = makeElement({ tag: 'div', className: 'doubleInput' });
 	let lsbInput = makeSingleInput(glyph, 'leftSideBearing', 'currentItem', 'input-number');
+	if(showingSVGGlyphs) lsbInput.setAttribute('disabled', 'true');
 	let rsbInput = makeSingleInput(glyph, 'rightSideBearing', 'currentItem', 'input-number');
 	doubleBearingInput.appendChild(lsbInput);
 	doubleBearingInput.appendChild(dimSplitElement());
@@ -92,7 +95,7 @@ export function makeCard_glyphAttributes(glyph) {
 		]);
 	}
 	if (glyph?.shapes?.length) {
-		const showAsDisabled = !!getCurrentProjectEditor().multiSelect.shapes.length;
+		let showAsDisabled = !!editor.multiSelect.shapes.length || showingSVGGlyphs;
 		addAsChildren(glyphCard, rowPad());
 		addAsChildren(
 			glyphCard,

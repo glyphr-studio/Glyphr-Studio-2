@@ -7,6 +7,7 @@ import { glyphChanged } from './cross_item_actions.js';
 /*
 	TOPICS
 		* - 'editCanvasView' - change to the edit canvas, view or extra non-item graphics.
+		* - 'glyphDisplayMode' - switch between showing default glyphs and SVG Color glyphs.
 		* - 'whichToolIsSelected' - change to which edit tool is selected.
 		* - 'whichGlyphIsSelected' - change to which glyph is being edited.
 		* - 'whichLigatureIsSelected' - change to which Ligature is being edited.
