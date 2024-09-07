@@ -921,7 +921,7 @@ export class Glyph extends GlyphElement {
 	 * Returns an HTML Image object for this glyph, based on the
 	 * OpenType SVG data (if there is any).
 	 *
-	 * @return {String} The image for the glyph.
+	 * @return {HTMLImageElement} The image for the glyph.
 	 */
 	get svgGlyphImage() {
 		if (!this?.cache?.svgGlyphImage) {
@@ -932,38 +932,29 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Generates an HTML Image object for this glyph, based on the OpenType SVG data.
-	 *
 	 * @return {HTMLImageElement} The image for the glyph.
 	 */
 	makeSVGGlyphImage() {
 		// log(`Glyph.makeSVGGlyphImage`, 'start');
 		const img = new Image();
-		if (!this.svgGlyphData) return img;
+		if (this.svgGlyphData) {
+			let svgCode = JSON.parse(this.svgGlyphData);
+			// log(`\n⮟svgCode⮟`);
+			// log(svgCode);
 
-		let svgCode = JSON.parse(this.svgGlyphData);
+			// Make the viewBox arbitrarily big to be able to draw outside
+			// the original viewBox. This scalar is also used in DisplayCanvas.drawPaths
+			const scalar = 8000;
+			svgCode = svgCode.replace(/viewBox/i, 'old-viewbox')
+			svgCode = svgCode.replace(
+				'<svg ',
+				`<svg viewBox="-${scalar / 2} -${scalar / 2} ${scalar} ${scalar}" `
+			);
 
-		// REMOVE
-		// <?xml version="1.0" encoding="utf-8"?>
-		const metaStart = svgCode.indexOf('<?xml ');
-		if (metaStart > -1) {
-			const metaEnd = svgCode.indexOf('?>', metaStart);
-			svgCode = svgCode.substring(0, metaStart) + svgCode.substring(metaEnd + 2);
+			log(svgCode);
+			img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgCode);
 		}
-
-		// Make the viewBox arbitrarily big to be able to draw outside
-		// the original viewBox. This scalar is also used in DisplayCanvas.drawPaths
-		const scalar = 8000;
-		svgCode = svgCode.replace(
-			'<svg ',
-			`<svg viewBox="-${scalar / 2} -${scalar / 2} ${scalar} ${scalar}" `
-		);
-		// log(`\n⮟svgCode⮟`);
-		// log(svgCode);
-
-		const svg64 = btoa(svgCode);
-		img.src = `data:image/svg+xml;base64,${svg64}`;
 		// log(`Glyph.makeSVGGlyphImage`, 'end');
-
 		return img;
 	}
 

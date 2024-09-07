@@ -242,7 +242,7 @@ export default {
 			type: `Boolean`,
 		},
 		displaySVGGlyphs: {
-			label: 'Toggle display for SVG Glyphs and Standard Glyphs',
+			label: 'Set toggle display on for SVG Glyphs',
 			description: `For the edit canvas and live previews, this toggle switches back and forth between showing SVG Glyphs and Standard Glyphs.`,
 			type: `Boolean`,
 		},
