@@ -77,8 +77,8 @@ export async function ioFont_exportFont() {
 		exportLists.glyphs.forEach((exportItem) => {
 			let glyph = exportItem.xg;
 			let glyphID = font.charToGlyphIndex(glyph.char);
-			if (glyph.svgGlyphData && glyphID) {
-				let svgDoc = JSON.parse(glyph.svgGlyphData);
+			if (glyph.svgColorGlyph && glyphID) {
+				let svgDoc = glyph.svgColorGlyph.svgCode;
 				let svgEncoded = [];
 				for (let i = 0; i < svgDoc.length; i += 1) {
 					svgEncoded[i] = svgDoc.charCodeAt(i);
@@ -128,7 +128,7 @@ function testExportOTF() {
 	const notdefGlyph = new openTypeJS.Glyph({
 		name: '.notdef',
 		advanceWidth: 650,
-		path: new openTypeJS.Path()
+		path: new openTypeJS.Path(),
 	});
 
 	const aPath = new openTypeJS.Path();
@@ -143,7 +143,7 @@ function testExportOTF() {
 		name: 'A',
 		unicode: 65,
 		advanceWidth: 650,
-		path: aPath
+		path: aPath,
 	});
 
 	const font = new openTypeJS.Font({
@@ -152,7 +152,7 @@ function testExportOTF() {
 		unitsPerEm: 1000,
 		ascender: 800,
 		descender: -200,
-		glyphs: [notdefGlyph, aGlyph]
+		glyphs: [notdefGlyph, aGlyph],
 	});
 
 	saveOTF(font);

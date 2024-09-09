@@ -35,11 +35,10 @@ export async function drawGlyph(
 
 	const project = getCurrentProject();
 
-	// log(glyph.svgGlyphData);
-	if (project.settings.app.displaySVGGlyphs) {
-		const img = glyph.svgGlyphImage;
-		// Scalar 8000 also used in Glyph.getSVGGlyphImage
-		const boxScale = 8000 * view.dz;
+	// log(glyph.svgColorGlyph);
+	if (project.settings.app.displaySVGGlyphs && glyph.svgColorGlyph) {
+		const img = glyph.svgColorGlyph.img;
+		const boxScale = glyph.svgColorGlyph.scalar * view.dz;
 		ctx.drawImage(img, view.dx - boxScale / 2, view.dy - boxScale / 2, boxScale, boxScale);
 		// log('drew color svg glyph ' + glyph.name);
 	} else {

@@ -132,8 +132,8 @@ export class GlyphTile extends HTMLElement {
 	 * redraw this thumbnail
 	 */
 	redraw() {
-		if (getCurrentProject().settings.app.displaySVGGlyphs && this.glyph.svgGlyphData) {
-			const img = this.glyph.svgGlyphImage;
+		if (getCurrentProject().settings.app.displaySVGGlyphs && this.glyph.svgColorGlyph) {
+			const img = this.glyph.svgColorGlyph.img;
 			this.thumbnail.innerHTML = '';
 			const offsets = this.project.computeThumbnailOffsets(this.glyph);
 			const leftAdj = offsets.translateX - 2 * offsets.padding;

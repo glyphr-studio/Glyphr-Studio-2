@@ -139,7 +139,7 @@ export function makePanel_Layers() {
 }
 
 function makeSVGGlyphPreview(glyph) {
-	if (!glyph.svgGlyphData) return;
+	if (!glyph.svgColorGlyph) return;
 
 	let rowsArea = makeElement({ className: 'panel__card full-width item-links__rows-area' });
 	let row = makeElement({ className: 'item-link__row' });

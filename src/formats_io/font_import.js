@@ -273,7 +273,7 @@ async function importOneGlyph(otfGlyph, project) {
 		project.settings.app.showNonCharPoints = true;
 	}
 
-	if (importedGlyph.svgGlyphData) {
+	if (importedGlyph.svgColorGlyph) {
 		project.settings.app.enableSVGGlyphFeatures = true;
 		project.settings.app.displaySVGGlyphs = true;
 	}
@@ -330,7 +330,7 @@ async function makeGlyphrStudioGlyphObject(otfGlyph) {
 		const colorSVGData = await importOneSVGColorGlyph(char);
 
 		if (colorSVGData !== '') {
-			importedGlyph.svgGlyphData = colorSVGData;
+			importedGlyph.svgColorGlyph = colorSVGData;
 			// log(`SVG Glyph for: ${char}`);
 			// log(colorSVGData);
 		}
@@ -422,7 +422,7 @@ async function importOneSVGColorGlyph(char) {
 				const svgCode = await openTypeJS.decodeSvgDocument(svgBuffer);
 				// log(svgCode);
 				// log(`importOneSVGColorGlyph`, 'end');
-				return JSON.stringify(svgCode);
+				return svgCode;
 			}
 		}
 	}

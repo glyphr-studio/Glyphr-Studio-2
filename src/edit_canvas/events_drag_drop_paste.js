@@ -1,7 +1,9 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import.js';
 import { copyShapesFromTo } from '../panels/actions.js';
+import { SVGColorGlyph } from '../project_data/svg_color_glyph.js';
 import { cancelDefaultEventActions } from './events.js';
 
 /**
@@ -15,8 +17,11 @@ export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 
 	const editor = getCurrentProjectEditor();
 
-	if(editor.project.settings.app.enableSVGGlyphFeatures && editor.project.settings.app.displaySVGGlyphs) {
-		editor.selectedItem.svgGlyphData = JSON.stringify(svgData);
+	if (
+		editor.project.settings.app.enableSVGGlyphFeatures &&
+		editor.project.settings.app.displaySVGGlyphs
+	) {
+		editor.selectedItem.svgColorGlyph = svgData;
 		return;
 	}
 

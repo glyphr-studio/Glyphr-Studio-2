@@ -12,6 +12,7 @@ import { ComponentInstance } from './component_instance.js';
 import { GlyphElement } from './glyph_element.js';
 import { Maxes, getOverallMaxes, isAllZeros } from './maxes.js';
 import { Path } from './path.js';
+import { SVGColorGlyph } from './svg_color_glyph.js';
 
 /**
  * Glyph Element > Glyph
@@ -39,7 +40,7 @@ export class Glyph extends GlyphElement {
 	 * @param {Array =} args.gsub - for ligatures, what characters does this lig replace
 	 * @param {Array =} args.shapes - collection of Paths and Component Instances in this Glyph
 	 * @param {String =} args.contextCharacters - what other glyphs to show around this one
-	 * @param {String =} args.svgGlyphData - SVG data for this glyph (color svg font)
+	 * @param {String =} args.svgColorGlyph - SVG data for this glyph (color svg font)
 	 */
 	constructor({
 		id = '',
@@ -53,7 +54,7 @@ export class Glyph extends GlyphElement {
 		usedIn = [],
 		gsub = [],
 		contextCharacters = '',
-		svgGlyphData = '',
+		svgColorGlyph = '',
 	} = {}) {
 		// log(`Glyph.constructor`, 'start');
 		super();
@@ -68,7 +69,7 @@ export class Glyph extends GlyphElement {
 		this.usedIn = usedIn;
 		this.gsub = gsub;
 		this.contextCharacters = contextCharacters;
-		this.svgGlyphData = svgGlyphData;
+		this.svgColorGlyph = svgColorGlyph;
 
 		// Changed state metadata
 		this.hasChangedThisSession = false;
@@ -114,7 +115,9 @@ export class Glyph extends GlyphElement {
 		if (this.gsub.length) re.gsub = this.gsub;
 		let cc = this.contextCharacters;
 		if (cc.length && cc !== this.char) re.contextCharacters = cc;
-		if (this.svgGlyphData) re.svgGlyphData = this.svgGlyphData;
+		if (this.svgColorGlyph) {
+			re.svgColorGlyph = this.svgColorGlyph.svgCode;
+		}
 
 		if (this.shapes && this.shapes.length) {
 			re.shapes = [];
@@ -231,6 +234,15 @@ export class Glyph extends GlyphElement {
 	get contextCharacters() {
 		if (!this._contextCharacters || this._contextCharacters === this.char) return this.char;
 		else return this._contextCharacters;
+	}
+
+	/**
+	 * get svgColorGlyph
+	 * @returns {SVGColorGlyph | false}
+	 */
+	get svgColorGlyph() {
+		if (this._svgColorGlyph) return this._svgColorGlyph;
+		else return false;
 	}
 
 	// computed properties
@@ -521,6 +533,18 @@ export class Glyph extends GlyphElement {
 	set contextCharacters(chars) {
 		if (!chars || chars === this.char || typeof chars !== 'string') delete this._contextCharacters;
 		else this._contextCharacters = chars;
+	}
+
+	/**
+	 * set svgColorGlyph
+	 * @param {String} svgCode
+	 */
+	set svgColorGlyph(svgCode) {
+		/** @type {SVGColorGlyph | false} */
+		this._svgColorGlyph = false;
+		if (svgCode && typeof svgCode === 'string') {
+			this._svgColorGlyph = new SVGColorGlyph(svgCode);
+		}
 	}
 
 	// computed properties
@@ -915,47 +939,6 @@ export class Glyph extends GlyphElement {
 		// log(pathData);
 		// log(`makeSVGPathData()`, 'end');
 		return pathData;
-	}
-
-	/**
-	 * Returns an HTML Image object for this glyph, based on the
-	 * OpenType SVG data (if there is any).
-	 *
-	 * @return {HTMLImageElement} The image for the glyph.
-	 */
-	get svgGlyphImage() {
-		if (!this?.cache?.svgGlyphImage) {
-			this.cache.svgGlyphImage = this.makeSVGGlyphImage();
-		}
-		return this.cache.svgGlyphImage;
-	}
-
-	/**
-	 * Generates an HTML Image object for this glyph, based on the OpenType SVG data.
-	 * @return {HTMLImageElement} The image for the glyph.
-	 */
-	makeSVGGlyphImage() {
-		// log(`Glyph.makeSVGGlyphImage`, 'start');
-		const img = new Image();
-		if (this.svgGlyphData) {
-			let svgCode = JSON.parse(this.svgGlyphData);
-			// log(`\n⮟svgCode⮟`);
-			// log(svgCode);
-
-			// Make the viewBox arbitrarily big to be able to draw outside
-			// the original viewBox. This scalar is also used in DisplayCanvas.drawPaths
-			const scalar = 8000;
-			svgCode = svgCode.replace(/viewBox/i, 'old-viewbox')
-			svgCode = svgCode.replace(
-				'<svg ',
-				`<svg viewBox="-${scalar / 2} -${scalar / 2} ${scalar} ${scalar}" `
-			);
-
-			log(svgCode);
-			img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgCode);
-		}
-		// log(`Glyph.makeSVGGlyphImage`, 'end');
-		return img;
 	}
 
 	// --------------------------------------------------------------
