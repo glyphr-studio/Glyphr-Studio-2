@@ -71,25 +71,26 @@ export async function ioFont_exportFont() {
 		});
 	}
 
-	// Add SVG Glyph information
-	if (project.settings.app.enableSVGGlyphFeatures) {
-		const svgGlyphMap = new Map();
+	// Add SVG Color Glyph information
+	if (project.settings.app.enableSVGColorGlyphFeatures) {
+		const svgColorGlyphMap = new Map();
 		exportLists.glyphs.forEach((exportItem) => {
 			let glyph = exportItem.xg;
 			let glyphID = font.charToGlyphIndex(glyph.char);
 			if (glyph.svgColorGlyph && glyphID) {
 				let svgDoc = glyph.svgColorGlyph.svgCode;
+				// log(svgDoc);
 				let svgEncoded = [];
 				for (let i = 0; i < svgDoc.length; i += 1) {
 					svgEncoded[i] = svgDoc.charCodeAt(i);
 				}
 				let svgBuffer = new Uint8Array(svgEncoded);
-				svgGlyphMap.set(glyphID, svgBuffer);
+				svgColorGlyphMap.set(glyphID, svgBuffer);
 			}
 		});
-		log(`\n⮟svgGlyphMap⮟`);
-		log(svgGlyphMap);
-		font.tables.svg = svgGlyphMap;
+		// log(`\n⮟svgColorGlyphMap⮟`);
+		// log(svgColorGlyphMap);
+		font.tables.svg = svgColorGlyphMap;
 	}
 
 	// TODO investigate advanced table values
@@ -116,11 +117,11 @@ export async function ioFont_exportFont() {
  * @param {Object} openTypeJSFont
  */
 export function saveOTF(openTypeJSFont) {
-	log(`saveOTF`, 'start');
-	log(openTypeJSFont);
+	// log(`saveOTF`, 'start');
+	// log(openTypeJSFont);
 	const href = window.URL.createObjectURL(new Blob([openTypeJSFont.toArrayBuffer()]));
 	Object.assign(document.createElement('a'), { download: makeOTFFileName(), href }).click();
-	log(`saveOTF`, 'end');
+	// log(`saveOTF`, 'end');
 }
 
 function testExportOTF() {

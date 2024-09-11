@@ -16,6 +16,13 @@ export function makePanel_Layers() {
 	let selected = editor.selectedItem;
 	let paths = selected.shapes;
 
+	if (project.settings.app.enableSVGColorGlyphFeatures && editor.selectedItem.svgColorGlyph) {
+		const header = makeElement({
+			tag: 'h3',
+			innerHTML: 'Standard glyph shapes',
+		});
+		rowsArea.appendChild(header);
+	}
 	// log(`\n⮟eventHandlerData⮟`);
 	// log(eventHandlerData);
 
@@ -79,6 +86,7 @@ export function makePanel_Layers() {
 				} else {
 					editor.multiSelect.shapes.select(item);
 				}
+				editor.project.settings.app.displaySVGColorGlyphs = false;
 				editor.publish('whichShapeIsSelected', item);
 			});
 
@@ -132,31 +140,32 @@ export function makePanel_Layers() {
 
 	// log(`makePanel_Layers`, 'end');
 	const result = [rowsArea];
-	const svgGlyph = makeSVGGlyphPreview(editor.selectedItem);
-	if (svgGlyph) result.push(svgGlyph);
+	const svgColorGlyph = makeSVGColorGlyphPreview(editor.selectedItem);
+	if (svgColorGlyph) result.push(svgColorGlyph);
 	result.push(makeActionArea_Layers());
 	return result;
 }
 
-function makeSVGGlyphPreview(glyph) {
+export function makeSVGColorGlyphPreview(glyph) {
 	if (!glyph.svgColorGlyph) return;
 
 	let rowsArea = makeElement({ className: 'panel__card full-width item-links__rows-area' });
-	let row = makeElement({ className: 'item-link__row' });
+	const header = makeElement({
+		tag: 'h3',
+		innerHTML: 'SVG color glyph',
+	});
+	rowsArea.appendChild(header);
 
-	// row.addEventListener('click', () => {
-	// 	if (panelsEventHandlerData.isCtrlDown) {
-	// 		editor.multiSelect.shapes.toggle(item);
-	// 	} else {
-	// 		editor.multiSelect.shapes.select(item);
-	// 	}
-	// 	editor.publish('whichShapeIsSelected', item);
-	// });
-
+	let row = makeElement({ className: 'item-link__row layer-panel__svg-color-glyph-row' });
 	const thumbnail = makeElement({
 		className: 'item-link__thumbnail',
 	});
-	const img = glyph.svgGlyphImage;
+
+	if (getCurrentProject().settings.app.displaySVGColorGlyphs) {
+		row.classList.add('layer-panel__selected');
+	}
+
+	const img = glyph.svgColorGlyph.img;
 	thumbnail.appendChild(img);
 
 	row.appendChild(thumbnail);
@@ -164,7 +173,7 @@ function makeSVGGlyphPreview(glyph) {
 	row.appendChild(
 		makeElement({
 			className: 'item-link__title',
-			innerHTML: `SVG Glyph`,
+			innerHTML: `SVG Color Glyph`,
 		})
 	);
 
@@ -174,6 +183,12 @@ function makeSVGGlyphPreview(glyph) {
 			innerHTML: 'Layer used where Opentype SVG fonts are supported',
 		})
 	);
+
+	const editor = getCurrentProjectEditor();
+	row.addEventListener('click', () => {
+		editor.project.settings.app.displaySVGColorGlyphs = true;
+		editor.publish('glyphDisplayMode', true);
+	});
 
 	rowsArea.appendChild(row);
 

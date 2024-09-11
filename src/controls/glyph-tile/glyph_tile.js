@@ -132,13 +132,19 @@ export class GlyphTile extends HTMLElement {
 	 * redraw this thumbnail
 	 */
 	redraw() {
-		if (getCurrentProject().settings.app.displaySVGGlyphs && this.glyph.svgColorGlyph) {
-			const img = this.glyph.svgColorGlyph.img;
-			this.thumbnail.innerHTML = '';
-			const offsets = this.project.computeThumbnailOffsets(this.glyph);
-			const leftAdj = offsets.translateX - 2 * offsets.padding;
-			img.style.left = `${leftAdj}px`;
-			this.thumbnail.appendChild(img);
+		if (getCurrentProject().settings.app.displaySVGColorGlyphs && this.glyph.svgColorGlyph) {
+			// const img = this.glyph.svgColorGlyph.img;
+			// this.thumbnail.innerHTML = '';
+			// const offsets = this.project.computeThumbnailOffsets(this.glyph);
+			// const leftAdj = offsets.translateX - 2 * offsets.padding;
+			// const topAdj = this.glyph.svgColorGlyph.translateY * -1;
+			// log(`topAdj: ${topAdj}`);
+			// // log(`this.glyph.svgColorGlyph.translateY: ${this.glyph.svgColorGlyph.translateY}`);
+			// img.style.left = `${leftAdj}px`;
+			// img.style.top = `${topAdj}px`;
+			// this.thumbnail.appendChild(img);
+			// this.thumbnail.innerHTML = this.glyph.svgColorGlyph.svgCode;
+			this.thumbnail.innerHTML = this.project.makeItemThumbnail(this.glyph);
 		} else if (this.glyph?.shapes?.length) {
 			this.thumbnail.innerHTML = this.project.makeItemThumbnail(this.glyph);
 		}

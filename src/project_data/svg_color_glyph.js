@@ -1,4 +1,4 @@
-import { getTransformData } from '../lib/svg-to-bezier/transforms.js';
+import { getTransformData } from '../lib/svg-to-bezier/transforms';
 
 export class SVGColorGlyph {
 	/**
@@ -12,43 +12,59 @@ export class SVGColorGlyph {
 	}
 
 	get svgCode() {
-		if(!this.cache?.svgCode) this.cache.svgCode = this.generateSVGCode();
+		if (!this.cache?.svgCode) this.cache.svgCode = this.generateSVGCode();
 		return this.cache.svgCode;
 	}
 	set translateX(value) {
 		if (isNaN(Number(value))) this._translateX = 0;
-		else this._translateX = Number(value);
+		else {
+			this._translateX = Number(value);
+			this.cache = {};
+		}
 	}
 
 	get translateX() {
-		return this._translateX;
+		if (!isNaN(Number(this._translateX))) return this._translateX;
+		else return 0;
 	}
 
 	set translateY(value) {
 		if (isNaN(Number(value))) this._translateY = 0;
-		else this._translateY = Number(value);
+		else {
+			this._translateY = Number(value);
+			this.cache = {};
+		}
 	}
 
 	get translateY() {
-		return this._translateY;
+		if (!isNaN(Number(this._translateY))) return this._translateY;
+		else return 0;
 	}
 
 	set scaleX(value) {
 		if (isNaN(Number(value))) this._scaleX = 1;
-		else this._scaleX = Number(value);
+		else {
+			this._scaleX = Number(value);
+			this.cache = {};
+		}
 	}
 
 	get scaleX() {
-		return this._scaleX;
+		if (!isNaN(Number(this._scaleX))) return this._scaleX;
+		else return 1;
 	}
 
 	set scaleY(value) {
 		if (isNaN(Number(value))) this._scaleY = 1;
-		else this._scaleY = Number(value);
+		else {
+			this._scaleY = Number(value);
+			this.cache = {};
+		}
 	}
 
 	get scaleY() {
-		return this._scaleY;
+		if (!isNaN(Number(this._scaleY))) return this._scaleY;
+		else return 1;
 	}
 
 	// --------------------------------------------------------------
@@ -79,18 +95,19 @@ export class SVGColorGlyph {
 		const img = new Image();
 		let renderCode = this.svgCode;
 		if (renderCode) {
-			// log(`\n⮟svgCode⮟`);
-			// log(svgCode);
+			// log(`\n⮟renderCode⮟`);
+			// log(renderCode);
 
 			// Make the viewBox arbitrarily big to be able to draw outside
-			// the original viewBox. This scalar is also used in DisplayCanvas.drawPaths
+			// the original viewBox.
 			renderCode = renderCode.replace(/viewBox/i, 'old-viewBox');
 			renderCode = renderCode.replace(
 				'<svg ',
-				`<svg viewBox="-${this.scalar / 2} -${this.scalar / 2} ${this.scalar} ${this.scalar}" `
+				`<svg viewBox="-${this.viewPad / 2} -${this.viewPad / 2} ${this.viewPad} ${this.viewPad}" `
 			);
 
 			// log(renderCode);
+			// saveTextFile('.svg', renderCode);
 			img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(renderCode);
 		}
 		// log(`Glyph.makeImgElement`, 'end');
@@ -102,7 +119,7 @@ export class SVGColorGlyph {
 	 * generating and drawing an SVG Image with a viewBox that should
 	 * be big enough to show all the shapes.
 	 */
-	get scalar() {
+	get viewPad() {
 		return 8000;
 	}
 
@@ -111,79 +128,102 @@ export class SVGColorGlyph {
 	// --------------------------------------------------------------
 
 	/**
-	 * Takes SVG Code, and works with the `transform` attribute
-	 * from the top level <svg> tag.
-	 * @param {String} importCode - SVG code to extract transforms from
+	 * In order to enable updating a SVG's position and scale after it is imported,
+	 * Glyphr Studio pulls top-level transformation data out of the svg tag.
+	 * Internally, this is stored as an object which can be updated by the Project Editor.
+	 * When this SVG Color Glyph gets saved back out to a font file, a new top-level g tag
+	 * will be created with the Glyphr Studio updates as transforms.
+	 *
+	 * This function basically sets up all the correct stuff and removes appropriate code
+	 * from the provided SVG.
+	 *
+	 * @param {String} importCode - SVG code to import
 	 */
 	importSVGCode(importCode) {
 		// log(`SVGColorGlyph.importSVGCode`, 'start');
-		const codeStart = importCode.search(/<svg/i);
-		// log(`codeStart: ${codeStart}`);
-		const svgTagEnd = importCode.indexOf('>', codeStart);
-		// log(`svgTagEnd: ${svgTagEnd}`);
-		const attributeStart = importCode.search(/ transform=/i);
-		// log(`attributeStart: ${attributeStart}`);
+		// log(importCode);
+		const svgData = scrapeTransformData(importCode, /<svg/i);
+		const gsData = scrapeTransformData(importCode, /<g id="glyphr-studio-transforms"/i);
 
-		if (attributeStart < svgTagEnd) {
-			const quote = importCode.charAt(attributeStart + 11);
-			// log(`quote: ${quote}`);
-			const attributeEnd = importCode.indexOf(quote, attributeStart + 13);
-			// log(`attributeEnd: ${attributeEnd}`);
-			const content = importCode.substring(attributeStart + 12, attributeEnd);
-			// log(content);
+		/*
+			If the font was previously edited and saved with Glyphr Studio, it should
+			not have any transforms in the svg tag, only in a top-level g tag that is
+			created and maintained by Glyphr Studio.
+			But, if for some reason transforms were added to the top level svg tag,
+			it supersedes any children, so we have to treat it like brand new svg code.
+			This is a very low probably edge case, but if there are both svg and g tag
+			transforms, it will be parsed again, and an additional layer of g tag will be
+			added to store Glyphr Studio's transforms.
+		*/
+		let data = gsData;
+		if (svgData.parsedTransforms.length) data = svgData;
 
-			const parsedTransforms = getTransformData({ attributes: { transform: content } });
-			// log(parsedTransforms);
-
-			parsedTransforms.forEach((transform) => {
+		// log(data);
+		if (data.parsedTransforms.length) {
+			data.parsedTransforms.forEach((transform) => {
 				if (transform.name === 'translate') {
-					importCode = removeTransformByName(importCode, transform.name, attributeStart, attributeEnd);
+					importCode = removeTransformByName(
+						importCode,
+						transform.name,
+						data.attributeStart,
+						data.attributeEnd
+					);
 					this.translateX = transform.args[0];
 					this.translateY = transform.args[1];
 				}
 
 				if (transform.name === 'scale') {
-					importCode = removeTransformByName(importCode, transform.name, attributeStart, attributeEnd);
+					importCode = removeTransformByName(
+						importCode,
+						transform.name,
+						data.attributeStart,
+						data.attributeEnd
+					);
 					this.scaleX = transform.args[0];
 					this.scaleY = transform.args[1];
 				}
 			});
-
-			this.untransformedCode = importCode;
-		} else {
-			// Add a blank top level Transform attribute
-			this.untransformedCode = importCode.substring(0, codeStart + 4);
-			this.untransformedCode += ' transform=""';
-			this.untransformedCode += importCode.substring(codeStart + 4);
 		}
+
+		importCode = importCode.replaceAll(/ transform=""/gi, '');
+		importCode = importCode.replaceAll(/ transform=''/gi, '');
+		this.untransformedCode = importCode;
 		// log(`SVGColorGlyph.importSVGCode`, 'end');
 	}
 
 	generateSVGCode() {
+		// log(`SVGColorGlyph.generateSVGCode`, 'start');
+		// log(`this.translateX: ${this.translateX}`);
+		// log(`this.translateY: ${this.translateY}`);
+		// log(`this.scaleX: ${this.scaleX}`);
+		// log(`this.scaleY: ${this.scaleY}`);
 		let insertions = '';
 		if (this.translateX || this.translateY) {
 			insertions += `translate(${this.translateX || 0}, ${this.translateY || 0})`;
 		}
 
 		if (this.scaleX || this.scaleY) {
-			insertions += `scale(${this.scaleX || 1}, ${this.scaleY || 1})`;
+			if (!(this.scaleX === 1 && this.scaleY === 1)) {
+				insertions += ` scale(${this.scaleX || 1}, ${this.scaleY || 1})`;
+			}
 		}
 
+		// log(`insertions: ${insertions}`);
 		if (insertions) {
 			const codeStart = this.untransformedCode.search(/<svg/i);
-			// log(`codeStart: ${codeStart}`);
 			const svgTagEnd = this.untransformedCode.indexOf('>', codeStart);
-			// log(`svgTagEnd: ${svgTagEnd}`);
-			let attributeStart = this.untransformedCode.search(/ transform=/i);
-			// log(`attributeStart: ${attributeStart}`);
 
-			let resultCode = this.untransformedCode.substring(0, attributeStart + 12);
-			resultCode += insertions + ' ';
-			resultCode += this.untransformedCode.substring(attributeStart + 12);
+			let resultCode = this.untransformedCode.substring(0, svgTagEnd + 1);
+			resultCode += `<g id="glyphr-studio-transforms" transform="${insertions}">`;
+			resultCode += this.untransformedCode.substring(svgTagEnd + 1);
+			resultCode = resultCode.replace('</svg>', '</g></svg>');
 
+			// log(resultCode);
+			// log(`SVGColorGlyph.generateSVGCode`, 'end');
 			return resultCode;
 		}
 
+		// log(`SVGColorGlyph.generateSVGCode`, 'end');
 		return this.untransformedCode;
 	}
 }
@@ -191,6 +231,39 @@ export class SVGColorGlyph {
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
+
+/**
+ * Scrapes and parses the first transform attribute from SVG code, given
+ * a starting point in the code.
+ * @param {String} svgCode - code to scrape from
+ * @param {RegExp} startAt - regex to search for (hopefully case insensitive)
+ * @returns {Object} - with any parsed transform data, and the discovered
+ * string index for the start and end of the transform attribute
+ */
+function scrapeTransformData(svgCode, startAt) {
+	const codeStart = svgCode.search(startAt);
+	// log(`codeStart: ${codeStart}`);
+	const svgTagEnd = svgCode.indexOf('>', codeStart);
+	// log(`svgTagEnd: ${svgTagEnd}`);
+	const attributeStart = svgCode.search(/ transform=/i);
+	// log(`attributeStart: ${attributeStart}`);
+
+	if (attributeStart < svgTagEnd) {
+		const quote = svgCode.charAt(attributeStart + 11);
+		// log(`quote: ${quote}`);
+		const attributeEnd = svgCode.indexOf(quote, attributeStart + 13);
+		// log(`attributeEnd: ${attributeEnd}`);
+		const content = svgCode.substring(attributeStart + 12, attributeEnd);
+		// log(content);
+
+		const parsedTransforms = getTransformData({ attributes: { transform: content } });
+		// log(parsedTransforms);
+
+		return { parsedTransforms, attributeStart, attributeEnd };
+	}
+
+	return { parsedTransforms: [], attributeStart: -1, attributeEnd: -1 };
+}
 
 /**
  * Given a name of a transform, removes it from the SVG Code

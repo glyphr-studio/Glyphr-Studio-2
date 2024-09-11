@@ -194,7 +194,7 @@ export class EditCanvas extends HTMLElement {
 			// Draw glyphs
 			drawGlyph(currentItem, ctx, view);
 
-			const inSVGMode = editor.project.settings.app.displaySVGGlyphs;
+			const inSVGMode = editor.project.settings.app.displaySVGColorGlyphs;
 
 			if (!inSVGMode) {
 				// Draw selected shape

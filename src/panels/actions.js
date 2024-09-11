@@ -52,7 +52,7 @@ export function getActionData(name) {
 	// log(`getActionData`, 'start');
 	// log(`name: ${name}`);
 	const editor = getCurrentProjectEditor();
-	const showingSVGGlyphs = editor.project.settings.app.displaySVGGlyphs;
+	const showingSVGColorGlyphs = editor.project.settings.app.displaySVGColorGlyphs;
 	const selectedPaths = editor.multiSelect.shapes.members;
 	const selectedPoints = editor.multiSelect.points.members;
 	const clipBoardShapes = editor.clipboard.shapes;
@@ -67,7 +67,7 @@ export function getActionData(name) {
 				iconName: 'copy',
 				iconOptions: !clipBoardShapes,
 				title: `Copy\nAdds the selected shape(s) to the clipboard.`,
-				disabled: !editor.multiSelect.shapes.length || showingSVGGlyphs,
+				disabled: !editor.multiSelect.shapes.length || showingSVGColorGlyphs,
 				id: 'actionButtonCopy',
 				onClick: clipboardCopy,
 			},
@@ -75,7 +75,7 @@ export function getActionData(name) {
 				iconName: 'paste',
 				iconOptions: !clipBoardShapes,
 				title: makeActionButtonPasteTooltip(clipBoardPathCount),
-				disabled: !clipBoardShapes || showingSVGGlyphs,
+				disabled: !clipBoardShapes || showingSVGColorGlyphs,
 				id: 'actionButtonPaste',
 				onClick: clipboardPaste,
 			},
@@ -83,7 +83,7 @@ export function getActionData(name) {
 				iconName: 'clearClipboard',
 				iconOptions: !clipBoardShapes,
 				title: makeActionButtonClearClipboardTooltip(clipBoardPathCount),
-				disabled: !clipBoardShapes || showingSVGGlyphs,
+				disabled: !clipBoardShapes || showingSVGColorGlyphs,
 				id: 'actionButtonClearClipboard',
 				onClick: clipboardClear,
 			},
@@ -91,7 +91,7 @@ export function getActionData(name) {
 				iconName: 'undo',
 				iconOptions: !historyLength,
 				title: `Undo\nStep backwards in time one action.`,
-				disabled: !historyLength || showingSVGGlyphs,
+				disabled: !historyLength || showingSVGColorGlyphs,
 				id: 'actionButtonUndo',
 				onClick: () => {
 					editor.history.restoreState();
@@ -117,7 +117,7 @@ export function getActionData(name) {
 				iconName: 'addPath',
 				iconOptions: false,
 				title: `Add Path\nCreates a new default path and adds it to this glyph.`,
-				disabled: showingSVGGlyphs,
+				disabled: showingSVGColorGlyphs,
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					let newPath = editor.selectedItem.addOneShape(rectPathFromMaxes());
@@ -131,7 +131,7 @@ export function getActionData(name) {
 				iconName: 'addPath',
 				iconOptions: true,
 				title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
-				disabled: showingSVGGlyphs,
+				disabled: showingSVGColorGlyphs,
 				onClick: () => {
 					showDialogChooseOtherItem('addAsComponentInstance');
 				},
@@ -139,7 +139,7 @@ export function getActionData(name) {
 			{
 				iconName: 'pastePathsFromAnotherGlyph',
 				title: `Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one.`,
-				disabled: showingSVGGlyphs,
+				disabled: showingSVGColorGlyphs,
 				onClick: () => {
 					showDialogChooseOtherItem('copyPaths');
 				},
@@ -150,7 +150,7 @@ export function getActionData(name) {
 				onClick: () => {
 					showDialogChooseItemFromOtherProject();
 				},
-				disabled: getGlyphrStudioApp().projectEditors.length === 1 || showingSVGGlyphs,
+				disabled: getGlyphrStudioApp().projectEditors.length === 1 || showingSVGColorGlyphs,
 			},
 		];
 	}
@@ -161,7 +161,7 @@ export function getActionData(name) {
 			{
 				iconName: 'flipHorizontal',
 				title: `Flip Vertical\nReflects the glyph vertically.`,
-				disabled: showingSVGGlyphs,
+				disabled: showingSVGColorGlyphs,
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					editor.selectedItem.flipEW();
@@ -172,7 +172,7 @@ export function getActionData(name) {
 			{
 				iconName: 'flipVertical',
 				title: `Flip Horizontal\nReflects the glyph horizontally.`,
-				disabled: showingSVGGlyphs,
+				disabled: showingSVGColorGlyphs,
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					editor.selectedItem.flipNS();
@@ -183,7 +183,7 @@ export function getActionData(name) {
 			{
 				iconName: 'round',
 				title: `Round all path point and handle position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
-				disabled: showingSVGGlyphs,
+				disabled: showingSVGColorGlyphs,
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					editor.selectedItem.roundAll();
@@ -198,7 +198,7 @@ export function getActionData(name) {
 			{
 				iconName: 'combine_unite',
 				title: `Combine all paths: Unite\nMerges all paths in this glyph into as few paths as possible.`,
-				disabled: editor.selectedItem?.shapes?.length < 2 || showingSVGGlyphs,
+				disabled: editor.selectedItem?.shapes?.length < 2 || showingSVGColorGlyphs,
 				onClick: combineUniteAllGlyphPaths,
 			},
 			{
@@ -220,12 +220,16 @@ export function getActionData(name) {
 			},
 			{
 				iconName: 'exportGlyphSVG',
-				title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.${editor.project.settings.app.enableSVGGlyphFeatures ? `\n Toggle between Standard and SVG Glyph modes to download different versions of SVG file.` : ''}`,
+				title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.${
+					editor.project.settings.app.enableSVGColorGlyphFeatures
+						? `\n Toggle between Standard and SVG Color Glyph modes to download different versions of SVG file.`
+						: ''
+				}`,
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					let content = makeGlyphSVGforExport(editor.selectedItem);
 					let name = editor.selectedItem.name;
-					if (editor.project.settings.app.displaySVGGlyphs) name += ' (SVG Glyph)';
+					if (editor.project.settings.app.displaySVGColorGlyphs) name += ' (SVG Color Glyph)';
 					saveTextFile(name + '.svg', content);
 				},
 			},

@@ -36,7 +36,7 @@ export function makeEditToolsButtons() {
 	// All the various permutations of states
 	// log(`editor.selectedTool: ${editor.selectedTool}`);
 
-	let defaultDisabledState = editor.project.settings.app.displaySVGGlyphs;
+	let defaultDisabledState = editor.project.settings.app.displaySVGColorGlyphs;
 
 	// Button data
 	let toolButtonData = {
@@ -97,7 +97,7 @@ export function makeEditToolsButtons() {
 				if (typeof newSelectedTool !== 'string') {
 					newSelectedTool = getCurrentProjectEditor().selectedTool;
 				}
-				const shouldDisableButton = getCurrentProject().settings.app.displaySVGGlyphs;
+				const shouldDisableButton = getCurrentProject().settings.app.displaySVGColorGlyphs;
 				// log(`${buttonName} should now be enabled:${shouldDisableButton}`);
 				if (shouldDisableButton) newToolButton.setAttribute('disabled', 'disabled');
 				else newToolButton.removeAttribute('disabled');
@@ -264,12 +264,12 @@ export function makeViewToolsButtons() {
 		viewButtonElements.pan,
 		responsiveGroup,
 		viewButtonElements.zoomEm,
-		makeColorStandardToggleButton(),
+		makeSVGColorGlyphToggleButton(),
 		livePreviewPopOut,
 	];
 
 	if (editor.nav.page === 'Components') {
-		editor.project.settings.app.displaySVGGlyphs = false;
+		editor.project.settings.app.displaySVGColorGlyphs = false;
 		result.splice(3, 1);
 	}
 
@@ -352,9 +352,9 @@ export function makeKernToolButton() {
 	return kernToolButton;
 }
 
-export function makeColorStandardToggleButton() {
+export function makeSVGColorGlyphToggleButton() {
 	const editor = getCurrentProjectEditor();
-	if (!editor.project.settings.app.enableSVGGlyphFeatures) {
+	if (!editor.project.settings.app.enableSVGColorGlyphFeatures) {
 		return makeElement();
 	}
 
@@ -362,12 +362,12 @@ export function makeColorStandardToggleButton() {
 
 	let toggleButton = makeElement({
 		tag: 'button',
-		title: 'Glyph display mode:\nToggle between viewing SVG Glyphs and Standard Glyphs',
+		title: 'Glyph display mode:\nToggle between viewing SVG Color Glyphs and Standard Glyphs',
 		className: 'editor-page__tool',
 		style: 'top: 5px;',
 	});
 
-	const isColor = editor.project.settings.app.displaySVGGlyphs;
+	const isColor = editor.project.settings.app.displaySVGColorGlyphs;
 	const imgWrapper = makeElement({
 		tag: 'div',
 		style: `
@@ -399,8 +399,9 @@ export function makeColorStandardToggleButton() {
 	toggleButton.appendChild(imgWrapper);
 
 	toggleButton.addEventListener('click', () => {
-		editor.project.settings.app.displaySVGGlyphs = !editor.project.settings.app.displaySVGGlyphs;
-		if (editor.project.settings.app.displaySVGGlyphs) {
+		editor.project.settings.app.displaySVGColorGlyphs =
+			!editor.project.settings.app.displaySVGColorGlyphs;
+		if (editor.project.settings.app.displaySVGColorGlyphs) {
 			if (editor.nav.page !== 'Kerning') editor.selectedTool = 'resize';
 		}
 		editor.publish('glyphDisplayMode', editor.project.settings.app);
@@ -411,7 +412,7 @@ export function makeColorStandardToggleButton() {
 		topic: 'glyphDisplayMode',
 		subscriberID: `colorStandardToggleButton`,
 		callback: () => {
-			const isColor = editor.project.settings.app.displaySVGGlyphs;
+			const isColor = editor.project.settings.app.displaySVGColorGlyphs;
 			img.style.left = isColor ? bgDelta : bgOffset;
 			img.style.top = isColor ? bgOffset : bgDelta;
 		},
@@ -470,7 +471,7 @@ export function getShapeAtLocation(cx, cy) {
 
 	let shape;
 	const editor = getCurrentProjectEditor();
-	if (editor.project.settings.app.displaySVGGlyphs) return false;
+	if (editor.project.settings.app.displaySVGColorGlyphs) return false;
 	let sws = editor.selectedItem?.shapes;
 	if (!sws) return false;
 	// log(sws);

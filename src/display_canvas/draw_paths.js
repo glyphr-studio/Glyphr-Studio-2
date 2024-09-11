@@ -36,10 +36,12 @@ export async function drawGlyph(
 	const project = getCurrentProject();
 
 	// log(glyph.svgColorGlyph);
-	if (project.settings.app.displaySVGGlyphs && glyph.svgColorGlyph) {
+	if (project.settings.app.displaySVGColorGlyphs && glyph.svgColorGlyph) {
 		const img = glyph.svgColorGlyph.img;
-		const boxScale = glyph.svgColorGlyph.scalar * view.dz;
-		ctx.drawImage(img, view.dx - boxScale / 2, view.dy - boxScale / 2, boxScale, boxScale);
+		const boxScale = glyph.svgColorGlyph.viewPad * view.dz;
+		const drawX = view.dx - boxScale / 2;
+		const drawY = view.dy - boxScale / 2;
+		ctx.drawImage(img, drawX, drawY, boxScale, boxScale);
 		// log('drew color svg glyph ' + glyph.name);
 	} else {
 		let drewShape;

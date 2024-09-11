@@ -59,9 +59,9 @@ export function makeSettingsTabContentApp() {
 		makeOneSettingsRow('app', 'moveShapesOnSVGDragDrop'),
 		textToNode('<br>'),
 		textToNode('<br>'),
-		textToNode('<h3>SVG Glyphs (Color Glyphs)</h3>'),
-		makeOneSettingsRow('app', 'enableSVGGlyphFeatures'),
-		makeOneSettingsRow('app', 'displaySVGGlyphs'),
+		textToNode('<h3>SVG Color Glyphs</h3>'),
+		makeOneSettingsRow('app', 'enableSVGColorGlyphFeatures'),
+		makeOneSettingsRow('app', 'displaySVGColorGlyphs'),
 	]);
 
 	return tabContent;

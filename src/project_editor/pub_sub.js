@@ -106,7 +106,7 @@ export function publish(topic, data) {
 		// Call topics based on generic / specific topics, and  Glyph Element hierarchy
 		// ----------------------------------------------------------------------------
 		/*
-			PubSub allows for topics to be either a generic 'selectedItem' topic,
+			PubSub allows for topics to be either a generic 'currentItem' topic,
 			or a specific 'selectedGlyph' / 'selectedComponent' / 'selectedLigature' topic.
 			In both cases, when the specific case is called, so must the generic case,
 			and if the generic case is called, so must the specific case.

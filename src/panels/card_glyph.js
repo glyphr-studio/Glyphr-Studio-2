@@ -21,16 +21,72 @@ export function makeCard_glyphAttributes(glyph) {
 	// log(`makeCard_glyphAttributes`, 'start');
 	// log(`glyph.id: ${glyph.id}`);
 
+	const editor = getCurrentProjectEditor();
+	const showingSVGColorGlyphs = editor.project.settings.app.enableSVGColorGlyphFeatures;
+
+	let title = glyph.displayType;
+	title = showingSVGColorGlyphs ? `Standard ${title}` : title;
+	title += glyph.ident || '';
+
 	// `ident` is a unique ID per object for debugging
 	let glyphCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>${glyph.displayType} ${glyph.ident || ''}</h3>`,
+		innerHTML: `<h3>${title}</h3>`,
 	});
 
+	// Side bearings
+	let bearingLabel = makeElement({
+		tag: 'label',
+		className: 'info',
+		innerHTML: bearingsHTML,
+	});
+	let doubleBearingInput = makeElement({ tag: 'div', className: 'doubleInput' });
+	let lsbInput = makeSingleInput(glyph, 'leftSideBearing', 'currentItem', 'input-number');
+	let rsbInput = makeSingleInput(glyph, 'rightSideBearing', 'currentItem', 'input-number');
+	doubleBearingInput.appendChild(lsbInput);
+	doubleBearingInput.appendChild(dimSplitElement());
+	doubleBearingInput.appendChild(rsbInput);
+
+	// Put it all together
+	if (glyph.displayType !== 'Component') {
+		addAsChildren(glyphCard, makeAdvanceWidthUI(glyph));
+		if (glyph?.shapes?.length) {
+			addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
+		}
+	} else {
+		addAsChildren(glyphCard, [
+			makeSingleLabel('name'),
+			makeSingleInput(glyph, 'name', 'currentItem', 'input'),
+		]);
+	}
+	if (glyph?.shapes?.length) {
+		let showAsDisabled = !!editor.multiSelect.shapes.length;
+		addAsChildren(glyphCard, rowPad());
+		addAsChildren(
+			glyphCard,
+			makeElement({ tag: 'h4', content: showAsDisabled ? 'Overall paths' : 'Bulk-edit paths' })
+		);
+		addAsChildren(glyphCard, makeInputs_position(glyph, '', [], showAsDisabled));
+		addAsChildren(glyphCard, makeInputs_size(glyph, showAsDisabled));
+	}
+	addAsChildren(glyphCard, rowPad());
+	addAsChildren(glyphCard, makeActionsArea_Universal());
+	addAsChildren(glyphCard, makeActionsArea_Glyph());
+	// log(`returning:`);
+	// log(glyphCard);
+	// log(`makeCard_glyphAttributes`, 'end');
+	return glyphCard;
+}
+
+function makeAdvanceWidthUI(glyph) {
 	const editor = getCurrentProjectEditor();
-	const showingSVGGlyphs = editor.project.settings.app.displaySVGGlyphs;
-	let advanceWidthLabel = makeSingleLabel('advance width');
+	const colorMode = editor.project.settings.app.enableSVGColorGlyphFeatures;
+	let helpText = `The horizontal distance this character will take up when it's being typed.`;
+	if (colorMode) {
+		helpText += '<br><br>Advance width is shared between SVG Color Glyphs and Standard Glyphs.';
+	}
+	let advanceWidthLabel = makeSingleLabel('advance width', helpText);
 	let halfSizeAdvanceWidthInput = makeElement({ tag: 'div', className: 'doubleInput' });
 	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentItem', 'input-number');
 	let autoFitAdvanceWidth = makeElement({
@@ -45,13 +101,82 @@ export function makeCard_glyphAttributes(glyph) {
 			editor.publish('currentItem', editor.selectedItem);
 		},
 	});
+
+	if(colorMode && editor.project.settings.app.displaySVGColorGlyphs) {
+		autoFitAdvanceWidth = makeElement();
+	}
+
 	addAsChildren(halfSizeAdvanceWidthInput, [advanceWidthInput, makeElement(), autoFitAdvanceWidth]);
 
-	// Side bearings
-	let bearingLabel = makeElement({
-		tag: 'label',
-		className: 'info',
-		innerHTML: `
+	return [advanceWidthLabel, halfSizeAdvanceWidthInput];
+}
+
+export function makeCard_svgColorGlyphAttributes(glyph) {
+	// log(`makeCard_glyphAttributes`, 'start');
+	// log(`glyph.id: ${glyph.id}`);
+
+	// `ident` is a unique ID per object for debugging
+	let glyphCard = makeElement({
+		tag: 'div',
+		className: 'panel__card',
+		innerHTML: `<h3>SVG Color ${glyph.displayType} ${glyph.ident || ''}</h3>`,
+	});
+
+	addAsChildren(glyphCard, makeAdvanceWidthUI(glyph));
+
+	if (glyph.svgColorGlyph) {
+		addAsChildren(glyphCard, rowPad());
+		addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Transform' }));
+		// Translate
+		const translateLabel = makeSingleLabel(`move x${dimSplit()}y`, `Move the SVG Color Glyph horizontally (x) and/or vertically (y).`);
+		const translateXInput = makeSingleInput(
+			glyph.svgColorGlyph,
+			'translateX',
+			'currentItem',
+			'input-number'
+		);
+		const translateYInput = makeSingleInput(
+			glyph.svgColorGlyph,
+			'translateY',
+			'currentItem',
+			'input-number'
+		);
+		let doubleTranslateInput = makeElement({ tag: 'div', className: 'doubleInput' });
+		doubleTranslateInput.appendChild(translateXInput);
+		doubleTranslateInput.appendChild(dimSplitElement());
+		doubleTranslateInput.appendChild(translateYInput);
+		addAsChildren(glyphCard, [translateLabel, doubleTranslateInput]);
+
+		// Scale
+		const scaleLabel = makeSingleLabel(`scale x${dimSplit()}y`, `Resize the SVG Color Glyph by a multiplier in the horizontal (x) and/or vertical (y) direction.`);
+		const scaleXInput = makeSingleInput(
+			glyph.svgColorGlyph,
+			'scaleX',
+			'currentItem',
+			'input-number'
+		);
+		const scaleYInput = makeSingleInput(
+			glyph.svgColorGlyph,
+			'scaleY',
+			'currentItem',
+			'input-number'
+		);
+		let doubleScaleInput = makeElement({ tag: 'div', className: 'doubleInput' });
+		doubleScaleInput.appendChild(scaleXInput);
+		doubleScaleInput.appendChild(dimSplitElement());
+		doubleScaleInput.appendChild(scaleYInput);
+		addAsChildren(glyphCard, [scaleLabel, doubleScaleInput]);
+	}
+
+	addAsChildren(glyphCard, rowPad());
+	addAsChildren(glyphCard, makeActionsArea_Glyph());
+	// log(`returning:`);
+	// log(glyphCard);
+	// log(`makeCard_glyphAttributes`, 'end');
+	return glyphCard;
+}
+
+let bearingsHTML = `
 			<span>bearings: left${dimSplit()}right</span>
 			<info-bubble>
 				<h1>Side Bearings</h1>
@@ -72,46 +197,7 @@ export function makeCard_glyphAttributes(glyph) {
 				Distance from the rightmost side of shapes in the glyph to the
 				Advance Width.
 			</info-bubble>
-		`,
-	});
-	let doubleBearingInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let lsbInput = makeSingleInput(glyph, 'leftSideBearing', 'currentItem', 'input-number');
-	if(showingSVGGlyphs) lsbInput.setAttribute('disabled', 'true');
-	let rsbInput = makeSingleInput(glyph, 'rightSideBearing', 'currentItem', 'input-number');
-	doubleBearingInput.appendChild(lsbInput);
-	doubleBearingInput.appendChild(dimSplitElement());
-	doubleBearingInput.appendChild(rsbInput);
-
-	// Put it all together
-	if (glyph.displayType !== 'Component') {
-		addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
-		if (glyph?.shapes?.length) {
-			addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
-		}
-	} else {
-		addAsChildren(glyphCard, [
-			makeSingleLabel('name'),
-			makeSingleInput(glyph, 'name', 'currentItem', 'input'),
-		]);
-	}
-	if (glyph?.shapes?.length) {
-		let showAsDisabled = !!editor.multiSelect.shapes.length || showingSVGGlyphs;
-		addAsChildren(glyphCard, rowPad());
-		addAsChildren(
-			glyphCard,
-			makeElement({ tag: 'h4', content: showAsDisabled ? 'Overall paths' : 'Bulk-edit paths' })
-		);
-		addAsChildren(glyphCard, makeInputs_position(glyph, '', [], showAsDisabled));
-		addAsChildren(glyphCard, makeInputs_size(glyph, showAsDisabled));
-	}
-	addAsChildren(glyphCard, rowPad());
-	addAsChildren(glyphCard, makeActionsArea_Universal());
-	addAsChildren(glyphCard, makeActionsArea_Glyph());
-	// log(`returning:`);
-	// log(glyphCard);
-	// log(`makeCard_glyphAttributes`, 'end');
-	return glyphCard;
-}
+		`;
 
 export function makeCard_glyphLinks(item) {
 	// log(`makeCard_glyphLinks`, 'start');

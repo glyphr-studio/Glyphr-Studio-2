@@ -1,6 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
-import { makeColorStandardToggleButton } from '../edit_canvas/tools/tools';
+import { makeSVGColorGlyphToggleButton } from '../edit_canvas/tools/tools';
 import { redrawLivePreviewPageDisplayCanvas } from '../pages/live_preview';
 import {
 	makeLivePreviewPopOutCard,
@@ -219,11 +219,11 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 	// Line gap
 	const project = getCurrentProject();
 	let glyphDisplayModeLabel = makeSingleLabel('Glyph display mode:');
-	let glyphDisplayModeInput = makeColorStandardToggleButton();
+	let glyphDisplayModeInput = makeSVGColorGlyphToggleButton();
 
 	let result = [textLabel, textInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
 
-	if (project.settings.app.enableSVGGlyphFeatures) {
+	if (project.settings.app.enableSVGColorGlyphFeatures) {
 		result.push(glyphDisplayModeLabel, glyphDisplayModeInput);
 	}
 

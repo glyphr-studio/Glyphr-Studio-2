@@ -49,8 +49,8 @@ export class GlyphrStudioProject {
 				exportKerning: true,
 				exportUneditedItems: true,
 				moveShapesOnSVGDragDrop: false,
-				enableSVGGlyphFeatures: false,
-				displaySVGGlyphs: false,
+				enableSVGColorGlyphFeatures: false,
+				displaySVGColorGlyphs: false,
 				guides: {
 					drawGuidesOnTop: false,
 					systemShowGuides: true,
@@ -518,16 +518,31 @@ export class GlyphrStudioProject {
 		// log('GlyphrStudioProject.makeItemThumbnail', 'start');
 		// log(item);
 		const offsets = this.computeThumbnailOffsets(item, size);
-		const svg = item?.svgPathData || 'M0,0Z';
+		const showColor = this.settings.app.displaySVGColorGlyphs && item?.displayType === 'Glyph';
+		let content = '';
+		let translate = '';
+		let scale = '';
+
+		if (showColor) {
+			translate = `translate(${offsets.translateX},${offsets.translateY})`;
+			scale = ` scale(${offsets.scale}, ${offsets.scale})`;
+			if (scale === ' scale(1, 1)') scale = '';
+			let colorSVG = item.svgColorGlyph.svgCode;
+			colorSVG = colorSVG.replace('<svg ', `<g id="color-${item.id}" `);
+			colorSVG = colorSVG.replace('</svg>', '</g>');
+			content = colorSVG;
+		} else {
+			translate = `translate(${offsets.translateX}, ${offsets.translateY})`;
+			scale = ` scale(${offsets.scale}, -${offsets.scale})`;
+			content = `<path d="${item?.svgPathData || 'M0,0Z'}" />`;
+		}
 		// log(svg);
 
 		let re = `
-		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50px" height="50px">
-			<path
-				transform="translate(${offsets.translateX},${offsets.translateY}) scale(${offsets.scale}, -${offsets.scale})"
-				d="${svg}"
-			/>
-		</svg>`;
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50px" height="50px">
+	<g transform="${translate}${scale}">${content}</g>
+</svg>
+`;
 
 		// log(re);
 		// log('GlyphrStudioProject.makeItemThumbnail', 'end');

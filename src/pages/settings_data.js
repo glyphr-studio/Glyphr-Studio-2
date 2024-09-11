@@ -236,14 +236,14 @@ export default {
 			description: `When importing SVG by dragging and dropping a .svg file onto the canvas, move the imported shapes to the origin (x = 0, y = shapes height).`,
 			type: `Boolean`,
 		},
-		enableSVGGlyphFeatures: {
-			label: 'Enable SVG Glyph Features',
-			description: `This will turn on an SVG Glyph page, as well as show SVG Glyph / Standard Glyph toggles for text displays on the edit canvas and Live Previews.`,
+		enableSVGColorGlyphFeatures: {
+			label: 'Enable SVG Color Glyph Features',
+			description: `This will turn on an SVG Color Glyph page, as well as show SVG Color Glyph / Standard Glyph toggles for text displays on the edit canvas and Live Previews.`,
 			type: `Boolean`,
 		},
-		displaySVGGlyphs: {
-			label: 'Set toggle display on for SVG Glyphs',
-			description: `For the edit canvas and live previews, this toggle switches back and forth between showing SVG Glyphs and Standard Glyphs.`,
+		displaySVGColorGlyphs: {
+			label: 'Set toggle display on for SVG Color Glyphs',
+			description: `For the edit canvas and live previews, this toggle switches back and forth between showing SVG Color Glyphs and Standard Glyphs.`,
 			type: `Boolean`,
 		},
 	},

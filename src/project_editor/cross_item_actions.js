@@ -56,7 +56,10 @@ export function makeGlyphSVGforExport(glyph) {
 	// log('Glyph.makeSVGforExport', 'start');
 	// log(glyph);
 	const project = getCurrentProject();
-	if (project.settings.app.enableSVGGlyphFeatures && project.settings.app.displaySVGGlyphs) {
+	if (
+		project.settings.app.enableSVGColorGlyphFeatures &&
+		project.settings.app.displaySVGColorGlyphs
+	) {
 		// log('Glyph.makeSVGforExport', 'end');
 		return glyph.svgColorGlyph.svgCode;
 	}

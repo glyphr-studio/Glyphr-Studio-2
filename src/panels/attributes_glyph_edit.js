@@ -8,12 +8,14 @@ import {
 	makeCard_glyphAttributes,
 	makeCard_glyphLinks,
 	makeCard_glyphNavigation,
+	makeCard_svgColorGlyphAttributes,
 } from './card_glyph.js';
 import { makeCard_multiSelectPathAttributes, makeCard_pathAttributes } from './card_path.js';
 import {
 	makeCard_multiSelectPathPointAttributes,
 	makeCard_pathPointAttributes,
 } from './card_path_point.js';
+import { makeSVGColorGlyphPreview } from './layers.js';
 import { refreshPanel } from './panels.js';
 
 // --------------------------------------------------------------
@@ -68,7 +70,11 @@ export function makePanel_GlyphAttributes() {
 	}
 
 	// Glyph
-	content.push(makeCard_glyphAttributes(editor.selectedItem));
+	if (editor.project.settings.app.displaySVGColorGlyphs) {
+		content.push(makeCard_svgColorGlyphAttributes(editor.selectedItem));
+	} else {
+		content.push(makeCard_glyphAttributes(editor.selectedItem));
+	}
 	content.push(makeCard_glyphNavigation(editor.selectedItem));
 	const linksCard = makeCard_glyphLinks(editor.selectedItem);
 	if (linksCard) content.push(linksCard);

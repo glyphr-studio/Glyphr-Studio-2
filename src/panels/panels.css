@@ -487,6 +487,7 @@ nav .item-chooser__wrapper {
 	Layers panel
 */
 
+/* Path Row */
 .layer-panel__new-path {
 	opacity: 0.4;
 	font-style: italic;
@@ -503,6 +504,14 @@ nav .item-chooser__wrapper {
 	border-right-width: 8px;
 }
 
+.layer-panel__path-row:hover,
+.layer-panel__path-row:active {
+	border-color: var(--blue-l85);
+	cursor: pointer;
+	border-right-width: 8px;
+}
+
+/* Component Row */
 .layer-panel__component-row {
 	border-color: var(--green-l95);
 	background-color: var(--green-l98);
@@ -511,13 +520,6 @@ nav .item-chooser__wrapper {
 .layer-panel__component-row.layer-panel__selected {
 	border-color: var(--green-l70);
 	background-color: var(--green-l90);
-	border-right-width: 8px;
-}
-
-.layer-panel__path-row:hover,
-.layer-panel__path-row:active {
-	border-color: var(--blue-l85);
-	cursor: pointer;
 	border-right-width: 8px;
 }
 
@@ -532,8 +534,24 @@ nav .item-chooser__wrapper {
 	color: var(--green-l50);
 }
 
-.layer-panel__path-row .item-link__subtitle {
-	color: var(--blue-l60);
+/* SVG Color Glyph Row */
+
+.layer-panel__svg-color-glyph-row {
+	border-color: var(--purple-l90);
+	background-color: var(--purple-l98);
+}
+
+.layer-panel__svg-color-glyph-row.layer-panel__selected {
+	border-color: var(--purple-l70);
+	background-color: var(--purple-l95);
+	border-right-width: 8px;
+}
+
+.layer-panel__svg-color-glyph-row:hover,
+.layer-panel__svg-color-glyph-row:active {
+	border-color: var(--purple-l85);
+	cursor: pointer;
+	border-right-width: 8px;
 }
 
 /*

@@ -52,7 +52,7 @@ export class Tool_Resize {
 		this.rotating = false;
 		ehd.selecting = false;
 
-			const inSVGMode = editor.project.settings.app.displaySVGGlyphs;
+		const inSVGMode = editor.project.settings.app.displaySVGColorGlyphs;
 
 		// log('clickedPath: ' + this.clickedPath);
 		// log('corner: ' + ehd.handle);
