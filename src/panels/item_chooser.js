@@ -11,7 +11,7 @@ import { showAddLigatureDialog } from '../pages/ligatures.js';
 // --------------------------------------------------------------
 
 // --------------------------------------------------------------
-// Glyph chooser
+// Character chooser
 // --------------------------------------------------------------
 
 let savedClickHandler;
@@ -42,8 +42,8 @@ export function makeAllItemTypeChooserContent(
 		// Component Chooser
 		wrapper.appendChild(makeComponentChooserTileGrid(editor, !isSecondaryProject));
 	} else {
-		// Overview and Glyph = Glyph Chooser
-		wrapper.appendChild(makeGlyphChooserTileGrid(editor, !isSecondaryProject));
+		// Overview and Character = Character Chooser
+		wrapper.appendChild(makeCharacterChooserTileGrid(editor, !isSecondaryProject));
 	}
 
 	// log(`makeAllItemTypeChooserContent`, 'end');
@@ -63,7 +63,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 			makeElement({
 				tag: 'fancy-button',
 				innerHTML: 'Create a new ligature',
-				attributes: {secondary: ''},
+				attributes: { secondary: '' },
 				onClick: showAddLigatureDialog,
 			})
 		);
@@ -74,7 +74,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 			makeElement({
 				tag: 'fancy-button',
 				innerHTML: 'Create a new component',
-				attributes: {secondary: ''},
+				attributes: { secondary: '' },
 				onClick: showAddComponentDialog,
 			})
 		);
@@ -91,11 +91,11 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 			})
 		);
 	} else {
-		// Glyph Chooser
+		// Character Chooser
 		let header = makeElement({ tag: 'div', className: 'item-chooser__header' });
 		wrapper.appendChild(header);
 		header.appendChild(makeRangeChooser());
-		wrapper.appendChild(makeGlyphChooserTileGrid());
+		wrapper.appendChild(makeCharacterChooserTileGrid());
 	}
 
 	// log(`makeSingleItemTypeChooserContent`, 'end');
@@ -204,7 +204,7 @@ function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjec
 				tileGrid.remove();
 				let wrapper = document.querySelector('.item-chooser__wrapper');
 				// log(wrapper);
-				wrapper.appendChild(makeGlyphChooserTileGrid());
+				wrapper.appendChild(makeCharacterChooserTileGrid());
 			});
 
 			optionChooser.appendChild(option);
@@ -212,9 +212,9 @@ function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjec
 	});
 }
 
-function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor(), showSelected = true) {
-	// log(`makeGlyphChooserTileGrid`, 'start');
-	// console.time('makeGlyphChooserTileGrid');
+function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor(), showSelected = true) {
+	// log(`makeCharacterChooserTileGrid`, 'start');
+	// console.time('makeCharacterChooserTileGrid');
 	// log(editor.project.settings.project.characterRanges);
 	// log(editor.selectedCharacterRange);
 
@@ -224,7 +224,11 @@ function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor(), showSelect
 	);
 
 	if (rangeArray?.length) {
-		rangeArray.forEach((charID) => {
+		const pagedCharacters = getItemsFromPage(rangeArray, editor.chooserPage.characters, editor);
+		if (rangeArray.length > pagedCharacters.length) {
+			tileGrid.appendChild(makePageControl('characters', rangeArray, editor));
+		}
+		pagedCharacters.forEach((charID) => {
 			const glyphID = `glyph-${charID}`;
 			// log(`glyphID: ${glyphID}`);
 			let oneTile = new GlyphTile({ 'displayed-item-id': glyphID, project: editor.project });
@@ -255,8 +259,8 @@ function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor(), showSelect
 		});
 	}
 
-	// console.timeEnd('makeGlyphChooserTileGrid');
-	// log(`makeGlyphChooserTileGrid`, 'end');
+	// console.timeEnd('makeCharacterChooserTileGrid');
+	// log(`makeCharacterChooserTileGrid`, 'end');
 	return tileGrid;
 }
 
@@ -433,6 +437,7 @@ function getItemsFromPage(itemsArray = [], pageNumber = 0, editor = getCurrentPr
 
 function makePageControl(area, allItems = [], editor = getCurrentProjectEditor()) {
 	const refreshFunctions = {
+		characters: makeCharacterChooserTileGrid,
 		ligatures: makeLigatureChooserTileGrid,
 		components: makeComponentChooserTileGrid,
 		kerning: makeKernGroupChooserList,

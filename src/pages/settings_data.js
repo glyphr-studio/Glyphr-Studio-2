@@ -228,7 +228,7 @@ export default {
 			for you. It's possible to leave these items in an unedited state, essentially empty.<br><br>
 			If this option is checked, these empty items will be exported to fonts. If this option is unchecked,
 			these empty items will be filtered out, and not exported to fonts.<br><br>
-			In the glyph chooser, these empty items' names are shown in a green color.`,
+			In the item chooser, these empty items' names are shown in a green color.`,
 			type: `Boolean`,
 		},
 		moveShapesOnSVGDragDrop: {

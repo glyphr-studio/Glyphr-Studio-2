@@ -78,7 +78,7 @@ export class ProjectEditor {
 		this.selectedKernGroupID = false;
 		this.selectedCharacterRange = false;
 		this.chooserPage = {
-			glyphs: 0,
+			characters: 0,
 			components: 0,
 			ligatures: 0,
 			kerning: 0,
