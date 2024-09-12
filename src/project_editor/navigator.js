@@ -164,7 +164,7 @@ export class Navigator {
 	}
 
 	/**
-	 * Returns True if the current page has a glyph chooser panel
+	 * Returns True if the current page has an item chooser panel
 	 * @returns {Boolean}
 	 */
 	get isOnChooserPanelPage() {
@@ -222,7 +222,7 @@ export function toggleNavDropdown(parentElement) {
 
 /**
  *	Close all the main nav menu dropdowns
- * @param {Boolean} isChooserMenu - The Glyph Chooser can be inside a nav menu,
+ * @param {Boolean} isChooserMenu - The Item Chooser can be inside a nav menu,
  *	this method gets called from other dropdowns, so we have to know if this is
  *	being called from a control inside a nav menu or from outside of it.
  */
