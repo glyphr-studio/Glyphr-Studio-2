@@ -7,3 +7,11 @@ declare module '*.svg?raw';
 declare module '*.css';
 declare module '*.css?inline';
 declare module '*.png';
+
+declare global {
+	interface Window {
+		log: any;
+	}
+}
+
+declare var log: any;

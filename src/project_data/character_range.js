@@ -1,3 +1,4 @@
+import { getCurrentProject } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 
@@ -68,9 +69,11 @@ export class CharacterRange {
 
 	/**
 	 * For this range, yields char points in order
-	 * @param {Boolean} showNonCharPoints - include control points in the output
 	 */
-	*generator(showNonCharPoints = false) {
+	*generator() {
+		// log(`CharacterRange.generator`, 'start');
+		const showNonCharPoints = getCurrentProject().settings.app.showNonCharPoints;
+		// log(`showNonCharPoints: ${showNonCharPoints}`);
 		if (this.begin <= 0x21 && (this.end === 0x7e || this.end === 0x7f)) {
 			let basicLatinIndex = 0;
 			while (basicLatinIndex < basicLatinOrder.length) {
@@ -86,6 +89,7 @@ export class CharacterRange {
 				while (current <= this.end) yield decToHex(current++);
 			}
 		}
+		// log(`CharacterRange.generator`, 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -135,18 +139,25 @@ export class CharacterRange {
 
 	/**
 	 * Generates an array of ids in order
-	 * @param {Boolean} showNonCharPoints - include control points in the output
 	 * @returns {Array}
 	 */
-	getMemberIDs(showNonCharPoints = false) {
-		if (this.cachedArray) return this.cachedArray;
-
+	getMemberIDs() {
+		// log(`CharacterRange.getMemberIDs`, 'start');
+		// log(`this.name: ${this.name}`);
+		if (this.cachedArray) {
+			// log(`returning cachedArray`);
+			// log(`\n⮟this.cachedArray⮟`);
+			// log(this.cachedArray);
+			// log(`CharacterRange.getMemberIDs`, 'end');
+			return this.cachedArray;
+		}
 		const result = [];
 
-		for (const glyphID of this.generator(showNonCharPoints)) {
+		for (const glyphID of this.generator()) {
 			result.push(glyphID);
 		}
 		this.cachedArray = result;
+		// log(`CharacterRange.getMemberIDs`, 'end');
 		return result;
 	}
 }

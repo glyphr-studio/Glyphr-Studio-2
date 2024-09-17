@@ -204,8 +204,8 @@ export default {
 			type: `Boolean`,
 		},
 		itemChooserPageSize: {
-			label: `Number of items to show in the chooser`,
-			description: `For Ligatures, Components, and Kern Groups, this is how many items to show in the chooser menu. For projects with large numbers of items, splitting the items apart into pages can help the UI perform better.`,
+			label: `Number of items to show in the item chooser`,
+			description: `For Characters, Ligatures, Components, and Kern Groups, this is how many items to show in the item chooser menu. For projects with large numbers of items, splitting the items apart into pages can help the UI perform better.`,
 			type: `Number`,
 		},
 		previewText: {
