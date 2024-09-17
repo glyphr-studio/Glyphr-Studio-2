@@ -38,9 +38,9 @@ export function makePage_About() {
 	const rightArea = content.querySelector('.content-page__right-area');
 	const tabControl = new TabControl(rightArea);
 
-	tabControl.registerTab('Version', makeVersionInfo());
-	tabControl.registerTab('Contact and socials', makeContactInfo());
-	tabControl.registerTab('License', makeLicenseInfo());
+	tabControl.registerTab('Version', makeVersionInfo);
+	tabControl.registerTab('Contact and socials', makeContactInfo);
+	tabControl.registerTab('License', makeLicenseInfo);
 
 	tabControl.selectTab('Version');
 

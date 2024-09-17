@@ -34,8 +34,8 @@ export function makePage_Help() {
 	const rightArea = content.querySelector('.content-page__right-area');
 	const tabControl = new TabControl(rightArea);
 
-	tabControl.registerTab('Overview', makeHelpOverview());
-	tabControl.registerTab('Keyboard shortcuts', makeKeyboardShortcutReference());
+	tabControl.registerTab('Overview', makeHelpOverview);
+	tabControl.registerTab('Keyboard shortcuts', makeKeyboardShortcutReference);
 	tabControl.selectTab('Overview');
 
 	const panelArea = content.querySelector('#content-page__panel');
