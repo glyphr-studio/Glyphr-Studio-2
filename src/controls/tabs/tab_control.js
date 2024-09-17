@@ -11,12 +11,12 @@ export class TabControl {
 	/**
 	 * Saves a new tab object to this tab group
 	 * @param {String} tabName - name for the tab
-	 * @param {Element | String} tabContent - what to put in the tab
+	 * @param {function} contentMaker - function that creates the tab content
 	 */
-	registerTab(tabName = 'Tab Name', tabContent = '') {
+	registerTab(tabName = 'Tab Name', contentMaker = () => {}) {
 		let newTab = {
 			name: tabName,
-			content: tabContent,
+			contentMaker: contentMaker,
 			tabElement: makeElement({
 				className: 'tab-control__tab',
 				innerHTML: tabName,
@@ -56,7 +56,7 @@ export class TabControl {
 		this.tabs.forEach((tab) => {
 			if (tab.name === tabName) {
 				tab.tabElement.setAttribute('selected', '');
-				addAsChildren(this.targetElement, tab.content);
+				addAsChildren(this.targetElement, tab.contentMaker());
 			} else {
 				tab.tabElement.removeAttribute('selected');
 			}
