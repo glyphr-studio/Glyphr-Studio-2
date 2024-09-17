@@ -1,4 +1,4 @@
-import { getCurrentProject } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { TabControl } from '../controls/tabs/tab_control.js';
@@ -122,6 +122,18 @@ export function makeOneSettingsRow(groupName, propertyName, callback) {
 
 	if (settingType === 'Boolean') {
 		input = makeDirectCheckbox(settings[groupName], propertyName, callback);
+		if (propertyName === 'showNonCharPoints') {
+			input.addEventListener('change', (event) => {
+				const project = getCurrentProject();
+				// log(`Clearing all Character Range Caches`);
+				// log(`\n⮟project.settings.project.characterRanges⮟`);
+				// log(project.settings.project.characterRanges);
+				project.settings.project.characterRanges.forEach((range) => {
+					range.cachedArray = false;
+				});
+				getCurrentProjectEditor().selectedCharacterRange.cachedArray = false;
+			});
+		}
 	} else {
 		type = makeElement({
 			tag: 'pre',

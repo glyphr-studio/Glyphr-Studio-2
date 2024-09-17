@@ -219,9 +219,7 @@ function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor(), showSe
 	// log(editor.selectedCharacterRange);
 
 	let tileGrid = makeElement({ tag: 'div', className: 'item-chooser__tile-grid' });
-	let rangeArray = editor.selectedCharacterRange.getMemberIDs(
-		editor.project.settings.app.showNonCharPoints
-	);
+	let rangeArray = editor.selectedCharacterRange.getMemberIDs();
 
 	if (rangeArray?.length) {
 		const pagedCharacters = getItemsFromPage(rangeArray, editor.chooserPage.characters, editor);
@@ -257,6 +255,11 @@ function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor(), showSe
 			}
 			tileGrid.appendChild(oneTile);
 		});
+	} else {
+		tileGrid.appendChild(makeElement({
+			tag: 'i',
+			content: `No characters in this range.<br><br>If this is a range of Control Characters, make sure they are enabled in: Settings > App > Show non-graphic control characters.`,
+		}));
 	}
 
 	// console.timeEnd('makeCharacterChooserTileGrid');
