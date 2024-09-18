@@ -130,7 +130,7 @@ export function makeCard_svgColorGlyphAttributes(glyph) {
 		// Translate
 		const translateLabel = makeSingleLabel(
 			`move x${dimSplit()}y`,
-			`Move the SVG Color Glyph horizontally (x) and/or vertically (y).`
+			`Move the SVG Color Glyph horizontally (x) and/or vertically (y).<br><br><b>Please note</b> - For movement in the Y direction, SVG coordinates are different than Glyphr Studio coordinates. Negative values will move the glyph up, and positive values will move the glyph down.`
 		);
 		const translateXInput = makeSingleInput(
 			glyph.svgColorGlyph,

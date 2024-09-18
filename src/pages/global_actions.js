@@ -67,6 +67,11 @@ export function makePage_GlobalActions() {
 		makeCard_ScaleHorizontal(),
 		makeCard_ScaleVertical(),
 		makeCard_Resize(),
+	]);
+	if (getCurrentProject().settings.app.enableSVGColorGlyphFeatures) {
+		rightArea.appendChild(makeCard_TransformSVGColorGlyphs());
+	}
+	addAsChildren(rightArea, [
 		makeCard_Flatten(),
 		makeCard_SideBearings(),
 		makeCard_Round(),
@@ -77,7 +82,6 @@ export function makePage_GlobalActions() {
 		makeCard_Diacritics(),
 		makeCard_DiacriticsAdvanced(),
 	]);
-
 	return content;
 }
 
@@ -495,6 +499,82 @@ function makeCard_Resize() {
 	});
 	card.appendChild(button);
 
+	return card;
+}
+
+// --------------------------------------------------------------
+// SVG Color Glyphs
+// --------------------------------------------------------------
+
+function makeCard_TransformSVGColorGlyphs() {
+	const card = makeElement({ className: 'global-actions__card' });
+	card.appendChild(makeElement({ tag: 'h2', content: 'Transform SVG Color Glyphs' }));
+	let description = makeElement({
+		className: 'global-actions__description',
+		content: `SVG Color Glyphs are stored as the original imported SVG, plus translate and scale transform properties. This global action will update all of the SVG Color Glyphs to the new transform values. This can be handy if you import all your SVG Color Glyphs, but they are all off by a certain amount.
+		<br><br><b>Please note</b> - For movement in the Y direction, SVG coordinates are different than Glyphr Studio coordinates. Negative values will move the glyph up, and positive values will move the glyph down.`,
+	});
+	card.appendChild(description);
+
+	let effect = makeElement({
+		className: 'global-actions__effect-description',
+		content: `This global action will iterate through all Characters and Ligatures, check to see if they have an SVG Color Glyph, and overwrite the transform property values with the values provided. If no value is provided, that property will remain as it was.`,
+	});
+	card.appendChild(effect);
+
+	let table = makeElement({
+		className: 'settings-table',
+		innerHTML: `
+			<label for="SVGColorGlyphTranslateX">X&nbsp;move:</label>
+			<input-number id="SVGColorGlyphTranslateX" type="number" value=""></input-number>
+			<pre title="Expected value type">Em</pre>
+
+			<label for="SVGColorGlyphTranslateY">Y&nbsp;move:</label>
+			<input-number id="SVGColorGlyphTranslateY" type="number" value=""></input-number>
+			<pre title="Expected value type">Em</pre>
+
+			<label for="SVGColorGlyphScaleX">X&nbsp;scale:</label>
+			<input-number id="SVGColorGlyphScaleX" type="number" value=""></input-number>
+			<pre title="Expected value type">Scale factor</pre>
+
+			<label for="SVGColorGlyphScaleY">Y&nbsp;scale:</label>
+			<input-number id="SVGColorGlyphScaleY" type="number" value=""></input-number>
+			<pre title="Expected value type">Scale factor</pre>
+		`,
+	});
+	card.appendChild(table);
+
+	const button = makeElement({ tag: 'fancy-button', content: 'Update all SVG Color Glyphs' });
+	button.addEventListener('click', () => {
+		/** @type {HTMLInputElement} */
+		const translateXInput = document.querySelector('#SVGColorGlyphTranslateX');
+		const translateX = parseFloat(translateXInput.value) || false;
+
+		/** @type {HTMLInputElement} */
+		const translateYInput = document.querySelector('#SVGColorGlyphTranslateY');
+		const translateY = parseFloat(translateYInput.value) || false;
+
+		/** @type {HTMLInputElement} */
+		const scaleXInput = document.querySelector('#SVGColorGlyphScaleX');
+		const scaleX = parseFloat(scaleXInput.value) || false;
+
+		/** @type {HTMLInputElement} */
+		const scaleYInput = document.querySelector('#SVGColorGlyphScaleY');
+		const scaleY = parseFloat(scaleYInput.value) || false;
+
+		glyphIterator({
+			title: 'Transform SVG Color Glyphs',
+			action: function (glyph) {
+				if (!glyph.svgColorGlyph) return;
+				if (translateX !== false) glyph.svgColorGlyph.translateX = translateX;
+				if (translateY !== false) glyph.svgColorGlyph.translateY = translateY;
+				if (scaleX !== false) glyph.svgColorGlyph.scaleX = scaleX;
+				if (scaleY !== false) glyph.svgColorGlyph.scaleY = scaleY;
+			},
+		});
+	});
+
+	card.appendChild(button);
 	return card;
 }
 
@@ -989,7 +1069,8 @@ function makeCard_DiacriticsAdvanced() {
 		let rangeExtendedA = getUnicodeBlockByName('Latin Extended-A');
 		addCharacterRangeToCurrentProject(rangeExtendedA);
 		let range = { begin: 0, end: 0 };
-		if (rangeSupplement && rangeExtendedA) range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
+		if (rangeSupplement && rangeExtendedA)
+			range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
 		let currentItemDec = range.begin;
 		/** @type {String} */
 		let currentItemHex = decToHex(range.begin) || '0x0';
