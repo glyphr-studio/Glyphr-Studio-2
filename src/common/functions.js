@@ -197,7 +197,7 @@ export function round(num, dec = 0) {
 /**
  * Floating point numbers make me mad
  * Looks for sequences of 0s or 9s
- * @param {Number} num - number to sanitize
+ * @param {String | Number} num - number to sanitize
  * @returns {Number}
  */
 export function numSan(num) {

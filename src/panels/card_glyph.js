@@ -102,7 +102,7 @@ function makeAdvanceWidthUI(glyph) {
 		},
 	});
 
-	if(colorMode && editor.project.settings.app.displaySVGColorGlyphs) {
+	if (colorMode && editor.project.settings.app.displaySVGColorGlyphs) {
 		autoFitAdvanceWidth = makeElement();
 	}
 
@@ -128,7 +128,10 @@ export function makeCard_svgColorGlyphAttributes(glyph) {
 		addAsChildren(glyphCard, rowPad());
 		addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Transform' }));
 		// Translate
-		const translateLabel = makeSingleLabel(`move x${dimSplit()}y`, `Move the SVG Color Glyph horizontally (x) and/or vertically (y).`);
+		const translateLabel = makeSingleLabel(
+			`move x${dimSplit()}y`,
+			`Move the SVG Color Glyph horizontally (x) and/or vertically (y).`
+		);
 		const translateXInput = makeSingleInput(
 			glyph.svgColorGlyph,
 			'translateX',
@@ -148,19 +151,26 @@ export function makeCard_svgColorGlyphAttributes(glyph) {
 		addAsChildren(glyphCard, [translateLabel, doubleTranslateInput]);
 
 		// Scale
-		const scaleLabel = makeSingleLabel(`scale x${dimSplit()}y`, `Resize the SVG Color Glyph by a multiplier in the horizontal (x) and/or vertical (y) direction.`);
+		const scaleLabel = makeSingleLabel(
+			`scale x${dimSplit()}y`,
+			`Resize the SVG Color Glyph by a multiplier in the horizontal (x) and/or vertical (y) direction.`
+		);
 		const scaleXInput = makeSingleInput(
 			glyph.svgColorGlyph,
 			'scaleX',
 			'currentItem',
 			'input-number'
 		);
+		scaleXInput.setAttribute('step', '0.01');
+
 		const scaleYInput = makeSingleInput(
 			glyph.svgColorGlyph,
 			'scaleY',
 			'currentItem',
 			'input-number'
 		);
+		scaleYInput.setAttribute('step', '0.01');
+
 		let doubleScaleInput = makeElement({ tag: 'div', className: 'doubleInput' });
 		doubleScaleInput.appendChild(scaleXInput);
 		doubleScaleInput.appendChild(dimSplitElement());

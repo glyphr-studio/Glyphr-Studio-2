@@ -1,4 +1,5 @@
 import { makeElement } from '../../common/dom.js';
+import { numSan } from '../../common/functions.js';
 import { cancelDefaultEventActions } from '../../edit_canvas/events.js';
 import style from './input-number.css?inline';
 
@@ -12,7 +13,7 @@ export class InputNumber extends HTMLElement {
 
 		this.elementRoot = {};
 		const isDisabled = this.hasAttribute('disabled');
-
+		this.step = 1;
 		// this.wrapper = makeElement({ className: 'wrapper' });
 		// this.wrapper.elementRoot = this;
 		// this.wrapper.style.borderWidth = attributes.hideBorder ? '0px' : '1px';
@@ -104,7 +105,7 @@ export class InputNumber extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['disabled', 'value', 'locked', 'unlocked'];
+		return ['disabled', 'value', 'locked', 'unlocked', 'step'];
 	}
 
 	/**
@@ -140,8 +141,16 @@ export class InputNumber extends HTMLElement {
 		});
 		this.padlock.addEventListener('keydown', this.lockButtonKeyboardPress);
 
-		if(this.hasAttribute('disabled')) {
+		if (this.hasAttribute('disabled')) {
 			this.setToDisabled();
+		}
+
+		this.step = 1;
+		if (this.hasAttribute('step')) {
+			const parsedStep = Number(this.getAttribute('step'));
+			if (!isNaN(parsedStep)) {
+				this.step = parsedStep;
+			}
 		}
 		// log(`InputNumber.connectedCallback`, 'end');
 	}
@@ -186,6 +195,13 @@ export class InputNumber extends HTMLElement {
 			}
 		}
 
+		if (attributeName === 'step') {
+			this.step = 1;
+			const parsedStep = Number(newValue);
+			if (!isNaN(parsedStep)) {
+				this.step = parsedStep;
+			}
+		}
 		// log(`InputNumber.attributeChangedCallback`, 'end');
 	}
 
@@ -279,7 +295,7 @@ export class InputNumber extends HTMLElement {
 	 * @param {Number | String} input - new value
 	 */
 	sanitizeValue(input) {
-		let newValue = Number(input) || 0;
+		let newValue = numSan(input);
 		// if (this.precision) newValue = round(newValue, this.precision);
 		return newValue;
 	}
@@ -316,9 +332,15 @@ export class InputNumber extends HTMLElement {
 	increment(ev) {
 		// log(`InputNumber.increment`, 'start');
 		// log(`for < ${this.elementRoot.getAttribute('class')} >`);
-		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
-		let newValue = this.elementRoot.sanitizeValue((currentValue += mod ? 10 : 1));
+		const mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
+		const delta = mod ? this.elementRoot.step * 10 : this.elementRoot.step;
+		const currentValue = parseFloat(this.elementRoot.getAttribute('value'));
+		const newValue = this.elementRoot.sanitizeValue(currentValue + delta);
+		// log(`mod: ${mod}`);
+		// log(`this.elementRoot.step: ${this.elementRoot.step}`);
+		// log(`delta: ${delta}`);
+		// log(`currentValue: ${currentValue}`);
+		// log(`newValue: ${newValue}`);
 		this.elementRoot.updateToNewValue(newValue);
 		// log(`InputNumber.increment`, 'end');
 	}
@@ -330,9 +352,15 @@ export class InputNumber extends HTMLElement {
 	decrement(ev) {
 		// log(`InputNumber.decrement`, 'start');
 		// log(`for < ${this.elementRoot.getAttribute('class')} >`);
-		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
-		let newValue = this.elementRoot.sanitizeValue((currentValue -= mod ? 10 : 1));
+		const mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
+		const delta = mod ? this.elementRoot.step * 10 : this.elementRoot.step;
+		const currentValue = parseFloat(this.elementRoot.getAttribute('value'));
+		const newValue = this.elementRoot.sanitizeValue(currentValue - delta);
+		// log(`mod: ${mod}`);
+		// log(`this.elementRoot.step: ${this.elementRoot.step}`);
+		// log(`delta: ${delta}`);
+		// log(`currentValue: ${currentValue}`);
+		// log(`newValue: ${newValue}`);
 		this.elementRoot.updateToNewValue(newValue);
 		// log(`InputNumber.decrement`, 'end');
 	}
