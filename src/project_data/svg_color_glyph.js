@@ -11,10 +11,19 @@ export class SVGColorGlyph {
 		this.importSVGCode(svgCode);
 	}
 
+	/**
+	 * Retrieves the (cached) output SVG
+	 * @returns {String}
+	 */
 	get svgCode() {
 		if (!this.cache?.svgCode) this.cache.svgCode = this.generateSVGCode();
 		return this.cache.svgCode;
 	}
+
+	/**
+	 * Sets the horizontal delta
+	 * @param {Number} value - Em units
+	 */
 	set translateX(value) {
 		if (isNaN(Number(value))) this._translateX = 0;
 		else {
@@ -23,11 +32,19 @@ export class SVGColorGlyph {
 		}
 	}
 
+	/**
+	 * Retrieves the horizontal delta
+	 * @returns {Number}
+	 */
 	get translateX() {
 		if (!isNaN(Number(this._translateX))) return this._translateX;
 		else return 0;
 	}
 
+	/**
+	 * Sets the vertical delta
+	 * @param {Number} value - Em units
+	 */
 	set translateY(value) {
 		if (isNaN(Number(value))) this._translateY = 0;
 		else {
@@ -36,11 +53,19 @@ export class SVGColorGlyph {
 		}
 	}
 
+	/**
+	 * Retrieves the vertical delta
+	 * @returns {Number}
+	 */
 	get translateY() {
 		if (!isNaN(Number(this._translateY))) return this._translateY;
 		else return 0;
 	}
 
+	/**
+	 * Sets the horizontal scale factor
+	 * @param {Number} value - scale multiplier
+	 */
 	set scaleX(value) {
 		if (isNaN(Number(value))) this._scaleX = 1;
 		else {
@@ -49,11 +74,19 @@ export class SVGColorGlyph {
 		}
 	}
 
+	/**
+	 * Retrieves the horizontal scale factor
+	 * @returns {Number}
+	 */
 	get scaleX() {
 		if (!isNaN(Number(this._scaleX))) return this._scaleX;
 		else return 1;
 	}
 
+	/**
+	 * Sets the vertical scale factor
+	 * @param {Number} value - scale multiplier
+	 */
 	set scaleY(value) {
 		if (isNaN(Number(value))) this._scaleY = 1;
 		else {
@@ -62,6 +95,10 @@ export class SVGColorGlyph {
 		}
 	}
 
+	/**
+	 * Retrieves the vertical scale factor
+	 * @returns {Number}
+	 */
 	get scaleY() {
 		if (!isNaN(Number(this._scaleY))) return this._scaleY;
 		else return 1;
@@ -74,7 +111,7 @@ export class SVGColorGlyph {
 	/**
 	 * Returns an HTML Image object for this glyph, based on the
 	 * OpenType SVG data (if there is any).
-	 * @return {HTMLImageElement} The image for the glyph.
+	 * @returns {HTMLImageElement} The image for the glyph.
 	 */
 	get img() {
 		// log(`SVGColorGlyph.img`, 'start');
@@ -88,7 +125,7 @@ export class SVGColorGlyph {
 
 	/**
 	 * Generates an HTML Image object for this glyph, based on the OpenType SVG data.
-	 * @return {HTMLImageElement} The image for the glyph.
+	 * @returns {HTMLImageElement} The image for the glyph.
 	 */
 	makeImgElement() {
 		// log(`Glyph.makeImgElement`, 'start');
@@ -118,6 +155,7 @@ export class SVGColorGlyph {
 	 * This is just an arbitrarily large number used as a buffer for
 	 * generating and drawing an SVG Image with a viewBox that should
 	 * be big enough to show all the shapes.
+	 * @returns {Number}
 	 */
 	get viewPad() {
 		return 8000;
@@ -191,6 +229,11 @@ export class SVGColorGlyph {
 		// log(`SVGColorGlyph.importSVGCode`, 'end');
 	}
 
+	/**
+	 * Creates SVG code that represents the original glyph,
+	 * plus the applied transforms.
+	 * @returns {String}
+	 */
 	generateSVGCode() {
 		// log(`SVGColorGlyph.generateSVGCode`, 'start');
 		// log(`this.translateX: ${this.translateX}`);

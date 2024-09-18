@@ -225,7 +225,7 @@ export class Maxes extends GlyphElement {
 	/**
 	 * Checks if the given otherMaxes object is completely inside this Maxes object.
 	 * @param {Object} otherMaxes - The Maxes object to check.
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	isMaxesInside(otherMaxes) {
 		if (!this.isPointInside(otherMaxes.xMin, otherMaxes.yMin)) return false;

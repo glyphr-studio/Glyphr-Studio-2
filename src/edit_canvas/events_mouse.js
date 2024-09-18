@@ -136,7 +136,7 @@ export function clickEmptySpace() {
  * @param {number} x2 - The mouse / browser x-coordinate of the second point.
  * @param {number} y2 - The mouse / browser y-coordinate of the second point.
  * @param {string} type - The type of items to select, either 'pathPoints' or 'shapes'.
- * @return {void}
+ * @returns {void}
  */
 
 export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
@@ -157,9 +157,9 @@ export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
 
 	if (type === 'pathPoints') {
 		msPoints.allowPublishing = false;
-		if(!isCtrlDown) msPoints.clear();
+		if (!isCtrlDown) msPoints.clear();
 		msShapes.allowPublishing = false;
-		if(!isCtrlDown) msShapes.clear();
+		if (!isCtrlDown) msShapes.clear();
 		editor.selectedItem.shapes.forEach((shape) => {
 			if (maxesOverlap(shape.maxes, area) && shape.pathPoints) {
 				shape.pathPoints.forEach((point) => {
@@ -173,9 +173,9 @@ export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
 		});
 	} else if (type === 'shapes') {
 		msPoints.allowPublishing = false;
-		if(!isCtrlDown) msPoints.clear();
+		if (!isCtrlDown) msPoints.clear();
 		msShapes.allowPublishing = false;
-		if(!isCtrlDown) msShapes.clear();
+		if (!isCtrlDown) msShapes.clear();
 		editor.selectedItem.shapes.forEach((shape) => {
 			if (area.isMaxesInside(shape.maxes)) {
 				msShapes.add(shape);

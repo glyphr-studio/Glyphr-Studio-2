@@ -910,7 +910,7 @@ export class Glyph extends GlyphElement {
 	 * and appending their SVG path data to the result. If the resulting path data is empty,
 	 * it is set to a default value.
 	 *
-	 * @return {String} The SVG path data for the glyph.
+	 * @returns {String} The SVG path data for the glyph.
 	 */
 	makeSVGPathData() {
 		// log(`makeSVGPathData()`, 'start');
