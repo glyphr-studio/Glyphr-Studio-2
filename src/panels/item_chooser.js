@@ -20,12 +20,10 @@ let savedRegisterSubscriptions;
 export function makeAllItemTypeChooserContent(
 	clickHandler,
 	type = '',
-	editor = getCurrentProjectEditor(),
-	isSecondaryProject = false
+	editor = getCurrentProjectEditor()
 ) {
 	// log(`makeAllItemTypeChooserContent`, 'start');
-	// log(`\n⮟editor⮟`);
-	// log(editor);
+	// log(`Project Name: ${editor.project.settings.project.name}`);
 	savedClickHandler = clickHandler;
 	savedRegisterSubscriptions = true;
 
@@ -37,13 +35,13 @@ export function makeAllItemTypeChooserContent(
 	let show = type || editor.nav.page;
 	if (show === 'Ligatures') {
 		// Ligature Chooser
-		wrapper.appendChild(makeLigatureChooserTileGrid(editor, !isSecondaryProject));
+		wrapper.appendChild(makeLigatureChooserTileGrid(editor));
 	} else if (show === 'Components') {
 		// Component Chooser
-		wrapper.appendChild(makeComponentChooserTileGrid(editor, !isSecondaryProject));
+		wrapper.appendChild(makeComponentChooserTileGrid(editor));
 	} else {
 		// Overview and Character = Character Chooser
-		wrapper.appendChild(makeCharacterChooserTileGrid(editor, !isSecondaryProject));
+		wrapper.appendChild(makeCharacterChooserTileGrid(editor));
 	}
 
 	// log(`makeAllItemTypeChooserContent`, 'end');
@@ -104,6 +102,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 
 export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) {
 	// log(`makeRangeAndItemTypeChooser`, 'start');
+	// log(`Project Name: ${editor.project.settings.project.name}`);
 
 	let selectedRange = editor.selectedCharacterRange;
 	// log(selectedRange);
@@ -182,8 +181,10 @@ function makeRangeChooser(editor = getCurrentProjectEditor()) {
 }
 
 function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjectEditor()) {
-	const project = getCurrentProject();
-	let ranges = project.settings.project.characterRanges;
+	// log(`addRangeOptionsToOptionChooser`, 'start');
+	// log(`Project Name: ${editor.project.settings.project.name}`);
+
+	let ranges = editor.project.settings.project.characterRanges;
 	let option;
 	ranges.forEach((range) => {
 		if (range.enabled) {
@@ -204,20 +205,23 @@ function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjec
 				tileGrid.remove();
 				let wrapper = document.querySelector('.item-chooser__wrapper');
 				// log(wrapper);
-				wrapper.appendChild(makeCharacterChooserTileGrid());
+				wrapper.appendChild(makeCharacterChooserTileGrid(editor));
 			});
 
 			optionChooser.appendChild(option);
 		}
 	});
+	// log(`addRangeOptionsToOptionChooser`, 'end');
 }
 
-function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor(), showSelected = true) {
+function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(`makeCharacterChooserTileGrid`, 'start');
 	// console.time('makeCharacterChooserTileGrid');
+	// log(`Project Name: ${editor.project.settings.project.name}`);
 	// log(editor.project.settings.project.characterRanges);
 	// log(editor.selectedCharacterRange);
 
+	const isPrimaryProject = editor === getCurrentProjectEditor();
 	let tileGrid = makeElement({ tag: 'div', className: 'item-chooser__tile-grid' });
 	let rangeArray = editor.selectedCharacterRange.getMemberIDs();
 
@@ -230,7 +234,7 @@ function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor(), showSe
 			const glyphID = `glyph-${charID}`;
 			// log(`glyphID: ${glyphID}`);
 			let oneTile = new GlyphTile({ 'displayed-item-id': glyphID, project: editor.project });
-			if (showSelected && editor.selectedGlyphID === glyphID) {
+			if (isPrimaryProject && editor.selectedGlyphID === glyphID) {
 				oneTile.setAttribute('selected', '');
 			}
 
@@ -245,7 +249,7 @@ function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor(), showSe
 						// log(`checking if ${newGlyphID} === ${glyphID}`);
 						if (parseInt(newGlyphID) === parseInt(glyphID)) {
 							// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
-							if (showSelected) oneTile.setAttribute('selected', '');
+							if (isPrimaryProject) oneTile.setAttribute('selected', '');
 						} else {
 							// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
 							oneTile.removeAttribute('selected');
@@ -256,10 +260,12 @@ function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor(), showSe
 			tileGrid.appendChild(oneTile);
 		});
 	} else {
-		tileGrid.appendChild(makeElement({
-			tag: 'i',
-			content: `No characters in this range.<br><br>If this is a range of Control Characters, make sure they are enabled in: Settings > App > Show non-graphic control characters.`,
-		}));
+		tileGrid.appendChild(
+			makeElement({
+				tag: 'i',
+				content: `No characters in this range.<br><br>If this is a range of Control Characters, make sure they are enabled in: Settings > App > Show non-graphic control characters.`,
+			})
+		);
 	}
 
 	// console.timeEnd('makeCharacterChooserTileGrid');

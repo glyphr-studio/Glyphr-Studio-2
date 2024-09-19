@@ -22,32 +22,16 @@ import { makePage_OpenProject } from './open_project.js';
  * Creates a new Glyphr Studio Application
  */
 export class GlyphrStudioApp {
-	/**
-	 * Initialize the Glyphr Studio App, with defaults
-	 */
 	constructor() {
-		// Version
-		this.version = config.version;
-		this.versionDate = config.versionDate;
-		const semVer = parseSemVer(config.version);
-		this.versionName = `Version ${semVer.major}.${semVer.minor}`;
-
-		// Project Editors
-		this.projectEditors = [];
-		this._selectedProjectEditor;
-
-		// Current import target
-		this._editorImportTarget;
-
 		// Settings
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
 				mode: config.devMode, // {bool} global switch for all the stuff below
-				overwriteTitle: false, // {bool} Use a 'Dev Mode' window title
+				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample project
-				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: false, // {Sentence case page name} navigate straight to a page
+				twoSampleProjects: true, // {bool} Load two sample projects
+				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
@@ -62,6 +46,18 @@ export class GlyphrStudioApp {
 			telemetry: true, // Load google analytics
 		};
 
+		// Version
+		this.version = config.version;
+		this.versionDate = config.versionDate;
+		const semVer = parseSemVer(config.version);
+		this.versionName = `Version ${semVer.major}.${semVer.minor}`;
+
+		// Project Editors
+		this.projectEditors = [];
+		this._selectedProjectEditor;
+
+		// Current import target
+		this._editorImportTarget;
 		this.temp = {};
 	}
 
