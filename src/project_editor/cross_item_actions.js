@@ -129,7 +129,7 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 	// log(sourceGlyph);
 	let resolvedGlyph = new Glyph(sourceGlyph);
 	resolvedGlyph.id = 'glyph-with-resolved-links';
-	resolvedGlyph.name = 'Glyph with resolved links';
+	resolvedGlyph.name = `${sourceGlyph.name} (links resolved)`;
 	resolvedGlyph.shapes = [];
 	let newPaths = [];
 	sourceGlyph.shapes.forEach((shape) => {

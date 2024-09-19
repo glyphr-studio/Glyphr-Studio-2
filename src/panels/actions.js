@@ -25,6 +25,7 @@ import {
 	addLinkToUsedIn,
 	canAddComponentInstance,
 	makeGlyphSVGforExport,
+	makeGlyphWithResolvedLinks,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
 import { saveTextFile } from '../project_editor/file_io.js';
@@ -1211,7 +1212,8 @@ function showDialogChooseItemFromOtherProject() {
 	addCrossProjectCopyShapeOptionControls(content, otherEditor, thisEditor);
 
 	let onClick = (itemID) => {
-		const otherItem = otherEditor.project.getItem(itemID);
+		const sourceItem = otherEditor.project.getItem(itemID);
+		const resolvedGlyph = makeGlyphWithResolvedLinks(sourceItem);
 		const thisItem = thisEditor.selectedItem;
 		const emRatio = thisEditor.project.settings.font.upm / otherEditor.project.settings.font.upm;
 		// log(`emRatio: ${emRatio}`);
@@ -1232,13 +1234,13 @@ function showDialogChooseItemFromOtherProject() {
 		// log(`reverseWindings: ${reverseWindings}`);
 
 		const oldRSB = thisItem.rightSideBearing;
-		const newShapes = copyShapesFromTo(otherItem, thisItem, false);
+		const newShapes = copyShapesFromTo(resolvedGlyph, thisItem, false);
 		const msShapes = thisEditor.multiSelect.shapes;
 		msShapes.clear();
 		newShapes.forEach((shape) => msShapes.add(shape));
 
 		if (scaleItems) {
-			let deltaWidth = otherItem.advanceWidth * emRatio - otherItem.advanceWidth;
+			let deltaWidth = resolvedGlyph.advanceWidth * emRatio - resolvedGlyph.advanceWidth;
 			// log(`deltaWidth: ${deltaWidth}`);
 			msShapes.virtualGlyph.updateGlyphSize({
 				width: deltaWidth,
@@ -1252,8 +1254,8 @@ function showDialogChooseItemFromOtherProject() {
 
 		thisEditor.publish('currentItem', thisItem);
 		let title = `
-			${otherItem.shapes.length} paths were copied<br>
-			from ${otherEditor.project.settings.project.name} : ${otherItem.name}`;
+			${resolvedGlyph.shapes.length} paths were copied<br>
+			from ${otherEditor.project.settings.project.name} : ${resolvedGlyph.name}`;
 		thisEditor.history.addState(title);
 		closeEveryTypeOfDialog();
 		showToast(title);
