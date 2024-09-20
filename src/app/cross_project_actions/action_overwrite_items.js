@@ -260,8 +260,9 @@ function overwriteItems() {
 	// log(`emRatio: ${emRatio}`);
 
 	/** @type {HTMLInputElement} */
-	const scaleItemsBox = document.querySelector('#checkbox-scale');
-	const scaleItems = scaleItemsBox?.checked;
+		const scaleItemsBox = document.querySelector('#checkbox-scale');
+		let scaleItems = false;
+		if (scaleItemsBox) scaleItems = scaleItemsBox?.checked;
 	// log(`scaleItems: ${scaleItems}`);
 
 	/** @type {HTMLInputElement} */
