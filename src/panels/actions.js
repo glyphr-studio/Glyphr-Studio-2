@@ -248,7 +248,10 @@ export function getActionData(name) {
 
 							if (fileSuffix === 'svg') {
 								reader.onload = function () {
-									importSVGtoCurrentItem(reader.result.toString(), '<br>from the imported SVG file');
+									importSVGtoCurrentItem(
+										reader.result.toString(),
+										'<br>from the imported SVG file'
+									);
 								};
 
 								reader.readAsText(file);
@@ -1225,7 +1228,8 @@ function showDialogChooseItemFromOtherProject() {
 
 		/**@type {HTMLInputElement} */
 		const scaleItemsBox = document.querySelector('#checkbox-scale');
-		const scaleItems = scaleItemsBox.checked;
+		let scaleItems = false;
+		if (scaleItemsBox) scaleItems = scaleItemsBox?.checked;
 		// log(`scaleItems: ${scaleItems}`);
 
 		/**@type {HTMLInputElement} */

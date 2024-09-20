@@ -236,8 +236,9 @@ function addKernGroups() {
 	// log(`emRatio: ${emRatio}`);
 
 	/** @type {HTMLInputElement} */
-	const scaleBox = document.querySelector('#checkbox-scale');
-	const scaleItems = scaleBox?.checked;
+		const scaleItemsBox = document.querySelector('#checkbox-scale');
+		let scaleItems = false;
+		if (scaleItemsBox) scaleItems = scaleItemsBox?.checked;
 	// log(`scaleItems: ${scaleItems}`);
 
 	destinationEditor.history.addWholeProjectChangePreState(
