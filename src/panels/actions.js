@@ -940,7 +940,7 @@ export function clipboardPaste() {
 		clipboard.dy -= 20;
 	}
 
-	if (clipboard && clipboard.shapes.length) {
+	if (clipboard && clipboard?.shapes?.length) {
 		let newShapes = [];
 
 		let newShape, newName, newSuffix, caret, suffix;
@@ -1007,7 +1007,9 @@ export function clipboardPaste() {
 				: `Pasted ${len} Paths<br>from the Glyphr Studio clipboard`
 		);
 		editor.publish('currentItem', editor.selectedItem);
+		return true;
 	}
+	return false;
 	// log('clipboardPaste', 'end');
 }
 
