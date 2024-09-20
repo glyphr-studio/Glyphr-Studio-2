@@ -271,9 +271,11 @@ export function makeContextMenu(
 	// log(`width: ${width}`);
 	// log(`isDropdown: ${isDropdown}`);
 
+	const className = isDropdown ? 'context-menu__dropdown' : 'context-menu__top-menu';
 	let element = makeElement({
 		tag: 'dialog',
 		id: 'context-menu',
+		className: className,
 		attributes: { tabindex: '-1' },
 	});
 

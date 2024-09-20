@@ -116,6 +116,7 @@ dialog {
 	column-gap: 0px;
 	row-gap: 5px;
 	width: fit-content;
+	height: min-content;
 	overflow-y: auto;
 	padding: 10px;
 	position: absolute;
@@ -125,6 +126,11 @@ dialog {
 	border-radius: 0px 4px 4px 4px;
 	box-shadow: var(--l3-shadow-down);
 	animation: var(--animate-fade-in-slide-down);
+}
+
+/* .context-menu__dropdown {} */
+.context-menu__top-menu {
+	max-height: 400px;
 }
 
 #context-menu:focus {
