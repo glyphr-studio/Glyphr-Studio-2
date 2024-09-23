@@ -132,6 +132,18 @@ a[danger]:focus {
 
 p {
 	display: block;
+	margin-top: 4px;
+}
+
+p, li {
+	line-height: 1.3em;
+}
+
+p code {
+	height: 1.3em;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-top: 0;
 }
 
 span:disabled,

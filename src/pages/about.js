@@ -156,6 +156,9 @@ function makeVersionInfo() {
 	const app = getGlyphrStudioApp();
 	const content = makeElement({
 		innerHTML: `
+			<div class="about-page__logo">
+				${logoVertical}
+			</div><br><br>
 			<h1>Version information</h1>
 			<div class="page__card">
 				<h3>Glyphr Studio App</h3>
@@ -176,42 +179,14 @@ function makeVersionInfo() {
 			</div>
 
 			<br><br>
-			<h1>Release Note</h1>
+
+			<h2>More details</h2>
+			<p>
+				More information about this and past versions of the Glyphr Studio app can be found on the <a href="https://www.glyphrstudio.com/blog/" target="_blank">Glyphr Studio Blog</a>, the <a href="https://github.com/glyphr-studio/Glyphr-Studio-2/releases" target="_blank">Glyphr Studio 2 GitHub > Releases</a> page, or the <a href="https://www.glyphrstudio.com/help/about/updates.html" target="_blank">Glyphr Studio 2 Help > Updates</a> page.
+			</p>
+
+
 		`,
-	});
-
-	content.appendChild(makeReleaseNote());
-	return content;
-}
-
-/**
- * Makes content for a release note
- * @param {Boolean} showLogo - put a big logo on it
- * @returns {Element}
- */
-export function makeReleaseNote(showLogo = false) {
-	let gsLogo = '';
-	if (showLogo) {
-		gsLogo = `<div class="about-page__logo">
-		${logoVertical}
-		</div><br><br>`;
-	}
-	const content = makeElement({
-		innerHTML: `
-		${gsLogo}
-		<h2>Welcome to Glyphr Studio!</h2>
-		<p>
-			You can stay up to date on the latest news over at the
-			<a href="https://www.glyphrstudio.com/blog" target="_blank">Glyphr Studio Blog</a>.
-			We also have a
-			<a href="https://www.glyphrstudio.com/help/tutorial" target="_blank">tutorial</a>
-			over on the Help and Docs site that will help you walk through some of the key steps
-			to designing your first font.
-			<br><br>
-			As always, if you find any bugs, or have an suggestions about functionality, please email us!
-			${emailLink()}
-		</p>
-	`,
 	});
 
 	return content;
