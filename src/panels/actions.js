@@ -1058,6 +1058,7 @@ function showDialogChooseOtherItem(actionName = '') {
 	// log(`actionName: ${actionName}`);
 	let content;
 	let onClick;
+	let itemChooserType = 'Characters';
 
 	if (actionName === 'copyPaths') {
 		content = makeElement({
@@ -1090,6 +1091,7 @@ function showDialogChooseOtherItem(actionName = '') {
 
 	if (actionName === 'addAsComponentInstance') {
 		// log(`Dialog addAsComponentInstance`, 'start');
+		itemChooserType = 'Components';
 		content = makeElement({
 			innerHTML: `<h2>Add another glyph as a component instance</h2>`,
 		});
@@ -1167,7 +1169,7 @@ function showDialogChooseOtherItem(actionName = '') {
 		};
 	}
 
-	const chooserArea = makeAllItemTypeChooserContent(onClick, 'Characters');
+	const chooserArea = makeAllItemTypeChooserContent(onClick, itemChooserType);
 	content.appendChild(chooserArea);
 	showModalDialog(content);
 	// log(`showDialogChooseOtherItem`, 'end');

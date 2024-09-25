@@ -19,7 +19,7 @@ let savedRegisterSubscriptions;
 
 export function makeAllItemTypeChooserContent(
 	clickHandler,
-	type = '',
+	itemType = '',
 	editor = getCurrentProjectEditor()
 ) {
 	// log(`makeAllItemTypeChooserContent`, 'start');
@@ -29,14 +29,14 @@ export function makeAllItemTypeChooserContent(
 
 	let wrapper = makeElement({ tag: 'div', className: 'item-chooser__wrapper' });
 	let header = makeElement({ tag: 'div', className: 'item-chooser__header' });
-	header.appendChild(makeRangeAndItemTypeChooser(editor));
+	header.appendChild(makeRangeAndItemTypeChooser(editor, itemType));
 	wrapper.appendChild(header);
 
-	let show = type || editor.nav.page;
-	if (show === 'Ligatures') {
+	let show = itemType || editor.nav.page;
+	if (show === 'Ligatures' && countItems(editor.project.ligatures) > 0) {
 		// Ligature Chooser
 		wrapper.appendChild(makeLigatureChooserTileGrid(editor));
-	} else if (show === 'Components') {
+	} else if (show === 'Components' && countItems(editor.project.components) > 0) {
 		// Component Chooser
 		wrapper.appendChild(makeComponentChooserTileGrid(editor));
 	} else {
@@ -100,12 +100,29 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 	return wrapper;
 }
 
-export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) {
+export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor(), rangeName = '') {
 	// log(`makeRangeAndItemTypeChooser`, 'start');
 	// log(`Project Name: ${editor.project.settings.project.name}`);
 
-	let selectedRange = editor.selectedCharacterRange;
+	let componentCount = countItems(editor.project.components);
+	let ligatureCount = countItems(editor.project.ligatures);
+
+	let selectedRange;
+	if (rangeName === 'Components' && componentCount > 0) {
+		selectedRange = {
+			name: 'Components',
+			id: `Components ${componentCount}&nbsp;items`,
+		};
+	} else if (rangeName === 'Ligatures' && ligatureCount > 0) {
+		selectedRange = {
+			name: 'Ligatures',
+			id: `Ligatures ${ligatureCount}&nbsp;items`,
+		};
+	} else {
+		selectedRange = editor.selectedCharacterRange;
+	}
 	// log(selectedRange);
+
 	let optionChooser = makeElement({
 		tag: 'option-chooser',
 		attributes: {
@@ -114,9 +131,6 @@ export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) 
 		},
 	});
 	let option;
-
-	let ligatureCount = countItems(editor.project.ligatures);
-	let componentCount = countItems(editor.project.components);
 
 	if (ligatureCount) {
 		// log(`range.name: Ligatures`);
@@ -131,7 +145,7 @@ export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) 
 			let tileGrid = document.querySelector('.item-chooser__tile-grid');
 			tileGrid.remove();
 			let wrapper = document.querySelector('.item-chooser__wrapper');
-			wrapper.appendChild(makeLigatureChooserTileGrid());
+			wrapper.appendChild(makeLigatureChooserTileGrid(editor));
 		});
 
 		optionChooser.appendChild(option);
@@ -150,7 +164,7 @@ export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) 
 			let tileGrid = document.querySelector('.item-chooser__tile-grid');
 			tileGrid.remove();
 			let wrapper = document.querySelector('.item-chooser__wrapper');
-			wrapper.appendChild(makeComponentChooserTileGrid());
+			wrapper.appendChild(makeComponentChooserTileGrid(editor));
 		});
 
 		optionChooser.appendChild(option);
@@ -285,7 +299,7 @@ function makeLigatureChooserTileGrid(editor = getCurrentProjectEditor(), showSel
 	}
 
 	pagedLigatures.forEach((ligature) => {
-		let oneTile = new GlyphTile({ 'displayed-item-id': ligature.id });
+		let oneTile = new GlyphTile({ 'displayed-item-id': ligature.id, project: editor.project });
 		if (showSelected && editor.selectedLigatureID === ligature.id) {
 			oneTile.setAttribute('selected', '');
 		}
@@ -329,7 +343,7 @@ function makeComponentChooserTileGrid(editor = getCurrentProjectEditor(), showSe
 	}
 
 	pagedComponents.forEach((component) => {
-		let oneTile = new GlyphTile({ 'displayed-item-id': component.id });
+		let oneTile = new GlyphTile({ 'displayed-item-id': component.id, project: editor.project });
 		if (showSelected && editor.selectedComponentID === component.id) {
 			oneTile.setAttribute('selected', '');
 		}
