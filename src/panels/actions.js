@@ -1053,16 +1053,16 @@ export function makeActionButtonClearClipboardTooltip(clipBoardPathCount) {
 	return re;
 }
 
-function showDialogChooseOtherItem(type) {
+function showDialogChooseOtherItem(actionName = '') {
 	// log(`showDialogChooseOtherItem`, 'start');
-	// log(`type: ${type}`);
-
-	let content = makeElement({
-		innerHTML: `<h2>Choose another glyph</h2>`,
-	});
+	// log(`actionName: ${actionName}`);
+	let content;
 	let onClick;
 
-	if (type === 'copyPaths') {
+	if (actionName === 'copyPaths') {
+		content = makeElement({
+			innerHTML: `<h2>Copy paths from another glyph</h2>`,
+		});
 		content.innerHTML += `All the paths from the glyph you select will be copied and pasted into this glyph.<br><br>`;
 		addCopyActionsForChooseOtherItem(content);
 		onClick = (itemID) => {
@@ -1088,8 +1088,11 @@ function showDialogChooseOtherItem(type) {
 		};
 	}
 
-	if (type === 'addAsComponentInstance') {
+	if (actionName === 'addAsComponentInstance') {
 		// log(`Dialog addAsComponentInstance`, 'start');
+		content = makeElement({
+			innerHTML: `<h2>Add another glyph as a component instance</h2>`,
+		});
 		content.innerHTML += `The glyph you select will be treated as a root component, and added to this glyph as a component instance.<br><br>`;
 		addCopyActionsForChooseOtherItem(content);
 
@@ -1130,7 +1133,10 @@ function showDialogChooseOtherItem(type) {
 		// log(`Dialog addAsComponentInstance`, 'end');
 	}
 
-	if (type === 'linkAsComponent') {
+	if (actionName === 'linkAsComponent') {
+		content = makeElement({
+			innerHTML: `<h2>Link this component to another glyph</h2>`,
+		});
 		content.innerHTML += `This component will be linked to the glyph you select as a component instance.<br><br>`;
 		onClick = (itemID) => {
 			const editor = getCurrentProjectEditor();
@@ -1161,14 +1167,8 @@ function showDialogChooseOtherItem(type) {
 		};
 	}
 
-	const scrollArea = makeElement({
-		tag: 'div',
-		className: 'modal-dialog__glyph-chooser-scroll-area',
-	});
-
 	const chooserArea = makeAllItemTypeChooserContent(onClick, 'Characters');
-	scrollArea.appendChild(chooserArea);
-	content.appendChild(scrollArea);
+	content.appendChild(chooserArea);
 	showModalDialog(content);
 	// log(`showDialogChooseOtherItem`, 'end');
 }
@@ -1205,7 +1205,7 @@ function addCopyActionsForChooseOtherItem(parent) {
 function showDialogChooseItemFromOtherProject() {
 	let content = makeElement({
 		innerHTML: `
-			<h2>Choose a glyph from the other open project</h2>
+			<h2>Copy shapes from a glyph in the other open project</h2>
 			All the paths from the glyph you select will be copied and pasted into this glyph.
 			<br><br>
 			<strong style="display: inline-block; margin-bottom:10px;">Copy options:</strong>
@@ -1267,18 +1267,12 @@ function showDialogChooseItemFromOtherProject() {
 		showToast(title);
 	};
 
-	const scrollArea = makeElement({
-		tag: 'div',
-		className: 'modal-dialog__glyph-chooser-scroll-area',
-	});
-
 	const chooserArea = makeAllItemTypeChooserContent(
 		onClick,
 		'Characters',
 		getGlyphrStudioApp().otherProjectEditor
 	);
-	scrollArea.appendChild(chooserArea);
-	content.appendChild(scrollArea);
+	content.appendChild(chooserArea);
 	showModalDialog(content);
 }
 

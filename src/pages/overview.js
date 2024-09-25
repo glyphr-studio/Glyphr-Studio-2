@@ -63,7 +63,6 @@ export function makePage_Overview() {
 	);
 
 	rightArea.appendChild(makeElement({ tag: 'hr', style: 'margin: 10px 0px 20px 0px;' }));
-	rightArea.appendChild(makeElement({ tag: 'br' }));
 	rightArea.appendChild(itemsContent);
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
