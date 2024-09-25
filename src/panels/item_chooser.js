@@ -96,7 +96,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 		wrapper.appendChild(header);
 		header.appendChild(makeRangeChooser());
 		header.append(makeSVGColorGlyphToggleButton());
-		wrapper.appendChild(makeGlyphChooserTileGrid());
+		wrapper.appendChild(makeCharacterChooserTileGrid());
 	}
 
 	// log(`makeSingleItemTypeChooserContent`, 'end');
