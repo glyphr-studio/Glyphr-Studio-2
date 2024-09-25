@@ -299,11 +299,17 @@
 */
 .item-chooser__wrapper {
 	background-color: var(--offWhite);
+	padding: 10px 0px 0px 10px;
+	border-radius: 8px;
 }
 
 nav .item-chooser__wrapper {
 	padding: 20px;
 	margin-top: 5px;
+}
+
+.content-page__right-area .item-chooser__wrapper {
+	padding: 0px;
 }
 
 .item-chooser__header {
@@ -339,7 +345,7 @@ nav .item-chooser__wrapper {
 
 .item-chooser__tile-grid glyph-tile {
 	display: inline-block;
-	margin: 0px 10px 10px 0px;
+	margin: 0px 10px 8px 0px;
 }
 
 /*

@@ -320,10 +320,3 @@ dialog {
 	padding: 0px;
 	margin: 0px;
 }
-
-.modal-dialog__glyph-chooser-scroll-area {
-	height: 100%;
-	padding: 10px 5px 5px 10px;
-	background-color: var(--offWhite);
-	margin-bottom: 10px;
-}
