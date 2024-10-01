@@ -309,6 +309,7 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 
 	if (importedGlyph) {
 		importedGlyph.advanceWidth = advance;
+		importedGlyph.flipNS();
 	}
 
 	// log(`makeGlyphrStudioGlyphObject`, 'end');

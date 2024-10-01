@@ -30,6 +30,15 @@ function saveTextFileAsDownload(fileSuffix, fileContent) {
 	const fileType = 'text/plain;charset=utf-8';
 	const fileBlob = new Blob([fileContent], { type: fileType, endings: 'native' });
 	let fileName = makeFileName(fileSuffix, true);
+	saveFile(fileBlob, fileName);
+}
+
+/**
+ * Generic file saving to downloads folder
+ * @param {Object} fileBlob - file content
+ * @param {String} fileName - name of the file
+ */
+export function saveFile(fileBlob, fileName) {
 	try {
 		// IE
 		// @ts-ignore
