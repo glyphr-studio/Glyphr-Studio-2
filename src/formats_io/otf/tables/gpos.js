@@ -1,12 +1,17 @@
-// --------------------------------------------------------------
-// GPOS table import
-// --------------------------------------------------------------
-
 import { decToHex } from '../../../common/character_ids.js';
 import { makeKernGroupID } from '../../../pages/kerning.js';
 import { KernGroup } from '../../../project_data/kern_group.js';
 import { updateFontImportProgressIndicator, updateImportItemTotal } from '../font_import.js';
 
+// --------------------------------------------------------------
+// Reading gpos table information
+// --------------------------------------------------------------
+
+/**
+ * Reads and prepares data from a gpos table
+ * @param {Object} table - gpos table data
+ * @returns {Object} - parsed data
+ */
 export function loadOneKernTable(table) {
 	// log(`loadOneKernTable`, 'start');
 	// log(table);
@@ -67,6 +72,16 @@ function coverageTableToGlyphList(coverage) {
 	return result;
 }
 
+// --------------------------------------------------------------
+// Importing gpos table information
+// --------------------------------------------------------------
+
+/**
+ *
+ * @param {Object} importedFont - opentype.js font object
+ * @param {Object} gposKernTables - opentype.js gpos kern tables
+ * @returns {Promise<Object>} - imported kern groups
+ */
 export async function importKerns(importedFont, gposKernTables) {
 	const finalKerns = {};
 	for (let t = 0; t < gposKernTables.length; t++) {
