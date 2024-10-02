@@ -1,8 +1,6 @@
 import { describe } from 'vitest';
 import openTypeJS from '../../lib/opentype.js-september-2024/opentype.mjs';
 import { ioFont_importFont } from '../font_import.js';
-// import mostBasicTestOTF from './MostBasicTestRegular.otf';
-// import obleggExtendedTestOTF from './src/formats_io/font_tests/ObleggExtendedTestRegular.otf?raw';
 
 describe('OTF Font', () => {
 	it('Import: Most Basic Test', async () => {
