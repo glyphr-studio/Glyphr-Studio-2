@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { describe } from 'vitest';
-import openTypeJS from '../../../lib/opentype.js-september-2024/opentype.mjs';
+import openTypeJS from '../../../lib/opentype.js-september-2024-kern-write/opentype.mjs';
 import { ioFont_importFont } from '../font_import.js';
 
 describe('OTF Font', () => {

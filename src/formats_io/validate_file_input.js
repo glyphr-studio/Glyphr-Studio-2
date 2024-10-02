@@ -1,5 +1,5 @@
 import { getGlyphrStudioApp } from '../app/main.js';
-import openTypeJS from '../lib/opentype.js-september-2024/opentype.mjs';
+import openTypeJS from '../lib/opentype.js-september-2024-kern-write/opentype.mjs';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { getFirstTagInstance } from './svg_font/svg_font_import.js';
 

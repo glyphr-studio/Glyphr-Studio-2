@@ -2,14 +2,13 @@ import { getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { pause, round } from '../../common/functions.js';
 import { closeAllToasts, showToast } from '../../controls/dialogs/dialogs.js';
-import openTypeJS from '../../lib/opentype.js-september-2024/opentype.mjs';
+import openTypeJS from '../../lib/opentype.js-september-2024-kern-write/opentype.mjs';
 import { getUnicodeShortName } from '../../lib/unicode/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
 import { Path } from '../../project_data/path.js';
 import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
 import { saveFile } from '../../project_editor/file_io.js';
-import { makeGposTableOptions } from './tables/gpos.js';
 
 /**
 	IO > Export > OpenType
@@ -72,8 +71,8 @@ export async function ioFont_exportFont() {
 	}
 
 	// TODO Enable Kern Writing
-	// const gpos = makeGposTableOptions(font, project);
-	// font.tables.gpos = openTypeJS.makeGposTable(gpos);
+	const kernPairs = project.makeKernPairs();
+	font.kerningPairs = kernPairs;
 
 	// TODO investigate advanced table values
 	// font.tables.os2.ySuperscriptYSize = 1234;
