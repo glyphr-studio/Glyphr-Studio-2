@@ -46,6 +46,6 @@ describe('OTF Font', () => {
 		expect(kernOne.value).toEqual(219);
 
 		// Metadata
-		expect(result.settings.font.style).toEqual('Regular');
+		expect(result.settings.font.style).toEqual('ExtendedTestRegular');
 	});
 });

@@ -9,6 +9,7 @@ import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
 import { Path } from '../../project_data/path.js';
 import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
 import { saveFile } from '../../project_editor/file_io.js';
+import { makeGposTableOptions } from './tables/gpos.js';
 
 /**
 	IO > Export > OpenType
@@ -26,6 +27,7 @@ export async function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'start');
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
+	const project = getCurrentProject();
 	// Add .notdef
 	addNotdefToExport(options);
 
@@ -39,7 +41,7 @@ export async function ioFont_exportFont() {
 	// log(codePointGlyphIndexTable);
 
 	// Add Ligatures
-	let exportLigatures = getCurrentProject().settings.app.exportLigatures;
+	let exportLigatures = project.settings.app.exportLigatures;
 	if (exportLigatures) {
 		for (let l = 0; l < exportLists.ligatures.length; l++) {
 			exportedItem = await generateOneLigature(exportLists.ligatures[l]);
@@ -69,13 +71,15 @@ export async function ioFont_exportFont() {
 		});
 	}
 
+	// TODO Enable Kern Writing
+	// const gpos = makeGposTableOptions(font, project);
+	// font.tables.gpos = openTypeJS.makeGposTable(gpos);
+
 	// TODO investigate advanced table values
-	/*
-	font.tables.os2.ySuperscriptYSize = 1234;
+	// font.tables.os2.ySuperscriptYSize = 1234;
 	// log('Font object:');
 	// log(font);
 	// log(font.toTables());
-	*/
 
 	// font.download();
 	saveOTFFile(font);

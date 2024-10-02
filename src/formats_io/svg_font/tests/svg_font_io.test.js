@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { XMLtoJSON } from '../../../lib/xml_to_json.js';
-import { ioSVG_importSVGfont } from '../../svg_font_import.js';
+import { ioSVG_importSVGfont } from '../svg_font_import.js';
 import sampleFile from './ObleggExtendedTest.svg?raw';
 
 describe('SVG Font', () => {

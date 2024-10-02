@@ -1,14 +1,15 @@
 import { decToHex } from '../../../common/character_ids.js';
 import { makeKernGroupID } from '../../../pages/kerning.js';
+import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../../../project_data/kern_group.js';
 import { updateFontImportProgressIndicator, updateImportItemTotal } from '../font_import.js';
 
 // --------------------------------------------------------------
-// Reading gpos table information
+// Reading Kern information
 // --------------------------------------------------------------
 
 /**
- * Reads and prepares data from a gpos table
+ * Reads and prepares data from a kern (hopefully gpos) table
  * @param {Object} table - gpos table data
  * @returns {Object} - parsed data
  */
@@ -82,7 +83,10 @@ function coverageTableToGlyphList(coverage) {
  * @param {Object} gposKernTables - opentype.js gpos kern tables
  * @returns {Promise<Object>} - imported kern groups
  */
-export async function importKerns(importedFont, gposKernTables) {
+export async function importGposKernPairs(importedFont, gposKernTables) {
+	// log(`importGposKernPairs`, 'start');
+	// log(`\n⮟gposKernTables⮟`);
+	// log(gposKernTables);
 	const finalKerns = {};
 	for (let t = 0; t < gposKernTables.length; t++) {
 		for (let s = 0; s < gposKernTables[t].length; s++) {
@@ -101,11 +105,12 @@ export async function importKerns(importedFont, gposKernTables) {
 					const rightGlyph = importedFont.glyphs.glyphs[rightID];
 					// log(`${leftGlyph.name} : ${rightGlyph.name} = ${kernValue}`);
 					await updateFontImportProgressIndicator('kern pair');
-					importOneKern(leftGlyph, rightGlyph, kernValue, finalKerns);
+					importOneGposKernPair(leftGlyph, rightGlyph, kernValue, finalKerns);
 				}
 			}
 		}
 	}
+	// log(`importGposKernPairs`, 'end');
 	return finalKerns;
 }
 
@@ -118,8 +123,8 @@ export async function importKerns(importedFont, gposKernTables) {
  * @param {Object} finalKerns -  imported kern groups
  * @returns nothing
  */
-function importOneKern(leftGlyph, rightGlyph, value, finalKerns) {
-	// log(`importOneKern`, 'start');
+function importOneGposKernPair(leftGlyph, rightGlyph, value, finalKerns) {
+	// log(`importOneGposKernPair`, 'start');
 	// log(`leftGlyph.unicode: ${leftGlyph.unicode}`);
 	// log(`rightGlyph.unicode: ${rightGlyph.unicode}`);
 
@@ -127,7 +132,7 @@ function importOneKern(leftGlyph, rightGlyph, value, finalKerns) {
 		console.warn(`Something went wrong with importing this kern pair:
 ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 		updateImportItemTotal(-1);
-		// log(`importOneKern`, 'end');
+		// log(`importOneGposKernPair`, 'end');
 		return;
 	}
 
@@ -135,7 +140,7 @@ ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 		console.warn(`Only kern values containing characters with Unicode Code Points can be imported (can't kern ligatures) :
 ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 		updateImportItemTotal(-1);
-		// log(`importOneKern`, 'end');
+		// log(`importOneGposKernPair`, 'end');
 		return;
 	}
 
@@ -153,5 +158,232 @@ ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 
 	// log(`newKernID: ${newKernID}`);
 	// log(importedKern);
-	// log(`importOneKern`, 'end');
+	// log(`importOneGposKernPair`, 'end');
 }
+
+// --------------------------------------------------------------
+// GPOS Table Writing
+// --------------------------------------------------------------
+
+/**
+ *
+ * @param {Object} exportingFont - opentype.js font object
+ * @param {GlyphrStudioProject} project - current project
+ * @returns
+ */
+export function makeGposTableOptions(exportingFont, project) {
+	const gpos = {
+		scripts: [
+			{
+				tag: 'DFLT',
+				script: {
+					defaultLangSys: {
+						reserved: 0,
+						reqFeatureIndex: 65535,
+						featureIndexes: [0],
+					},
+					langSysRecords: [],
+				},
+			},
+			{
+				tag: 'latn',
+				script: {
+					defaultLangSys: {
+						reserved: 0,
+						reqFeatureIndex: 65535,
+						featureIndexes: [0],
+					},
+					langSysRecords: [],
+				},
+			},
+		],
+		features: [
+			{
+				tag: 'kern',
+				feature: {
+					featureParams: 0,
+					lookupListIndexes: [0],
+				},
+			},
+		],
+		lookups: [
+			{
+				lookupType: 2,
+				lookupFlag: 4,
+				subtables: [
+					{
+						posFormat: 1,
+						coverage: {
+							format: 1,
+							glyphs: [],
+						},
+						valueFormat1: 4,
+						valueFormat2: 0,
+						pairSets: [],
+					},
+				],
+			},
+		],
+	};
+
+	for (const kernGroup in project.kerning) {
+		const leftCharID = 64;
+		const rightCharID = 65;
+		gpos.lookups[0].subtables[0].coverage.glyphs.push(leftCharID);
+		gpos.lookups[0].subtables[0].pairSets.push({
+			secondGlyph: rightCharID,
+			value1: {
+				xAdvance: 100,
+			},
+		});
+	}
+
+	return gpos;
+}
+
+// 	function makeGposTable(gpos) {
+//     return new table.Table('GPOS', [
+//         {name: 'version', type: 'ULONG', value: 0x10000},
+//         {name: 'scripts', type: 'TABLE', value: new table.ScriptList(gpos.scripts)},
+//         {name: 'features', type: 'TABLE', value: new table.FeatureList(gpos.features)},
+//         {name: 'lookups', type: 'TABLE', value: new table.LookupList(gpos.lookups, subtableMakers)}
+//     ]);
+// }
+
+const example = {
+	version: 1,
+	scripts: [
+		{
+			tag: 'DFLT',
+			script: {
+				defaultLangSys: {
+					reserved: 0,
+					reqFeatureIndex: 65535,
+					featureIndexes: [0],
+				},
+				langSysRecords: [],
+			},
+		},
+		{
+			tag: 'latn',
+			script: {
+				defaultLangSys: {
+					reserved: 0,
+					reqFeatureIndex: 65535,
+					featureIndexes: [0],
+				},
+				langSysRecords: [],
+			},
+		},
+	],
+	features: [
+		{
+			tag: 'kern',
+			feature: {
+				featureParams: 0,
+				lookupListIndexes: [0],
+			},
+		},
+	],
+	lookups: [
+		{
+			lookupType: 2,
+			lookupFlag: 4,
+			subtables: [
+				{
+					posFormat: 1,
+					coverage: {
+						format: 1,
+						glyphs: [25, 43, 64, 65, 70],
+					},
+					valueFormat1: 4,
+					valueFormat2: 0,
+					pairSets: [
+						[
+							{
+								secondGlyph: 25,
+								value1: {
+									xAdvance: -165,
+								},
+							},
+							{
+								secondGlyph: 43,
+								value1: {
+									xAdvance: -219,
+								},
+							},
+						],
+						[
+							{
+								secondGlyph: 64,
+								value1: {
+									xAdvance: -303,
+								},
+							},
+							{
+								secondGlyph: 65,
+								value1: {
+									xAdvance: -191,
+								},
+							},
+							{
+								secondGlyph: 70,
+								value1: {
+									xAdvance: -229,
+								},
+							},
+						],
+						[
+							{
+								secondGlyph: 25,
+								value1: {
+									xAdvance: -225,
+								},
+							},
+							{
+								secondGlyph: 43,
+								value1: {
+									xAdvance: -283,
+								},
+							},
+						],
+						[
+							{
+								secondGlyph: 25,
+								value1: {
+									xAdvance: -138,
+								},
+							},
+							{
+								secondGlyph: 43,
+								value1: {
+									xAdvance: -182,
+								},
+							},
+						],
+						[
+							{
+								secondGlyph: 64,
+								value1: {
+									xAdvance: -232,
+								},
+							},
+							{
+								secondGlyph: 65,
+								value1: {
+									xAdvance: -138,
+								},
+							},
+							{
+								secondGlyph: 70,
+								value1: {
+									xAdvance: -165,
+								},
+							},
+						],
+					],
+				},
+			],
+		},
+	],
+};

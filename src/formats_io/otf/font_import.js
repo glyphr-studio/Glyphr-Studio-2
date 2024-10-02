@@ -9,7 +9,7 @@ import { Glyph } from '../../project_data/glyph.js';
 import { ProjectEditor } from '../../project_editor/project_editor.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outlines/svg_outline_import.js';
 import { importGlyphs } from './tables/glyphs.js';
-import { importKerns, loadOneKernTable } from './tables/gpos.js';
+import { importGposKernPairs, loadOneKernTable } from './tables/gpos.js';
 import { importLigatures } from './tables/gsub.js';
 import { importTable_head } from './tables/head.js';
 import { importTable_name } from './tables/name.js';
@@ -31,7 +31,7 @@ let importItemTotal = 0;
  * @returns nothing
  */
 export async function ioFont_importFont(importedFont, testing = false) {
-	log(importedFont);
+	console.log(importedFont);
 	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
 
@@ -49,19 +49,19 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	const fontLigatures = importedFont.substitution.getLigatures('liga') || [];
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
-	const kernTables = importedFont.position.getKerningTables() || [];
+	const gposKernTables = importedFont.position.getKerningTables() || [];
 	// log(`\n⮟kernTables⮟`);
-	// log(kernTables);
+	// log(gposKernTables);
 
 	// --------------------------------------------------------------
 	// Count items and set up progress indicator
 	// --------------------------------------------------------------
 
 	let kernPairCount = 0;
-	const gposKernTables = [];
-	kernTables.forEach((table) => {
+	const loadedGposKernTables = [];
+	gposKernTables.forEach((table) => {
 		const tableData = loadOneKernTable(table);
-		gposKernTables.push(...tableData.subtables);
+		loadedGposKernTables.push(tableData.subtables);
 		kernPairCount += tableData.kernPairCount;
 	});
 	importItemTotal = countItems(fontGlyphs) + fontLigatures.length + kernPairCount;
@@ -77,7 +77,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	project.ligatures = await importLigatures(importedFont, fontLigatures);
 
 	// Kern data
-	project.kerning = await importKerns(importedFont, gposKernTables);
+	project.kerning = await importGposKernPairs(importedFont, loadedGposKernTables);
 
 	// Metadata
 	importTable_head(importedFont, project);
