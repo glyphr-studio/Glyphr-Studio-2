@@ -6,8 +6,8 @@ import {
 	showModalDialog,
 	showToast,
 } from '../controls/dialogs/dialogs.js';
-import { ioFont_exportFont } from '../formats_io/font_export.js';
-import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
+import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
+import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import { makeFileName } from '../project_editor/file_io.js';
 import { emailLink } from './app.js';
 import { makePage_CrossProjectActions } from './cross_project_actions/cross_project_actions.js';
@@ -86,8 +86,13 @@ function makeMenu(menuName) {
 		let fileMenuData = [];
 		if (typeof editor.loadedFileHandle === 'object') {
 			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
+
 			// @ts-ignore
-			if ( typeof editor.loadedFileHandle?.name === 'string') projectDisplayName = editor.loadedFileHandle.name;
+			if (typeof editor?.loadedFileHandle?.name === 'string') {
+				// @ts-ignore
+				projectDisplayName = editor.loadedFileHandle.name;
+			}
+
 			fileMenuData.push(
 				{
 					child: makeElement({

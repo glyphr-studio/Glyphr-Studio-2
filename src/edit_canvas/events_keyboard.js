@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
-import { ioFont_exportFont } from '../formats_io/font_export.js';
-import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
+import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
+import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import {
 	clipboardCopy,
 	clipboardPaste,

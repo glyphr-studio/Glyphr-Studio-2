@@ -1,14 +1,14 @@
-import { getCurrentProject } from '../app/main.js';
-import { decToHex, parseCharsInputAsHex } from '../common/character_ids.js';
-import { pause, round } from '../common/functions.js';
-import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
-import openTypeJS from '../lib/opentype.js-september-2024/opentype.mjs';
-import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
-import { Glyph } from '../project_data/glyph.js';
-import { sortLigatures } from '../project_data/glyphr_studio_project.js';
-import { Path } from '../project_data/path.js';
-import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
-import { saveFile } from '../project_editor/file_io.js';
+import { getCurrentProject } from '../../app/main.js';
+import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
+import { pause, round } from '../../common/functions.js';
+import { closeAllToasts, showToast } from '../../controls/dialogs/dialogs.js';
+import openTypeJS from '../../lib/opentype.js-september-2024/opentype.mjs';
+import { getUnicodeShortName } from '../../lib/unicode/unicode_names.js';
+import { Glyph } from '../../project_data/glyph.js';
+import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
+import { Path } from '../../project_data/path.js';
+import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
+import { saveFile } from '../../project_editor/file_io.js';
 
 /**
 	IO > Export > OpenType
@@ -91,7 +91,7 @@ function saveOTFFile(font) {
 	const familyName = font.getEnglishName('fontFamily');
 	const styleName = font.getEnglishName('fontSubfamily');
 	const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
-	
+
 	const arrayBuffer = font.toArrayBuffer();
 	const dataView = new DataView(arrayBuffer);
 	const blob = new Blob([dataView], { type: 'font/opentype' });
