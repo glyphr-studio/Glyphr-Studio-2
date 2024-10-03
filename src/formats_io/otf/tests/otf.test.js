@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { describe } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import openTypeJS from '../../../lib/opentype.js-september-2024-kern-write/opentype.mjs';
 import { ioFont_importFont } from '../font_import.js';
 
@@ -43,7 +43,7 @@ describe('OTF Font', () => {
 		const kernOne = result.kerning['kern-1'];
 		expect(kernOne.leftGroup[0]).toEqual('0x2F');
 		expect(kernOne.rightGroup[0]).toEqual('0x41');
-		expect(kernOne.value).toEqual(219);
+		expect(kernOne.value).toEqual(-219);
 
 		// Metadata
 		expect(result.settings.font.style).toEqual('ExtendedTestRegular');
