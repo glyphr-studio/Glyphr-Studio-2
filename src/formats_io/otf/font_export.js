@@ -126,7 +126,7 @@ function createOptionsObject() {
 	options.manufacturerURL = fontSettings.manufacturerURL || ' ';
 	options.license = fontSettings.license || ' ';
 	options.licenseURL = fontSettings.licenseURL || ' ';
-	options.version = fontSettings.version || 'Version 0.001';
+	options.version = fontSettings.version || '1.0';
 	options.description = fontSettings.description || ' ';
 	options.copyright = fontSettings.copyright || ' ';
 	options.trademark = fontSettings.trademark || ' ';

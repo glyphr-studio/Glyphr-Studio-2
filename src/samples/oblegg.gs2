@@ -2,8 +2,8 @@
   "settings": {
     "project": {
       "name": "Oblegg",
-      "latestVersion": "2.5.0.beta-1",
-      "initialVersion": "2.5.0.beta-1",
+      "latestVersion": "2.5.0",
+      "initialVersion": "2.5.0",
       "id": "g2_OBLEGG2",
       "characterRanges": [
         {

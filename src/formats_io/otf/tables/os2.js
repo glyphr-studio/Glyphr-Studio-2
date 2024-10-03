@@ -25,7 +25,7 @@ export function importTable_os2(importedFont, project) {
 	fontSettings.capHeight = 1 * (os2.sCapHeight || fontSettings.capHeight);
 	fontSettings.xHeight = 1 * (os2.sxHeight || fontSettings.xHeight);
 	fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
-	fontSettings.lineGap = 1 * (os2.sTypoLineGap || fontSettings.lineGap);
+	// fontSettings.lineGap = 1 * (os2.sTypoLineGap || fontSettings.lineGap);
 	fontSettings.panose = os2.panose.join(' ') || '0 0 0 0 0 0 0 0 0 0';
 }
 
