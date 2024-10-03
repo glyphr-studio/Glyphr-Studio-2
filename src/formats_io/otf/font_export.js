@@ -9,6 +9,7 @@ import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
 import { Path } from '../../project_data/path.js';
 import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
 import { saveFile } from '../../project_editor/file_io.js';
+import { writeGposKernDataToFont } from './tables/gpos.js';
 
 /**
 	IO > Export > OpenType
@@ -70,17 +71,17 @@ export async function ioFont_exportFont() {
 		});
 	}
 
-	// TODO Enable Kern Writing
-	const kernPairs = project.makeKernPairs();
-	font.kerningPairs = kernPairs;
+	// Write kern pair data
+	if (project.settings.app.exportKerning) {
+		writeGposKernDataToFont(font, project);
+	}
 
 	// TODO investigate advanced table values
-	// font.tables.os2.ySuperscriptYSize = 1234;
-	// log('Font object:');
-	// log(font);
-	// log(font.toTables());
 
-	// font.download();
+	log('Font object:');
+	log(font);
+	log(font.toTables());
+
 	saveOTFFile(font);
 	await pause();
 	showToast('Export complete!');
@@ -232,11 +233,6 @@ function populateExportList() {
 		exportLigatures.sort(sortLigatures);
 		// log('exportLigatures');
 		// log(exportLigatures);
-	}
-
-	// Add Kerns
-	if (project.settings.app.exportKerning) {
-		// TODO Export kerning?
 	}
 
 	// log('populateExportList', 'end');

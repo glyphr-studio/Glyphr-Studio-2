@@ -622,6 +622,37 @@ export class GlyphrStudioProject {
 	}
 
 	/**
+	 * Glyphr Studio stores Kern Groups with collections
+	 * of left and right groups, this function permutates all the
+	 * groups into a collection of kern pairs with only a single
+	 * left and single right character (and a value).
+	 * @returns {Array} - collection of kern pairs
+	 */
+	makeCollectionOfKernPairs() {
+		log(`GlyphrStudioProject.makeCollectionOfKernPairs`, 'start');
+		let keys = Object.keys(this.kerning);
+		let result = [];
+		let completed = [];
+		for (const k of keys) {
+			for (let lg = 0; lg < this.kerning[k].leftGroup.length; lg++) {
+				for (let rg = 0; rg < this.kerning[k].rightGroup.length; rg++) {
+					const left = this.kerning[k].leftGroup[lg];
+					const right = this.kerning[k].rightGroup[rg];
+					const value = this.kerning[k].value;
+					const id = `${left}${right}`;
+					if (completed.indexOf(id) < 0) {
+						result.push({ left, right, value });
+						completed.push(id);
+					}
+				}
+			}
+		}
+		log(result);
+		log(`GlyphrStudioProject.makeCollectionOfKernPairs`, 'end');
+		return result;
+	}
+
+	/**
 	 * Figures out what the Session State should be for each item
 	 * in the project.
 	 */
