@@ -101,7 +101,7 @@ export async function importGposKernPairs(importedFont, gposKernTables) {
 					const rightID = pair.secondGlyph;
 					// GS Kerns are relative to the left hand glyph,
 					// So we need to invert this data from the right hand glyph
-					const kernValue = pair.value1.xAdvance * -1;
+					const kernValue = pair.value1.xAdvance;
 					const rightGlyph = importedFont.glyphs.glyphs[rightID];
 					// log(`${leftGlyph.name} : ${rightGlyph.name} = ${kernValue}`);
 					await updateFontImportProgressIndicator('kern pair');
@@ -179,6 +179,6 @@ export function writeGposKernDataToFont(exportingFont, project) {
 		const leftID = exportingFont.charToGlyphIndex(String.fromCodePoint(pair.left));
 		const rightID = exportingFont.charToGlyphIndex(String.fromCodePoint(pair.right));
 		// @ts-ignore
-		exportingFont.kerningPairs[`${leftID},${rightID}`] = pair.value * -1;
+		exportingFont.kerningPairs[`${leftID},${rightID}`] = pair.value;
 	});
 }

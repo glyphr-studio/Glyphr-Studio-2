@@ -17,7 +17,7 @@ export function makeCard_kernGroup(kernGroup) {
 		innerHTML: '<h3>Kern Group</h3>',
 	});
 
-	let valueLabel = makeSingleLabel('Value');
+	let valueLabel = makeSingleLabel('Value', 'The value of a kern group is an adjustment to the left group\'s advance width.');
 	let valueInput = makeSingleInput(kernGroup, 'value', 'currentKernGroup', 'input-number');
 
 	let leftLabel = makeSingleLabel('Left group');
