@@ -2,8 +2,8 @@
   "settings": {
     "project": {
       "name": "Oblegg",
-      "latestVersion": "2.1.2",
-      "initialVersion": "2.1.2",
+      "latestVersion": "2.5.0",
+      "initialVersion": "2.5.0",
       "id": "g2_OBLEGG2",
       "characterRanges": [
         {
@@ -19,12 +19,18 @@
       ]
     },
     "app": {
-      "savePreferences": false,
       "stopPageNavigation": true,
+      "formatSaveFile": true,
+      "saveLivePreviews": true,
       "autoSave": true,
+      "savePreferences": false,
+      "unlinkComponentInstances": true,
       "showNonCharPoints": false,
       "itemChooserPageSize": 256,
-      "formatSaveFile": true,
+      "previewText": false,
+      "exportLigatures": true,
+      "exportKerning": true,
+      "exportUneditedItems": true,
       "moveShapesOnSVGDragDrop": true,
       "guides": {
         "drawGuidesOnTop": false,
@@ -47,7 +53,6 @@
         "showGuides": true,
         "guidesTransparency": 70
       },
-      "saveLivePreviews": true,
       "livePreviews": [
         {
           "text": "the five boxing wizards jump quickly"
@@ -60,8 +65,7 @@
           "fontSize": 28,
           "text": "{{scowl_10_short}}"
         }
-      ],
-      "previewText": false
+      ]
     },
     "font": {
       "family": "Oblegg",
@@ -76,6 +80,7 @@
       "xHeight": 1020,
       "overshoot": 20,
       "lineGap": 250,
+      "weight": 400,
       "italicAngle": 0,
       "designer": "Matt LaGrandeur",
       "designerURL": "mattlag.com",
@@ -86,7 +91,6 @@
       "copyright": "2023",
       "trademark": "",
       "variant": "normal",
-      "weight": 400,
       "stretch": "normal",
       "stemv": 0,
       "stemh": 0,
@@ -4879,6 +4883,7 @@
     "glyph-0x61": {
       "id": "glyph-0x61",
       "advanceWidth": 949,
+      "contextCharacters": "fa",
       "shapes": [
         {
           "name": "Path 1",
@@ -5935,6 +5940,7 @@
         "liga-f-f",
         "liga-f-l"
       ],
+      "contextCharacters": "fa",
       "shapes": [
         {
           "name": "Path 1",
@@ -13769,7 +13775,6 @@
   },
   "ligatures": {
     "liga-f-i": {
-      "name": "Ligature fi",
       "id": "liga-f-i",
       "advanceWidth": 992,
       "usedIn": [
@@ -13844,7 +13849,6 @@
       ]
     },
     "liga-f-f-i": {
-      "name": "Ligature ffi",
       "id": "liga-f-f-i",
       "advanceWidth": 1422,
       "gsub": [
@@ -13881,7 +13885,6 @@
       ]
     },
     "liga-f-f": {
-      "name": "Ligature ff",
       "id": "liga-f-f",
       "advanceWidth": 1241,
       "usedIn": [
@@ -13920,7 +13923,6 @@
       ]
     },
     "liga-f-l": {
-      "name": "Ligature fl",
       "id": "liga-f-l",
       "advanceWidth": 916,
       "gsub": [
@@ -14018,7 +14020,6 @@
       ]
     },
     "liga-f-f-l": {
-      "name": "Ligature ffl",
       "id": "liga-f-f-l",
       "advanceWidth": 1362,
       "gsub": [
@@ -14120,7 +14121,6 @@
   },
   "components": {
     "comp-0": {
-      "name": "Dot",
       "id": "comp-0",
       "usedIn": [
         "comp-1",
@@ -14175,7 +14175,6 @@
       ]
     },
     "comp-1": {
-      "name": "Comma",
       "id": "comp-1",
       "usedIn": [
         "glyph-0x2C",
@@ -14245,7 +14244,7 @@
         "0x71",
         "0x73"
       ],
-      "value": 150
+      "value": -150
     },
     "kern-1": {
       "leftGroup": [
@@ -14278,7 +14277,7 @@
       "rightGroup": [
         "0x61"
       ],
-      "value": 250
+      "value": -250
     }
   }
 }

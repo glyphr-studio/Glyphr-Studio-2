@@ -39,7 +39,7 @@ export function makeSettingsTabContentFont() {
 		makeOneSettingsRow('font', 'xHeight'),
 		textToNode('<h3>Other metrics</h3>'),
 		makeOneSettingsRow('font', 'overshoot'),
-		makeOneSettingsRow('font', 'lineGap'),
+		// makeOneSettingsRow('font', 'lineGap'),
 		makeOneSettingsRow('font', 'weight'),
 		makeOneSettingsRow('font', 'italicAngle'),
 		textToNode('<h2>Links</h2>'),

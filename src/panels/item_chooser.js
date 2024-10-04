@@ -212,8 +212,8 @@ function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjec
 
 			option.addEventListener('click', () => {
 				// log(`OPTION.click - range: ${range.name}`);
-
 				editor.selectedCharacterRange = range;
+				editor.chooserPage.characters = 0;
 				let tileGrid = document.querySelector('.item-chooser__tile-grid');
 				// log(tileGrid);
 				tileGrid.remove();

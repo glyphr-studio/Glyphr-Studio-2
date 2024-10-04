@@ -1,6 +1,6 @@
 // import { paper } from '../app/app.js';
 import paperCore from 'paper/dist/paper-core';
-import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import.js';
+import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outlines/svg_outline_import.js';
 
 const paper = paperCore;
 paper.setup('');

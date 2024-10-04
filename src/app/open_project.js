@@ -1,10 +1,10 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import { closeEveryTypeOfDialog, showError, showToast } from '../controls/dialogs/dialogs.js';
-import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
+import { makeProgressIndicator, updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
-import { ioFont_importFont } from '../formats_io/font_import.js';
-import { ioSVG_importSVGfont } from '../formats_io/svg_font_import.js';
+import { ioFont_importFont } from '../formats_io/otf/font_import.js';
+import { ioSVG_importSVGfont } from '../formats_io/svg_font/svg_font_import.js';
 import { validateSingleFileInput } from '../formats_io/validate_file_input.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
@@ -548,3 +548,4 @@ function handleLoadSample(name) {
 		importProjectDataAndNavigate(project);
 	}, 100);
 }
+

@@ -27,8 +27,14 @@ export function importGlyphrProjectFromText(importedProject) {
 	const version = tryToGetProjectVersion(importedProject);
 	// log(`version found: ${version.major}.${version.minor}.${version.patch}.${version.preRelease}`);
 
+	// Migrate from v1 where possible
 	if (version.major === 1) {
-		importedProject = migrate_Project(importedProject);
+		importedProject = migrate__v1_13_2_to_v2_0_0(importedProject);
+	}
+
+	// Apply v2.5 changes to Kern value data
+	if (version.major === 2 && version.minor < 5) {
+		importedProject = migrate__v2_0_0_to_v2_5_0(importedProject);
 	}
 
 	// Update the version
@@ -65,6 +71,23 @@ export function importGlyphrProjectFromText(importedProject) {
 }
 
 // --------------------------------------------------------------
+// Migrate v2.0.0 to v2.5.0
+// --------------------------------------------------------------
+/**
+ * v2.5 introduced Kern Writing, and flipped how Glyphr Studio
+ * stores kern values.
+ * @param {GlyphrStudioProject} project - Old project data
+ * @returns {GlyphrStudioProject} - Updated project data
+ */
+function migrate__v2_0_0_to_v2_5_0(project) {
+	// Kerns
+	Object.keys(project.kerning).forEach((kernID) => {
+		project.kerning[kernID].value *= -1;
+	});
+	return project;
+}
+
+// --------------------------------------------------------------
 // Migrate from v1 to v2
 // --------------------------------------------------------------
 
@@ -74,12 +97,14 @@ export function importGlyphrProjectFromText(importedProject) {
  * to current project file structure.
  * Hopefully this is minimal.
  * @param {Object} oldProject - Old project object data
- * @returns {Object} - Latest Glyphr Studio v2 Project structure
+ * @returns {GlyphrStudioProject} - Latest Glyphr Studio v2 Project structure
  */
-function migrate_Project(oldProject) {
-	// log('migrate_Project', 'start');
+function migrate__v1_13_2_to_v2_0_0(oldProject) {
+	// log('_0_0mig_rate_v1_13_2_to_v2', 'start');
 
 	const newProject = new GlyphrStudioProject({});
+
+	// Side Bearings
 	const defaultLSB = oldProject.projectsettings.defaultlsb;
 	const defaultRSB = oldProject.projectsettings.defaultrsb;
 
@@ -90,7 +115,12 @@ function migrate_Project(oldProject) {
 		// log(`newID: ${newID}`);
 		// log(`typeof newID: ${typeof newID}`);
 
-		newProject.glyphs[newID] = migrate_Glyph(oldProject.glyphs[oldID], newID, defaultLSB, defaultRSB);
+		newProject.glyphs[newID] = migrate_Glyph(
+			oldProject.glyphs[oldID],
+			newID,
+			defaultLSB,
+			defaultRSB
+		);
 	});
 
 	// Ligatures
@@ -101,7 +131,12 @@ function migrate_Project(oldProject) {
 
 		if (chars !== false) {
 			let newGsub = chars.split('').map(charToHex);
-			newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID, defaultLSB, defaultRSB);
+			newProject.ligatures[newID] = migrate_Glyph(
+				oldProject.ligatures[oldID],
+				newID,
+				defaultLSB,
+				defaultRSB
+			);
 
 			newProject.ligatures[newID].objType = 'Ligature';
 			newProject.ligatures[newID].gsub = newGsub;
@@ -112,7 +147,12 @@ function migrate_Project(oldProject) {
 	// log(`Migrating Components`);
 	Object.keys(oldProject.components).forEach((oldID) => {
 		const newID = migrate_ItemID(oldID);
-		newProject.components[newID] = migrate_Glyph(oldProject.components[oldID], newID, defaultLSB, defaultRSB);
+		newProject.components[newID] = migrate_Glyph(
+			oldProject.components[oldID],
+			newID,
+			defaultLSB,
+			defaultRSB
+		);
 		newProject.components[newID].objType = 'Component';
 		newProject.components[newID].advanceWidth = false;
 	});
@@ -217,7 +257,7 @@ function migrate_Project(oldProject) {
 	newFont.overlinePosition = oldMeta.overline_position || 750;
 	newFont.overlineThickness = oldMeta.overline_thickness || 10;
 
-	// log('migrate_Project', 'end');
+	// log('_0_0mig_rate_v1_13_2_to_v2', 'end');
 	return newProject;
 }
 

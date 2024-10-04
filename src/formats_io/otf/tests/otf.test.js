@@ -1,11 +1,15 @@
-import { describe } from 'vitest';
-import opentype from '../../lib/opentype.js-1.3.4/opentype.module.js';
+import fs from 'fs';
+import path from 'path';
+import { describe, expect, it } from 'vitest';
+import openTypeJS from '../../../lib/opentype.js-september-2024-kern-write/opentype.mjs';
 import { ioFont_importFont } from '../font_import.js';
-// import sampleFile from './ObleggExtendedTestRegular.otf';
 
 describe('OTF Font', () => {
 	it('Import: Most Basic Test', async () => {
-		const loadResult = opentype.loadSync('./src/formats_io/font_tests/MostBasicTestRegular.otf');
+		const mostBasicTestOTF = './MostBasicTestRegular.otf';
+		const filePath = path.resolve(__dirname, mostBasicTestOTF);
+		const fontBuffer = fs.readFileSync(filePath);
+		const loadResult = openTypeJS.parse(fontBuffer);
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 
@@ -21,7 +25,10 @@ describe('OTF Font', () => {
 	});
 
 	it('Import: Oblegg Extended Test', async () => {
-		const loadResult = opentype.loadSync('./src/formats_io/font_tests/ObleggExtendedTestRegular.otf');
+		const obleggExtendedTestOTF = './ObleggExtendedTestRegular.otf';
+		const filePath = path.resolve(__dirname, obleggExtendedTestOTF);
+		const fontBuffer = fs.readFileSync(filePath);
+		const loadResult = openTypeJS.parse(fontBuffer);
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 
@@ -36,7 +43,7 @@ describe('OTF Font', () => {
 		const kernOne = result.kerning['kern-1'];
 		expect(kernOne.leftGroup[0]).toEqual('0x2F');
 		expect(kernOne.rightGroup[0]).toEqual('0x41');
-		expect(kernOne.value).toEqual(219);
+		expect(kernOne.value).toEqual(-219);
 
 		// Metadata
 		expect(result.settings.font.style).toEqual('ExtendedTestRegular');

@@ -280,11 +280,10 @@ function drawContextCharacterLeftLineExtras(ctx, char, block) {
 
 	if (kern) {
 		const v = getCurrentProjectEditor().view;
-		kern *= -1;
-		let rightX = kern;
+		let rightX = kern * -1;
 		rightX = v.dx + rightX * v.dz;
 
-		drawCharacterKernExtra(ctx, -kern, rightX, v.dz);
+		drawCharacterKernExtra(ctx, kern, rightX, v.dz);
 	}
 	// log(`drawContextCharacterLeftLineExtras`, 'end');
 }
@@ -319,11 +318,10 @@ function drawContextCharacterRightLineExtras(ctx, char, block) {
 
 	if (kern) {
 		const v = getCurrentProjectEditor().view;
-		// kern *= -1;
-		let rightX = kern + editor.selectedItem.advanceWidth;
+		let rightX = editor.selectedItem.advanceWidth;
 		rightX = v.dx + rightX * v.dz;
 
-		drawCharacterKernExtra(ctx, -kern, rightX, v.dz);
+		drawCharacterKernExtra(ctx, kern, rightX, v.dz);
 	}
 	// log(`drawContextCharacterRightLineExtras`, 'end');
 }
@@ -468,7 +466,7 @@ export function drawCharacterKernExtra(ctx, kern, rightX, scale) {
 
 	const text = 'kern: ' + kern;
 	const textWidth = ctx.measureText(text).width;
-	const textX = rightX - (kern * -1 * scale - textWidth) / 2 - textWidth;
+	const textX = rightX - (-1 * kern * scale - textWidth) / 2 - textWidth;
 
 	ctx.strokeStyle = 'white';
 	ctx.lineWidth = 4;

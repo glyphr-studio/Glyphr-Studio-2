@@ -1,4 +1,4 @@
-import { describe } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outline_import.js';
 import { expected } from './svg_expected_results.js';
 
