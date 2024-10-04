@@ -7,6 +7,7 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
+/** @type {Object} */
 import * as config from './app_config.json';
 import { _DEV } from './dev_mode_includes.js';
 import {
@@ -31,7 +32,7 @@ export class GlyphrStudioApp {
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Kerning', // {Sentence case page name} navigate straight to a page
+				currentPage: 'Overview', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: 'glyph-0x66', // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
@@ -88,7 +89,7 @@ export class GlyphrStudioApp {
 				// editor.project = importGlyphrProjectFromText(obleggSampleProject);
 				if (typeof dev.currentPage === 'string') editor.nav.page = dev.currentPage;
 				updateWindowUnloadEvent();
-			} else if (dev.sampleProject === true) {
+			} else if (typeof dev.sampleProject === 'boolean' && dev.sampleProject) {
 				importGlyphrProjectFromText(simpleExampleProject);
 			} else if (typeof dev.sampleProject === 'string') {
 				let proj;
