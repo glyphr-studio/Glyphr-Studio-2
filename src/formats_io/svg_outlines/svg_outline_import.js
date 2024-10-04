@@ -1,10 +1,10 @@
-import { showError } from '../controls/dialogs/dialogs.js';
-import { SVGtoBezier } from '../lib/svg-to-bezier/svg-to-bezier.js';
-import { ControlPoint } from '../project_data/control_point.js';
-import { Coord } from '../project_data/coord.js';
-import { Glyph } from '../project_data/glyph.js';
-import { Path } from '../project_data/path.js';
-import { PathPoint } from '../project_data/path_point.js';
+import { showError } from '../../controls/dialogs/dialogs.js';
+import { SVGtoBezier } from '../../lib/svg-to-bezier/svg-to-bezier.js';
+import { ControlPoint } from '../../project_data/control_point.js';
+import { Coord } from '../../project_data/coord.js';
+import { Glyph } from '../../project_data/glyph.js';
+import { Path } from '../../project_data/path.js';
+import { PathPoint } from '../../project_data/path_point.js';
 
 /**
  * Imports SVG data shapes as a Glyphr Studio Glyph object

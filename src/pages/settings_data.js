@@ -79,7 +79,8 @@ export default {
 		},
 		overshoot: {
 			label: `Overshoot`,
-			description: `Rounded characters are usually slightly larger than square characters to compensate for visual weight. For example, a lowercase 'o' will extend slightly above and below a lowercase 'x'. Overshoot is the measure of this distance.`,
+			description: `Rounded characters are usually slightly larger than square characters to compensate for visual weight. For example, a lowercase 'o' will extend slightly above and below a lowercase 'x'. Overshoot is the measure of this distance.
+			<br>Note: This is used internally by Glyphr Studio, it is not exported to fonts.`,
 			type: `Em`,
 		},
 		lineGap: {

@@ -115,7 +115,7 @@ function makeRows(parent) {
 	makeOneRow('font', 'capHeight');
 	makeOneRow('font', 'xHeight');
 	makeOneRow('font', 'overshoot');
-	makeOneRow('font', 'lineGap');
+	// makeOneRow('font', 'lineGap');
 	makeOneRow('font', 'italicAngle');
 	makeOneRow('font', 'designer');
 	makeOneRow('font', 'designerURL');

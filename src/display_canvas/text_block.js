@@ -442,7 +442,7 @@ export function calculateKernOffset(c1, c2) {
 				for (let r = 0; r < kernPairs[p].rightGroup.length; r++) {
 					rightGroupChar = kernPairs[p].rightGroup[r];
 					if (parseCharsInputAsHex(rightGroupChar)[0] === c2) {
-						result = kernPairs[p].value * -1;
+						result = kernPairs[p].value;
 						// log('FOUND MATCH! returning ' + result);
 						// log('calculateKernOffset', 'end');
 						return result;

@@ -1,13 +1,15 @@
-import { getCurrentProject } from '../app/main.js';
-import { decToHex, parseCharsInputAsHex } from '../common/character_ids.js';
-import { pause, round } from '../common/functions.js';
-import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
-import openTypeJS from '../lib/opentype.js-1.3.4/opentype.module.js';
-import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
-import { Glyph } from '../project_data/glyph.js';
-import { sortLigatures } from '../project_data/glyphr_studio_project.js';
-import { Path } from '../project_data/path.js';
-import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
+import { getCurrentProject } from '../../app/main.js';
+import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
+import { pause, round } from '../../common/functions.js';
+import { closeAllToasts, showToast } from '../../controls/dialogs/dialogs.js';
+import openTypeJS from '../../lib/opentype.js-september-2024-kern-write/opentype.mjs';
+import { getUnicodeShortName } from '../../lib/unicode/unicode_names.js';
+import { Glyph } from '../../project_data/glyph.js';
+import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
+import { Path } from '../../project_data/path.js';
+import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
+import { saveFile } from '../../project_editor/file_io.js';
+import { writeGposKernDataToFont } from './tables/gpos.js';
 
 /**
 	IO > Export > OpenType
@@ -25,6 +27,7 @@ export async function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'start');
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
+	const project = getCurrentProject();
 	// Add .notdef
 	addNotdefToExport(options);
 
@@ -38,7 +41,7 @@ export async function ioFont_exportFont() {
 	// log(codePointGlyphIndexTable);
 
 	// Add Ligatures
-	let exportLigatures = getCurrentProject().settings.app.exportLigatures;
+	let exportLigatures = project.settings.app.exportLigatures;
 	if (exportLigatures) {
 		for (let l = 0; l < exportLists.ligatures.length; l++) {
 			exportedItem = await generateOneLigature(exportLists.ligatures[l]);
@@ -62,27 +65,42 @@ export async function ioFont_exportFont() {
 	if (exportLigatures) {
 		ligatureSubstitutions.forEach((sub) => {
 			// log(`Adding ligature to font`);
-			const subIndexes = sub.subChars.map((char) => font.charToGlyphIndex(char))
+			const subIndexes = sub.subChars.map((char) => font.charToGlyphIndex(char));
 			// log(sub);
-			font.substitution.addLigature('liga', {sub: subIndexes, by: sub.byIndex});
+			font.substitution.addLigature('liga', { sub: subIndexes, by: sub.byIndex });
 		});
 	}
 
-	// TODO investigate advanced table values
-	/*
-	font.tables.os2.ySuperscriptYSize = 1234;
-	// log('Font object:');
-	// log(font);
-	// log(font.toTables());
-	*/
+	// Write kern pair data
+	if (project.settings.app.exportKerning) {
+		writeGposKernDataToFont(font, project);
+	}
 
-	font.download();
+	// TODO investigate advanced table values
+
+	log('Font object:');
+	log(font);
+	log(font.toTables());
+
+	saveOTFFile(font);
 	await pause();
 	showToast('Export complete!');
 	await pause(1000);
 
 	closeAllToasts();
 	// log('ioFont_exportFont', 'end');
+}
+
+function saveOTFFile(font) {
+	const familyName = font.getEnglishName('fontFamily');
+	const styleName = font.getEnglishName('fontSubfamily');
+	const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
+
+	const arrayBuffer = font.toArrayBuffer();
+	const dataView = new DataView(arrayBuffer);
+	const blob = new Blob([dataView], { type: 'font/opentype' });
+
+	saveFile(blob, fileName);
 }
 
 /**
@@ -108,7 +126,7 @@ function createOptionsObject() {
 	options.manufacturerURL = fontSettings.manufacturerURL || ' ';
 	options.license = fontSettings.license || ' ';
 	options.licenseURL = fontSettings.licenseURL || ' ';
-	options.version = fontSettings.version || 'Version 0.001';
+	options.version = fontSettings.version || '1.0';
 	options.description = fontSettings.description || ' ';
 	options.copyright = fontSettings.copyright || ' ';
 	options.trademark = fontSettings.trademark || ' ';
@@ -217,11 +235,6 @@ function populateExportList() {
 		// log(exportLigatures);
 	}
 
-	// Add Kerns
-	if (project.settings.app.exportKerning) {
-		// TODO Export kerning?
-	}
-
 	// log('populateExportList', 'end');
 	const result = { glyphs: exportGlyphs, ligatures: exportLigatures };
 	return result;
@@ -278,7 +291,7 @@ function addNotdefToExport(options) {
 	let thisAdvance = notdef.advanceWidth;
 
 	const notdefGlyph = new openTypeJS.Glyph({
-		name: 'null',
+		name: '.null',
 		unicode: 0,
 		index: 0,
 		xMin: round(notdef.maxes.xMin),

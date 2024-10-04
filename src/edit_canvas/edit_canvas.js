@@ -286,8 +286,10 @@ export class EditCanvas extends HTMLElement {
 				kernGroup.rightGroup.forEach((id) => {
 					drawItem = project.getItem(`glyph-${id}`, true);
 					// log(drawItem);
-					// log(view);
-					drawGlyph(drawItem, ctx, view, rightAlpha);
+					let thisView = clone(view);
+					thisView.dx += kernGroup.value * thisView.dz;
+					// log(thisView);
+					drawGlyph(drawItem, ctx, thisView, rightAlpha);
 				});
 
 				// Draw left hand group
@@ -298,7 +300,6 @@ export class EditCanvas extends HTMLElement {
 					// log(drawItem);
 					let thisView = clone(view);
 					thisView.dx -= drawItem.advanceWidth * thisView.dz;
-					thisView.dx += kernGroup.value * thisView.dz;
 					// log(thisView);
 					drawGlyph(drawItem, ctx, thisView, leftAlpha);
 				});
