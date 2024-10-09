@@ -84,6 +84,7 @@
 .pre-checkbox h4 {
 	position: relative;
 	top: -3px;
+	display: inline-block !important;
 }
 
 #h1InputGroup,

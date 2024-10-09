@@ -273,15 +273,22 @@ export function addAttributeListener(element, listenFor = [], callback) {
 }
 
 export function makeSingleCheckbox(item, property, thisTopic) {
+	// log(`makeSingleCheckbox`, 'start');
+	// log(`item.type: ${item.type}`);
+	// log(`property: ${property}`);
+	// log(`thisTopic: ${thisTopic}`);
+
 	let newCheckbox = makeElement({
 		tag: 'input',
 		attributes: {
 			type: 'checkbox',
 		},
 	});
-	if (item[property]) newCheckbox.setAttribute('checked', '');
+	// @ts-ignore
+	if (item[property]) newCheckbox.checked = true;
 
 	newCheckbox.addEventListener('change', (event) => {
+		// log(`makeSingleCheckbox CHANGE event listener`, 'start');
 		// @ts-ignore
 		let newValue = event.target.checked;
 		item[property] = !!newValue;
@@ -292,6 +299,7 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 				item.parent.reconcileHandle(item.type);
 			}
 		}
+		// log(`makeSingleCheckbox CHANGE event listener`, 'end');
 	});
 
 	if (thisTopic) {
@@ -299,23 +307,33 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 			topic: thisTopic,
 			subscriberID: `attributesPanel.${thisTopic}.${property}`,
 			callback: (changedItem) => {
+				// log(`makeSingleCheckbox SUBSCRIBER callback`, 'start');
 				if (changedItem[property]) {
-					newCheckbox.setAttribute('checked', '');
+					// @ts-ignore
+					newCheckbox.checked = true;
 					if (property === 'use') toggleHandleInputs(item.type, true);
 				} else {
-					newCheckbox.removeAttribute('checked');
+					// @ts-ignore
+					newCheckbox.checked = false;
 					if (property === 'use') toggleHandleInputs(item.type, false);
 				}
+				// log(`makeSingleCheckbox SUBSCRIBER callback`, 'end');
 			},
 		});
 	}
 
+	// log(`makeSingleCheckbox`, 'end');
 	return newCheckbox;
 }
 
 function toggleHandleInputs(handle, show) {
+	// log(`toggleHandleInputs`, 'start');
+	// log(`handle: ${handle}`);
+	// log(`show: ${show}`);
 	let group = document.getElementById(`${handle}InputGroup`);
+	// log(group);
 	if (group) group.style.display = show ? 'grid' : 'none';
+	// log(`toggleHandleInputs`, 'end');
 }
 
 /**
@@ -364,12 +382,13 @@ export function dimSplitElement() {
 // 'direct' controls that don't use pub/sub
 // --------------------------------------------------------------
 
-export function makeDirectCheckbox(item, property, callback, id=false) {
+export function makeDirectCheckbox(item, property, callback, id = false) {
 	let newCheckbox = makeElement({
 		tag: 'input',
 		attributes: { type: 'checkbox' },
 	});
-	if (item[property]) newCheckbox.setAttribute('checked', '');
+	// @ts-ignore
+	if (item[property]) newCheckbox.checked = true;
 	if (typeof id === 'string') newCheckbox.setAttribute('id', id);
 
 	newCheckbox.addEventListener('change', (event) => {
