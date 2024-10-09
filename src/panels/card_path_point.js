@@ -86,7 +86,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 function makeHandleGroup(h = 'h1', selectedPoint) {
 	// Checkbox and title
 	let useHandleLabel = makeElement({ className: 'pre-checkbox' });
-	let useHandleCheckbox = makeSingleCheckbox(selectedPoint[h], 'use', `currentPathPoint`);
+	let useHandleCheckbox = makeSingleCheckbox(selectedPoint[h], 'use', `currentPathPoint.${h}`);
 	if (selectedPoint.type !== 'corner') useHandleCheckbox.setAttribute('disabled', '');
 	addAsChildren(useHandleLabel, [
 		useHandleCheckbox,
@@ -135,10 +135,10 @@ function updateHandleGroup(h = 'h1', changedItem) {
 		let handleUse = changedPathPoint[h].use;
 		// log(`handleUse: ${handleUse}`);
 		let handleCheckbox = handleGroup.querySelector('input');
-		handleCheckbox.removeAttribute('checked');
+		handleCheckbox.checked = false;
 		handleCheckbox.removeAttribute('disabled');
 		if (handleUse) {
-			handleCheckbox.setAttribute('checked', '');
+			handleCheckbox.checked = true;
 			if (changedPathPoint.type !== 'corner') handleCheckbox.setAttribute('disabled', '');
 			let handleInputGroup = document.getElementById(`${h}InputGroup`);
 			handleInputGroup.style.display = 'grid';
