@@ -15,9 +15,9 @@ export function importTable_name(importedFont, project) {
 	const familyName = getTableValue('fontFamily', importedFont) || 'My Font';
 	project.settings.project.name = familyName;
 	fontSettings.name = familyName;
-	fontSettings.family = familyName.substring(0, 31);
+	fontSettings.family = familyName.substring(0, 31); // long family names cause errors
 
-	// These can be read in but not saved using OpenType.js
+	// Table data
 	fontSettings.style = getTableValue('fontSubfamily', importedFont) || 'Regular';
 	fontSettings.copyright = getTableValue('copyright', importedFont) || '';
 	fontSettings.trademark = getTableValue('trademark', importedFont) || '';

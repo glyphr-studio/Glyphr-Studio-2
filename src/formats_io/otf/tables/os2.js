@@ -9,19 +9,19 @@ import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project
 export function importTable_os2(importedFont, project) {
 	const os2 = importedFont.tables.os2;
 	const fontSettings = project.settings.font;
-	// TODO reconcile conflicting ascender data
-	fontSettings.ascent = 1 * (os2?.sTypoAscender || fontSettings.ascent);
-	// fontSettings.ascent = 1 * importedFont.ascender || fontSettings.ascent;
 
-	// TODO reconcile conflicting descender data
+	// Ascender
+	fontSettings.ascent = 1 * (os2?.sTypoAscender || importedFont?.ascender || fontSettings.ascent);
+
+	// Descender
 	/** @type {any} */
-	let typoDescender = os2?.sTypoDescender;
+	let typoDescender = os2?.sTypoDescender || importedFont?.descender || fontSettings.descent;
 	if (typoDescender) {
 		typoDescender = parseFloat(typoDescender);
 		fontSettings.descent = -1 * Math.abs(1 * typoDescender);
 	}
-	// fontSettings.descent = -1 * Math.abs(importedFont.descender) || fontSettings.descent;
 
+	// Other key metrics
 	fontSettings.capHeight = 1 * (os2?.sCapHeight || fontSettings.capHeight);
 	fontSettings.xHeight = 1 * (os2?.sxHeight || fontSettings.xHeight);
 	fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
