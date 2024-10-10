@@ -10,23 +10,23 @@ export function importTable_os2(importedFont, project) {
 	const os2 = importedFont.tables.os2;
 	const fontSettings = project.settings.font;
 	// TODO reconcile conflicting ascender data
-	fontSettings.ascent = 1 * (os2.sTypoAscender || fontSettings.ascent);
+	fontSettings.ascent = 1 * (os2?.sTypoAscender || fontSettings.ascent);
 	// fontSettings.ascent = 1 * importedFont.ascender || fontSettings.ascent;
 
 	// TODO reconcile conflicting descender data
 	/** @type {any} */
-	let typoDescender = os2.sTypoDescender;
+	let typoDescender = os2?.sTypoDescender;
 	if (typoDescender) {
 		typoDescender = parseFloat(typoDescender);
 		fontSettings.descent = -1 * Math.abs(1 * typoDescender);
 	}
 	// fontSettings.descent = -1 * Math.abs(importedFont.descender) || fontSettings.descent;
 
-	fontSettings.capHeight = 1 * (os2.sCapHeight || fontSettings.capHeight);
-	fontSettings.xHeight = 1 * (os2.sxHeight || fontSettings.xHeight);
+	fontSettings.capHeight = 1 * (os2?.sCapHeight || fontSettings.capHeight);
+	fontSettings.xHeight = 1 * (os2?.sxHeight || fontSettings.xHeight);
 	fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
-	// fontSettings.lineGap = 1 * (os2.sTypoLineGap || fontSettings.lineGap);
-	fontSettings.panose = os2.panose.join(' ') || '0 0 0 0 0 0 0 0 0 0';
+	// fontSettings.lineGap = 1 * (os2?.sTypoLineGap || fontSettings.lineGap);
+	fontSettings.panose = os2?.panose.join(' ') || '0 0 0 0 0 0 0 0 0 0';
 }
 
 /*

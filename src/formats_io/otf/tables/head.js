@@ -10,5 +10,5 @@ export function importTable_head(importedFont, project) {
 	const fontSettings = project.settings.font;
 	fontSettings.upm = 1 * importedFont.unitsPerEm || fontSettings.upm;
 	fontSettings.version =
-		importedFont.tables.head.fontRevision || importedFont.version || 'Version 0.1';
+		importedFont.tables?.head?.fontRevision || importedFont.version || 'Version 0.1';
 }
