@@ -33,7 +33,7 @@ export class GlyphrStudioApp {
 				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
 				currentPage: false, // {Sentence case page name} navigate straight to a page
-				currentGlyphID: 'glyph-0x41', // {glyph id} select a glyph
+				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
