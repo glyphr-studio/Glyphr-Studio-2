@@ -474,12 +474,12 @@ export function getActionData(name) {
 		];
 	}
 
-	// ALIGN
-	if (name === 'alignActions') {
+	// ALIGN SHAPES
+	if (name === 'alignShapeActions') {
 		actionData = [
 			{
-				title: `Align Left\nMoves all the selected shape so they are left aligned with the leftmost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Left\nMoves all the selected shape so they are left aligned with the leftmost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'left',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -490,8 +490,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'center',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -502,8 +502,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Right\nMoves all the selected shapes so they are right aligned with the rightmost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'right',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -514,8 +514,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Top\nMoves all the selected shapes so they are top aligned with the topmost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'top',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -526,8 +526,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'middle',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -538,8 +538,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'bottom',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -552,6 +552,47 @@ export function getActionData(name) {
 		];
 	}
 
+	// ALIGN PATH POINTS
+	if (name === 'alignPointActions') {
+		actionData = [
+			{
+				iconName: 'align_points',
+				iconOptions: 'left',
+				title: `Align Path Points: Left\nMoves all the selected points so they are left aligned with the leftmost point.`,
+				onClick: () => {},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'center',
+				title: `Align Path Points: Center\nMoves all the selected points so they are center aligned between the leftmost and rightmost point.`,
+				onClick: () => {},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'right',
+				title: `Align Path Points: Right\nMoves all the selected points so they are right aligned with the rightmost point.`,
+				onClick: () => {},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'top',
+				title: `Align Path Points: Top\nMoves all the selected points so they are top aligned with the topmost point.`,
+				onClick: () => {},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'middle',
+				title: `Align Path Points: Middle\nMoves all the selected points so they are middle aligned between the topmost and bottommost point.`,
+				onClick: () => {},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'bottom',
+				title: `Align Path Points: Bottom\nMoves all the selected points so they are bottom aligned with the bottommost point.`,
+				onClick: () => {},
+			},
+		];
+	}
 	// COMBINE
 	if (name === 'boolActions') {
 		actionData = [
@@ -756,7 +797,7 @@ export function makeActionsArea_Path(test = false) {
 
 	// Path align actions
 	if (selectedPaths.length > 1 || test) {
-		addChildActions(multiActions, getActionData('alignActions'));
+		addChildActions(multiActions, getActionData('alignShapeActions'));
 	}
 
 	return selectedPaths.length > 1 ? [actionsArea, multiActions] : actionsArea;
@@ -764,7 +805,7 @@ export function makeActionsArea_Path(test = false) {
 
 export function makeActionsArea_ComponentInstance(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
-	let alignActions = false;
+	let alignShapeActions = false;
 	let selectedPaths = getCurrentProjectEditor().multiSelect.shapes.members;
 
 	if (selectedPaths.length > 0 || test) {
@@ -782,11 +823,11 @@ export function makeActionsArea_ComponentInstance(test = false) {
 	if (selectedPaths.length > 1 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
 		// @ts-ignore
-		alignActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
-		addChildActions(alignActions, getActionData('alignActions'));
+		alignShapeActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
+		addChildActions(alignShapeActions, getActionData('alignShapeActions'));
 	}
 
-	return alignActions ? [actionsArea, alignActions] : actionsArea;
+	return alignShapeActions ? [actionsArea, alignShapeActions] : actionsArea;
 }
 
 // Point actions
@@ -794,14 +835,22 @@ export function makeActionsArea_PathPoint(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	let selectedPoints = getCurrentProjectEditor().multiSelect.points;
 	let isPointSelected = false;
+	let alignPointActions = false;
 	if (selectedPoints.length > 0) isPointSelected = true;
 	// if (_UI.selectedTool !== 'pathEdit') isPointSelected = false;
+
 	if (isPointSelected || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'path point'}));
 		addChildActions(actionsArea, getActionData('pointActions'));
 	}
 
-	return actionsArea;
+	if (selectedPoints.length > 1 || test) {
+		// @ts-ignore
+		alignPointActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
+		addChildActions(alignPointActions, getActionData('alignPointActions'));
+	}
+
+	return alignPointActions ? [actionsArea, alignPointActions] : actionsArea;
 }
 
 // Kern Group actions

@@ -10,7 +10,7 @@ export function makeActionButton({
 	iconOptions = false,
 	title = '',
 	disabled = false,
-	onClick = () => { },
+	onClick = () => {},
 	id = false,
 } = {}) {
 	// log(`makeActionButton`, 'start');
@@ -520,8 +520,8 @@ makeActionButtonIcon.moveLayerUp = () => {
 	return svgWrap(re);
 };
 
-// Path align actions
-makeActionButtonIcon.align = function (edge) {
+// Shape align actions
+makeActionButtonIcon.align_shapes = function (edge) {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -578,6 +578,95 @@ makeActionButtonIcon.align = function (edge) {
 				<rect x="11" y="1" width="6" height="4" style="fill: ${fill};"/>
 				<rect x="1" y="8" width="16" height="4" style="fill: ${fill};"/>
 				<rect x="5" y="15" width="12" height="4" style="fill: ${fill};"/>
+			`;
+			break;
+	}
+
+	return svgWrap(re, '20');
+};
+
+// Point align actions
+makeActionButtonIcon.align_points = function (edge) {
+	let re = '';
+	let oldPoint = actionButtonIconColors.grayOutline;
+	let newPoint = actionButtonIconColors.blueOutline;
+
+	switch (edge) {
+		case 'bottom':
+			re += `
+				<rect x="14" y="0" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="7" y="7" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="0" y="15" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="7" y="15" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="14" y="15" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="1" y="16" width="3" height="3" style="fill: #fff;"/>
+				<rect x="8" y="16" width="3" height="3" style="fill: #fff;"/>
+				<rect x="15" y="16" width="3" height="3" style="fill: #fff;"/>
+			`;
+			break;
+
+		case 'middle':
+			re += `
+				<rect x="0" y="0" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="14" y="14" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="0" y="7" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="7" y="7" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="14" y="7" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="1" y="8" width="3" height="3" style="fill: #fff;"/>
+				<rect x="8" y="8" width="3" height="3" style="fill: #fff;"/>
+				<rect x="15" y="8" width="3" height="3" style="fill: #fff;"/>
+			`;
+			break;
+
+		case 'top':
+			re += `
+				<rect x="7" y="8" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="14" y="15" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="0" y="0" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="7" y="0" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="14" y="0" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="1" y="1" width="3" height="3" style="fill: #fff;"/>
+				<rect x="8" y="1" width="3" height="3" style="fill: #fff;"/>
+				<rect x="15" y="1" width="3" height="3" style="fill: #fff;"/>
+			`;
+			break;
+
+		case 'left':
+			re += `
+				<rect x="8" y="7" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="15" y="0" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="0" y="0" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="0" y="7" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="0" y="14" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="1" y="1" width="3" height="3" style="fill: #fff;"/>
+				<rect x="1" y="8" width="3" height="3" style="fill: #fff;"/>
+				<rect x="1" y="15" width="3" height="3" style="fill: #fff;"/>
+			`;
+			break;
+
+		case 'center':
+			re += `
+				<rect x="0" y="0" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="14" y="14" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="7" y="0" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="7" y="7" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="7" y="14" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="8" y="1" width="3" height="3" style="fill: #fff;"/>
+				<rect x="8" y="8" width="3" height="3" style="fill: #fff;"/>
+				<rect x="8" y="15" width="3" height="3" style="fill: #fff;"/>
+			`;
+			break;
+
+		case 'right':
+			re += `
+				<rect x="0" y="0" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="7" y="7" width="5" height="5" style="fill: ${oldPoint};"/>
+				<rect x="15" y="0" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="15" y="7" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="15" y="14" width="5" height="5" style="fill: ${newPoint};"/>
+				<rect x="16" y="1" width="3" height="3" style="fill: #fff;"/>
+				<rect x="16" y="8" width="3" height="3" style="fill: #fff;"/>
+				<rect x="16" y="15" width="3" height="3" style="fill: #fff;"/>
 			`;
 			break;
 	}
