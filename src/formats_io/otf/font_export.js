@@ -53,6 +53,8 @@ export async function ioFont_exportFont() {
 	options.glyphs.sort(function (a, b) {
 		return a.unicode - b.unicode;
 	});
+	// log(`\n⮟options.glyphs⮟`);
+	// log(options.glyphs);
 
 	// Create Font
 	// log('NEW options ARG TO FONT');
@@ -78,9 +80,9 @@ export async function ioFont_exportFont() {
 
 	// TODO investigate advanced table values
 
-	log('Font object:');
-	log(font);
-	log(font.toTables());
+	// log('Font object:');
+	// log(font);
+	// log(font.toTables());
 
 	saveOTFFile(font);
 	await pause();
@@ -153,6 +155,9 @@ function createOptionsObject() {
  * @returns {Boolean}
  */
 export function shouldExportItem(item) {
+	// null char is always exported and handled separately
+	if (item.name === '.null') return false;
+
 	if (item.sessionState === 'new') {
 		return !!getCurrentProject().settings.app.exportUneditedItems;
 	}
@@ -188,6 +193,9 @@ function populateExportList() {
 	});
 
 	exportGlyphs.sort((a, b) => a.xc - b.xc);
+
+	// log(`\n⮟exportGlyphs⮟`);
+	// log(exportGlyphs);
 
 	// Add Ligatures
 	const exportLigatures = [];
@@ -247,6 +255,7 @@ function populateExportList() {
  * built for the .otf export
  */
 function addNotdefToExport(options) {
+	// log(`addNotdefToExport`, 'start');
 	const project = getCurrentProject();
 	let notdef = project.getItem('glyph-0x0');
 	if (!notdef) {
@@ -286,6 +295,9 @@ function addNotdefToExport(options) {
 		}
 	}
 
+	// log(`\n⮟notdef⮟`);
+	// log(notdef);
+
 	// Add it to the export
 	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
 	let thisAdvance = notdef.advanceWidth;
@@ -305,6 +317,7 @@ function addNotdefToExport(options) {
 	options.glyphs.push(notdefGlyph);
 
 	codePointGlyphIndexTable['0x0'] = 0;
+	// log(`addNotdefToExport`, 'end');
 }
 
 /**
