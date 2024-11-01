@@ -786,6 +786,67 @@ export function computeAndDrawDragToSelectBox(ctx, eventHandlerData) {
 }
 
 // --------------------------------------------------------------
+// Highlight points
+// --------------------------------------------------------------
+
+export function drawAllHighlightedPoints(ctx) {
+	log(`drawAllHighligthedPoints`, 'start');
+	let editor = getCurrentProjectEditor();
+	let currentItem = editor.selectedItem;
+
+	currentItem.shapes.forEach((shape) => {
+		if (shape.objType === 'Path') {
+			log(`\n⮟shape.cache⮟`);
+			log(shape.cache);
+			drawHighlightedPointsForPath(shape, ctx);
+		}
+	});
+	log(`drawAllHighligthedPoints`, 'end');
+}
+
+function drawHighlightedPointsForPath(path, ctx) {
+	path.pathPoints.forEach((point, index) => {
+		if (path?.cache?.nearOtherPoints && path?.cache?.nearOtherPoints[index]) {
+			// log(path?.cache?.nearOtherPoints);
+			drawPointHighlight(point.p, ctx);
+		}
+
+		if (path?.cache?.nearItsOwnHandles && path?.cache?.nearItsOwnHandles[index]) {
+			// log(path?.cache?.nearItsOwnHandles);
+			drawPointHighlight(point.p, ctx);
+		}
+
+		if (path?.cache?.nearXZero && path?.cache?.nearXZero[index]) {
+			// log(path?.cache?.nearXZero);
+			drawPointHighlight(point.p, ctx);
+		}
+
+		if (path?.cache?.nearYZero && path?.cache?.nearYZero[index]) {
+			// log(path?.cache?.nearYZero);
+			drawPointHighlight(point.p, ctx);
+		}
+	});
+}
+
+/**
+ * Draws a circle around a point in the highlight point style
+ * @param {ControlPoint | Object} point - point to draw a circle around
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ */
+export function drawPointHighlight(point, ctx) {
+	log(`drawPointHighlight`, 'start');
+	let px = sXcX(point.x);
+	let py = sYcY(point.y);
+	log(`canvas: ${px}, ${py}`);
+	ctx.beginPath();
+	ctx.arc(px, py, canvasUIPointSize + 4, 0, Math.PI * 2, true);
+	ctx.closePath();
+	ctx.strokeStyle = 'red';
+	ctx.stroke();
+	log(`drawPointHighlight`, 'end');
+}
+
+// --------------------------------------------------------------
 // Visual debugging
 // --------------------------------------------------------------
 

@@ -5,6 +5,7 @@ import { clone } from '../common/functions.js';
 import { drawGlyph } from '../display_canvas/draw_paths.js';
 import { kernGroupSideMaxWidth } from '../project_editor/cross_item_actions.js';
 import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
+import { runQualityChecksForItem } from '../project_editor/quality_checks.js';
 import { drawCharacterKernExtra, drawContextCharacters } from './context_characters.js';
 import {
 	computeAndDrawBoundingBox,
@@ -13,6 +14,7 @@ import {
 	computeAndDrawPathPointHandles,
 	computeAndDrawPathPoints,
 	computeAndDrawRotationAffordance,
+	drawAllHighlightedPoints,
 	drawNewBasicPath,
 	drawPathPointHover,
 	drawSelectedPathOutline,
@@ -164,6 +166,7 @@ export class EditCanvas extends HTMLElement {
 		const height = Number(this.height);
 		const currentItemID = this.editingItemID;
 		const currentItem = project.getItem(currentItemID);
+		runQualityChecksForItem(currentItem);
 		// log(`currentItemID: ${currentItemID}`);
 		const advanceWidth = currentItem?.advanceWidth || 0;
 		const itemXMax = Math.max(advanceWidth, currentItem?.maxes?.xMax || 0);
@@ -208,7 +211,7 @@ export class EditCanvas extends HTMLElement {
 				}
 			} else if (editMode === 'pathEdit') {
 				drawSelectedPathOutline(ctx, view);
-				if (eventHandlerData.isCtrlDown  || eventHandlerData.selecting) {
+				if (eventHandlerData.isCtrlDown || eventHandlerData.selecting) {
 					computeAndDrawPathPoints(ctx, true);
 					// testDrawAllPathPointHandles(ctx);
 				} else {
@@ -244,6 +247,9 @@ export class EditCanvas extends HTMLElement {
 			if (contextCharacterSettings.showCharacters) {
 				drawContextCharacters(ctx);
 			}
+
+			// Highlighted points
+			drawAllHighlightedPoints(ctx);
 
 			// Drag to select box
 			if (eventHandlerData.selecting) {
