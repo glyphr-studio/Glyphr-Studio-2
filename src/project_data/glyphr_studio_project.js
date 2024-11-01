@@ -49,6 +49,12 @@ export class GlyphrStudioProject {
 				exportKerning: true,
 				exportUneditedItems: true,
 				moveShapesOnSVGDragDrop: false,
+				highlightPoints: {
+					nearOtherPoints: 2,
+					nearItsOwnHandles: 10,
+					nearXZero: 0,
+					nearYZero: 0,
+				},
 				guides: {
 					drawGuidesOnTop: false,
 					systemShowGuides: true,
