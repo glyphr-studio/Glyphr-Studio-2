@@ -593,6 +593,7 @@ export function getActionData(name) {
 			},
 		];
 	}
+
 	// COMBINE
 	if (name === 'boolActions') {
 		actionData = [
@@ -677,6 +678,12 @@ export function getActionData(name) {
 					refreshPanel();
 					showToast('Values were rounded for the selected path points.');
 				},
+			},
+			{
+				iconName: 'mergePathPoints',
+				title: `Merge Path Points\nMerges the selected path points into a single path point.`,
+				disabled: selectedPoints.length < 2 && selectedPaths.legnth === 1,
+				onClick: () => {},
 			},
 			{
 				iconName: 'selectPreviousPathPoint',
