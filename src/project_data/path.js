@@ -1122,6 +1122,57 @@ export class Path extends GlyphElement {
 	}
 
 	/**
+	 * Takes two or more Path Points from this path and merges them.
+	 * The new P coordinate will be an average of all the other P coordinates.
+	 * The resulting H1 will be the H1 from the first Path Point.
+	 * The resulting H2 will be the H2 from the last Path Point.
+	 * H1 and H2 will be moved according to the delta between their previous P
+	 * coordinates and the new resulting P cooridinate.
+	 * @param {Array} points - points in this path to merge
+	 * @returns - nothing
+	 */
+	mergePathPoints(points = []) {
+		if (points.length < 2) return;
+		points = points.sort((a, b) => a.pointNumber - b.pointNumber);
+
+		// find new x and y
+		let newX = 0;
+		let newY = 0;
+		for (let i = 0; i < points.length; i++) {
+			newX += points[i].p.x;
+			newY += points[i].p.y;
+		}
+		newX /= points.length;
+		newY /= points.length;
+
+		// find new h1 and h2
+		let h1 = new ControlPoint(points.at(0).h1);
+		h1.coord.x += points.at(0).p.x - newX;
+		h1.coord.y += points.at(0).p.y - newY;
+		let h2 = new ControlPoint(points.at(-1).h2);
+		h2.coord.x += points.at(-1).p.x - newX;
+		h2.coord.y += points.at(-1).p.y - newY;
+
+		// Assemble new point
+		const newPoint = new PathPoint({
+			p: new ControlPoint({ coord: { x: newX, y: newY } }),
+			h1: h1,
+			h2: h2,
+		});
+		newPoint.parent = this;
+
+		// Remove old points
+		const insertPosition = points[0].pointNumber;
+		for (let i = 0; i < points.length; i++) {
+			this.pathPoints.splice(points[i].pointNumber, 1);
+		}
+
+		// Add new point
+		this.pathPoints.splice(insertPosition, 0, newPoint);
+		this.changed();
+	}
+
+	/**
 	 * Given a target point, find the closes point on this path
 	 * @param {XYPoint} point - x/y value to target
 	 * @param {Boolean} wantSecond - return the second result

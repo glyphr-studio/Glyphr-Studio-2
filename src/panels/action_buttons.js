@@ -745,6 +745,24 @@ makeActionButtonIcon.insertPathPoint = () => {
 	return svgWrap(re);
 };
 
+makeActionButtonIcon.mergePathPoints = () => {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let green = actionButtonIconColors.greenOutline;
+	let gray = actionButtonIconColors.grayOutline;
+
+	re += `
+		<path d="M14.5,8c-.652,0-1.202.419-1.408,1h-1.092v-2h-5v2h-1.092c-.207-.581-.756-1-1.408-1-.828,0-1.5.672-1.5,1.5s.672,1.5,1.5,1.5c.652,0,1.202-.419,1.408-1h1.092v2h5v-2h1.092c.207.581.756,1,1.408,1,.828,0,1.5-.672,1.5-1.5s-.672-1.5-1.5-1.5Z" style="fill: ${blue}"/>
+		<rect x="8" y="8" width="3" height="3" style="fill: #fff"/>
+		<path d="M7.5,1c-.652,0-1.202.419-1.408,1h-1.092V0H0v5h5v-2h1.092c.207.581.756,1,1.408,1,.828,0,1.5-.672,1.5-1.5s-.672-1.5-1.5-1.5Z" style="fill: ${gray}"/>
+		<path d="M14,14v2h-1.092c-.207-.581-.756-1-1.408-1-.828,0-1.5.672-1.5,1.5s.672,1.5,1.5,1.5c.652,0,1.202-.419,1.408-1h1.092v2h5v-5h-5Z" style="fill: ${gray}"/>
+		<path d="M18.583,8h-1.167c0-4.317-2.099-6.417-6.417-6.417V.417c4.961,0,7.583,2.622,7.583,7.583Z" style="fill: ${green}"/>
+		<path d="M8,18.583C3.039,18.583.417,15.961.417,11h1.167c0,4.317,2.099,6.417,6.417,6.417v1.166Z" style="fill: ${green}"/>
+`;
+
+	return svgWrap(re, '20');
+};
+
 makeActionButtonIcon.selectNextPathPoint = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
