@@ -100,6 +100,13 @@ describe('Glyph - Getters and Setters', () => {
 		expect(g.id).toBe('0x1234');
 	});
 
+	it('get/set Component Name', () => {
+		const g = sampleGlyph();
+		g.objType = 'Component';
+		g.name = 'my component';
+		expect(g.name).toBe('my component');
+	});
+
 	it('get/set paths', () => {
 		const g = new Glyph();
 		g.shapes = [{ path: { pathPoints: clone(samples.pathPoints) } }];
