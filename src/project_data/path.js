@@ -1,8 +1,8 @@
 import {
+	calculateDeltaAngle,
 	calculateDeltasFromTransform,
 	clone,
 	hasNonValues,
-	isVal,
 	parseNumber,
 	round,
 	strSan,
@@ -31,7 +31,6 @@ export class Path extends GlyphElement {
 	 * @param {String =} arg.name
 	 * @param {String =} arg.objType
 	 * @param {Array =} arg.pathPoints - array of Path Point objects that make up this path
-	 * @param {Number =} arg.winding - number representing winding direction
 	 * @param {Boolean =} arg.xLock - lock the x property
 	 * @param {Boolean =} arg.yLock - lock the y property
 	 * @param {Boolean =} arg.wLock - lock the w property
@@ -44,7 +43,6 @@ export class Path extends GlyphElement {
 		name = 'Path',
 		objType = 'Path',
 		pathPoints = [],
-		winding,
 		xLock = false,
 		yLock = false,
 		wLock = false,
@@ -57,7 +55,6 @@ export class Path extends GlyphElement {
 		super();
 		this.name = name;
 		this.pathPoints = pathPoints;
-		this.winding = winding;
 		this.xLock = xLock;
 		this.yLock = yLock;
 		this.wLock = wLock;
@@ -84,7 +81,6 @@ export class Path extends GlyphElement {
 	save(verbose = false) {
 		const re = {
 			name: this.name,
-			winding: this.winding,
 			/**
 			 * @type {Array}
 			 */
@@ -172,14 +168,10 @@ export class Path extends GlyphElement {
 	 * @returns {Number}
 	 */
 	get winding() {
-		if (!isVal(this._winding)) {
-			if (this.findWinding) {
-				this.findWinding();
-			} else {
-				this._winding = 0;
-			}
-		}
-		return this._winding || 0;
+		// log(`Path GET winding`, 'start');
+		const winding = this.findWinding();
+		// log(`Path GET winding`, 'end');
+		return winding || 0;
 	}
 
 	/**
@@ -336,18 +328,6 @@ export class Path extends GlyphElement {
 				this._pathPoints[i].parent = this;
 			}
 		}
-	}
-
-	/**
-	 * Set Winding
-	 * negative = clockwise
-	 * positive = counterclockwise
-	 * zero = unknown
-	 * @param {Number} winding
-	 */
-	set winding(winding) {
-		if (isVal(winding)) this._winding = winding;
-		else this.findWinding();
 	}
 
 	/**
@@ -916,45 +896,77 @@ export class Path extends GlyphElement {
 
 	/**
 	 * Finds either the clockwise or counterclockwise winding of a path
-	 * @param {Boolean =} secondTry - If the first try fails, do a trick for a second pass
 	 * @returns {Number} - negative = clockwise, positive = counterclockwise, 0 = unknown
 	 */
-	findWinding(secondTry = false) {
-		// log('Path.findWinding', 'start');
-		let j;
-		let k;
-		let z;
-		let count = -1;
-		const parr = this.pathPoints;
+	findWinding() {
+		log(`Path.findWinding`, 'start');
+		// negative = clockwise
+		// positive = counterclockwise
+		let count = 0;
+		const numPoints = this.pathPoints.length;
 
-		if (parr.length === 2) {
-			count = parr[1].p.x > parr[0].p.x ? -1 : 1;
-		} else if (parr.length > 2) {
-			for (let i = 0; i < parr.length; i++) {
-				j = (i + 1) % parr.length;
-				k = (i + 2) % parr.length;
-				z = (parr[j].p.x - parr[i].p.x) * (parr[k].p.y - parr[j].p.y);
-				z -= (parr[j].p.y - parr[i].p.y) * (parr[k].p.x - parr[j].p.x);
-
-				if (z < 0) count--;
-				else if (z > 0) count++;
+		if (this.pathPoints.length === 2) {
+			let pp0 = this.pathPoints[0];
+			let pp1 = this.pathPoints[1];
+			if (!pp0.h1.use && !pp0.h2.use && !pp1.h1.use && !pp1.h2.use) {
+				// straight line
+				log(`Straight line no handles, set to 0 for unknown`);
+				count = 0;
+			} else if (pp1.p.x < pp0.p.x) {
+				// pp1 is to the left of pp0
+				if (pp0.h2.y < pp0.p.y) {
+					log(`pp0 handle leading to pp1 is below, going clockwise (-1)`);
+					count = -1;
+				} else if (pp0.h2.y > pp0.p.y) {
+					log(`pp0 handle leading to pp1 is above, going counterclockwise (1)`);
+					count = 1;
+				}
+			} else if (pp1.p.x > pp0.p.x) {
+				// pp1 is to the right of pp0
+				if (pp0.h2.y > pp0.p.y) {
+					log(`pp0 handle leading to pp1 is above, going clockwise (-1)`);
+					count = -1;
+				} else if (pp0.h2.y < pp0.p.y) {
+					log(`pp0 handle leading to pp1 is below, going counterclockwise (1)`);
+					count = 1;
+				}
+			} else if (pp1.p.y < pp0.p.y) {
+				// pp1 is below pp0
+				if (pp0.h2.x > pp0.p.x) {
+					log(`pp0 handle leading to pp1 is to the right, going clockwise (-1)`);
+					count = -1;
+				} else if (pp0.h2.x < pp0.p.x) {
+					log(`pp0 handle leading to pp1 is to the left, going counterclockwise (1)`);
+					count = 1;
+				}
+			} else if (pp1.p.y > pp0.p.y) {
+				// pp1 is above pp0
+				if (pp0.h2.x < pp0.p.x) {
+					log(`pp0 handle leading to pp1 is to the left, going clockwise (-1)`);
+					count = -1;
+				} else if (pp0.h2.x > pp0.p.x) {
+					log(`pp0 handle leading to pp1 is to the right, going counterclockwise (1)`);
+					count = 1;
+				}
+			} else {
+				// Edge case, set to 0 for unknown
+				log(`2 point posiiton edge case, fallthrough to 0 for unknown`);
+				count = 0;
+			}
+		} else if (this.pathPoints.length > 2) {
+			for (let i = 0; i < this.pathPoints.length; i++) {
+				const thisP = this.pathPoints[i].p;
+				const nextP = this.pathPoints[(i + 1) % numPoints].p;
+				const nextNextP = this.pathPoints[(i + 2) % numPoints].p;
+				log(`point ${i} - x:${round(thisP.x)} y:${round(thisP.y)}`);
+				const angle = calculateDeltaAngle(thisP, nextP, nextNextP);
+				count += angle;
+				log(`\t angle: ${round(angle)} count: ${ round(count) }`);
 			}
 		}
 
-		// negative = clockwise
-		// positive = counterclockwise
-		if (count === 0 && !secondTry) {
-			// log('second try...');
-			this.reverseWinding();
-			count = this.findWinding(true) * -1;
-			this.reverseWinding();
-		}
-
-		this._winding = count;
-		// if(!secondTry) {
-		//   log('returning: ' + count);
-		//   log('Path.findWinding', 'end');
-		// }
+		log(`returning ${count}`);
+		log(`Path.findWinding`, 'end');
 		return count;
 	}
 
@@ -974,11 +986,9 @@ export class Path extends GlyphElement {
 			});
 
 			this.pathPoints.reverse();
-			this.winding *= -1;
-
-			if (this.winding === 0 || !isVal(this.winding)) {
-				this.findWinding(true);
-			}
+			// this.winding *= -1;
+			let end = this.pathPoints.pop();
+			this.pathPoints.unshift(end);
 		}
 		// log('Path.reverseWinding', 'end');
 	}
@@ -1048,7 +1058,6 @@ export class Path extends GlyphElement {
 		newPoint = new PathPoint(newPoint);
 		newPoint.parent = this;
 		this.pathPoints.push(newPoint);
-		this.findWinding();
 		this.changed();
 		// log('Path.addPathPoint', 'end');
 
