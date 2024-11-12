@@ -78,6 +78,15 @@ export function makeCard_pathAttributes(path) {
 		},
 	});
 
+	getCurrentProjectEditor().subscribe({
+		topic: 'currentPath',
+		subscriberID: 'card_pathAttributes',
+		callback: (changedPath) => {
+			windingToggle.setAttribute('selected-name', getWindingName(changedPath.winding));
+			windingToggle.setAttribute('selected-value', getWindingName(changedPath.winding));
+		},
+	});
+
 	// Position and Size
 	let positionInputs = makeInputs_position(path);
 	let sizeInputs = makeInputs_size(path);
@@ -99,9 +108,13 @@ export function makeCard_pathAttributes(path) {
 }
 
 function getWindingName(winding) {
+	// log(`getWindingName`, 'start');
+	// log(`winding: ${winding}`);
 	let name = 'Unknown';
 	if (winding > 0) name = 'Counter-clockwise';
 	if (winding < 0) name = 'Clockwise';
+	// log(`returning name: ${name}`);
+	// log(`getWindingName`, 'end');
 	return name;
 }
 
