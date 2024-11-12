@@ -379,12 +379,19 @@ export function getActionData(name) {
 					editor.multiSelect.shapes.members.forEach((shape) => {
 						if (shape.objType === 'ComponentInstance') {
 							const sourceItem = editor.project.getItem(shape.link);
+							// log(`\n⮟sourceItem⮟`);
+							// log(sourceItem);
+							const transformedGlyph = shape.transformedGlyph;
+							// log(`\n⮟transformedGlyph⮟`);
+							// log(transformedGlyph);
 							newShapes = newShapes.concat(
-								copyShapesFromTo(shape.transformedGlyph, editor.selectedItem)
+								copyShapesFromTo(transformedGlyph, editor.selectedItem)
 							);
 							if (editor.selectedItemID) removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
 						}
 					});
+					// log(`\n⮟editor.selectedItem⮟`);
+					// log(editor.selectedItem);
 					editor.multiSelect.shapes.deleteShapes();
 					newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
 					editor.history.addWholeProjectChangePostState();
