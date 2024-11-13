@@ -175,10 +175,21 @@ export function writeGposKernDataToFont(exportingFont, project) {
 	const kernPairs = project.makeCollectionOfKernPairs();
 	// @ts-ignore
 	exportingFont.kerningPairs = {};
+	let notExported = '';
 	kernPairs.forEach((pair) => {
 		const leftID = exportingFont.charToGlyphIndex(String.fromCodePoint(pair.left));
 		const rightID = exportingFont.charToGlyphIndex(String.fromCodePoint(pair.right));
-		// @ts-ignore
-		exportingFont.kerningPairs[`${leftID},${rightID}`] = pair.value;
+		if (!(leftID === null) && !(rightID === null)) {
+			// @ts-ignore
+			exportingFont.kerningPairs[`${leftID},${rightID}`] = pair.value;
+		} else {
+			notExported += `${pair.left} (${leftID}) | ${pair.right} (${rightID})\n`;
+		}
 	});
+
+	if (notExported !== '') {
+		console.warn(`Some characters were not found in this project, and their kern values were not exported.
+			The non-existent characters are designated by a (null) after the code point ID.
+			${notExported}`);
+	}
 }
