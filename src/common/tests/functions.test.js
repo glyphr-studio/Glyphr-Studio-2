@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	areEqual,
 	calculateAngle,
+	calculateDeltaAngle,
 	calculateLength,
 	caseCamelToKebab,
 	caseKebabToCamel,
@@ -317,6 +318,21 @@ describe('Angle and Rotation Functions', () => {
 		const angle = calculateAngle(handle, point);
 
 		expect(angle).toBeCloseTo(0.7853981633974483); // Approximately 45 degrees in radians
+	});
+
+	it('calculateDeltaAngle should calculate the angle (in degrees) between two points and a base point', () => {
+		const base = { x: 0, y: 0 };
+		const p1 = { x: 3, y: 3 };
+		const p2 = { x: 3, y: 0 };
+		const angle1 = calculateDeltaAngle(base, p1, p2);
+
+		expect(angle1).toBe(-45);
+
+		const p3 = { x: -3, y: 3 };
+		const p4 = { x: -3, y: -3 };
+		const angle2 = calculateDeltaAngle(base, p3, p4);
+
+		expect(angle2).toBe(90);
 	});
 
 	// Test for calculateLength function
