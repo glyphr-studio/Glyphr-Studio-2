@@ -106,13 +106,15 @@ function saveOTFFile(font) {
 		const familyName = font.getEnglishName('fontFamily');
 		const styleName = font.getEnglishName('fontSubfamily');
 		const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
-
+		// log(`\n⮟font⮟`);
+		// log(font);
 		const arrayBuffer = font.toArrayBuffer();
 		const dataView = new DataView(arrayBuffer);
 		const blob = new Blob([dataView], { type: 'font/opentype' });
 
 		saveFile(blob, fileName);
 	} catch (error) {
+		console.error(error);
 		result = error;
 	}
 
@@ -283,7 +285,6 @@ function addNotdefToExport(options) {
 					{ p: { coord: { x: 432, y: 0 } } },
 					{ p: { coord: { x: 0, y: 0 } } },
 				],
-				winding: -4,
 			},
 			{
 				name: 'Inner Phi Rectangle',
@@ -293,7 +294,6 @@ function addNotdefToExport(options) {
 					{ p: { coord: { x: 382, y: 650 } } },
 					{ p: { coord: { x: 50, y: 650 } } },
 				],
-				winding: 4,
 			},
 		];
 
