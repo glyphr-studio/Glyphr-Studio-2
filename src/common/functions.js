@@ -532,6 +532,29 @@ export function calculateAngle(handle, point = { x: 0, y: 0 }) {
 }
 
 /**
+ * Given a base and two points, calculates the angle that is formed
+ * from p1 > base > p2, and ensures it's the more accute angle.
+ * @param {Object} base - base point
+ * @param {Object} p1 - point 1
+ * @param {Object} p2 - point 2
+ * @returns {Number} - Angle (in degrees)
+ */
+export function calculateDeltaAngle(base, p1, p2) {
+	let a1 = deg(Math.atan2(p1.y - base.y, p1.x - base.x));
+	let a2 = deg(Math.atan2(p2.y - base.y, p2.x - base.x));
+
+	if (isNaN(a1)) a1 = 0;
+	if (isNaN(a2)) a2 = 0;
+
+	let result = a2 - a1;
+	if (result > 180) result -= 360;
+	if (result < -180) result += 360;
+	// log(`\t a2:${a2} - a1:${a1} = ${result} `);
+
+	return result;
+}
+
+/**
  * Calculates the length of a handle, given a point
  * @param {Object} handle - x/y point of handle
  * @param {Object} point - x/y point of point
