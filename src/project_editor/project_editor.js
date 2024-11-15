@@ -142,10 +142,11 @@ export class ProjectEditor {
 
 	/**
 	 * Refreshes the whole UI
+	 * @param {Boolean =} test - set to true when running from Vitest
 	 */
-	navigate() {
+	navigate(test = false) {
 		// log(`ProjectEditor.navigate`, 'start');
-		this.nav.navigate();
+		this.nav.navigate(test);
 		// log(`ProjectEditor.navigate`, 'end');
 	}
 

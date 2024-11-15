@@ -292,9 +292,7 @@ describe('Glyph - updating', () => {
 	it('reverseWinding', () => {
 		const g = sampleGlyph();
 		expect(g.shapes[0].winding).toBeLessThan(0);
-		console.log(g.shapes[0].winding);
 		g.reverseWinding();
-		console.log(g.shapes[0].winding);
 		expect(g.shapes[0].winding).toBeGreaterThan(0);
 	});
 });
