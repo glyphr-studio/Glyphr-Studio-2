@@ -31,7 +31,7 @@ let importItemTotal = 0;
  * @returns nothing
  */
 export async function ioFont_importFont(importedFont, testing = false) {
-	console.log(importedFont);
+	if(!testing) console.log(importedFont);
 	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
 

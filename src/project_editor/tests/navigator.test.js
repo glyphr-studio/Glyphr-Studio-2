@@ -1,3 +1,4 @@
+import { beforeEach, describe, it } from 'vitest';
 import { Navigator } from '../navigator.js';
 
 describe('Navigator: Page Navigation', () => {
@@ -17,7 +18,7 @@ describe('Navigator: Page Navigation', () => {
 
 	it('Navigate to page: Characters', () => {
 		navigator.page = 'Characters';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
 		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Characters');
@@ -25,7 +26,7 @@ describe('Navigator: Page Navigation', () => {
 
 	it('Navigate to page: Ligatures', () => {
 		navigator.page = 'Ligatures';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
 		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Ligatures');
@@ -33,7 +34,7 @@ describe('Navigator: Page Navigation', () => {
 
 	it('Navigate to page: Components', () => {
 		navigator.page = 'Components';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
 		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Components');
@@ -41,7 +42,7 @@ describe('Navigator: Page Navigation', () => {
 
 	it('Navigate to page: Kerning', () => {
 		navigator.page = 'Kerning';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
 		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Kerning');
@@ -49,7 +50,7 @@ describe('Navigator: Page Navigation', () => {
 
 	// it('Navigate to page: Live preview', () => {
 	// 	navigator.page = 'Live preview';
-	// 	navigator.navigate();
+	// 	navigator.navigate(true);
 	// 	const pageContent = navigator.makePageContent();
 	// 	expect(pageContent.id).toBe('app__main-content');
 	// 	expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Live preview');
@@ -57,7 +58,7 @@ describe('Navigator: Page Navigation', () => {
 
 	it('Navigate to page: Global actions', () => {
 		navigator.page = 'Global actions';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
 		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Global actions');
@@ -65,7 +66,7 @@ describe('Navigator: Page Navigation', () => {
 
 	it('Navigate to page: Settings', () => {
 		navigator.page = 'Settings';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
 		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Settings');
@@ -73,7 +74,7 @@ describe('Navigator: Page Navigation', () => {
 
 	it('Navigate to page: Help', () => {
 		navigator.page = 'Help';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
 		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Help');
@@ -81,14 +82,12 @@ describe('Navigator: Page Navigation', () => {
 
 	it('Navigate to page: About', () => {
 		navigator.page = 'About';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
 		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('About');
 	});
-
 });
-
 
 /*
 describe('Navigator: Panel Navigation', () => {
@@ -101,7 +100,7 @@ describe('Navigator: Panel Navigation', () => {
 	it('Navigate to panel: Layers', () => {
 		navigator.page = 'Characters';
 		navigator.panel = 'Layers';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.querySelector('#nav-button-l3 .nav-button__title').innerHTML).toBe('Layers');
 	});
@@ -109,7 +108,7 @@ describe('Navigator: Panel Navigation', () => {
 	it('Navigate to panel: Context characters', () => {
 		navigator.page = 'Characters';
 		navigator.panel = 'Context characters';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.querySelector('#nav-button-l3 .nav-button__title').innerHTML).toBe('Context characters');
 	});
@@ -117,7 +116,7 @@ describe('Navigator: Panel Navigation', () => {
 	it('Navigate to panel: History', () => {
 		navigator.page = 'Characters';
 		navigator.panel = 'History';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.querySelector('#nav-button-l3 .nav-button__title').innerHTML).toBe('History');
 	});
@@ -125,7 +124,7 @@ describe('Navigator: Panel Navigation', () => {
 	it('Navigate to panel: Guides', () => {
 		navigator.page = 'Characters';
 		navigator.panel = 'Guides';
-		navigator.navigate();
+		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.querySelector('#nav-button-l3 .nav-button__title').innerHTML).toBe('Guides');
 	});
