@@ -193,7 +193,7 @@ describe('Path', () => {
 
 	it('winding setter/getter', () => {
 		const path = samplePath();
-		expect(path.winding).toBe(-3.141592653612821);
+		expect(path.winding).toBeCloseTo(-180);
 	});
 
 	it('maxes getter', () => {
@@ -335,8 +335,8 @@ describe('Path', () => {
 
 	it('findWinding', () => {
 		const path = samplePath();
-		expect(path.findWinding()).toBe(-3.141592653612821);
-		expect(path.winding).toBe(-3.141592653612821);
+		expect(path.findWinding()).toBeCloseTo(-180);
+		expect(path.winding).toBeCloseTo(-180);
 	});
 
 	it('reverseWinding', () => {
