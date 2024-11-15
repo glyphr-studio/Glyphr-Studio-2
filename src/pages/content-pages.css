@@ -105,6 +105,12 @@
 	vertical-align: top;
 }
 
+.page__card__help-links {
+	display: grid;
+	grid-template-rows: repeat(4, 1fr);
+	gap: 5px;
+}
+
 .content-page__right-area p {
 	margin-bottom: 10px;
 	margin-left: 1px;
