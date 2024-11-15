@@ -899,75 +899,93 @@ export class Path extends GlyphElement {
 	 * @returns {Number} - negative = clockwise, positive = counterclockwise, 0 = unknown
 	 */
 	findWinding() {
-		log(`Path.findWinding`, 'start');
+		// log(`Path.findWinding`, 'start');
 		// negative = clockwise
 		// positive = counterclockwise
-		let count = 0;
+		let windingNumber = 0;
 		const numPoints = this.pathPoints.length;
 
-		if (this.pathPoints.length === 2) {
+		/**
+		 * For a path with only two points, works out winding based on handle position.
+		 * Assumes this path does not cross over itself.
+		 * Initial calculation is based on assuming the point in question is
+		 * to the left of the other point. This function can be re-used if
+		 * the point is to the right if the 'flip' variable is set to true.
+		 * Flip works through arcane magic, and it's true nature is unknown.
+		 */
+		function determinePointWindingByHandles(point, flip = false) {
+			let result = 0;
+			if (point.h1.y > point.p.y) {
+				if (point.h2.y < point.p.y) {
+					result = 1; // Counterclockwise
+				} else if (point.h2.y > point.p.y) {
+					if (point.h1.x < point.h2.x) {
+						result = 1; // Counterclockwise
+					} else if (point.h1.x > point.h2.x) {
+						result = -1; // Clockwise
+					}
+					if (flip) result *= -1;
+				}
+			} else if (point.h1.y < point.p.y) {
+				if (point.h2.y > point.p.y) {
+					result = -1; // Clockwise
+				} else if (point.h2.y < point.p.y) {
+					if (point.h1.x < point.h2.x) {
+						result = -1; // Clockwise
+					} else if (point.h1.x > point.h2.x) {
+						result = 1; // Counterclockwise
+					}
+					if (flip) result *= -1;
+				}
+			}
+			if (flip) result *= -1;
+
+			return result;
+		}
+
+		if (this.pathPoints.length < 2) {
+			/*
+				LESS THAN TWO POINTS - winding is unknowable
+			*/
+			windingNumber = 0;
+		} else if (this.pathPoints.length === 2) {
+			/*
+				TWO POINTS
+			*/
 			let pp0 = this.pathPoints[0];
 			let pp1 = this.pathPoints[1];
 			if (!pp0.h1.use && !pp0.h2.use && !pp1.h1.use && !pp1.h2.use) {
-				// straight line
-				log(`Straight line no handles, set to 0 for unknown`);
-				count = 0;
-			} else if (pp1.p.x < pp0.p.x) {
-				// pp1 is to the left of pp0
-				if (pp0.h2.y < pp0.p.y) {
-					log(`pp0 handle leading to pp1 is below, going clockwise (-1)`);
-					count = -1;
-				} else if (pp0.h2.y > pp0.p.y) {
-					log(`pp0 handle leading to pp1 is above, going counterclockwise (1)`);
-					count = 1;
-				}
-			} else if (pp1.p.x > pp0.p.x) {
-				// pp1 is to the right of pp0
-				if (pp0.h2.y > pp0.p.y) {
-					log(`pp0 handle leading to pp1 is above, going clockwise (-1)`);
-					count = -1;
-				} else if (pp0.h2.y < pp0.p.y) {
-					log(`pp0 handle leading to pp1 is below, going counterclockwise (1)`);
-					count = 1;
-				}
-			} else if (pp1.p.y < pp0.p.y) {
-				// pp1 is below pp0
-				if (pp0.h2.x > pp0.p.x) {
-					log(`pp0 handle leading to pp1 is to the right, going clockwise (-1)`);
-					count = -1;
-				} else if (pp0.h2.x < pp0.p.x) {
-					log(`pp0 handle leading to pp1 is to the left, going counterclockwise (1)`);
-					count = 1;
-				}
-			} else if (pp1.p.y > pp0.p.y) {
-				// pp1 is above pp0
-				if (pp0.h2.x < pp0.p.x) {
-					log(`pp0 handle leading to pp1 is to the left, going clockwise (-1)`);
-					count = -1;
-				} else if (pp0.h2.x > pp0.p.x) {
-					log(`pp0 handle leading to pp1 is to the right, going counterclockwise (1)`);
-					count = 1;
-				}
+				/*
+					TWO POINTS with no handles = a straight line, winding is unknowable.
+				*/
+				windingNumber = 0;
 			} else {
-				// Edge case, set to 0 for unknown
-				log(`2 point posiiton edge case, fallthrough to 0 for unknown`);
-				count = 0;
+				/*
+					TWO POINTS with at least one handle
+				*/
+				const leftPoint = pp1.p.x < pp0.p.x ? pp1 : pp0;
+				const rightPoint = pp1.p.x >= pp0.p.x ? pp1 : pp0;
+				windingNumber = determinePointWindingByHandles(leftPoint, false);
+				if (windingNumber === 0) windingNumber = determinePointWindingByHandles(rightPoint, true);
 			}
 		} else if (this.pathPoints.length > 2) {
+			/*
+				MORE THAN TWO POINTS - use angle aggregate to determine winding.
+			*/
 			for (let i = 0; i < this.pathPoints.length; i++) {
 				const thisP = this.pathPoints[i].p;
 				const nextP = this.pathPoints[(i + 1) % numPoints].p;
 				const nextNextP = this.pathPoints[(i + 2) % numPoints].p;
-				log(`point ${i} - x:${round(thisP.x)} y:${round(thisP.y)}`);
+				// log(`point ${i} - x:${round(thisP.x)} y:${round(thisP.y)}`);
 				const angle = calculateDeltaAngle(thisP, nextP, nextNextP);
-				count += angle;
-				log(`\t angle: ${round(angle)} count: ${ round(count) }`);
+				windingNumber += angle;
+				// log(`\t angle: ${round(angle)} windingNumber: ${round(windingNumber)}`);
 			}
 		}
 
-		log(`returning ${count}`);
-		log(`Path.findWinding`, 'end');
-		return count;
+		// log(`returning ${windingNumber}`);
+		// log(`Path.findWinding`, 'end');
+		return windingNumber;
 	}
 
 	/**
