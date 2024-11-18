@@ -73,7 +73,7 @@ function makeHelpOverview() {
 		<br>
 		<h2>Learn more at the help site</h2>
 		<p>
-			Help articles for Glyphr Studio v2 will be at
+			Help articles for Glyphr Studio v2 can be found at
 			<a href="https://www.glyphrstudio.com/help" target="_blank">glyphrstudio.com/help</a>,
 			please email us if you find anything missing.
 		</p>
