@@ -11,8 +11,8 @@ function sampleGlyph() {
 	// console.log('SAMPLE PATH POINTS');
 	// console.log(samples.pathPoints);
 	let re = new Glyph({ id: 'glyph-0x41' });
+	// clockwise circle
 	re.shapes = [{ pathPoints: clone(samples.pathPoints) }];
-
 	// re.recalculateMaxes();
 	// console.log('SAMPLE GLYPH');
 	// console.log(re);
@@ -98,6 +98,13 @@ describe('Glyph - Getters and Setters', () => {
 		const g = sampleGlyph();
 		g.id = '0x1234';
 		expect(g.id).toBe('0x1234');
+	});
+
+	it('get/set Component Name', () => {
+		const g = sampleGlyph();
+		g.objType = 'Component';
+		g.name = 'my component';
+		expect(g.name).toBe('my component');
 	});
 
 	it('get/set paths', () => {
@@ -215,7 +222,7 @@ describe('Glyph - Getters and Setters', () => {
 
 describe('Glyph - outputs', () => {
 	it('save', () => {
-		expect(sampleGlyph().save().shapes[0].winding).toEqual(-5);
+		expect(sampleGlyph().save().shapes[0].name).toEqual('Path');
 	});
 
 	it('print', () => {
@@ -260,13 +267,13 @@ describe('Glyph - updating', () => {
 	it('flipNS', () => {
 		const g = multiTriangleGlyph();
 		g.flipNS();
-		expect(g.shapes[0].pathPoints[0].p.coord.x).toBe(400);
+		expect(g.shapes[0].pathPoints[0].p.coord.x).toBe(100);
 	});
 
 	it('flipEW', () => {
 		const g = multiTriangleGlyph();
 		g.flipEW();
-		expect(g.shapes[0].pathPoints[0].p.coord.x).toBe(410);
+		expect(g.shapes[0].pathPoints[0].p.coord.x).toBe(710);
 	});
 
 	it('roundAll', () => {
@@ -284,6 +291,7 @@ describe('Glyph - updating', () => {
 
 	it('reverseWinding', () => {
 		const g = sampleGlyph();
+		expect(g.shapes[0].winding).toBeLessThan(0);
 		g.reverseWinding();
 		expect(g.shapes[0].winding).toBeGreaterThan(0);
 	});

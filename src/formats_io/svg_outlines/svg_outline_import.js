@@ -46,9 +46,10 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true) {
 
 		if (path.length) {
 			pathCounter++;
-			// log(`pathCounter: ${pathCounter}`);
+			// log(`START pathCounter: ${pathCounter}`);
 			const isPathClosed = path[0][0].x === path.at(-1)[3].x && path[0][0].y === path.at(-1)[3].y;
 			let thisPath = new Path({ name: `Path ${pathCounter}` });
+			// log(`just after creating empty path: ${thisPath.winding}`);
 			let newPoint;
 
 			if (!isPathClosed) {
@@ -88,6 +89,8 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true) {
 			// log(`\n⮟thisPath⮟`);
 			// log(thisPath);
 			newPaths.push(thisPath);
+			// log(`done creating this path: ${thisPath.winding}`);
+			// log(`END pathCounter: ${pathCounter}`);
 		}
 	});
 

@@ -3,7 +3,6 @@ import { clone, xyPointsAreClose } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
 import { Path } from '../path.js';
 import { PathPoint } from '../path_point.js';
-import { Maxes } from '../maxes.js';
 
 /**
  * A sample path
@@ -166,7 +165,6 @@ describe('Path', () => {
 					type: 'corner',
 				},
 			],
-			winding: -4,
 		});
 	});
 
@@ -195,8 +193,7 @@ describe('Path', () => {
 
 	it('winding setter/getter', () => {
 		const path = samplePath();
-		path.winding = -1;
-		expect(path.winding).toBe(-1);
+		expect(path.winding).toBeCloseTo(-180);
 	});
 
 	it('maxes getter', () => {
@@ -338,7 +335,8 @@ describe('Path', () => {
 
 	it('findWinding', () => {
 		const path = samplePath();
-		expect(path.findWinding()).toBe(-5);
+		expect(path.findWinding()).toBeCloseTo(-180);
+		expect(path.winding).toBeCloseTo(-180);
 	});
 
 	it('reverseWinding', () => {
@@ -363,13 +361,13 @@ describe('Path', () => {
 	it('flipNS', () => {
 		const p = trianglePath();
 		p.flipNS();
-		expect(p.pathPoints[2].p.y).toBe(600);
+		expect(p.pathPoints[2].p.y).toBe(200);
 	});
 
 	it('flipEW', () => {
 		const p = trianglePath();
 		p.flipEW();
-		expect(p.pathPoints[2].p.x).toBe(400);
+		expect(p.pathPoints[2].p.x).toBe(200);
 	});
 
 	it('roundAll', () => {

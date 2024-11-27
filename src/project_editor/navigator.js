@@ -92,8 +92,9 @@ export class Navigator {
 
 	/**
 	 * Changes the page of this Project Editor
+	 * @param {Boolean =} test - set to true when running from Vitest
 	 */
-	navigate() {
+	navigate(test = false) {
 		// log(`Navigator.navigate`, 'start');
 		// log(`this.page: ${this.page}`);
 		// log(`this.panel: ${this.panel}`);
@@ -117,7 +118,7 @@ export class Navigator {
 				// log(getCurrentProject());
 			}
 		} else {
-			console.warn(`Navigation failed: app__wrapper could not be found.`);
+			if (!test) console.warn(`Navigation failed: app__wrapper could not be found.`);
 		}
 		// log(`Navigator.navigate`, 'end');
 	}
