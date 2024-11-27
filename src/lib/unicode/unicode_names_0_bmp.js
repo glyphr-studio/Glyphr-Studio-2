@@ -1,4 +1,5 @@
 export const unicodeNamesBMP = {
+	'0x0': '.null',
 	// Basic Latin
 	'0x20': 'Space',
 	'0x21': 'Exclamation mark',
@@ -16131,4 +16132,4 @@ export const unicodeNonCharPointNames = {
 	'0x9D': 'Operating System Command',
 	'0x9E': 'Private Message',
 	'0x9F': 'Application Program Command',
-}
+};

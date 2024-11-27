@@ -1,7 +1,7 @@
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { pause, round } from '../../common/functions.js';
-import { closeAllToasts, showToast } from '../../controls/dialogs/dialogs.js';
+import { closeAllToasts, showError, showToast } from '../../controls/dialogs/dialogs.js';
 import openTypeJS from '../../lib/opentype.js-september-2024-kern-write/opentype.mjs';
 import { getUnicodeShortName } from '../../lib/unicode/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
@@ -53,6 +53,8 @@ export async function ioFont_exportFont() {
 	options.glyphs.sort(function (a, b) {
 		return a.unicode - b.unicode;
 	});
+	// log(`\n⮟options.glyphs⮟`);
+	// log(options.glyphs);
 
 	// Create Font
 	// log('NEW options ARG TO FONT');
@@ -78,29 +80,45 @@ export async function ioFont_exportFont() {
 
 	// TODO investigate advanced table values
 
-	log('Font object:');
-	log(font);
-	log(font.toTables());
+	// log('Font object:');
+	// log(font);
+	// log(font.toTables());
 
-	saveOTFFile(font);
+	const result = saveOTFFile(font);
 	await pause();
-	showToast('Export complete!');
-	await pause(1000);
-
-	closeAllToasts();
+	if (result === true) {
+		showToast('Export complete!');
+		await pause(1000);
+		closeAllToasts();
+	} else {
+		showError(`
+			The OTF file could not be saved. Here is the error message that was returned:
+			<hr>
+			${result}
+		`);
+	}
 	// log('ioFont_exportFont', 'end');
 }
 
 function saveOTFFile(font) {
-	const familyName = font.getEnglishName('fontFamily');
-	const styleName = font.getEnglishName('fontSubfamily');
-	const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
+	let result = true;
+	try {
+		const familyName = font.getEnglishName('fontFamily');
+		const styleName = font.getEnglishName('fontSubfamily');
+		const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
+		// log(`\n⮟font⮟`);
+		// log(font);
+		const arrayBuffer = font.toArrayBuffer();
+		const dataView = new DataView(arrayBuffer);
+		const blob = new Blob([dataView], { type: 'font/opentype' });
 
-	const arrayBuffer = font.toArrayBuffer();
-	const dataView = new DataView(arrayBuffer);
-	const blob = new Blob([dataView], { type: 'font/opentype' });
+		saveFile(blob, fileName);
+	} catch (error) {
+		console.error(error);
+		result = error;
+	}
 
-	saveFile(blob, fileName);
+	return result;
 }
 
 /**
@@ -153,6 +171,9 @@ function createOptionsObject() {
  * @returns {Boolean}
  */
 export function shouldExportItem(item) {
+	// null char is always exported and handled separately
+	if (item.name === '.null') return false;
+
 	if (item.sessionState === 'new') {
 		return !!getCurrentProject().settings.app.exportUneditedItems;
 	}
@@ -188,6 +209,9 @@ function populateExportList() {
 	});
 
 	exportGlyphs.sort((a, b) => a.xc - b.xc);
+
+	// log(`\n⮟exportGlyphs⮟`);
+	// log(exportGlyphs);
 
 	// Add Ligatures
 	const exportLigatures = [];
@@ -247,6 +271,7 @@ function populateExportList() {
  * built for the .otf export
  */
 function addNotdefToExport(options) {
+	// log(`addNotdefToExport`, 'start');
 	const project = getCurrentProject();
 	let notdef = project.getItem('glyph-0x0');
 	if (!notdef) {
@@ -260,7 +285,6 @@ function addNotdefToExport(options) {
 					{ p: { coord: { x: 432, y: 0 } } },
 					{ p: { coord: { x: 0, y: 0 } } },
 				],
-				winding: -4,
 			},
 			{
 				name: 'Inner Phi Rectangle',
@@ -270,7 +294,6 @@ function addNotdefToExport(options) {
 					{ p: { coord: { x: 382, y: 650 } } },
 					{ p: { coord: { x: 50, y: 650 } } },
 				],
-				winding: 4,
 			},
 		];
 
@@ -285,6 +308,9 @@ function addNotdefToExport(options) {
 			notdef.advanceWidth = notdef.maxes.xMax;
 		}
 	}
+
+	// log(`\n⮟notdef⮟`);
+	// log(notdef);
 
 	// Add it to the export
 	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
@@ -305,6 +331,7 @@ function addNotdefToExport(options) {
 	options.glyphs.push(notdefGlyph);
 
 	codePointGlyphIndexTable['0x0'] = 0;
+	// log(`addNotdefToExport`, 'end');
 }
 
 /**

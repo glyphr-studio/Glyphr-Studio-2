@@ -4,6 +4,6 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'jsdom',
-		setupFiles: ['vi-canvas-mock'],
+		setupFiles: ['vi-canvas-mock', './vitest-setup.js'],
 	},
 });

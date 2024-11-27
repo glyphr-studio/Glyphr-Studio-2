@@ -114,6 +114,8 @@ export class OptionToggle extends HTMLElement {
 
 		if (attributeName === 'selected-value') {
 			this.dispatchEvent(new Event('change'));
+			this.selectionDisplay.innerHTML = this.getDisplayName();
+			this.toggleIcon.innerHTML = this.makeIcon(this.isFirstOptionSelected());
 		}
 
 		// log(`OptionToggle.attributeChangedCallback`, 'end');
@@ -156,9 +158,12 @@ export class OptionToggle extends HTMLElement {
 	 * @returns {Boolean}
 	 */
 	isFirstOptionSelected() {
-		const currentName = this.getAttribute('selected-name');
-		// log(`currentName: ${currentName}`);
-		return currentName === this.options[0].name;
+		if (this.options && this.options[0]) {
+			const currentName = this.getAttribute('selected-name');
+			// log(`currentName: ${currentName}`);
+			return currentName === this.options[0].name;
+		}
+		return false;
 	}
 
 	/**

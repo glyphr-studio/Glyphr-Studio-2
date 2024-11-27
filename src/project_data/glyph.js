@@ -101,6 +101,7 @@ export class Glyph extends GlyphElement {
 		const re = {
 			id: this.id,
 		};
+		if (this.objType === 'Component') re.name = this.name;
 
 		if (this.advanceWidth !== 0) re.advanceWidth = this.advanceWidth;
 		if (this.transformOrigin && this.transformOrigin !== 'baseline-left') {
