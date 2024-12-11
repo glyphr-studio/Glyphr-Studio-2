@@ -257,14 +257,7 @@ export function makeAndShowPathAddPointNotation(emPoint) {
  * @param {Boolean =} isDropdown - triggers slight style adjustments for dropdown control
  * @returns {HTMLElement}
  */
-export function makeContextMenu(
-	rows = [],
-	x,
-	y,
-	width,
-	height,
-	isDropdown = false
-) {
+export function makeContextMenu(rows = [], x, y, width, height, isDropdown = false) {
 	// log(`makeContextMenu`, 'start');
 	// log(`x: ${x}`);
 	// log(`y: ${y}`);
@@ -355,8 +348,7 @@ function makeOneContextMenuRow(data = {}) {
 			textToNode(
 				makeIcon({
 					name: data.icon,
-					color: accentColors.blue.l55,
-					hoverColor: 'blue',
+					color: accentColors.royal.l55,
 				})
 			)
 		);
