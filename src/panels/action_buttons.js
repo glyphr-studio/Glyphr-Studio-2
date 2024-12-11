@@ -53,22 +53,33 @@ export function svgWrap(content, size = '30') {
 	return re;
 }
 
-let actionButtonIconColors = {
-	darkFill: accentColors.gray.l25,
-	lightFill: accentColors.gray.l85,
-	blueOutline: accentColors.blue.l70,
-	greenOutline: accentColors.green.l70,
-	grayOutline: accentColors.gray.l70,
-	purpleOutline: accentColors.purple.l40,
-	redX: uiColors.red,
+// let actionButtonIconColors = {
+// 	darkFill: accentColors.gray.l25,
+// 	lightFill: accentColors.gray.l85,
+// 	blueOutline: accentColors.royal.l70,
+// 	greenOutline: accentColors.green.l70,
+// 	grayOutline: accentColors.gray.l70,
+// 	purpleOutline: accentColors.purple.l40,
+// 	redX: uiColors.red,
+// };
+
+const icon = {
+	actionBlue: accentColors.royal.l50,
+	dangerRed: uiColors.red,
+	crossProjectDarkPurple: accentColors.purple.l45,
+	crossProjectLightPurple: accentColors.purple.l85,
+	componentGreen: accentColors.green.l60,
+	darkGray: accentColors.gray.l10,
+	mediumGray: accentColors.gray.l50,
+	lightGray: accentColors.gray.l80,
 };
 
 // Universal actions
 makeActionButtonIcon.copy = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let gray = actionButtonIconColors.grayOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let gray = icon.mediumGray;
+	let fill = icon.darkGray;
 
 	re += `
 		<polygon fill="${fill}" points="1,22 1,10.4 10.4,1 18,1 18,22"/>
@@ -82,8 +93,8 @@ makeActionButtonIcon.copy = () => {
 
 makeActionButtonIcon.paste = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<rect fill="${fill}" x="5" y="7"	width="20" height="22"/>
@@ -97,9 +108,9 @@ makeActionButtonIcon.paste = () => {
 
 makeActionButtonIcon.clearClipboard = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
-	let red = actionButtonIconColors.redX;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
+	let red = icon.dangerRed;
 
 	re += `
 		<rect fill="${fill}" x="5" y="7"	width="20" height="22"/>
@@ -115,8 +126,8 @@ makeActionButtonIcon.clearClipboard = () => {
 
 makeActionButtonIcon.pastePathsFromAnotherGlyph = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<rect fill="${fill}" x="5" y="7"	width="20" height="22"/>
@@ -130,8 +141,8 @@ makeActionButtonIcon.pastePathsFromAnotherGlyph = () => {
 };
 
 makeActionButtonIcon.pastePathsFromAnotherProject = () => {
-	let background = actionButtonIconColors.lightFill;
-	let purple = actionButtonIconColors.purpleOutline;
+	let background = icon.lightGray;
+	let purple = icon.crossProjectDarkPurple;
 
 	const re = `
 		<path fill="${background}" d="m11.5,1c4.817,0,7.471,0,8.986,1.514,1.514,1.515,1.514,4.168,1.514,8.986s0,7.471-1.514,8.985c-1.515,1.515-4.168,1.515-8.986,1.515s-7.471,0-8.985-1.515c-1.515-1.514-1.515-4.168-1.515-8.985s0-7.471,1.515-8.986c1.514-1.514,4.168-1.514,8.985-1.514"/>
@@ -146,11 +157,11 @@ makeActionButtonIcon.pastePathsFromAnotherProject = () => {
 
 makeActionButtonIcon.addPath = function (isComponentInstance = false) {
 	let re = '';
-	let accent = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let accent = icon.actionBlue;
+	let fill = icon.darkGray;
 	if (isComponentInstance) {
-		accent = actionButtonIconColors.greenOutline;
-		fill = actionButtonIconColors.lightFill;
+		accent = icon.componentGreen;
+		fill = icon.lightGray;
 	}
 
 	// path
@@ -170,8 +181,8 @@ makeActionButtonIcon.addPath = function (isComponentInstance = false) {
 
 makeActionButtonIcon.undo = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<path fill="${fill}" d="M20.1,23c4.6-5,6.6-9.6,5.5-12.8C24.9,8.2,22.9,7,20,7c-5.9,0-8.8,5.3-8.9,5.5L10.9,13l2.4,4.1l-12,0.8l4-14.4l2.5,4.2l0.9-1.1c0,0,4-4.6,11.2-4.6c4.1,0,7.9,2.8,8.8,6.5C29.4,10.8,29.3,16.3,20.1,23z"/>
@@ -183,7 +194,7 @@ makeActionButtonIcon.undo = () => {
 
 makeActionButtonIcon.linkToGlyph = () => {
 	let re = '';
-	let green = actionButtonIconColors.greenOutline;
+	let green = icon.componentGreen;
 
 	re += `
 		<path fill="${green}" d="M18,8.8L8.8,18c-0.5,0.5-1.3,0.5-1.8,0s-0.5-1.3,0-1.8L16.2,7c0.5-0.5,1.3-0.5,1.8,0S18.5,8.3,18,8.8z"/>
@@ -198,8 +209,8 @@ makeActionButtonIcon.linkToGlyph = () => {
 
 // (shared icons, Glyph and Path)
 makeActionButtonIcon.round = () => {
-	let red = actionButtonIconColors.redX;
-	let fill = actionButtonIconColors.darkFill;
+	let red = icon.dangerRed;
+	let fill = icon.darkGray;
 
 	let re = `
 		<path fill="${red}" d="M17.4,21.9c0.4,0.5,2-0.5,1.4-1.4c-1.3-1.9-4.8-5.9-6.5-7.3C11.1,12.2,10,13,10,13S14.4,17.5,17.4,21.9z"/>
@@ -215,9 +226,9 @@ makeActionButtonIcon.round = () => {
 
 makeActionButtonIcon.flipVertical = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let gray = actionButtonIconColors.grayOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let gray = icon.mediumGray;
+	let fill = icon.darkGray;
 
 	re += `
 		<polygon fill="${fill}" points="6.4,13 1,7.6 1,1 14.7,1 29,9.6 29,13"/>
@@ -231,9 +242,9 @@ makeActionButtonIcon.flipVertical = () => {
 
 makeActionButtonIcon.flipHorizontal = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let gray = actionButtonIconColors.grayOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let gray = icon.mediumGray;
+	let fill = icon.darkGray;
 
 	re += `
 		<polygon fill="${fill}" points="1,29 1,15.3 9.6,1 13,1 13,23.6 7.6,29"/>
@@ -247,8 +258,8 @@ makeActionButtonIcon.flipHorizontal = () => {
 
 // Glyph actions
 makeActionButtonIcon.exportGlyphSVG = () => {
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	let re = `
       <rect x="7" y="1" width="16" height="2" fill="${blue}"/>
@@ -262,8 +273,8 @@ makeActionButtonIcon.exportGlyphSVG = () => {
 };
 
 makeActionButtonIcon.importGlyphSVG = () => {
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	let re = `
     <path d="M28,4l-2-2-5,5-3-3c0-.143,0,8,0,8h8l-3-3,5-5Z" fill="${blue}"/>
@@ -276,8 +287,8 @@ makeActionButtonIcon.importGlyphSVG = () => {
 };
 
 makeActionButtonIcon.deleteGlyph = () => {
-	let red = actionButtonIconColors.redX;
-	let fill = actionButtonIconColors.darkFill;
+	let red = icon.dangerRed;
+	let fill = icon.darkGray;
 
 	let re = `
 		<path fill="${fill}" d="M20.2,18.5H10L7.8,25h3.5v3.6H0V25h3.5l7.8-21.8H7.8V0h14.6v3.2h-3.6l8,21.8H30v3.6H18.8V25h3.5L20.2,18.5zM19.2,15.2L15.4,3.2H15l-4,11.9H19.2z"/>
@@ -291,8 +302,8 @@ makeActionButtonIcon.deleteGlyph = () => {
 // Path actions
 makeActionButtonIcon.reverseWinding = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let gray = actionButtonIconColors.grayOutline;
+	let blue = icon.actionBlue;
+	let gray = icon.mediumGray;
 
 	re += `
 		<path fill="${gray}" d="M3.7,7.8V5L0,8.7l3.7,3.7V9.6c6.2,0,11.2,5,11.2,11.2h1.9C16.8,13.6,10.9,7.8,3.7,7.8z"/>
@@ -306,15 +317,15 @@ makeActionButtonIcon.switchPathComponent = function (isComponentInstance = false
 	// log(`makeActionButtonIcon.switchComponent`, 'start');
 	// log(`isComponentInstance: ${isComponentInstance}`);
 	let re = '';
-	let before = actionButtonIconColors.blueOutline;
-	let after = actionButtonIconColors.greenOutline;
-	let beforeFill = actionButtonIconColors.darkFill;
-	let afterFill = actionButtonIconColors.lightFill;
+	let before = icon.actionBlue;
+	let after = icon.componentGreen;
+	let beforeFill = icon.darkGray;
+	let afterFill = icon.lightGray;
 	if (isComponentInstance) {
-		before = actionButtonIconColors.greenOutline;
-		after = actionButtonIconColors.blueOutline;
-		beforeFill = actionButtonIconColors.lightFill;
-		afterFill = actionButtonIconColors.darkFill;
+		before = icon.componentGreen;
+		after = icon.actionBlue;
+		beforeFill = icon.lightGray;
+		afterFill = icon.darkGray;
 	}
 
 	re += `
@@ -330,12 +341,12 @@ makeActionButtonIcon.switchPathComponent = function (isComponentInstance = false
 
 makeActionButtonIcon.deletePath = function (isComponentInstance = false) {
 	let re = '';
-	let red = actionButtonIconColors.redX;
-	let accent = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let red = icon.dangerRed;
+	let accent = icon.actionBlue;
+	let fill = icon.darkGray;
 	if (isComponentInstance) {
-		accent = actionButtonIconColors.greenOutline;
-		fill = actionButtonIconColors.lightFill;
+		accent = icon.componentGreen;
+		fill = icon.lightGray;
 	}
 
 	// path
@@ -356,8 +367,8 @@ makeActionButtonIcon.deletePath = function (isComponentInstance = false) {
 // Boolean combine actions
 makeActionButtonIcon.combine_unite = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<path d="M15.164,6.4c-.8-3.104-3.61-5.4-6.964-5.4-3.976,0-7.2,3.223-7.2,7.2,0,3.354,2.296,6.164,5.4,6.964v3.836h12.6V6.4h-3.836Z" style="fill: ${fill};"/>
@@ -369,8 +380,8 @@ makeActionButtonIcon.combine_unite = () => {
 
 makeActionButtonIcon.combine_divide = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<path d="M15.164,6.4c-.8-3.104-3.61-5.4-6.964-5.4C4.224,1,1,4.223,1,8.2c0,3.354,2.296,6.164,5.4,6.964v3.836h12.6V6.4h-3.836Z" style="fill: ${fill};"/>
@@ -382,8 +393,8 @@ makeActionButtonIcon.combine_divide = () => {
 
 makeActionButtonIcon.combine_subtract = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<path d="M15,6.337c-.791-3.068-3.568-5.337-6.883-5.337C4.186,1,1,4.186,1,8.117c0,3.315,2.27,6.092,5.337,6.883V6.337h8.663Z" style="fill: ${fill};"/>
@@ -395,8 +406,8 @@ makeActionButtonIcon.combine_subtract = () => {
 
 makeActionButtonIcon.combine_exclude = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<path d="M15.347,7c0,5-3.347,8.347-8.347,8.347v3.653h12V7h-3.653Z" style="fill: ${fill};"/>
@@ -409,8 +420,8 @@ makeActionButtonIcon.combine_exclude = () => {
 
 makeActionButtonIcon.combine_intersect = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<path d="M15,8.6c0-.554-.078-1.088-.21-1.6h-7.79v7.79c.512.132,1.046.21,1.6.21,3.535,0,6.4-2.865,6.4-6.4Z" style="fill: ${fill};"/>
@@ -423,8 +434,8 @@ makeActionButtonIcon.combine_intersect = () => {
 // Kerning actions
 makeActionButtonIcon.edit = () => {
 	let re = '';
-	let accent = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let accent = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<path fill="${accent}" d="m28.643,1.357c-1.577-1.577-4.109-1.891-5.651-.349L4,20,0,29l1,1,9-4L28.992,7.008c1.542-1.542,1.228-4.074-.349-5.651Z"/>
@@ -436,7 +447,7 @@ makeActionButtonIcon.edit = () => {
 
 makeActionButtonIcon.delete = () => {
 	let re = '';
-	let red = actionButtonIconColors.redX;
+	let red = icon.dangerRed;
 
 	re += `
 		<path fill="${red}" d="m23.597,28.681c1.121,1.472,6.349-1.368,4.386-3.98C23.74,19.055,12.613,7.416,7.367,3.301,3.535.295,0,2.518,0,2.518c0,0,13.846,13.354,23.597,26.164Z"/>
@@ -448,8 +459,8 @@ makeActionButtonIcon.delete = () => {
 
 makeActionButtonIcon.createNewKernGroup = () => {
 	let re = '';
-	let green = actionButtonIconColors.greenOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let green = icon.componentGreen;
+	let fill = icon.darkGray;
 	re += `
 		<path d="m16.306,19.001l-4.324-11.39h-1.593v-1.611h5.08v1.611h-1.487l3.278,8.641,3.19-8.641h-1.501v-1.611h4.941v1.611h-1.563l-4.235,11.39h-1.786Z" fill="${fill}"/>
 		<path d="m12.197,17.375l-3.58-9.75h1.57v-1.625H3.548v1.625h1.517l-3.493,9.75H0v1.625h5.116v-1.625h-1.578l.994-2.941h4.679l.966,2.941h-1.615v1.625h5.088v-1.625h-1.453Zm-7.181-4.463l1.751-5.287h.273l1.682,5.287h-3.705Z" fill="${fill}"/>
@@ -464,8 +475,8 @@ makeActionButtonIcon.createNewKernGroup = () => {
 
 makeActionButtonIcon.deleteSingleLetterPair = () => {
 	let re = '';
-	let red = actionButtonIconColors.redX;
-	let fill = actionButtonIconColors.darkFill;
+	let red = icon.dangerRed;
+	let fill = icon.darkGray;
 	re += `
 		<path d="m16.306,19.001l-4.324-11.39h-1.593v-1.611h5.08v1.611h-1.487l3.278,8.641,3.19-8.641h-1.501v-1.611h4.941v1.611h-1.563l-4.235,11.39h-1.786Z" fill="${fill}"/>
 		<path d="m12.197,17.375l-3.58-9.75h1.57v-1.625H3.548v1.625h1.517l-3.493,9.75H0v1.625h5.116v-1.625h-1.578l.994-2.941h4.679l.966,2.941h-1.615v1.625h5.088v-1.625h-1.453Zm-7.181-4.463l1.751-5.287h.273l1.682,5.287h-3.705Z" fill="${fill}"/>
@@ -478,8 +489,8 @@ makeActionButtonIcon.deleteSingleLetterPair = () => {
 
 makeActionButtonIcon.findSingleLetterPair = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 	re += `
 		<path d="m16.306,19.001l-4.324-11.39h-1.593v-1.611h5.08v1.611h-1.487l3.278,8.641,3.19-8.641h-1.501v-1.611h4.941v1.611h-1.563l-4.235,11.39h-1.786Z" fill="${fill}"/>
 		<path d="m12.197,17.375l-3.58-9.75h1.57v-1.625H3.548v1.625h1.517l-3.493,9.75H0v1.625h5.116v-1.625h-1.578l.994-2.941h4.679l.966,2.941h-1.615v1.625h5.088v-1.625h-1.453Zm-7.181-4.463l1.751-5.287h.273l1.682,5.287h-3.705Z" fill="${fill}"/>
@@ -492,8 +503,8 @@ makeActionButtonIcon.findSingleLetterPair = () => {
 // Layer actions
 makeActionButtonIcon.moveLayerDown = () => {
 	let re = '';
-	let accent = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let accent = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<rect fill="${accent}" x="23" y="21" width="2" height="7"/>
@@ -507,8 +518,8 @@ makeActionButtonIcon.moveLayerDown = () => {
 
 makeActionButtonIcon.moveLayerUp = () => {
 	let re = '';
-	let accent = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let accent = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	re += `
 		<rect fill="${accent}" x="23" y="23" width="2" height="7"/>
@@ -523,8 +534,8 @@ makeActionButtonIcon.moveLayerUp = () => {
 // Shape align actions
 makeActionButtonIcon.align_shapes = function (edge) {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let blue = icon.actionBlue;
+	let fill = icon.darkGray;
 
 	switch (edge) {
 		case 'bottom':
@@ -588,8 +599,8 @@ makeActionButtonIcon.align_shapes = function (edge) {
 // Point align actions
 makeActionButtonIcon.align_points = function (edge) {
 	let re = '';
-	let oldPoint = actionButtonIconColors.grayOutline;
-	let newPoint = actionButtonIconColors.blueOutline;
+	let oldPoint = icon.mediumGray;
+	let newPoint = icon.actionBlue;
 
 	switch (edge) {
 		case 'bottom':
@@ -677,8 +688,8 @@ makeActionButtonIcon.align_points = function (edge) {
 // Point actions
 makeActionButtonIcon.resetPathPoint = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let gray = actionButtonIconColors.grayOutline;
+	let blue = icon.actionBlue;
+	let gray = icon.mediumGray;
 
 	// Other handles
 	re += `
@@ -702,8 +713,8 @@ makeActionButtonIcon.resetPathPoint = () => {
 
 makeActionButtonIcon.deletePathPoint = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let red = actionButtonIconColors.redX;
+	let blue = icon.actionBlue;
+	let red = icon.dangerRed;
 
 	// Handles
 	re += `
@@ -725,7 +736,7 @@ makeActionButtonIcon.deletePathPoint = () => {
 
 makeActionButtonIcon.insertPathPoint = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
+	let blue = icon.actionBlue;
 
 	// Handles
 	re += `
@@ -747,9 +758,9 @@ makeActionButtonIcon.insertPathPoint = () => {
 
 makeActionButtonIcon.mergePathPoints = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let green = actionButtonIconColors.greenOutline;
-	let gray = actionButtonIconColors.grayOutline;
+	let blue = icon.actionBlue;
+	let green = icon.componentGreen;
+	let gray = icon.mediumGray;
 
 	re += `
 		<path d="M14.5,8c-.652,0-1.202.419-1.408,1h-1.092v-2h-5v2h-1.092c-.207-.581-.756-1-1.408-1-.828,0-1.5.672-1.5,1.5s.672,1.5,1.5,1.5c.652,0,1.202-.419,1.408-1h1.092v2h5v-2h1.092c.207.581.756,1,1.408,1,.828,0,1.5-.672,1.5-1.5s-.672-1.5-1.5-1.5Z" style="fill: ${blue}"/>
@@ -765,8 +776,8 @@ makeActionButtonIcon.mergePathPoints = () => {
 
 makeActionButtonIcon.selectNextPathPoint = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let gray = actionButtonIconColors.grayOutline;
+	let blue = icon.actionBlue;
+	let gray = icon.mediumGray;
 	re += `
 		<rect x="22.5" y="11.5" width="7" height="7" fill="white"/>
 		<path d="m29,12v6h-6v-6h6m1-1h-8v8h8v-8h0Z" fill="${blue}"/>
@@ -778,8 +789,8 @@ makeActionButtonIcon.selectNextPathPoint = () => {
 
 makeActionButtonIcon.selectPreviousPathPoint = () => {
 	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let gray = actionButtonIconColors.grayOutline;
+	let blue = icon.actionBlue;
+	let gray = icon.mediumGray;
 	re += `
 		<rect x=".5" y="11.5" width="7" height="7" fill="white"/>
 		<path d="m7,12v6H1v-6h6m1-1H0v8h8v-8h0Z" fill="${blue}"/>
@@ -791,14 +802,14 @@ makeActionButtonIcon.selectPreviousPathPoint = () => {
 
 // Dev actions for testing and default
 makeActionButtonIcon.default = () => {
-	let re = `<rect width="30" height="30" fill="${actionButtonIconColors.greenOutline}"/>`;
+	let re = `<rect width="30" height="30" fill="${icon.componentGreen}"/>`;
 	return svgWrap(re);
 };
 
 makeActionButtonIcon.test = () => {
 	let re = `
-		<path d="M28.05,23.82c-1.65-1.79-9.55-13.02-9.55-17.82V3h1c.28,0,.5-.72,.5-1s-.22-1-.5-1H10.5c-.28,0-.5,.72-.5,1s.22,1,.5,1h1v3c0,4.8-7.9,16.03-9.55,17.82-.58,.55-.95,1.32-.95,2.18,0,1.66,1.34,3,3,3H26c1.66,0,3-1.34,3-3,0-.86-.37-1.63-.95-2.18ZM13.5,6V3h3v3c0,2.76,2.01,6.95,4.25,10.72-3.27,1.69-5.6-.72-7.75-.72-.34,0-1.86-.31-4,1.15,2.34-3.88,4.5-8.28,4.5-11.15Zm3.5,20c-1.66,0-3-1.34-3-3s1.34-3,3-3,3,1.34,3,3-1.34,3-3,3Zm-6-7.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5-.67,1.5-1.5,1.5-1.5-.67-1.5-1.5Z" fill="${actionButtonIconColors.redX}"/>
-		<circle cx="15" cy="14" r="1" fill="${actionButtonIconColors.redX}"/>
+		<path d="M28.05,23.82c-1.65-1.79-9.55-13.02-9.55-17.82V3h1c.28,0,.5-.72,.5-1s-.22-1-.5-1H10.5c-.28,0-.5,.72-.5,1s.22,1,.5,1h1v3c0,4.8-7.9,16.03-9.55,17.82-.58,.55-.95,1.32-.95,2.18,0,1.66,1.34,3,3,3H26c1.66,0,3-1.34,3-3,0-.86-.37-1.63-.95-2.18ZM13.5,6V3h3v3c0,2.76,2.01,6.95,4.25,10.72-3.27,1.69-5.6-.72-7.75-.72-.34,0-1.86-.31-4,1.15,2.34-3.88,4.5-8.28,4.5-11.15Zm3.5,20c-1.66,0-3-1.34-3-3s1.34-3,3-3,3,1.34,3,3-1.34,3-3,3Zm-6-7.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5-.67,1.5-1.5,1.5-1.5-.67-1.5-1.5Z" fill="${icon.dangerRed}"/>
+		<circle cx="15" cy="14" r="1" fill="${icon.dangerRed}"/>
 	`;
 
 	return svgWrap(re);
