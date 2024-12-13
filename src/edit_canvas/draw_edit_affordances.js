@@ -794,13 +794,15 @@ export function drawAllHighlightedPoints(ctx) {
 	let editor = getCurrentProjectEditor();
 	let currentItem = editor.selectedItem;
 
-	currentItem.shapes.forEach((shape) => {
-		if (shape.objType === 'Path') {
-			log(`\n⮟shape.cache⮟`);
-			log(shape.cache);
-			drawHighlightedPointsForPath(shape, ctx);
-		}
-	});
+	if (currentItem.shapes) {
+		currentItem.shapes.forEach((shape) => {
+			if (shape.objType === 'Path') {
+				log(`\n⮟shape.cache⮟`);
+				log(shape.cache);
+				drawHighlightedPointsForPath(shape, ctx);
+			}
+		});
+	}
 	log(`drawAllHighligthedPoints`, 'end');
 }
 

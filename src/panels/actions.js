@@ -113,7 +113,7 @@ export function getActionData(name) {
 	if (name === 'addShapeActions') {
 		actionData = [
 			{
-				iconName: 'addPath',
+				iconName: 'addShape',
 				iconOptions: false,
 				title: `Add Path\nCreates a new default path and adds it to this glyph.`,
 				onClick: () => {
@@ -126,7 +126,7 @@ export function getActionData(name) {
 				},
 			},
 			{
-				iconName: 'addPath',
+				iconName: 'addShape',
 				iconOptions: true,
 				title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
 				onClick: () => {
@@ -289,7 +289,7 @@ export function getActionData(name) {
 				onClick: clipboardCopy,
 			},
 			{
-				iconName: 'deletePath',
+				iconName: 'deleteShape',
 				title: 'Delete\nRemoves the currently selected shape(s) from this glyph.',
 				onClick: deleteSelectedPaths,
 			},
@@ -399,7 +399,7 @@ export function getActionData(name) {
 				},
 			},
 			{
-				iconName: 'deletePath',
+				iconName: 'deleteShape',
 				iconOptions: true,
 				title: 'Delete\nRemoves the currently selected component instance from this glyph.',
 				onClick: deleteSelectedPaths,
