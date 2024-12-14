@@ -129,14 +129,14 @@
 	width: 30px;
 	padding: 5px;
 	margin: 0 0 5px 0;
-	background-color: var(--gray-l90);
+	background-color: var(--blue-l95);
 }
 
 .editor-page__tool-selected,
 .editor-page__tool-selected:active,
 .editor-page__tool-selected:focus,
 .editor-page__tool-selected:hover {
-	background-color: var(--blue-l75);
+	background-color: var(--accent-color);
 }
 
 .editor-page__tool svg {

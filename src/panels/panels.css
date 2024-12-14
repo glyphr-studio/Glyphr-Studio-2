@@ -238,8 +238,8 @@
 }
 
 .pointTypeButton[selected] {
-	border-color: var(--blue-l65);
-	background-color: var(--blue-l65);
+	border-color: var(--accent-color);
+	background-color: var(--accent-color);
 }
 
 .pointTypeButton[selected] svg g {
@@ -249,19 +249,19 @@
 .pointTypeButton[selected]:hover {
 	cursor: default;
 	border-color: var(--blue-l55);
-	background-color: var(--blue-l65);
+	background-color: var(--accent-color);
 }
 .pointTypeButton[selected]:hover svg g {
 	fill: white;
 }
 
 .pointTypeButton:hover {
-	border-color: var(--blue-l65);
+	border-color: var(--accent-color);
 	background-color: var(--blue-l95);
 }
 
 .pointTypeButton:hover svg g {
-	fill: var(--blue-l65);
+	fill: var(--accent-color);
 }
 
 :root {

@@ -21,8 +21,8 @@
 	--fill-focus: var(--enabled-focus-fill);
 	--fill-disabled: var(--enabled-restingLight-fill);
 
-	--selected_border-resting: var(--blue-l65);
-	--selected_fill-resting: var(--blue-l65);
+	--selected_border-resting: var(--accent-color);
+	--selected_fill-resting: var(--accent-color);
 	--selected_border-focus: var(--blue-l50);
 	--selected_fill-focus: var(--blue-l50);
 }
