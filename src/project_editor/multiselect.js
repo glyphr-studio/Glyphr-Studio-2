@@ -3,10 +3,8 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
-import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-import { PathPoint } from '../project_data/path_point.js';
 // import { combinePaths } from './boolean_combine.js';
 import { combinePaths } from './boolean_combine.js';
 import { makeGlyphWithResolvedLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
@@ -194,7 +192,7 @@ export class MultiSelectPoints extends MultiSelect {
 
 	publishChanges(topic = 'whichPathPointIsSelected') {
 		// log(`MultiSelectPoints.publishChanges`, 'start');
-		if(this.allowPublishing) {
+		if (this.allowPublishing) {
 			const editor = getCurrentProjectEditor();
 			editor.publish(topic, this.members);
 		}
@@ -240,6 +238,21 @@ export class MultiSelectPoints extends MultiSelect {
 
 		this.clear();
 		return minPointIndex;
+	}
+
+	align(edge) {
+		// showToast('align ' + edge);
+		const shapeMaxes = this.virtualShape.maxes;
+		this.virtualShape.pathPoints.forEach((point) => {
+			if (edge === 'top') point.p.y = shapeMaxes.yMax;
+			if (edge === 'middle') point.p.y = shapeMaxes.center.y;
+			if (edge === 'bottom') point.p.y = shapeMaxes.yMin;
+			if (edge === 'left') point.p.x = shapeMaxes.xMin;
+			if (edge === 'center') point.p.x = shapeMaxes.center.x;
+			if (edge === 'right') point.p.x = shapeMaxes.xMax;
+		});
+
+		// log('Glyph.alignShapes', 'end');
 	}
 
 	get highestSelectedPointNumber() {
@@ -367,7 +380,7 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	publishChanges(topic = 'whichShapeIsSelected') {
-		if(this.allowPublishing) {
+		if (this.allowPublishing) {
 			const editor = getCurrentProjectEditor();
 			editor.publish(topic, this.members);
 		}
