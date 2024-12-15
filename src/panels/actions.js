@@ -384,9 +384,7 @@ export function getActionData(name) {
 							const transformedGlyph = shape.transformedGlyph;
 							// log(`\n⮟transformedGlyph⮟`);
 							// log(transformedGlyph);
-							newShapes = newShapes.concat(
-								copyShapesFromTo(transformedGlyph, editor.selectedItem)
-							);
+							newShapes = newShapes.concat(copyShapesFromTo(transformedGlyph, editor.selectedItem));
 							if (editor.selectedItemID) removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
 						}
 					});
@@ -566,37 +564,73 @@ export function getActionData(name) {
 				iconName: 'align_points',
 				iconOptions: 'left',
 				title: `Align Path Points: Left\nMoves all the selected points so they are left aligned with the leftmost point.`,
-				onClick: () => {},
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('left');
+					editor.history.addState(`Left aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
 			},
 			{
 				iconName: 'align_points',
 				iconOptions: 'center',
 				title: `Align Path Points: Center\nMoves all the selected points so they are center aligned between the leftmost and rightmost point.`,
-				onClick: () => {},
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('center');
+					editor.history.addState(`Center aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
 			},
 			{
 				iconName: 'align_points',
 				iconOptions: 'right',
 				title: `Align Path Points: Right\nMoves all the selected points so they are right aligned with the rightmost point.`,
-				onClick: () => {},
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('right');
+					editor.history.addState(`Right aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
 			},
 			{
 				iconName: 'align_points',
 				iconOptions: 'top',
 				title: `Align Path Points: Top\nMoves all the selected points so they are top aligned with the topmost point.`,
-				onClick: () => {},
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('top');
+					editor.history.addState(`Top aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
 			},
 			{
 				iconName: 'align_points',
 				iconOptions: 'middle',
 				title: `Align Path Points: Middle\nMoves all the selected points so they are middle aligned between the topmost and bottommost point.`,
-				onClick: () => {},
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('middle');
+					editor.history.addState(`Middle aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
 			},
 			{
 				iconName: 'align_points',
 				iconOptions: 'bottom',
 				title: `Align Path Points: Bottom\nMoves all the selected points so they are bottom aligned with the bottommost point.`,
-				onClick: () => {},
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('bottom');
+					editor.history.addState(`Bottom aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
 			},
 		];
 	}
