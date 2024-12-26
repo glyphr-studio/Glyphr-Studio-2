@@ -149,6 +149,19 @@
 	display: block;
 }
 
+label[for="input__url-font"] {
+    color: white;
+    display: block;
+}
+
+#input__url-font {
+	width: 94%;
+	height: 25px;
+	margin: 8px 0px 14px 0px;
+	color: var(--gray-l30);
+	display: block;
+}
+
 #open-project__drop-target {
 	display: block;
 	width: 90%;

@@ -6,6 +6,7 @@ import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { ioFont_importFont } from '../formats_io/otf/font_import.js';
 import { ioSVG_importSVGfont } from '../formats_io/svg_font/svg_font_import.js';
 import { validateSingleFileInput } from '../formats_io/validate_file_input.js';
+import { loadFontFromUrL } from '../formats_io/load_font_from_url.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import obleggExampleProject from '../samples/oblegg.gs2?raw';
@@ -149,6 +150,32 @@ export function makeOpenProjectTabs() {
 	const br = makeElement({ tag: 'br' });
 	addAsChildren(tabContentNew, [inputProjectName, br, br, buttonStartNewProject]);
 
+	// Content for load font from URL tab
+	const tabContentUrl = makeElement({
+		id: 'tab-content__url-font',
+		className: 'open-project__tab-content',
+		innerHTML: '<h2>Load font from an URL</h2>\n<label for="input__url-font" style="display: block">URL:</label>',
+		style: 'display: none;',
+	});
+
+	const inputUrlFont = makeElement({
+		tag: 'input',
+		id: 'input__url-font',
+		style: 'display: block;',
+		attributes: { type: 'url', autofocus: 'true' },
+	});
+
+	const buttonLoadUrlFont = makeElement({
+		tag: 'fancy-button',
+		id: 'button__load-url-font',
+		innerHTML: 'Load font',
+		onClick: async () => {
+			handleLoadFontFromUrl(inputUrlFont.value);
+		},
+	});
+
+	addAsChildren(tabContentUrl, [inputUrlFont, buttonLoadUrlFont]);
+
 	// Content for Load tab
 	const tabContentLoad = makeElement({
 		id: 'tab-content__load',
@@ -272,6 +299,18 @@ export function makeOpenProjectTabs() {
 		},
 	});
 
+	const tabLoadFromUrl = makeElement({
+		tag: 'button',
+		id: 'load-url__tab-load',
+		className: 'open-project__tab',
+		innerHTML: 'URL',
+		onClick: () => {
+			deselectAllTabs();
+			tabLoadFromUrl.setAttribute('selected', '');
+			tabContentUrl.style.display = 'block';
+		},
+	});
+
 	const tabLoad = makeElement({
 		tag: 'button',
 		id: 'open-project__tab-load',
@@ -309,15 +348,34 @@ export function makeOpenProjectTabs() {
 	});
 
 	const tabs = makeElement({ className: 'open-project__tabs' });
-	let tabControls = [tabNew, tabLoad, tabExamples];
+	let tabControls = [tabNew, tabLoadFromUrl, tabLoad, tabExamples];
 	if (!isSecondProject) tabControls.splice(2, 0, tabAutoSaves);
 	addAsChildren(tabs, tabControls);
 
 	const tabWrapper = makeElement({ className: 'open-project__tab-wrapper' });
-	let tabContents = [tabs, tabContentNew, tabContentLoad, tabContentExamples];
+	let tabContents = [tabs, tabContentNew, tabContentLoad, tabContentUrl, tabContentExamples];
 	if (!isSecondProject) tabContents.splice(3, 0, tabContentAutoSaves);
 	addAsChildren(tabWrapper, tabContents);
 	return tabWrapper;
+}
+
+/**
+ * Load a font from a URL
+ * @param {string} url - url to load from
+ */
+async function handleLoadFontFromUrl(url) {
+	if (!url) {
+		showError('Please enter a URL.');
+		return;
+	}
+	try{
+		const font = await loadFontFromUrL(url);
+		ioFont_importFont(font);
+	}catch(e){
+		showError('Failed to load font from url.');
+		console.error(e);
+	}
+
 }
 
 /**
@@ -548,4 +606,3 @@ function handleLoadSample(name) {
 		importProjectDataAndNavigate(project);
 	}, 100);
 }
-
