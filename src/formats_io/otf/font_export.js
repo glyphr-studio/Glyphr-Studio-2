@@ -24,7 +24,45 @@ const codePointGlyphIndexTable = {};
  * Exports the current project to an .otf file
  */
 export async function ioFont_exportFont() {
-	// log('ioFont_exportFont', 'start');
+	const font = await createFontData();
+	try{
+		const fontBlob = createFontBlob(font);
+		saveFile(fontBlob, getFontFileName(font));
+		await pause();
+		showToast('Export complete!');
+		await pause(1000);
+		closeAllToasts();
+	}catch(error){
+		showError(`
+			The OTF file could not be saved. Here is the error message that was returned:
+			<hr>
+			${error}
+		`);
+	}
+}
+
+/**
+ * @param {string} url - URL to upload the font file
+ */
+export async function ioFont_uploadFont(url) {
+	const font = await createFontData();
+	try{
+		const fontBlob = createFontBlob(font);
+		await fetch(url, { method: 'POST', body: fontBlob });
+		await pause();
+		showToast('Upload complete!');
+		await pause(1000);
+		closeAllToasts();
+	}catch(error){
+		showError(`
+			The OTF file could not be uploaded. Here is the error message that was returned:
+			<hr>
+			${error}
+		`);
+	}
+}
+
+async function createFontData() {
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
 	const project = getCurrentProject();
@@ -78,47 +116,27 @@ export async function ioFont_exportFont() {
 		writeGposKernDataToFont(font, project);
 	}
 
-	// TODO investigate advanced table values
-
-	// log('Font object:');
-	// log(font);
-	// log(font.toTables());
-
-	const result = saveOTFFile(font);
-	await pause();
-	if (result === true) {
-		showToast('Export complete!');
-		await pause(1000);
-		closeAllToasts();
-	} else {
-		showError(`
-			The OTF file could not be saved. Here is the error message that was returned:
-			<hr>
-			${result}
-		`);
-	}
-	// log('ioFont_exportFont', 'end');
+	return font
 }
 
-function saveOTFFile(font) {
-	let result = true;
+function createFontBlob(font) {
 	try {
-		const familyName = font.getEnglishName('fontFamily');
-		const styleName = font.getEnglishName('fontSubfamily');
-		const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
 		// log(`\n⮟font⮟`);
 		// log(font);
 		const arrayBuffer = font.toArrayBuffer();
 		const dataView = new DataView(arrayBuffer);
 		const blob = new Blob([dataView], { type: 'font/opentype' });
 
-		saveFile(blob, fileName);
+		return blob
 	} catch (error) {
 		console.error(error);
-		result = error;
 	}
+}
 
-	return result;
+function getFontFileName(font) {
+	const familyName = font.getEnglishName('fontFamily');
+	const styleName = font.getEnglishName('fontSubfamily');
+	return familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
 }
 
 /**

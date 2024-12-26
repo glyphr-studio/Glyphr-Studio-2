@@ -5,8 +5,9 @@ import {
 	makeContextMenu,
 	showModalDialog,
 	showToast,
+	showError,
 } from '../controls/dialogs/dialogs.js';
-import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
+import { ioFont_exportFont, ioFont_uploadFont } from '../formats_io/otf/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import { makeFileName } from '../project_editor/file_io.js';
 import { emailLink } from './app.js';
@@ -162,6 +163,25 @@ function makeMenu(menuName) {
 				icon: 'command_export',
 				note: ['Ctrl', 'g'],
 				onClick: ioSVG_exportSVGfont,
+			},
+			{ name: 'hr' },
+			{
+				child: makeElement({
+					tag: 'h2',
+					content:
+						`${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`.replaceAll(
+							' ',
+							''
+						),
+				}),
+				className: 'spanAll',
+			},
+			{
+				name: 'Upload OTF file to url',
+				icon: 'command_export',
+				onClick: () => {
+					showModalDialog(makeUploadFontFileDialogContent(), 500)
+				},
 			},
 		]);
 		entryPoint.addEventListener('click', (event) => {
@@ -330,4 +350,50 @@ function makeProjectPreviewRow(projectID = 0) {
 
 	// log(`makeProjectPreviewRow`, 'end');
 	return rowWrapper;
+}
+
+/**
+ * Creates content for upload font file dialog
+ * @returns {Element}
+ */
+function makeUploadFontFileDialogContent() {
+	const content = makeElement({
+		tag: 'div',
+		innerHTML: `
+			<h2>Upload OTF file</h2>
+			Will make a HTTP POST request to the URL you provide with the OTF file as the body.
+			<br />
+			<br />
+			<label for="upload-font-file-url">URL</label>
+		`
+	})
+
+	const urlInput = makeElement({
+		tag: 'input',
+		attributes: {
+			type: 'url',
+			id: 'upload-font-file-url',
+		},
+		style: {
+			display: 'block',
+		},
+	})
+
+	const saveButton = makeElement({
+			tag: 'fancy-button',
+			attributes: { dark: '', id: 'upload-font-file-save-button' },
+			innerHTML: 'Upload',
+			onClick: async () => {
+				const url = urlInput.value
+				if(!url){
+					showError('Please enter a URL.');
+					return
+				}
+				ioFont_uploadFont(url)
+			},
+		});
+
+	addAsChildren(content, [urlInput, saveButton]);
+
+	return content;
 }

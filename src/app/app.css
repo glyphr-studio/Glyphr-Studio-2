@@ -217,3 +217,16 @@
 	opacity: 1;
 	border-color: var(--blue-l80);
 }
+
+label[for="upload-font-file-url"], label[for="upload-font-file-url"]:focus{
+	display: block;
+}
+
+#upload-font-file-url {
+	width: 100%;
+}
+
+#upload-font-file-save-button {
+	display: block;
+	margin-top: 14px;
+}
