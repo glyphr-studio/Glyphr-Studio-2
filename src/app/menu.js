@@ -379,19 +379,32 @@ function makeUploadFontFileDialogContent() {
 		},
 	})
 
+	const handleUrlInputChange = (e) => {
+		const value = e.target.value;
+		if (value) {
+			saveButton.removeAttribute('disabled')
+		} else {
+			saveButton.setAttribute('disabled', '')
+		}
+	}
+
+	let uploadingFontFile = false
 	const saveButton = makeElement({
-			tag: 'fancy-button',
-			attributes: { dark: '', id: 'upload-font-file-save-button' },
-			innerHTML: 'Upload',
-			onClick: async () => {
-				const url = urlInput.value
-				if(!url){
-					showError('Please enter a URL.');
-					return
-				}
-				ioFont_uploadFont(url)
-			},
-		});
+		tag: 'fancy-button',
+		attributes: { dark: '', id: 'upload-font-file-save-button', disabled: '' },
+		innerHTML: 'Upload',
+		onClick: async () => {
+			const isDisabled = saveButton.hasAttribute('disabled')
+			if(isDisabled || uploadingFontFile) return
+
+			uploadingFontFile = true
+			await ioFont_uploadFont(urlInput.value)
+			urlInput.removeEventListener('keyup', handleUrlInputChange);
+			uploadingFontFile = false
+		},
+	});
+
+	urlInput.addEventListener('keyup', handleUrlInputChange);
 
 	addAsChildren(content, [urlInput, saveButton]);
 
