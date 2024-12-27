@@ -9,6 +9,7 @@ export default defineConfig({
 		chunkSizeWarningLimit: 3000,
 		rollupOptions: {
 			treeshake: 'recommended',
+			input: 'src/font-edit.html'
 		},
 	}
 });
