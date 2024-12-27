@@ -5,15 +5,10 @@ import {
 	makeContextMenu,
 	showModalDialog,
 	showToast,
-	showError,
 } from '../controls/dialogs/dialogs.js';
-import { ioFont_exportFont, ioFont_uploadFont } from '../formats_io/otf/font_export.js';
-import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
-import { makeFileName } from '../project_editor/file_io.js';
+import { ioFont_uploadFont } from '../formats_io/otf/font_export.js';
 import { emailLink } from './app.js';
-import { makePage_CrossProjectActions } from './cross_project_actions/cross_project_actions.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
-import { makePage_OpenProject } from './open_project.js';
 
 // --------------------------------------------------------------
 // Top bar for the App
@@ -84,106 +79,123 @@ function makeMenu(menuName) {
 	const editor = getCurrentProjectEditor();
 	if (menuName === 'File') {
 		/** @type {Array} */
-		let fileMenuData = [];
-		if (typeof editor.loadedFileHandle === 'object') {
-			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
+		let fileMenuData = [{
+			child: makeElement({
+				tag: 'h2',
+				content:
+					`${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`.replaceAll(
+						' ',
+						''
+					),
+			}),
+			className: 'spanAll',
+		},
+		{
+			name: 'Save project',
+			icon: 'command_save',
+			onClick: async () => {
+				await ioFont_uploadFont()
+			},
+		},];
+		// if (typeof editor.loadedFileHandle === 'object') {
+		// 	let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
 
-			// @ts-ignore
-			if (typeof editor?.loadedFileHandle?.name === 'string') {
-				// @ts-ignore
-				projectDisplayName = editor.loadedFileHandle.name;
-			}
+		// 	// @ts-ignore
+		// 	if (typeof editor?.loadedFileHandle?.name === 'string') {
+		// 		// @ts-ignore
+		// 		projectDisplayName = editor.loadedFileHandle.name;
+		// 	}
 
-			fileMenuData.push(
-				{
-					child: makeElement({
-						tag: 'h2',
-						content: projectDisplayName,
-					}),
-					className: 'spanAll',
-				},
-				{
-					name: 'Save this project file',
-					icon: 'command_save',
-					note: ['Ctrl', 's'],
-					onClick: () => editor.saveProjectFile(),
-				},
-				{
-					name: 'Save a copy of this project file',
-					icon: 'command_save',
-					onClick: () => editor.saveProjectFile(true),
-				}
-			);
-		} else {
-			fileMenuData.push(
-				{
-					child: makeElement({
-						tag: 'h2',
-						content: makeFileName('gs2', true),
-					}),
-					className: 'spanAll',
-				},
-				{
-					name: 'Save project file (to downloads folder)',
-					icon: 'command_save',
-					note: ['Ctrl', 's'],
-					onClick: () => editor.saveProjectFile(),
-				}
-			);
-		}
-		fileMenuData = fileMenuData.concat([
-			{ name: 'hr' },
-			{
-				child: makeElement({
-					tag: 'h2',
-					content:
-						`${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`.replaceAll(
-							' ',
-							''
-						),
-				}),
-				className: 'spanAll',
-			},
-			{
-				name: 'Export OTF file',
-				icon: 'command_export',
-				note: ['Ctrl', 'e'],
-				onClick: ioFont_exportFont,
-			},
-			{ name: 'hr' },
-			{
-				child: makeElement({
-					tag: 'h2',
-					content: makeFileName('svg'),
-				}),
-				className: 'spanAll',
-			},
-			{
-				name: 'Export SVG font file',
-				icon: 'command_export',
-				note: ['Ctrl', 'g'],
-				onClick: ioSVG_exportSVGfont,
-			},
-			{ name: 'hr' },
-			{
-				child: makeElement({
-					tag: 'h2',
-					content:
-						`${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`.replaceAll(
-							' ',
-							''
-						),
-				}),
-				className: 'spanAll',
-			},
-			{
-				name: 'Upload OTF file to url',
-				icon: 'command_export',
-				onClick: () => {
-					showModalDialog(makeUploadFontFileDialogContent(), 500)
-				},
-			},
-		]);
+		// 	fileMenuData.push(
+		// 		{
+		// 			child: makeElement({
+		// 				tag: 'h2',
+		// 				content: projectDisplayName,
+		// 			}),
+		// 			className: 'spanAll',
+		// 		},
+		// 		{
+		// 			name: 'Save this project file',
+		// 			icon: 'command_save',
+		// 			note: ['Ctrl', 's'],
+		// 			onClick: () => editor.saveProjectFile(),
+		// 		},
+		// 		{
+		// 			name: 'Save a copy of this project file',
+		// 			icon: 'command_save',
+		// 			onClick: () => editor.saveProjectFile(true),
+		// 		}
+		// 	);
+		// } else {
+		// 	fileMenuData.push(
+		// 		{
+		// 			child: makeElement({
+		// 				tag: 'h2',
+		// 				content: makeFileName('gs2', true),
+		// 			}),
+		// 			className: 'spanAll',
+		// 		},
+		// 		{
+		// 			name: 'Save project file (to downloads folder)',
+		// 			icon: 'command_save',
+		// 			note: ['Ctrl', 's'],
+		// 			onClick: () => editor.saveProjectFile(),
+		// 		}
+		// 	);
+		// }
+		// fileMenuData = fileMenuData.concat([
+		// 	{ name: 'hr' },
+		// 	{
+		// 		child: makeElement({
+		// 			tag: 'h2',
+		// 			content:
+		// 				`${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`.replaceAll(
+		// 					' ',
+		// 					''
+		// 				),
+		// 		}),
+		// 		className: 'spanAll',
+		// 	},
+		// 	{
+		// 		name: 'Export OTF file',
+		// 		icon: 'command_export',
+		// 		note: ['Ctrl', 'e'],
+		// 		onClick: ioFont_exportFont,
+		// 	},
+		// 	{ name: 'hr' },
+		// 	{
+		// 		child: makeElement({
+		// 			tag: 'h2',
+		// 			content: makeFileName('svg'),
+		// 		}),
+		// 		className: 'spanAll',
+		// 	},
+		// 	{
+		// 		name: 'Export SVG font file',
+		// 		icon: 'command_export',
+		// 		note: ['Ctrl', 'g'],
+		// 		onClick: ioSVG_exportSVGfont,
+		// 	},
+		// 	{ name: 'hr' },
+		// 	{
+		// 		child: makeElement({
+		// 			tag: 'h2',
+		// 			content:
+		// 				`${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`.replaceAll(
+		// 					' ',
+		// 					''
+		// 				),
+		// 		}),
+		// 		className: 'spanAll',
+		// 	},
+		// 	{
+		// 		name: 'Save project',
+		// 		icon: 'command_save',
+		// 		onClick: () => {
+		// 			showModalDialog(makeUploadFontFileDialogContent(), 500)
+		// 		},
+		// 	},
+		// ]);
 		entryPoint.addEventListener('click', (event) => {
 			// @ts-ignore
 			let rect = event.target.getBoundingClientRect();
@@ -202,38 +214,6 @@ function makeMenu(menuName) {
 					{
 						child: makeProjectPreviewRow(0),
 						className: 'spanAll',
-					},
-					{
-						child: makeProjectPreviewRow(1),
-						className: 'spanAll',
-					},
-					{
-						name: 'Cross-project actions',
-						icon: 'command_crossProjectActions',
-						onClick: () => {
-							getGlyphrStudioApp().appPageNavigate(makePage_CrossProjectActions);
-						},
-						disabled: getGlyphrStudioApp().projectEditors.length === 1,
-					},
-					{
-						name: 'Learn more about working with two projects',
-						icon: 'command_newTab',
-						onClick: () => {
-							window.open(
-								'https://www.glyphrstudio.com/help/getting-started/working-with-multiple-projects.html',
-								'_blank'
-							);
-						},
-					},
-					{
-						name: 'hr',
-					},
-					{
-						name: 'Open a separate project in a new window',
-						icon: 'command_newTab',
-						onClick: () => {
-							window.open('https://glyphrstudio.com/app/', '_blank');
-						},
 					},
 				],
 				rect.x,
@@ -336,12 +316,6 @@ function makeProjectPreviewRow(projectID = 0) {
 				'show-placeholder-message': 'true',
 			},
 		});
-	} else {
-		title.innerHTML = 'Open another project';
-		rowWrapper.classList.add('project-preview__no-project');
-		rowWrapper.addEventListener('click', () => {
-			showModalDialog(makePage_OpenProject(true), 500, true);
-		});
 	}
 
 	if (superTitle) addAsChildren(rowWrapper, superTitle);
@@ -350,63 +324,4 @@ function makeProjectPreviewRow(projectID = 0) {
 
 	// log(`makeProjectPreviewRow`, 'end');
 	return rowWrapper;
-}
-
-/**
- * Creates content for upload font file dialog
- * @returns {Element}
- */
-function makeUploadFontFileDialogContent() {
-	const content = makeElement({
-		tag: 'div',
-		innerHTML: `
-			<h2>Upload OTF file</h2>
-			Will make a HTTP POST request to the URL you provide with the OTF file as the body.
-			<br />
-			<br />
-			<label for="upload-font-file-url">URL</label>
-		`
-	})
-
-	const urlInput = makeElement({
-		tag: 'input',
-		attributes: {
-			type: 'url',
-			id: 'upload-font-file-url',
-		},
-		style: {
-			display: 'block',
-		},
-	})
-
-	const handleUrlInputChange = (e) => {
-		const value = e.target.value;
-		if (value) {
-			saveButton.removeAttribute('disabled')
-		} else {
-			saveButton.setAttribute('disabled', '')
-		}
-	}
-
-	let uploadingFontFile = false
-	const saveButton = makeElement({
-		tag: 'fancy-button',
-		attributes: { dark: '', id: 'upload-font-file-save-button', disabled: '' },
-		innerHTML: 'Upload',
-		onClick: async () => {
-			const isDisabled = saveButton.hasAttribute('disabled')
-			if(isDisabled || uploadingFontFile) return
-
-			uploadingFontFile = true
-			await ioFont_uploadFont(urlInput.value)
-			urlInput.removeEventListener('keyup', handleUrlInputChange);
-			uploadingFontFile = false
-		},
-	});
-
-	urlInput.addEventListener('keyup', handleUrlInputChange);
-
-	addAsChildren(content, [urlInput, saveButton]);
-
-	return content;
 }

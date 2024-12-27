@@ -9,6 +9,7 @@ import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
 import { Path } from '../../project_data/path.js';
 import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
 import { saveFile } from '../../project_editor/file_io.js';
+import { enFontUrl } from '../../utils/env/envFontUrl.js';
 import { writeGposKernDataToFont } from './tables/gpos.js';
 
 /**
@@ -21,34 +22,19 @@ const ligatureSubstitutions = [];
 const codePointGlyphIndexTable = {};
 
 /**
- * Exports the current project to an .otf file
+ * Saves the current project
  */
-export async function ioFont_exportFont() {
+export async function ioFont_uploadFont() {
 	const font = await createFontData();
 	try{
 		const fontBlob = createFontBlob(font);
-		saveFile(fontBlob, getFontFileName(font));
-		await pause();
-		showToast('Export complete!');
-		await pause(1000);
-		closeAllToasts();
-	}catch(error){
-		showError(`
-			The OTF file could not be saved. Here is the error message that was returned:
-			<hr>
-			${error}
-		`);
-	}
-}
 
-/**
- * @param {string} url - URL to upload the font file
- */
-export async function ioFont_uploadFont(url) {
-	const font = await createFontData();
-	try{
-		const fontBlob = createFontBlob(font);
-		await fetch(url, { method: 'POST', body: fontBlob });
+		const url = new URL(window.location.href);
+		const params = new URLSearchParams(url.search);
+		const fontId = params.get('id')
+		if(!fontId) throw new Error("No font id found in url");
+
+		await fetch(`${window.location.origin}/${enFontUrl()}/${fontId}`, { method: 'PUT', body: fontBlob });
 		await pause();
 		showToast('Upload complete!');
 		await pause(1000);
@@ -131,12 +117,6 @@ function createFontBlob(font) {
 	} catch (error) {
 		console.error(error);
 	}
-}
-
-function getFontFileName(font) {
-	const familyName = font.getEnglishName('fontFamily');
-	const styleName = font.getEnglishName('fontSubfamily');
-	return familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
 }
 
 /**

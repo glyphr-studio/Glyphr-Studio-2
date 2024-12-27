@@ -1,7 +1,5 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
-import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
-import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import {
 	clipboardCopy,
 	clipboardPaste,
@@ -41,19 +39,6 @@ export function handleKeyPress(event) {
 	if (ehd.isCtrlDown && key === 's') {
 		cancelDefaultEventActions(event);
 		getCurrentProjectEditor().saveProjectFile();
-	}
-
-	// g
-	if (ehd.isCtrlDown && key === 'g') {
-		cancelDefaultEventActions(event);
-		setTimeout(ioSVG_exportSVGfont, 10);
-	}
-
-	// e
-	if (ehd.isCtrlDown && key === 'e') {
-		cancelDefaultEventActions(event);
-		showToast('Exporting OTF font file...');
-		setTimeout(ioFont_exportFont, 500);
 	}
 
 	// o
