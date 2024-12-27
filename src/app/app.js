@@ -429,7 +429,3 @@ export function makeEmailContent() {
 	// log(con);
 	return con;
 }
-
-function handleLoadedFont(font) {
-	console.log(font);
-}
