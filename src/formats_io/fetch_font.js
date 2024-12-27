@@ -6,7 +6,7 @@ import { enFontUrl } from '../utils/env/envFontUrl';
  * @param {string} id - font id
  */
 export async function fetchFont(id) {
-    const response = await fetch(`${window.location.origin}/${enFontUrl()}/${id}`);
+    const response = await fetch(`/${enFontUrl()}/${id}`);
     const fontData = await response.arrayBuffer();
     const font = await openTypeJS.parse(fontData);
     return font
