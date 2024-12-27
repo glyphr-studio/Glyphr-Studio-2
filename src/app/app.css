@@ -230,3 +230,34 @@ label[for="upload-font-file-url"], label[for="upload-font-file-url"]:focus{
 	display: block;
 	margin-top: 14px;
 }
+
+#fontLoader__pageContainer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 6px;
+}
+
+#fontLoader__pageContainer h1 {
+	margin: 0;
+}
+
+#loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid var(--gray-l55);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+0% {
+	transform: rotate(0deg);
+}
+100% {
+	transform: rotate(360deg);
+}
+}

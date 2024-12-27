@@ -1,6 +1,6 @@
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
-import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, showToast, showError } from '../controls/dialogs/dialogs.js';
 import { parseSemVer } from '../formats_io/validate_file_input.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
@@ -17,7 +17,8 @@ import {
 	getProjectEditorImportTarget,
 	setCurrentProjectEditor,
 } from './main.js';
-import { makePage_OpenProject } from './open_project.js';
+import { hasFontId, makeFontIdNotFoundPage, loadFont, makeLoadingFontPage } from './open_project.js';
+import { pause } from '../common/functions.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -65,7 +66,7 @@ export class GlyphrStudioApp {
 	/**
 	 * Starts up the app
 	 */
-	setUp() {
+	async setUp() {
 		// log(`GlyphrStudioApp.setUp`, 'start');
 		let editor = addProjectEditorAndSetAsImportTarget();
 
@@ -113,12 +114,19 @@ export class GlyphrStudioApp {
 			addTelemetry();
 		}
 
-		// Load the Open Project page
-		if (dev.mode && dev.currentPage) {
-			editor.navigate();
-		} else {
-			this.appPageNavigate(makePage_OpenProject);
+		if(hasFontId()){
+			this.appPageNavigate(makeLoadingFontPage);
+			await pause(1000)
+			try {
+				await loadFont()
+			}catch(e){
+				showError(`Some unknown error happened when loading the file.`);
+				this.appPageNavigate(makeFontIdNotFoundPage);
+			}
+		}else {
+			this.appPageNavigate(makeFontIdNotFoundPage);
 		}
+
 		this.fadeOutLandingPage();
 
 		// Final dev mode stuff
@@ -420,4 +428,8 @@ export function makeEmailContent() {
 
 	// log(con);
 	return con;
+}
+
+function handleLoadedFont(font) {
+	console.log(font);
 }
