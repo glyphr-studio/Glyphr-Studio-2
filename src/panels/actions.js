@@ -722,9 +722,14 @@ export function getActionData(name) {
 			},
 			{
 				iconName: 'mergePathPoints',
-				title: `Merge Path Points\nMerges the selected path points into a single path point.`,
-				disabled: selectedPoints.length < 2 && selectedPaths.legnth === 1,
-				onClick: () => {},
+				title: `Merge Path Points\nMerges 2 selected path points into a single path point.`,
+				disabled: !(selectedPaths.length === 1 && selectedPoints.length === 2),
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					editor.multiSelect.points.mergeTwoPathPoints();
+					editor.history.addState(`Merged two path points into one`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
 			{
 				iconName: 'selectPreviousPathPoint',

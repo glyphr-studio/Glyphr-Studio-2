@@ -3,6 +3,7 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
+import { ControlPoint } from '../project_data/control_point.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 // import { combinePaths } from './boolean_combine.js';
@@ -291,6 +292,25 @@ export class MultiSelectPoints extends MultiSelect {
 		}
 		// log(`lowest selected point number: ${lowest}`);
 		return lowest;
+	}
+
+	mergeTwoPathPoints() {
+		if (this.members.length !== 2) return;
+		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
+		const lowPoint = this.members[0];
+		const highPoint = this.members[1];
+
+		lowPoint.p.x = (lowPoint.p.x + highPoint.p.x) / 2;
+		lowPoint.p.y = (lowPoint.p.y + highPoint.p.y) / 2;
+		if (lowPoint.parent.winding > 0) {
+			lowPoint.h2 = new ControlPoint(highPoint.h2);
+		} else {
+			lowPoint.h1 = new ControlPoint(highPoint.h1);
+		}
+
+		this.clear();
+		this.select(highPoint);
+		this.deleteShapesPoints();
 	}
 
 	setPointType(t) {
