@@ -795,7 +795,12 @@ export function sortLigatures(a, b) {
 	if (a.chars.length === b.chars.length) {
 		// log(`same length`);
 		// log(`sortLigatures`, 'end');
-		return a.chars.localeCompare(b.chars);
+		// string.localeCompare returns strange ordering, we just want Unicode order
+		let checkIndex = 0;
+		while (a.chars[checkIndex] === b.chars[checkIndex]) {
+			checkIndex++;
+		}
+		return a.chars[checkIndex] - b.chars[checkIndex];
 	} else {
 		// log(`sortLigatures`, 'end');
 		return b.chars.length - a.chars.length;
