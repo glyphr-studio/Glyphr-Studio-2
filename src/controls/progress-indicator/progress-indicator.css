@@ -1,7 +1,7 @@
 #progress-indicator__wrapper {
 	display: block;
 	position: relative;
-	top: calc(50% - 100px);
+	top: calc(50% - 90px);
 }
 
 #progress-indicator__message {
@@ -12,24 +12,30 @@
 	animation: var(--animate-fade-in);
 }
 
+.progress-indicator__title {
+	font-size: inherit;
+	display: block;
+	margin-bottom: 10px;
+}
+
 .progress-indicator__counter {
 	font-family: monospace;
 	font-size: inherit;
 }
 
-#progress-indicator__bar{
-	margin:20px 0px 0px 0px;
-	width:400px;
-	height:4px;
+#progress-indicator__bar {
+	margin: 20px 0px 0px 0px;
+	width: 400px;
+	height: 4px;
 	border-radius: 2px;
-	padding:0px;
-	background: linear-gradient(135deg,
+	padding: 0px;
+	background: linear-gradient(
+		135deg,
 		var(--blue-l55),
 		var(--purple-l45),
 		var(--orange-l55),
 		var(--purple-l45),
-		var(--blue-l55),
-		var(--purple-l45)
+		var(--blue-l55)
 	);
 	background-position: 0%;
 	background-size: 500% 500%;
