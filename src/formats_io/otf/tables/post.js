@@ -9,4 +9,8 @@ import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project
 export function importTable_post(importedFont, project) {
 	const fontSettings = project.settings.font;
 	fontSettings.italicAngle = importedFont.tables?.post?.italicAngle || 0;
+
+	// These are not part of the Options argument
+	// fontSettings.underlinePosition = importedFont.tables?.post?.underlinePosition || 0;
+	// fontSettings.underlineThickness = importedFont.tables?.post?.underlineThickness || 0;
 }
