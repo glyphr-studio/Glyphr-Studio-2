@@ -1,8 +1,9 @@
 import { makeLigatureID } from '../../../pages/ligatures';
 import {
+	decrementItemTotal,
+	incrementItemCounter,
 	makeGlyphrStudioGlyphObject,
 	updateFontImportProgressIndicator,
-	updateImportItemTotal,
 } from '../font_import';
 
 /**
@@ -48,7 +49,7 @@ function importOneLigature(otfLigature, importedFont, finalLigatures) {
 		if (!importedLigature) {
 			console.warn(`Something went wrong with importing this glyph.`);
 
-			updateImportItemTotal(-1);
+			decrementItemTotal();
 			// log(`importOneLigature`, 'end');
 			return;
 		}
@@ -76,13 +77,13 @@ function importOneLigature(otfLigature, importedFont, finalLigatures) {
 		if (newLigatureID) {
 			importedLigature.id = newLigatureID;
 			finalLigatures[newLigatureID] = importedLigature;
-			updateImportItemTotal(1);
+			incrementItemCounter();
 			// log(importedLigature);
 		} else {
-			updateImportItemTotal(-1);
+			decrementItemTotal();
 		}
 	} else {
-		updateImportItemTotal(-1);
+		decrementItemTotal();
 	}
 	// log(`importOneLigature`, 'end');
 }

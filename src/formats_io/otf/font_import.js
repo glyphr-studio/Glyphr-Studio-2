@@ -31,7 +31,7 @@ let importItemTotal = 0;
  * @returns nothing
  */
 export async function ioFont_importFont(importedFont, testing = false) {
-	if(!testing) console.log(importedFont);
+	if (!testing) console.log(importedFont);
 	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
 
@@ -150,13 +150,18 @@ export function makeGlyphrStudioGlyphObject(otfGlyph) {
  */
 export async function updateFontImportProgressIndicator(type) {
 	await updateProgressIndicator(`
-			Importing ${type}:
+			<span class="progress-indicator__title">Importing ${type}s</span>
+			Item
 			<span class="progress-indicator__counter">${importItemCounter}</span>
 			 of
 			<span class="progress-indicator__counter">${importItemTotal}</span>
 		`);
 }
 
-export function updateImportItemTotal(delta = 0) {
-	importItemTotal += delta;
+export function decrementItemTotal() {
+	importItemTotal--;
+}
+
+export function incrementItemCounter() {
+	importItemCounter++;
 }

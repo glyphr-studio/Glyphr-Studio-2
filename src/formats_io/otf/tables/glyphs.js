@@ -1,7 +1,12 @@
-import { decToHex } from "../../../common/character_ids";
-import { isControlChar } from "../../../lib/unicode/unicode_blocks";
-import { GlyphrStudioProject } from "../../../project_data/glyphr_studio_project";
-import { makeGlyphrStudioGlyphObject, updateFontImportProgressIndicator, updateImportItemTotal } from "../font_import";
+import { decToHex } from '../../../common/character_ids';
+import { isControlChar } from '../../../lib/unicode/unicode_blocks';
+import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project';
+import {
+	decrementItemTotal,
+	incrementItemCounter,
+	makeGlyphrStudioGlyphObject,
+	updateFontImportProgressIndicator,
+} from '../font_import';
 
 /**
  * In OTF fonts, there isn't really a "glyphs" table, but
@@ -40,7 +45,7 @@ function importOneGlyph(otfGlyph, project, finalGlyphs) {
 
 	if (isNaN(otfGlyph.unicode)) {
 		// log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
-		updateImportItemTotal(-1);
+		decrementItemTotal();
 		// log('importOneGlyph', 'end');
 		return;
 	}
@@ -52,7 +57,7 @@ function importOneGlyph(otfGlyph, project, finalGlyphs) {
 	if (!importedGlyph) {
 		console.warn(`Something went wrong with importing this glyph.`);
 
-		updateImportItemTotal(-1);
+		decrementItemTotal();
 		// log('importOneGlyph', 'end');
 		return;
 	}
@@ -68,7 +73,7 @@ function importOneGlyph(otfGlyph, project, finalGlyphs) {
 	if (!isNaN(Number(uni))) project.incrementRangeCountFor(Number(uni));
 
 	// Successful loop, advance importItemCounter
-	updateImportItemTotal(1);
+	incrementItemCounter();
 	// log(importedGlyph);
 	// log('importOneGlyph', 'end');
 }
