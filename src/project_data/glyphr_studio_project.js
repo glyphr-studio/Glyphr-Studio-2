@@ -842,13 +842,12 @@ export function merge(template = {}, importing = {}, trimStrings = false) {
 	// log(`\n⮟template⮟`);
 	// log(template);
 	for (const a of Object.keys(template)) {
+		const importedType = typeof importing[a];
 		if (typeof template[a] === 'object') {
 			if (importing[a]) template[a] = merge(template[a], importing[a]);
 		} else {
-			if (importing[a]) {
-				if (typeof importing[a] === 'string' && trimStrings) template[a] = trim(importing[a]);
-				else template[a] = importing[a];
-			}
+			if (importedType === 'string' && trimStrings) template[a] = trim(importing[a]);
+			else if (importedType === 'string' || importedType === 'number') template[a] = importing[a];
 		}
 	}
 	// log('glyphr_studio_project - merge', 'end');
