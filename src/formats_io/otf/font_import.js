@@ -14,6 +14,7 @@ import { importLigatures } from './tables/gsub.js';
 import { importTable_head } from './tables/head.js';
 import { importTable_name } from './tables/name.js';
 import { importTable_os2 } from './tables/os2.js';
+import { importTable_post } from './tables/post.js';
 
 /**
 	IO > Import > OpenType
@@ -83,6 +84,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	importTable_head(importedFont, project);
 	importTable_name(importedFont, project);
 	importTable_os2(importedFont, project);
+	importTable_post(importedFont, project);
 
 	// --------------------------------------------------------------
 	// Finish up

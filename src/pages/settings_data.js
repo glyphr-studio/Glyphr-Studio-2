@@ -105,7 +105,7 @@ export default {
 		},
 		italicAngle: {
 			label: `Italic angle`,
-			description: `Most common degree of slant for glyphs in an italic font.`,
+			description: `Most common degree of slant for glyphs in an italic font. Should be negative if leaning to the right.`,
 			type: `Degree`,
 		},
 		designer: { label: `Designer`, description: 'Person or team who created this font.' },
