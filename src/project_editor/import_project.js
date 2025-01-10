@@ -5,7 +5,7 @@ import { makeLigatureID } from '../pages/ligatures.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { ControlPoint } from '../project_data/control_point.js';
 import { Glyph } from '../project_data/glyph.js';
-import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
+import { GlyphrStudioProject, sortLigatures } from '../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
@@ -125,22 +125,30 @@ function migrate__v1_13_2_to_v2_0_0(oldProject) {
 
 	// Ligatures
 	// log(`Migrating Ligatures`);
+	const importedLigatures = [];
 	Object.keys(oldProject.ligatures).forEach((oldID) => {
 		const newID = migrate_ItemID(oldID);
 		const chars = hexesToChars(oldID);
-
 		if (chars !== false) {
-			let newGsub = chars.split('').map(charToHex);
-			newProject.ligatures[newID] = migrate_Glyph(
+			const newGsub = chars.split('').map(charToHex);
+			const newLigature = migrate_Glyph(
 				oldProject.ligatures[oldID],
 				newID,
 				defaultLSB,
 				defaultRSB
 			);
 
-			newProject.ligatures[newID].objType = 'Ligature';
-			newProject.ligatures[newID].gsub = newGsub;
+			// log(`oldID: ${oldID}\t newID: ${newID}\t chars: ${chars}`);
+			newLigature.objType = 'Ligature';
+			newLigature.gsub = newGsub;
+			importedLigatures.push(newLigature);
+			// log(newLigature);
 		}
+	});
+
+	const sortedLigatures = importedLigatures.sort(sortLigatures);
+	sortedLigatures.forEach((ligature) => {
+		newProject.ligatures[ligature.id] = ligature;
 	});
 
 	// Components
@@ -205,20 +213,22 @@ function migrate__v1_13_2_to_v2_0_0(oldProject) {
 	// Guides
 	newGuides.systemTransparency = oldColors.systemguidetransparency || 70;
 	newGuides.customTransparency = oldColors.systemguidetransparency || 70;
-	Object.keys(oldGuides).forEach((key) => {
-		let oldGuide = oldGuides[key];
-		if (oldGuide.editable) {
-			newGuides.custom.push(
-				new Guide({
-					angle: oldGuide.type === 'horizontal' ? 90 : 0,
-					location: oldGuide.location,
-					name: oldGuide.name,
-					color: oldGuide.color,
-					visible: oldGuide.visible,
-				})
-			);
-		}
-	});
+	if (oldGuides && Object.keys(oldGuides).length) {
+		Object.keys(oldGuides).forEach((key) => {
+			let oldGuide = oldGuides[key];
+			if (oldGuide.editable) {
+				newGuides.custom.push(
+					new Guide({
+						angle: oldGuide.type === 'horizontal' ? 90 : 0,
+						location: oldGuide.location,
+						name: oldGuide.name,
+						color: oldGuide.color,
+						visible: oldGuide.visible,
+					})
+				);
+			}
+		});
+	}
 
 	// Font
 	newFont.family = oldMeta.font_family || 'My Font';
@@ -272,10 +282,10 @@ function migrate_Glyph(oldGlyph, newID, defaultLSB = 0, defaultRSB = 0) {
 	const newGlyph = new Glyph({
 		id: newID,
 		parent: getCurrentProject(),
-		advanceWidth: oldGlyph.glyphwidth,
-		ratioLock: oldGlyph.ratiolock,
-		usedIn: oldGlyph.usedin.map(migrate_ItemID),
-		contextCharacters: oldGlyph.contextglyphs,
+		advanceWidth: oldGlyph.glyphwidth || 0,
+		ratioLock: oldGlyph.ratiolock || false,
+		usedIn: oldGlyph?.usedin?.map(migrate_ItemID) || [],
+		contextCharacters: oldGlyph.contextglyphs || '',
 	});
 
 	let newItem;
@@ -350,14 +360,14 @@ function migrate_PathPoint(oldPathPoint, parentPath) {
 	newPathPoint.h1 = new ControlPoint({
 		coord: oldPathPoint.H1,
 		type: 'h1',
-		use: oldPathPoint.useh1,
+		use: oldPathPoint?.useh1 || false,
 		parent: newPathPoint,
 	});
 
 	newPathPoint.h2 = new ControlPoint({
 		coord: oldPathPoint.H2,
 		type: 'h2',
-		use: oldPathPoint.useh2,
+		use: oldPathPoint?.useh2 || false,
 		parent: newPathPoint,
 	});
 
