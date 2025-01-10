@@ -2,7 +2,11 @@ import { decToHex } from '../../../common/character_ids.js';
 import { makeKernGroupID } from '../../../pages/kerning.js';
 import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../../../project_data/kern_group.js';
-import { updateFontImportProgressIndicator, updateImportItemTotal } from '../font_import.js';
+import {
+	decrementItemTotal,
+	incrementItemCounter,
+	updateFontImportProgressIndicator,
+} from '../font_import.js';
 
 // --------------------------------------------------------------
 // Reading Kern information
@@ -131,7 +135,7 @@ function importOneGposKernPair(leftGlyph, rightGlyph, value, finalKerns) {
 	if (!leftGlyph || !rightGlyph) {
 		console.warn(`Something went wrong with importing this kern pair:
 ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
-		updateImportItemTotal(-1);
+		decrementItemTotal();
 		// log(`importOneGposKernPair`, 'end');
 		return;
 	}
@@ -139,7 +143,7 @@ ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 	if (!leftGlyph.unicode || !rightGlyph.unicode) {
 		console.warn(`Only kern values containing characters with Unicode Code Points can be imported (can't kern ligatures) :
 ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
-		updateImportItemTotal(-1);
+		decrementItemTotal();
 		// log(`importOneGposKernPair`, 'end');
 		return;
 	}
@@ -154,7 +158,7 @@ ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 
 	// Finish up
 	finalKerns[newKernID] = importedKern;
-	updateImportItemTotal(1);
+	incrementItemCounter();
 
 	// log(`newKernID: ${newKernID}`);
 	// log(importedKern);

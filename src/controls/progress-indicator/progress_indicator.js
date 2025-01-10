@@ -14,7 +14,7 @@ export async function updateProgressIndicator(message) {
 		/** @type {HTMLElement} */
 		const bar = document.querySelector('#progress-indicator__bar');
 		if (bar) {
-			degrees = (degrees + 0.95) % 100;
+			degrees = degrees + 0.5;
 			bar.style.backgroundPosition = `${degrees}%`;
 			if (message) container.innerHTML = message;
 		}
