@@ -790,20 +790,20 @@ export function computeAndDrawDragToSelectBox(ctx, eventHandlerData) {
 // --------------------------------------------------------------
 
 export function drawAllHighlightedPoints(ctx) {
-	log(`drawAllHighligthedPoints`, 'start');
+	// log(`drawAllHighligthedPoints`, 'start');
 	let editor = getCurrentProjectEditor();
 	let currentItem = editor.selectedItem;
 
 	if (currentItem.shapes) {
 		currentItem.shapes.forEach((shape) => {
 			if (shape.objType === 'Path') {
-				log(`\n⮟shape.cache⮟`);
-				log(shape.cache);
+				// log(`\n⮟shape.cache⮟`);
+				// log(shape.cache);
 				drawHighlightedPointsForPath(shape, ctx);
 			}
 		});
 	}
-	log(`drawAllHighligthedPoints`, 'end');
+	// log(`drawAllHighligthedPoints`, 'end');
 }
 
 function drawHighlightedPointsForPath(path, ctx) {
@@ -836,16 +836,16 @@ function drawHighlightedPointsForPath(path, ctx) {
  * @param {CanvasRenderingContext2D} ctx - canvas context
  */
 export function drawPointHighlight(point, ctx) {
-	log(`drawPointHighlight`, 'start');
+	// log(`drawPointHighlight`, 'start');
 	let px = sXcX(point.x);
 	let py = sYcY(point.y);
-	log(`canvas: ${px}, ${py}`);
+	// log(`canvas: ${px}, ${py}`);
 	ctx.beginPath();
 	ctx.arc(px, py, canvasUIPointSize + 4, 0, Math.PI * 2, true);
 	ctx.closePath();
 	ctx.strokeStyle = 'red';
 	ctx.stroke();
-	log(`drawPointHighlight`, 'end');
+	// log(`drawPointHighlight`, 'end');
 }
 
 // --------------------------------------------------------------
