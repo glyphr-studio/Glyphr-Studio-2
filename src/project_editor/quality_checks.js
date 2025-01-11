@@ -2,7 +2,7 @@ import { getCurrentProject } from '../app/main';
 import { calculateLength } from '../common/functions';
 
 export function runQualityChecksForItem(item) {
-	log(`runQualityChecksForItem`, 'start');
+	// log(`runQualityChecksForItem`, 'start');
 	const project = getCurrentProject();
 	const checks = project.settings.app.highlightPoints;
 	let checkNearOtherPoints = !!checks.nearOtherPoints;
@@ -21,11 +21,11 @@ export function runQualityChecksForItem(item) {
 				shape.pathPoints.forEach((point, index) => {
 					// near other points
 					if (checkNearOtherPoints) {
-						const nextPoint = shape.pathPoints[shape.getNextPointNum(index)];
+						const nextPoint = shape.pathPoints[shape.getNextPointNumber(index)];
 						const distance = calculateLength(point.p, nextPoint.p);
-						log(`this point: ${point.p.x}, ${point.p.y}`);
-						log(`next point: ${nextPoint.p.x}, ${nextPoint.p.y}`);
-						log(`distance is ${distance} for point ${index}`);
+						// log(`this point: ${point.p.x}, ${point.p.y}`);
+						// log(`next point: ${nextPoint.p.x}, ${nextPoint.p.y}`);
+						// log(`distance is ${distance} for point ${index}`);
 						if (distance <= checks.nearOtherPoints) {
 							nearOtherPoints[index] = true;
 						} else {
@@ -68,10 +68,10 @@ export function runQualityChecksForItem(item) {
 				if (checkNearItsOwnHandles) shape.cache.nearOtherPoints = nearOtherPoints;
 				if (checkNearXZero) shape.cache.nearOtherPoints = nearOtherPoints;
 				if (checkNearYZero) shape.cache.nearOtherPoints = nearOtherPoints;
-				log(`\n⮟shape.cache⮟`);
-				log(shape.cache);
+				// log(`\n⮟shape.cache⮟`);
+				// log(shape.cache);
 			}
 		});
 	}
-	log(`runQualityChecksForItem`, 'end');
+	// log(`runQualityChecksForItem`, 'end');
 }
