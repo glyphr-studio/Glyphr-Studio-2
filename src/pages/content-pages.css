@@ -404,6 +404,12 @@ code,
 	padding-left: 2px;
 }
 
+/* Global Actions range table */
+.range-selection {
+	grid-template-columns: min-content 4fr 1fr 1fr 1fr;
+	padding-left: 0px;
+}
+
 /* Unicode Range chooser */
 
 .glyph-range-chooser__wrapper {
