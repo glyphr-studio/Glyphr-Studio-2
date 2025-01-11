@@ -294,20 +294,56 @@ export class MultiSelectPoints extends MultiSelect {
 		return lowest;
 	}
 
-	mergeTwoPathPoints() {
-		if (this.members.length !== 2) return;
-		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
-		const lowPoint = this.members[0];
-		const highPoint = this.members[1];
+	canMergeSelectedPathPoints() {
+		// Only merge two points at a time
+		if (this.members.length !== 2) return false;
 
-		lowPoint.p.x = (lowPoint.p.x + highPoint.p.x) / 2;
-		lowPoint.p.y = (lowPoint.p.y + highPoint.p.y) / 2;
-		if (lowPoint.parent.winding > 0) {
-			lowPoint.h2 = new ControlPoint(highPoint.h2);
-		} else {
-			lowPoint.h1 = new ControlPoint(highPoint.h1);
+		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
+		let lowPoint = this.members[0];
+		let highPoint = this.members[1];
+
+		// Make sure points are from the same path
+		if (lowPoint.parent !== highPoint.parent) return false;
+
+		const lowPointNext = lowPoint.parent.getNextPointNumber(lowPoint.pointNumber);
+		const lowPointPrev = lowPoint.parent.getPreviousPointNumber(lowPoint.pointNumber);
+
+		// Make sure points are adjacent
+		if (lowPointNext === highPoint.pointNumber || lowPointPrev === highPoint.pointNumber) {
+			return true;
 		}
 
+		return false;
+	}
+
+	mergeTwoPathPoints() {
+		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
+		let lowPoint = this.members[0];
+		let highPoint = this.members[1];
+
+		// Fencepost for if point zero and point -1 are selected
+		if (
+			lowPoint.pointNumber === 0 &&
+			highPoint.pointNumber === highPoint.parent.pathPoints.length - 1
+		) {
+			lowPoint = this.members[1];
+			highPoint = this.members[0];
+		}
+
+		// Save the original handle positions
+		const highPointH2 = new ControlPoint(highPoint.h2);
+		const lowPointH1 = new ControlPoint(lowPoint.h1);
+
+		// Use lowPoint as the final result, update the Point position
+		lowPoint.p.x = (lowPoint.p.x + highPoint.p.x) / 2;
+		lowPoint.p.y = (lowPoint.p.y + highPoint.p.y) / 2;
+
+		// Updating the base point also moves the handles
+		// But we want to preseve the original handle positions
+		lowPoint.h1 = new ControlPoint(lowPointH1);
+		lowPoint.h2 = new ControlPoint(highPointH2);
+
+		// Remove the highPoint
 		this.clear();
 		this.select(highPoint);
 		this.deleteShapesPoints();

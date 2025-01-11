@@ -586,7 +586,7 @@ export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 		shape.pathPoints.forEach((point, index) => {
 			if (index === 0) {
 				// This could just be '1' but whatever
-				let nextPoint = shape.pathPoints[shape.getNextPointNum(0)];
+				let nextPoint = shape.pathPoints[shape.getNextPointNumber(0)];
 				drawDirectionalityPoint(point, ctx, editor.multiSelect.points.isSelected(point), nextPoint);
 			} else {
 				drawPoint(point, ctx, editor.multiSelect.points.isSelected(point));

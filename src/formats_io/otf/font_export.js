@@ -506,7 +506,7 @@ function makeOpenTypeJS_Path(path, openTypePath) {
 	openTypePath.moveTo(round(path.pathPoints[0].p.x), round(path.pathPoints[0].p.y));
 
 	path.pathPoints.forEach((point) => {
-		const nextPoint = path.pathPoints[path.getNextPointNum(point.pointNumber)];
+		const nextPoint = path.pathPoints[path.getNextPointNumber(point.pointNumber)];
 		openTypePath.curveTo(
 			round(point.h2.x),
 			round(point.h2.y),

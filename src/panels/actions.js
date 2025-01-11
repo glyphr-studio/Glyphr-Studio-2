@@ -723,7 +723,7 @@ export function getActionData(name) {
 			{
 				iconName: 'mergePathPoints',
 				title: `Merge Path Points\nMerges 2 selected path points into a single path point.`,
-				disabled: !(selectedPaths.length === 1 && selectedPoints.length === 2),
+				disabled: !getCurrentProjectEditor().multiSelect.points.canMergeSelectedPathPoints(),
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					editor.multiSelect.points.mergeTwoPathPoints();
@@ -740,7 +740,7 @@ export function getActionData(name) {
 					let msPoints = editor.multiSelect.points;
 					let path = msPoints.members[0].parent;
 					let thisIndex = msPoints.lowestSelectedPointNumber;
-					let previousIndex = path.getPreviousPointNum(thisIndex);
+					let previousIndex = path.getPreviousPointNumber(thisIndex);
 					// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
 
 					if (eventHandlerData.isCtrlDown) {
@@ -760,7 +760,7 @@ export function getActionData(name) {
 					let msPoints = editor.multiSelect.points;
 					let path = msPoints.members[0].parent;
 					let thisIndex = msPoints.highestSelectedPointNumber;
-					let nextIndex = path.getNextPointNum(thisIndex);
+					let nextIndex = path.getNextPointNumber(thisIndex);
 					// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
 
 					if (eventHandlerData.isCtrlDown) {
@@ -948,7 +948,9 @@ export function deleteSelectedPoints() {
 	editor.history.addState(historyTitle);
 	let pathSingleton = editor.multiSelect.shapes.singleton;
 	if (pathSingleton) {
-		msPoints.select(pathSingleton.pathPoints[pathSingleton.getPreviousPointNum(minDeletedPoint)]);
+		msPoints.select(
+			pathSingleton.pathPoints[pathSingleton.getPreviousPointNumber(minDeletedPoint)]
+		);
 	} else {
 		editor.publish('whichPathPointIsSelected', editor.multiSelect.shapes);
 	}

@@ -56,8 +56,8 @@ function trianglePath() {
 	setShapePosition
 	updateShapePosition
 	rotate
-	getNextPointNum
-	getPreviousPointNum
+	getNextPointNumber
+	getPreviousPointNumber
 	containsPoint
 	makeSVGPathData
 	makePostScript
@@ -286,14 +286,14 @@ describe('Path', () => {
 		expect(path.svgPathData).toBe('<svg>hi</svg>');
 	});
 
-	it('getNextPointNum', () => {
+	it('getNextPointNumber', () => {
 		const path = samplePath();
-		expect(path.getNextPointNum(3)).toBe(0);
+		expect(path.getNextPointNumber(3)).toBe(0);
 	});
 
-	it('getPreviousPointNum', () => {
+	it('getPreviousPointNumber', () => {
 		const path = samplePath();
-		expect(path.getPreviousPointNum(0)).toBe(3);
+		expect(path.getPreviousPointNumber(0)).toBe(3);
 	});
 
 	it('containsPoint', () => {

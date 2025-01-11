@@ -645,7 +645,7 @@ export class Path extends GlyphElement {
 	 * @param {Number} pointNumber - point number
 	 * @returns {Number}
 	 */
-	getNextPointNum(pointNumber = 0) {
+	getNextPointNumber(pointNumber = 0) {
 		pointNumber = parseNumber(pointNumber);
 		pointNumber += 1;
 		pointNumber = pointNumber % this.pathPoints.length;
@@ -658,7 +658,7 @@ export class Path extends GlyphElement {
 	 * @param {Number} pointNumber - point number
 	 * @returns {Number}
 	 */
-	getPreviousPointNum(pointNumber = 0) {
+	getPreviousPointNumber(pointNumber = 0) {
 		pointNumber = parseNumber(pointNumber);
 		pointNumber -= 1;
 		if (pointNumber < 0) {
@@ -719,7 +719,7 @@ export class Path extends GlyphElement {
 		for (let cp = 0; cp < this.pathPoints.length; cp++) {
 			p1 = this.pathPoints[cp];
 			// p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
-			p2 = this.pathPoints[this.getNextPointNum(cp)];
+			p2 = this.pathPoints[this.getNextPointNumber(cp)];
 			trr =
 				' C' +
 				round(p1.h2.x, roundValue) +
@@ -776,7 +776,7 @@ export class Path extends GlyphElement {
 		for (let cp = 0; cp < this.pathPoints.length; cp++) {
 			p1 = this.pathPoints[cp];
 			// p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
-			p2 = this.pathPoints[this.getNextPointNum(cp)];
+			p2 = this.pathPoints[this.getNextPointNumber(cp)];
 			p1h2x = p1.h2.x - p1.p.x;
 			p1h2y = p1.h2.y - p1.p.y;
 			p2h1x = p2.h1.x - p1.h2.x;
@@ -845,7 +845,7 @@ export class Path extends GlyphElement {
 		let randomID = Math.round(Math.random() * 10000);
 		if (!pp1.pointID) pp1.pointID = `point-${num}-${randomID}`;
 		// let pp2 = this.pathPoints[(num+1)%this.pathPoints.length];
-		const next = this.getNextPointNum(num);
+		const next = this.getNextPointNumber(num);
 		const pp2 = this.pathPoints[next];
 		if (!pp2.pointID) pp2.pointID = `point-${next}-${randomID}`;
 		// log(pp1);
@@ -1095,7 +1095,7 @@ export class Path extends GlyphElement {
 		// log(`round: ${round}`);
 
 		const pp1 = this.pathPoints[pointNumber];
-		const pp2i = this.getNextPointNum(pointNumber);
+		const pp2i = this.getNextPointNumber(pointNumber);
 		const pp2 = this.pathPoints[pp2i];
 		let nP;
 		let nH1;
