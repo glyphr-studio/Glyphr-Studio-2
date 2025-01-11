@@ -235,10 +235,10 @@ function makeCard_Move() {
 		innerHTML: `
 			<label for="moveX">X&nbsp;move:</label>
 			<input-number id="moveX" value="0"></input-number>
-			<pre title="Expected value type">Em</pre>
+			<pre title="Expected value type" class="value-type">Em</pre>
 			<label for="moveY">Y&nbsp;move:</label>
 			<input-number id="moveY" value="0"></input-number>
-			<pre title="Expected value type">Em</pre>
+			<pre title="Expected value type" class="value-type">Em</pre>
 		`,
 	});
 	card.appendChild(table);
@@ -300,7 +300,7 @@ function makeCard_ScaleVertical() {
 		innerHTML: `
 			<label for="scaleVertical">Scale&nbsp;value:</label>
 			<input-number id="scaleVertical" type="number" value="1"></input-number>
-			<pre title="Expected value type">Scale factor</pre>
+			<pre title="Expected value type" class="value-type">Scale factor</pre>
 		`,
 	});
 	card.appendChild(table);
@@ -358,7 +358,7 @@ function makeCard_ScaleHorizontal() {
 		innerHTML: `
 			<label for="scaleHorizontal">Scale&nbsp;value:</label>
 			<input-number id="scaleHorizontal" type="number" value="1"></input-number>
-			<pre title="Expected value type">Scale factor</pre>
+			<pre title="Expected value type" class="value-type">Scale factor</pre>
 		`,
 	});
 	card.appendChild(table);
@@ -429,11 +429,11 @@ function makeCard_Resize() {
 		innerHTML: `
 			<label for="resizeWidth">&#916;&nbsp;Width:</label>
 			<input-number id="resizeWidth" type="number" value="0"></input-number>
-			<pre title="Expected value type">Em</pre>
+			<pre title="Expected value type" class="value-type">Em</pre>
 
 			<label for="resizeHeight">&#916;&nbsp;Height:</label>
 			<input-number id="resizeHeight" type="number" value="0"></input-number>
-			<pre title="Expected value type">Em</pre>
+			<pre title="Expected value type" class="value-type">Em</pre>
 		`,
 	});
 	card.appendChild(table);
@@ -588,13 +588,13 @@ function makeCard_SideBearings() {
 				&nbsp;Left&nbsp;Side&nbsp;Bearing:
 			</label>
 			<input-number id="sideBearingLeft" type="number" value="0"></input-number>
-			<pre title="Expected value type">Em</pre>
+			<pre title="Expected value type" class="value-type">Em</pre>
 			<label for="sideBearingRight">
 				<input type="checkbox" style="position: relative; top: 5px;" id="sideBearingRightCheckbox">
 				&nbsp;Right&nbsp;Side&nbsp;Bearing:
 			</label>
 			<input-number id="sideBearingRight" type="number" value="0"></input-number>
-			<pre title="Expected value type">Em</pre>
+			<pre title="Expected value type" class="value-type">Em</pre>
 		`,
 	});
 	card.appendChild(table);
@@ -726,7 +726,7 @@ function makeCard_Monospace() {
 		innerHTML: `
 			<label for="monospaceWidth">Glyph&nbsp;Width:</label>
 			<input-number id="monospaceWidth" type="number" value="500"></input-number>
-			<pre title="Expected value type">Em</pre>
+			<pre title="Expected value type" class="value-type">Em</pre>
 		`,
 	});
 	card.appendChild(table);
@@ -989,7 +989,8 @@ function makeCard_DiacriticsAdvanced() {
 		let rangeExtendedA = getUnicodeBlockByName('Latin Extended-A');
 		addCharacterRangeToCurrentProject(rangeExtendedA);
 		let range = { begin: 0, end: 0 };
-		if (rangeSupplement && rangeExtendedA) range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
+		if (rangeSupplement && rangeExtendedA)
+			range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
 		let currentItemDec = range.begin;
 		/** @type {String} */
 		let currentItemHex = decToHex(range.begin) || '0x0';

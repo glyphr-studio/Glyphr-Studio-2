@@ -31,7 +31,7 @@
 	display: grid;
 	background-color: transparent;
 	grid-template-columns: 1fr 24px min-content;
-	min-height: 26px;
+	height: 26px;
 }
 
 .numberInput:focus,

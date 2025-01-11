@@ -139,6 +139,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback) {
 			tag: 'pre',
 			innerHTML: settingType || 'Text',
 			title: `Expected value type`,
+			className: 'value-type',
 		});
 	}
 

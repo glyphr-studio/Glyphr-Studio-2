@@ -201,19 +201,21 @@ code,
 	line-height: 24px;
 }
 
-.settings-page__tab-content pre {
+.value-type {
 	height: 24px;
 	font-size: 0.8em;
 	line-height: 24px;
 	width: min-content;
 	color: var(--disabled-text);
-	border: 1px solid var(--disabled-border);
+	border-style: dashed;
+	border-color: var(--disabled-border);
+	border-width: 0px 1px 1px 0px;
 	opacity: 0.4;
-	border-radius: 4px;
-	padding: 0px 5px;
+	border-radius: 0px 10px 0px 0px;
+	padding: 2px 5px 0px 2px;
 }
 
-.settings-page__tab-content pre:hover {
+.value-type:hover {
 	opacity: 1;
 }
 
@@ -316,22 +318,6 @@ code,
 .global-actions__card input[type='checkbox'] {
 	width: 20px;
 	height: 20px;
-}
-
-.global-actions__card pre {
-	height: 24px;
-	font-size: 0.8em;
-	line-height: 24px;
-	width: min-content;
-	color: var(--disabled-text);
-	border: 1px solid var(--disabled-border);
-	opacity: 0.4;
-	border-radius: 4px;
-	padding: 0px 5px;
-}
-
-.global-actions__card pre:hover {
-	opacity: 1;
 }
 
 .textAction {
