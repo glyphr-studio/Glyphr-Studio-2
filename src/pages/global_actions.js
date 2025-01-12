@@ -37,14 +37,28 @@ export function makePage_GlobalActions() {
 					<span class="panel__card full-width">
 						Global Actions are actions that affect many glyphs at once.
 						Actions taken here will not carry forward to glyphs that haven't been created yet.
+					</span>
+					<span class="panel__card full-width">
+						<h3>Filters</h3>
+						By default, global actions affect all characters, ligatures, and components. The
+						filters below can be used to target more specific ranges.
 						<br><br>
+						<span id="globalActionsCharacterRangesDisplay">
+							${filters.characterRanges.length} character ranges selected.
+						</span>
+						<fancy-button
+							id="showFilterDialogButton"
+							secondary
+						>Select character ranges</fancy-button>
+						<input type="checkbox" checked id="globalActionsSelectLigaturesCheckbox" />
+						<label for="globalActionsSelectLigaturesCheckbox">Ligatures</label>
+						<input type="checkbox" checked id="globalActionsSelectComponentsCheckbox" />
+						<label for="globalActionsSelectComponentsCheckbox">Components</label>
+					</span>
+					<span class="panel__card full-width">
 						Have an idea for a new global action?  They are easy for us to add - email us your idea!
 						<a href="mailto:mail@glyphrstudio.com">mail@glyphrstudio.com</a>
 						<br /> <br />
-						<fancy-button
-							id="showCharacterRangeSelectionDialogButton"
-							secondary
-						>Select character ranges</fancy-button>
 					</span>
 				</div>
 			</div>
@@ -63,13 +77,23 @@ export function makePage_GlobalActions() {
 	const rightArea = content.querySelector('.content-page__right-area');
 	rightArea.innerHTML += ``;
 
-	let showCharacterRangeSelectionDialogButton = content.querySelector(
-		'#showCharacterRangeSelectionDialogButton'
+	let showFilterDialogButton = content.querySelector(
+		'#showFilterDialogButton'
 	);
-	showCharacterRangeSelectionDialogButton.addEventListener(
+	showFilterDialogButton.addEventListener(
 		'click',
-		showCharacterRangeSelectionDialog
+		showFilterDialog
 	);
+
+	let ligatureCheckbox = content.querySelector('#globalActionsSelectLigatureCheckbox');
+	ligatureCheckbox.addEventListener('change', () => {
+		filters.ligatures = ligatureCheckbox.hasAttribute('checked');
+	});
+
+	let componentCheckbox = content.querySelector('#globalActionsSelectComponentCheckbox');
+	componentCheckbox.addEventListener('change', () => {
+		filters.components = componentCheckbox.hasAttribute('checked');
+	});
 
 	addAsChildren(rightArea, [
 		makeElement({ tag: 'h1', content: 'Move and resize' }),
@@ -216,9 +240,33 @@ export function glyphIterator(oa) {
 	// log(`glyphIterator`, 'end');
 }
 
-const globalActionsSelectedCharacterRanges = [];
+const filters = {
+	characterRanges: [],
+	ligatures: true,
+	components: true,
+};
 
-export function showCharacterRangeSelectionDialog() {
+function updateFilterCard() {
+	const ligatureCheckbox = document.getElementById('globalActionsSelectLigaturesCheckbox');
+	const componentsCheckbox = document.getElementById('globalActionsSelectComponentsCheckbox');
+	const characterRangesDisplay = document.getElementById('globalActionsCharacterRangesDisplay');
+
+	if(filters.ligatures) {
+		ligatureCheckbox.setAttribute('checked', '');
+	} else {
+		ligatureCheckbox.removeAttribute('checked');
+	}
+
+	if(filters.components) {
+		componentsCheckbox.setAttribute('checked', '');
+	} else {
+		componentsCheckbox.removeAttribute('checked');
+	}
+
+	characterRangesDisplay.innerHTML = `${filters.characterRanges.length} character ranges selected.`;
+}
+
+function showFilterDialog() {
 	const dialogContent = makeElement({
 		tag: 'div',
 		innerHTML: `
@@ -245,6 +293,7 @@ export function showCharacterRangeSelectionDialog() {
 		content: 'Close',
 		onClick: () => {
 			closeAllModalDialogs();
+			updateFilterCard();
 		}
 	});
 
@@ -270,7 +319,7 @@ export function showCharacterRangeSelectionDialog() {
 	}
 
 	projectRanges.forEach((range) => {
-		log(globalActionsSelectedCharacterRanges.includes(range.id));
+		log(filters.characterRanges.includes(range.id));
 		const rangeCheckbox = makeElement({
 			tag: 'input',
 			attributes: {
@@ -279,16 +328,16 @@ export function showCharacterRangeSelectionDialog() {
 		});
 
 		rangeCheckbox.addEventListener('change', () => {
-			const index = globalActionsSelectedCharacterRanges.indexOf(range.id);
+			const index = filters.characterRanges.indexOf(range.id);
 			/**@ts-ignore */
 			if (index === -1 && rangeCheckbox.checked) {
-				globalActionsSelectedCharacterRanges.push(range.id);
+				filters.characterRanges.push(range.id);
 			} else {
-				globalActionsSelectedCharacterRanges.splice(index, 1);
+				filters.characterRanges.splice(index, 1);
 			}
 		});
 
-		if (globalActionsSelectedCharacterRanges.includes(range.id)) {
+		if (filters.characterRanges.includes(range.id)) {
 			rangeCheckbox.setAttribute('checked', '');
 		}
 
