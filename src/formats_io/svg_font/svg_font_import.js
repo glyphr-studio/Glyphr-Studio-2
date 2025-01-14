@@ -103,6 +103,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 					const single = uni[0];
 					if (!isNaN(Number(single))) project.incrementRangeCountFor(Number(single));
 					newGlyph.id = `glyph-${single}`;
+					newGlyph.parent = project;
 					// log(newGlyph);
 					finalGlyphs[`glyph-${single}`] = newGlyph;
 					if (getUnicodeName(single) === '[name not found]') {
@@ -121,6 +122,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 						if (newID) {
 							newGlyph.id = newID;
 							newGlyph.gsub = hexesToHexArray(joined);
+							newGlyph.parent = project;
 							finalLigatures[newID] = newGlyph;
 						}
 					}
@@ -149,6 +151,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 		newGlyph.advanceWidth = advanceWidth;
 		project.incrementRangeCountFor(0);
 		newGlyph.id = `glyph-0x0`;
+		newGlyph.parent = project;
 		finalGlyphs[`glyph-0x0`] = newGlyph;
 		// log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
 		// log(finalGlyphs[`glyph-0x0`]);
