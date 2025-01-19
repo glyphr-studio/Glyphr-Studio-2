@@ -2,7 +2,8 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: new feature
+labels: user reported
+type: feature
 assignees: ''
 ---
 
