@@ -58,6 +58,12 @@ import transform_skewy from './transform_skewy.svg?raw';
 import transform_skewy_position from './transform_skewy_position.svg?raw';
 import transform_translate from './transform_translate.svg?raw';
 import transforms_attribute_order from './transforms_attribute_order.svg?raw';
+import use_href_attributes from './use_href_attributes.svg?raw';
+import use_href_cascade from './use_href_cascade.svg?raw';
+import use_href_transforms from './use_href_transforms.svg?raw';
+import use_xlink_attributes from './use_xlink_attributes.svg?raw';
+import use_xlink_cascade from './use_xlink_cascade.svg?raw';
+import use_xlink_transforms from './use_xlink_transforms.svg?raw';
 
 /**
  * Simulates importing SVG code and converting it to a
@@ -159,7 +165,6 @@ function numericValuesAreRoughlyEqual(testObject, expectedObject, precision = 6,
 		}
 	}
 */
-
 
 describe('Import basic SVG shapes', () => {
 	it('Import shape_circle', () => {
@@ -493,6 +498,45 @@ describe('Import transformed SVG shapes', () => {
 		// console.log('transform_origin_translate');
 		const testShape = importAndMakeSVGTestObject(transform_origin_translate);
 		const expectedShape = JSON.parse(expected.transform_origin_translate);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+});
+
+describe('Import SVG shapes with the use tag', () => {
+	it('Import use_href_attributes', () => {
+		// console.log('use_href_attributes');
+		const testShape = importAndMakeSVGTestObject(use_href_attributes);
+		const expectedShape = JSON.parse(expected.use_href_attributes);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+	it('Import use_href_cascade', () => {
+		// console.log('use_href_cascade');
+		const testShape = importAndMakeSVGTestObject(use_href_cascade);
+		const expectedShape = JSON.parse(expected.use_href_cascade);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+	it('Import use_href_transforms', () => {
+		// console.log('use_href_transforms');
+		const testShape = importAndMakeSVGTestObject(use_href_transforms);
+		const expectedShape = JSON.parse(expected.use_href_transforms);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+	it('Import use_xlink_attributes', () => {
+		// console.log('use_xlink_attributes');
+		const testShape = importAndMakeSVGTestObject(use_xlink_attributes);
+		const expectedShape = JSON.parse(expected.use_xlink_attributes);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+	it('Import use_xlink_cascade', () => {
+		// console.log('use_xlink_cascade');
+		const testShape = importAndMakeSVGTestObject(use_xlink_cascade);
+		const expectedShape = JSON.parse(expected.use_xlink_cascade);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+	it('Import use_xlink_transforms', () => {
+		// console.log('use_xlink_transforms');
+		const testShape = importAndMakeSVGTestObject(use_xlink_transforms);
+		const expectedShape = JSON.parse(expected.use_xlink_transforms);
 		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
 	});
 });
