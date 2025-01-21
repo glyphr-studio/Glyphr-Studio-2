@@ -1,5 +1,6 @@
 import {
 	chunkAndValidateParameters,
+	log,
 	roundAndSanitize,
 	sanitizeParameterData,
 } from './svg-to-bezier.js';
@@ -11,9 +12,9 @@ import { convertArcToCommandToBezier } from './tag-convert-path-arc.js';
  * @returns {Array} - resulting path(s) in Bezier Data Format
  */
 export function tagConvertPath(tagData = {}) {
-	// log(`\ntagConvertPath`);
+	log(`\ntagConvertPath`);
 	const dAttribute = tagData.attributes.d || '';
-	// log(`\t dAttribute: ${dAttribute}`);
+	log(`\t dAttribute: ${dAttribute}`);
 
 	// Check for commands
 	if (dAttribute.length === 0 || dAttribute.length === 1) {
@@ -23,28 +24,41 @@ export function tagConvertPath(tagData = {}) {
 	// Take the command string and split into an array containing
 	// command objects, comprised of the command letter and parameters
 	let commands = chunkCommands(dAttribute);
+	log('After chunkCommands');
+	log(commands);
 
 	// Convert relative commands: m, l, h, v, c, s, q, t, a, z
 	// to absolute commands: M, L, H, V, C, S, Q, T, A, Z
 	// Converting to Absolute should be done before convertLineTo and convertSmoothBeziers
 	// because they are unable to handle relative commands.
 	commands = convertToAbsolute(commands);
+	log('After convertToAbsolute');
+	log(commands);
 
 	// Convert chains of parameters to individual command / parameter pairs
 	commands = splitChainParameters(commands);
+	log('After splitChainParameters');
+	log(commands);
 
 	// Convert Horizontal and Vertical LineTo commands to regular LineTo commands
 	commands = convertLineTo(commands);
+	log('After convertLineTo');
+	log(commands); // Convert Smooth Cubic Bézier commands S to regular Cubic Bézier commands C
 
-	// Convert Smooth Cubic Bézier commands S to regular Cubic Bézier commands C
 	// Convert Smooth Quadratic Bézier commands T to regular Quadratic Bézier commands Q
 	commands = convertSmoothBeziers(commands);
+	log('After convertSmoothBeziers');
+	log(commands);
 
 	// Convert Quadratic Bézier Q commands to Cubic Bézier commands C
 	commands = convertQuadraticBeziers(commands);
+	log('After convertQuadraticBeziers');
+	log(commands);
 
 	// Convert Elliptical Arc commands A to Cubic Bézier commands C
 	commands = convertArcs(commands);
+	log('After convertArcs');
+	log(commands);
 
 	// Do the final conversion to Bezier Data format
 	const bezierPaths = convertCommandsToBezierPaths(commands);
@@ -330,7 +344,7 @@ function splitChainParameters(commands) {
 				case 'V':
 				case 'h':
 				case 'v':
-					for (let p = 0; p < command.parameters.length; p += 2) {
+					for (let p = 0; p < command.parameters.length; p++) {
 						result.push({
 							type: command.type,
 							parameters: [command.parameters[p]],

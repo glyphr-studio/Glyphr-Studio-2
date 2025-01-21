@@ -132,5 +132,6 @@
 		"ylock"
 	],
 	"vitest.commandLine": "npx vitest watch --environment=jsdom",
-	"testing.automaticallyOpenPeekView": "never"
+	"testing.automaticallyOpenPeekView": "never",
+	"svg.preview.background": "white"
 }

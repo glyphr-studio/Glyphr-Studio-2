@@ -14,6 +14,7 @@ import multi_shape_2 from './multi_shape_2.svg?raw';
 import multi_shape_3 from './multi_shape_3.svg?raw';
 import multi_shape_4 from './multi_shape_4.svg?raw';
 import multi_shape_5 from './multi_shape_5.svg?raw';
+import multi_shape_6 from './multi_shape_6.svg?raw';
 import path_A from './path_A.svg?raw';
 import path_A2 from './path_A2.svg?raw';
 import path_Ar from './path_Ar.svg?raw';
@@ -369,6 +370,12 @@ describe('Import multi SVG shapes', () => {
 		// console.log('multi_shape_5');
 		const testShape = importAndMakeSVGTestObject(multi_shape_5);
 		const expectedShape = JSON.parse(expected.multi_shape_5);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+	it('Import multi_shape_6', () => {
+		// console.log('multi_shape_6');
+		const testShape = importAndMakeSVGTestObject(multi_shape_6);
+		const expectedShape = JSON.parse(expected.multi_shape_6);
 		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
 	});
 });
