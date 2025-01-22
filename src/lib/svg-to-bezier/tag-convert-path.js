@@ -104,6 +104,16 @@ function convertCommandsToBezierPaths(commands) {
 			currentY = params[5];
 		}
 		if (command.type === 'Z') {
+			if (currentPath[0] && currentPath[0][0]) {
+				currentPath.push([
+					{ x: currentX, y: currentY },
+					false,
+					false,
+					{ x: currentPath[0][0].x, y: currentPath[0][0].y },
+				]);
+				currentX = currentPath[0][0].x;
+				currentY = currentPath[0][0].y;
+			}
 			bezierPaths.push(currentPath);
 			currentPath = [];
 		}
@@ -171,10 +181,14 @@ function convertToAbsolute(commands) {
 	let newCommand = {};
 	let currentPoint = { x: 0, y: 0 };
 	let newPoint = { x: 0, y: 0 };
+	firstPoint = {};
 
 	commands.forEach((command) => {
+		log(`Command: ${command.type}`);
 		if (command.type === 'm' || command.type === 'l') {
 			// MoveTo and LineTo
+			log(`currentPoint: ${currentPoint.x}, ${currentPoint.y}`);
+
 			newCommand = {
 				type: command.type === 'm' ? 'M' : 'L',
 				parameters: [],
@@ -187,6 +201,10 @@ function convertToAbsolute(commands) {
 				newCommand.parameters.push(newPoint.y);
 				currentPoint.x = newPoint.x;
 				currentPoint.y = newPoint.y;
+				if (command.type === 'm') {
+					// if a chained m command, firstPoint is the first entry
+					setFirstPoint(newPoint);
+				}
 			}
 
 			result.push(newCommand);
@@ -201,6 +219,7 @@ function convertToAbsolute(commands) {
 				newPoint.x = command.parameters[i] + currentPoint.x;
 				newCommand.parameters.push(newPoint.x);
 				currentPoint.x = newPoint.x;
+				setFirstPoint(newPoint);
 			}
 
 			result.push(newCommand);
@@ -215,6 +234,7 @@ function convertToAbsolute(commands) {
 				newPoint.y = command.parameters[i] + currentPoint.y;
 				newCommand.parameters.push(newPoint.y);
 				currentPoint.y = newPoint.y;
+				setFirstPoint(newPoint);
 			}
 
 			result.push(newCommand);
@@ -236,6 +256,7 @@ function convertToAbsolute(commands) {
 				newCommand.parameters.push(newPoint.y);
 				currentPoint.x = newPoint.x;
 				currentPoint.y = newPoint.y;
+				setFirstPoint(newPoint);
 			}
 
 			result.push(newCommand);
@@ -255,6 +276,7 @@ function convertToAbsolute(commands) {
 				newCommand.parameters.push(newPoint.y);
 				currentPoint.x = newPoint.x;
 				currentPoint.y = newPoint.y;
+				setFirstPoint(newPoint);
 			}
 
 			result.push(newCommand);
@@ -274,6 +296,7 @@ function convertToAbsolute(commands) {
 				newCommand.parameters.push(newPoint.y);
 				currentPoint.x = newPoint.x;
 				currentPoint.y = newPoint.y;
+				setFirstPoint(newPoint);
 			}
 
 			result.push(newCommand);
@@ -291,6 +314,7 @@ function convertToAbsolute(commands) {
 				newCommand.parameters.push(newPoint.y);
 				currentPoint.x = newPoint.x;
 				currentPoint.y = newPoint.y;
+				setFirstPoint(newPoint);
 			}
 
 			result.push(newCommand);
@@ -313,15 +337,27 @@ function convertToAbsolute(commands) {
 				newCommand.parameters.push(newPoint.y);
 				currentPoint.x = newPoint.x;
 				currentPoint.y = newPoint.y;
+				setFirstPoint(newPoint);
 			}
 
 			result.push(newCommand);
-		} else if (command.type === 'z') {
+		} else if (command.type === 'z' || command.type === 'Z') {
 			// End path
+			currentPoint = { x: firstPoint.x, y: firstPoint.y };
+			log(`END OF PATH Z: Setting current point to first point`);
+			log(`firstPoint: ${firstPoint.x}, ${firstPoint.y}`);
+			log(`currentPoint: ${currentPoint.x}, ${currentPoint.y}`);
+			firstPoint = false;
 			result.push({ type: 'Z' });
 		} else {
-			// command is absolute, push it
+			// command is absolute, push it after updating currentPoint
+			if (command.type === 'M') {
+				// If a chained M command, firstPoint is the first entry
+				currentPoint.x = command.parameters[0];
+				currentPoint.y = command.parameters[1];
+			}
 			result.push(command);
+			setFirstPoint(currentPoint);
 			currentPoint = getNewEndPoint(currentPoint, command);
 		}
 	});
@@ -634,6 +670,16 @@ function convertArcs(commands) {
 /*
  * Helper Functions
  */
+let firstPoint = {};
+function setFirstPoint(point) {
+	if (!firstPoint.hasOwnProperty('x') && !firstPoint.hasOwnProperty('y')) {
+		log(`Setting First Point! ${point.x}, ${point.y}`);
+		firstPoint = {
+			x: point.x,
+			y: point.y,
+		};
+	}
+}
 
 function getNewEndPoint(currentPoint, command) {
 	let returnPoint = {

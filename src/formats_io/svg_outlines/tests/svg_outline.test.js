@@ -9,6 +9,10 @@ import inherited_transforms_hierarchy_order from './inherited_transforms_hierarc
 import inherited_transforms_mixed_levels_and_transforms from './inherited_transforms_mixed_levels_and_transforms.svg?raw';
 import inherited_transforms_one_level_one_transform from './inherited_transforms_one_level_one_transform.svg?raw';
 import inherited_transforms_two_levels_one_transform from './inherited_transforms_two_levels_one_transform.svg?raw';
+import inkscape_at from './inkscape_at.svg?raw';
+import inkscape_D from './inkscape_D.svg?raw';
+import inkscape_F from './inkscape_F.svg?raw';
+import inkscape_P from './inkscape_P.svg?raw';
 import multi_shape_1 from './multi_shape_1.svg?raw';
 import multi_shape_2 from './multi_shape_2.svg?raw';
 import multi_shape_3 from './multi_shape_3.svg?raw';
@@ -345,6 +349,7 @@ describe('Import multi SVG shapes', () => {
 	it('Import multi_shape_1', () => {
 		// console.log('multi_shape_1');
 		const testShape = importAndMakeSVGTestObject(multi_shape_1);
+		// console.log(JSON.stringify(testShape.save()));
 		const expectedShape = JSON.parse(expected.multi_shape_1);
 		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
 	});
@@ -363,6 +368,7 @@ describe('Import multi SVG shapes', () => {
 	it('Import multi_shape_4', () => {
 		// console.log('multi_shape_4');
 		const testShape = importAndMakeSVGTestObject(multi_shape_4);
+		// console.log(JSON.stringify(testShape.save()));
 		const expectedShape = JSON.parse(expected.multi_shape_4);
 		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
 	});
@@ -376,6 +382,37 @@ describe('Import multi SVG shapes', () => {
 		// console.log('multi_shape_6');
 		const testShape = importAndMakeSVGTestObject(multi_shape_6);
 		const expectedShape = JSON.parse(expected.multi_shape_6);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+});
+
+describe('Import examples from Inkscape', () => {
+	it('Import inkscape_at', () => {
+		// console.log('inkscape_at');
+		const testShape = importAndMakeSVGTestObject(inkscape_at);
+		console.log(JSON.stringify(testShape.save()));
+		const expectedShape = JSON.parse(expected.inkscape_at);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+	it('Import inkscape_D', () => {
+		// console.log('inkscape_D');
+		const testShape = importAndMakeSVGTestObject(inkscape_D);
+		console.log(JSON.stringify(testShape.save()));
+		const expectedShape = JSON.parse(expected.inkscape_D);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+	it('Import inkscape_F', () => {
+		// console.log('inkscape_F');
+		const testShape = importAndMakeSVGTestObject(inkscape_F);
+		console.log(JSON.stringify(testShape.save()));
+		const expectedShape = JSON.parse(expected.inkscape_F);
+		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
+	});
+	it('Import inkscape_P', () => {
+		// console.log('inkscape_P');
+		const testShape = importAndMakeSVGTestObject(inkscape_P);
+		console.log(JSON.stringify(testShape.save()));
+		const expectedShape = JSON.parse(expected.inkscape_P);
 		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
 	});
 });
