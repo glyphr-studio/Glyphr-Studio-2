@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<path d="
+			M 30,102
+			V 27
+			h 9
+			v 6 27
+			h 42
+			v 6
+			H 39
+			V 95
+			H 90
+			V 76
+			h 9
+			V 102
+			H 39
+			Z"
+	/>
+</svg>

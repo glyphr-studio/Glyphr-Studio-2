@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
 	<path d="
 		M 0,100
 		V 0
 		h 100
 		v 50 50
-		H 0
-		Z"/>
-	<path d="
-		M 100,200
+		Z
+		m 100,0
 		V 100
 		h 60 40
 		v 100
