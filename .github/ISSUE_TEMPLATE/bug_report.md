@@ -2,8 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-type: bug
-label: user reported
+labels: bug
 assignees: ''
 ---
 

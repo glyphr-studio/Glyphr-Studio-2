@@ -75,7 +75,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	project.glyphs = await importGlyphs(fontGlyphs, project);
 
 	// Ligatures
-	project.ligatures = await importLigatures(importedFont, fontLigatures, project);
+	project.ligatures = await importLigatures(importedFont, fontLigatures);
 
 	// Kern data
 	project.kerning = await importGposKernPairs(importedFont, loadedGposKernTables);

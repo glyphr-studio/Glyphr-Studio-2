@@ -140,7 +140,7 @@ export class KernGroup extends GlyphElement {
 	 * Validates and sets the members of the left group
 	 * @param {Array} newGroup
 	 */
-	set leftGroup(newGroup) {
+	set leftGroup(newGroup)  {
 		newGroup = newGroup.map((value) => validateAsHex(value));
 		newGroup = newGroup.filter(duplicates);
 		this.changed();
