@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" >
+<path
+	d="
+	M 50,100 40,40 
+	h 10 
+	l 1,10 
+	h 12 
+	l 3,-10 
+	H 75 
+	L 60,100 
+	z 
+	m 20,-0 2,-10 
+	h 10 
+	l 10,-50 
+	h 10 
+	l -10,50 
+	h 10 
+	l -2,10 
+	Z" />
+</svg>

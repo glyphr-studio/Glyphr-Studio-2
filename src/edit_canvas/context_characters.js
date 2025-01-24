@@ -60,7 +60,7 @@ export function drawContextCharacters(ctx) {
 		// log(`leftDistance: ${leftDistance}`);
 
 		leftDistance += calculateKernOffset(
-			split.left.charAt(split.left.length - 1),
+			[...split.left].at(-1),
 			contextCharacters.currentGlyphChar
 		);
 		// log(`leftDistance: ${leftDistance}`);
@@ -103,7 +103,7 @@ export function drawContextCharacters(ctx) {
 	// Draw right block
 	if (split.right) {
 		let rightDistance = editor.selectedItem.advanceWidth;
-		rightDistance += calculateKernOffset(contextCharacters.currentGlyphChar, split.right.charAt(0));
+		rightDistance += calculateKernOffset(contextCharacters.currentGlyphChar, [...split.right][0]);
 		// log(`rightDistance: ${rightDistance}`);
 
 		let rightMaxes = new Maxes({
@@ -221,7 +221,7 @@ export function getItemStringAdvanceWidth(textString) {
 	// log(`textString: ${textString}`);
 
 	let advanceWidth = 0;
-	textString = findAndMergeLigatures(textString.split(''));
+	textString = findAndMergeLigatures([...textString]);
 	// log(textString);
 	const project = getCurrentProject();
 	let item;
@@ -274,7 +274,7 @@ function drawContextCharacterLeftLineExtras(ctx, char, block) {
 	// Kern data
 	// Draw kern data between rightmost char and the selected item
 	let kern = calculateKernOffset(
-		block.options.text.charAt(block.options.text.length - 1),
+		[...block.options.text].at(-1),
 		editor.selectedItem.char
 	);
 
@@ -314,7 +314,7 @@ function drawContextCharacterRightLineExtras(ctx, char, block) {
 
 	// Kern data
 	// Draw kern data between leftmost char and the selected item
-	let kern = calculateKernOffset(editor.selectedItem.char, block.options.text.charAt(0));
+	let kern = calculateKernOffset(editor.selectedItem.char, [...block.options.text][0]);
 
 	if (kern) {
 		const v = getCurrentProjectEditor().view;

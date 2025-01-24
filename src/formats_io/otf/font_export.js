@@ -105,7 +105,7 @@ function saveOTFFile(font) {
 	try {
 		const familyName = font.getEnglishName('fontFamily');
 		const styleName = font.getEnglishName('fontSubfamily');
-		const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
+		const fileName = sanitizeFontFamilyName(familyName) + '-' + styleName + '.otf';
 		// log(`\n⮟font⮟`);
 		// log(font);
 		const arrayBuffer = font.toArrayBuffer();
@@ -118,6 +118,30 @@ function saveOTFFile(font) {
 		result = error;
 	}
 
+	return result;
+}
+
+/**
+ * Enforces rules about the font family name, which is used to make the `fontname`
+ * PostScript `fontname` must be printable ASCII
+ * must not contain (){}[]<>%/ or space
+ * and must be shorter than 63 characters (FontForge) or 31 charcters (Glyphr Studio tests)
+ * @param {String} name - name from the project settings
+ * @returns {String} - sanitized name for the font family export name
+ */
+export function sanitizeFontFamilyName(name = 'My font') {
+	// log(`sanitizeFontFamilyName`, 'start');
+	// log(`name: ${name}`);
+	const bad = '(){}[]<>%/';
+	name = name.substring(0, 31);
+	let result = '';
+	[...name].forEach((char) => {
+		if (bad.indexOf(char) === -1 && char.codePointAt(0) < 0x7f) result += char;
+	});
+	result = result.trim();
+	// result = result.replace(/\s/g, '_');
+	// log(`result: ${result}`);
+	// log(`sanitizeFontFamilyName`, 'end');
 	return result;
 }
 
@@ -136,7 +160,7 @@ function createOptionsObject() {
 	options.unitsPerEm = fontSettings.upm || 1000;
 	options.ascender = fontSettings.ascent || 0.00001;
 	options.descender = -1 * Math.abs(fontSettings.descent) || -0.00001;
-	options.familyName = fontSettings.family || ' ';
+	options.familyName = sanitizeFontFamilyName(fontSettings.family);
 	options.styleName = fontSettings.style || ' ';
 	options.designer = fontSettings.designer || ' ';
 	options.designerURL = fontSettings.designerURL || ' ';
@@ -453,7 +477,6 @@ function generateLigatureExportName(lig) {
 		const hex = decToHex(char);
 		let shortName;
 		if (hex) shortName = getUnicodeShortName(hex);
-		if (!shortName || shortName === '[name not found]') shortName = '?';
 		result += '.' + shortName;
 	});
 

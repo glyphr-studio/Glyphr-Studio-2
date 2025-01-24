@@ -201,7 +201,7 @@ export class Segment extends GlyphElement {
 
 	/**
 	 * Set Maxes
-	 * @param {Maxes} maxes
+	 * @param {Object | Maxes} maxes
 	 * @returns {Path} - reference to this Segment
 	 */
 	set maxes(maxes) {
@@ -515,10 +515,10 @@ export class Segment extends GlyphElement {
 	 */
 	getFastMaxes() {
 		const bounds = {
-			xMin: Math.min(this.p1x, Math.min(this.p2x, Math.min(this.p3x, this.p4x))),
-			yMin: Math.min(this.p1y, Math.min(this.p2y, Math.min(this.p3y, this.p4y))),
-			xMax: Math.max(this.p1x, Math.max(this.p2x, Math.max(this.p3x, this.p4x))),
-			yMax: Math.max(this.p1y, Math.max(this.p2y, Math.max(this.p3y, this.p4y))),
+			xMin: Math.min(this.p1x, this.p2x, this.p3x, this.p4x),
+			yMin: Math.min(this.p1y, this.p2y, this.p3y, this.p4y),
+			xMax: Math.max(this.p1x, this.p2x, this.p3x, this.p4x),
+			yMax: Math.max(this.p1y, this.p2y, this.p3y, this.p4y),
 		};
 		// log(`Segment.getFastMaxes - returning`);
 		// log(bounds);
@@ -541,8 +541,10 @@ export class Segment extends GlyphElement {
 		function checkXBounds(maxes, value) {
 			if (maxes.xMin > value) {
 				maxes.xMin = value;
+				// log(`new xMin: ${value}`);
 			} else if (maxes.xMax < value) {
 				maxes.xMax = value;
+				// log(`new xMax: ${value}`);
 			}
 		}
 
@@ -554,8 +556,10 @@ export class Segment extends GlyphElement {
 		function checkYBounds(maxes, value) {
 			if (maxes.yMin > value) {
 				maxes.yMin = value;
+				// log(`new yMin: ${value}`);
 			} else if (maxes.yMax < value) {
 				maxes.yMax = value;
+				// log(`new yMax: ${value}`);
 			}
 		}
 
@@ -581,24 +585,29 @@ export class Segment extends GlyphElement {
 		};
 
 		if (this.lineType) {
-			this.maxes = new Maxes(bounds);
-			// log(this.maxes.print());
-			// log('Segment.recalculateMaxes - returning fast maxes for line', 'end');
+			this.cache.maxes = new Maxes(bounds);
+			// log('returning fast maxes for line');
+			// log('Segment.recalculateMaxes', 'end');
 			return;
 		}
 
 		const d1x = this.p2x - this.p1x;
 		const d1y = this.p2y - this.p1y;
+		// log(`d1x: ${d1x} d1y: ${d1y}`);
 		let d2x = this.p3x - this.p2x;
 		let d2y = this.p3y - this.p2y;
+		// log(`d2x: ${d2x} d2y: ${d2y}`);
 		const d3x = this.p4x - this.p3x;
 		const d3y = this.p4y - this.p3y;
+		// log(`d3x: ${d3x} d3y: ${d3y}`);
 		let numerator;
 		let denominator;
 		let quadRoot;
 		let root;
 		let t1;
 		let t2;
+		let bezierValue;
+		const aSmallNumber = 0.001;
 
 		// X bounds
 		if (
@@ -607,20 +616,29 @@ export class Segment extends GlyphElement {
 			this.p3x < bounds.xMin ||
 			this.p3x > bounds.xMax
 		) {
-			if (d1x + d3x !== 2 * d2x) {
-				d2x += 0.01;
-			}
+			// log('!!! checking x bounds');
+			if (d1x + d3x !== 2 * d2x) d2x += aSmallNumber;
 			numerator = 2 * (d1x - d2x);
 			denominator = 2 * (d1x - 2 * d2x + d3x);
+			if (denominator === 0) denominator = Number.MIN_VALUE;
+			// log(`numerator: ${numerator} denominator: ${denominator}`);
+
 			quadRoot = (2 * d2x - 2 * d1x) * (2 * d2x - 2 * d1x) - 2 * d1x * denominator;
 			root = Math.sqrt(quadRoot);
+			// log(`quadRoot: ${quadRoot} root: ${root}`);
+
 			t1 = (numerator + root) / denominator;
 			t2 = (numerator - root) / denominator;
+			// log(`t1: ${t1} t2: ${t2}`);
 			if (0 < t1 && t1 < 1) {
-				checkXBounds(bounds, getBezierValue(t1, this.p1x, this.p2x, this.p3x, this.p4x));
+				bezierValue = getBezierValue(t1, this.p1x, this.p2x, this.p3x, this.p4x);
+				// log(`bezierValue: ${bezierValue}`);
+				checkXBounds(bounds, bezierValue);
 			}
 			if (0 < t2 && t2 < 1) {
-				checkXBounds(bounds, getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x));
+				bezierValue = getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x);
+				// log(`bezierValue: ${bezierValue}`);
+				checkXBounds(bounds, bezierValue);
 			}
 		}
 
@@ -631,25 +649,39 @@ export class Segment extends GlyphElement {
 			this.p3y < bounds.yMin ||
 			this.p3y > bounds.yMax
 		) {
-			if (d1y + d3y !== 2 * d2y) {
-				d2y += 0.01;
-			}
+			// log('!!! checking y bounds');
+			if (d1y + d3y !== 2 * d2y) d2y += aSmallNumber;
 			numerator = 2 * (d1y - d2y);
 			denominator = 2 * (d1y - 2 * d2y + d3y);
+			if (denominator === 0) denominator = Number.MIN_VALUE;
+			// log(`numerator: ${numerator} denominator: ${denominator}`);
+
 			quadRoot = (2 * d2y - 2 * d1y) * (2 * d2y - 2 * d1y) - 2 * d1y * denominator;
 			root = Math.sqrt(quadRoot);
+			// log(`quadRoot: ${quadRoot} root: ${root}`);
+
 			t1 = (numerator + root) / denominator;
 			t2 = (numerator - root) / denominator;
+			// log(`t1: ${t1} t2: ${t2}`);
 			if (0 < t1 && t1 < 1) {
-				checkYBounds(bounds, getBezierValue(t1, this.p1y, this.p2y, this.p3y, this.p4y));
+				bezierValue = getBezierValue(t1, this.p1y, this.p2y, this.p3y, this.p4y);
+				// log(`bezierValue: ${bezierValue}`);
+				checkYBounds(bounds, bezierValue);
 			}
 			if (0 < t2 && t2 < 1) {
-				checkYBounds(bounds, getBezierValue(t2, this.p1y, this.p2y, this.p3y, this.p4y));
+				bezierValue = getBezierValue(t2, this.p1y, this.p2y, this.p3y, this.p4y);
+				// log(`bezierValue: ${bezierValue}`);
+				checkYBounds(bounds, bezierValue);
 			}
 		}
-		// log([this.getFastMaxes(), bounds]);
+
+		// log(`\n⮟this.getFastMaxes()⮟`);
+		// log(this.getFastMaxes());
+		// log(`\n⮟(newly calculated) bounds⮟`);
+		// log(bounds);
+
+		this.cache.maxes = new Maxes(bounds);
 		// log('Segment.recalculateMaxes', 'end');
-		this.maxes = new Maxes(bounds);
 	}
 
 	// --------------------------------------------------------------

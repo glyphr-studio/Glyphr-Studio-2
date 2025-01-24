@@ -1289,16 +1289,6 @@ export class Path extends GlyphElement {
 		// log(maxesArray);
 
 		this.cache.maxes = getOverallMaxes(maxesArray);
-		// for (let s = 0; s < this.pathPoints.length; s++) {
-		// 	// log('++++++ starting seg ' + s);
-		// 	seg = this.makeSegment(s);
-		// 	// log(`this seg maxes ${seg.maxes.print()}`);
-		// 	// log(`this maxes ${this.cache.maxes.print()}`);
-
-		// 	this.cache.maxes = getOverallMaxes([this.cache.maxes, seg.maxes]);
-		// 	// log(`path maxes is now ${this.cache.maxes.print()}`);
-		// 	// log('++++++ ending seg ' + s);
-		// }
 
 		// this.maxes.roundAll(4);
 		// log(`after> ${this.cache.maxes.print()}`);

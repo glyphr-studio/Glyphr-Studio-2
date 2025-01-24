@@ -5,12 +5,13 @@ import {
 	parseCharsInputAsHex,
 	validateAsHex,
 } from '../../common/character_ids.js';
-import { generateNewID } from '../../common/functions.js';
+import { generateNewID, json } from '../../common/functions.js';
 import { updateProgressIndicator } from '../../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeName } from '../../lib/unicode/unicode_names.js';
 import { makeLigatureID } from '../../pages/ligatures.js';
 import { KernGroup } from '../../project_data/kern_group.js';
 import { ProjectEditor } from '../../project_editor/project_editor.js';
+import { sanitizeFontFamilyName } from '../otf/font_export.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outlines/svg_outline_import.js';
 
 /**
@@ -55,11 +56,11 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 	}
 
 	async function importOneGlyph(glyph) {
-		// log(`importOneGlyph`, 'start');
+		log(`importOneGlyph`, 'start');
 
 		// One Glyph or Ligature in the font
-		// log(`\nglyphTags[${charCounter}]`);
-		// log(glyph);
+		log(`\nglyphTags[${charCounter}]`);
+		log(glyph);
 
 		if (glyph && glyph.attributes) {
 			const attributes = glyph.attributes;
@@ -72,26 +73,35 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 
 			if (!attributes.unicode && glyphName.startsWith('uni')) {
 				const hex = validateAsHex(`0x${glyphName.substring(3)}`);
-				// log(`UNI detected ${glyphName} hex is ${hex}`);
+				log(`UNI detected ${glyphName} hex is ${hex}`);
 				if (hex) {
 					uni = [hex];
 					project.settings.app.showNonCharPoints = true;
 				}
 			}
-			// log(`attributes.unicode: |${attributes.unicode}| parsed as ${uni}`);
+			log(`attributes.unicode: |${attributes.unicode}| parsed as ${uni}`);
 
 			if (uni[0] === '0x0') {
 				// Check for .notdef
-				// log('!!! Skipping '+glyphName+' NO UNICODE !!!');
+				log('!!! Skipping ' + glyphName + ' NO UNICODE !!!');
 				glyphTags.splice(charCounter, 1);
 			} else {
-				// log('GLYPH ' + charCounter + '/'+glyphTags.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(attributes));
+				log(
+					'GLYPH ' +
+						charCounter +
+						'/' +
+						glyphTags.length +
+						'\t unicode: ' +
+						json(uni) +
+						'\t attributes: ' +
+						json(attributes)
+				);
 
 				const glyphSVG = `<svg><glyph d="${glyphTags[charCounter].attributes.d}"/></svg>`;
 				const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG, false);
 
 				// Get Advance Width
-				// log(`attributes['horiz-adv-x']: ${attributes['horiz-adv-x']}`);
+				log(`attributes['horiz-adv-x']: ${attributes['horiz-adv-x']}`);
 
 				const advanceWidth = parseInt(attributes['horiz-adv-x']);
 				newGlyph.advanceWidth = advanceWidth;
@@ -99,28 +109,30 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 				if (uni.length === 1) {
 					// It's a GLYPH
 					await updateSVGImportProgressIndicator('character', charCounter);
-					// log(`Detected Glyph`);
+					log(`Detected Glyph`);
 					const single = uni[0];
 					if (!isNaN(Number(single))) project.incrementRangeCountFor(Number(single));
 					newGlyph.id = `glyph-${single}`;
-					// log(newGlyph);
+					newGlyph.parent = project;
+					log(newGlyph);
 					finalGlyphs[`glyph-${single}`] = newGlyph;
-					if (getUnicodeName(single) === '[name not found]') {
+					if (getUnicodeName(single).substring(0, 2) === 'U+') {
 						project.settings.app.showNonCharPoints = true;
 					}
 				} else {
 					// It's a LIGATURE
 					await updateSVGImportProgressIndicator('ligature', charCounter);
-					// log(`Detected Ligature`);
+					log(`Detected Ligature`);
 					const joined = uni.join('');
-					// log(`joined: ${joined}`);
+					log(`joined: ${joined}`);
 					const chars = hexesToChars(joined);
-					// log(`chars: ${chars}`);
+					log(`chars: ${chars}`);
 					if (chars) {
 						const newID = makeLigatureID(chars);
 						if (newID) {
 							newGlyph.id = newID;
 							newGlyph.gsub = hexesToHexArray(joined);
+							newGlyph.parent = project;
 							finalLigatures[newID] = newGlyph;
 						}
 					}
@@ -133,7 +145,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 			glyphTags.splice(charCounter, 1);
 		}
 
-		// log(`importOneGlyph`, 'end');
+		log(`importOneGlyph`, 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -149,6 +161,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 		newGlyph.advanceWidth = advanceWidth;
 		project.incrementRangeCountFor(0);
 		newGlyph.id = `glyph-0x0`;
+		newGlyph.parent = project;
 		finalGlyphs[`glyph-0x0`] = newGlyph;
 		// log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
 		// log(finalGlyphs[`glyph-0x0`]);
@@ -227,7 +240,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 	const fontSettings = project.settings.font;
 	const fname = fontAttributes['font-family'] || 'My Font';
 
-	fontSettings.family = fname;
+	fontSettings.family = sanitizeFontFamilyName(fname);
 	fontSettings.style = fontAttributes['font-style'] || 'Regular';
 	fontSettings.panose = fontAttributes['panose-1'] || '0 0 0 0 0 0 0 0 0 0';
 	fontSettings.upm = 1 * fontAttributes['units-per-em'] || fontSettings.upm;

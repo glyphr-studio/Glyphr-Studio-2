@@ -1,11 +1,11 @@
 import { getCurrentProject, getGlyphrStudioApp } from '../../app/main.js';
-import { decToHex, hexesToXMLHexes } from '../../common/character_ids.js';
-import { escapeXMLValues, round } from '../../common/functions.js';
+import { charToHex, decToHex, hexesToXMLHexes } from '../../common/character_ids.js';
+import { round } from '../../common/functions.js';
 import { showToast } from '../../controls/dialogs/dialogs.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { Maxes, getOverallMaxes } from '../../project_data/maxes.js';
 import { makeFileDateString, saveTextFile } from '../../project_editor/file_io.js';
-import { shouldExportItem } from '../otf/font_export.js';
+import { sanitizeFontFamilyName, shouldExportItem } from '../otf/font_export.js';
 /**
 	IO > Export > SVG Font
 	Converting a Glyphr Studio Project to XML in
@@ -22,8 +22,7 @@ export function ioSVG_exportSVGfont() {
 	const project = getCurrentProject();
 	const app = getGlyphrStudioApp();
 	const fontSettings = project.settings.font;
-	const family = fontSettings.family;
-	const familyID = family.replace(/ /g, '_');
+	const exportFamilyName = sanitizeFontFamilyName(fontSettings.family);
 	const timestamp = makeFileDateString();
 	let timeOutput = timestamp.split('-');
 	timeOutput[0] = timeOutput[0].replace(/\./g, '-');
@@ -40,11 +39,11 @@ export function ioSVG_exportSVGfont() {
 		Find out more at www.glyphrstudio.com
 	</metadata>
 	<defs>
-		<font id="${familyID}" horiz-adv-x="${fontSettings.upm}">
+		<font id="${exportFamilyName}" horiz-adv-x="${fontSettings.upm}">
 			<font-face ${ioSVG_makeFontFace()}
 			>
 				<font-face-src>
-					<font-face-name name="${family}" />
+					<font-face-name name="${exportFamilyName}" />
 				</font-face-src>
 			</font-face>
 ${ioSVG_makeMissingGlyph()}
@@ -53,8 +52,8 @@ ${ioSVG_makeAllKernPairs()}
 		</font>
 	</defs>
 
-	<text x="100" y="150" style="font-size:48px;" font-family="${family}">
-		${family}
+	<text x="100" y="150" style="font-size:48px;" font-family="${exportFamilyName}">
+		${exportFamilyName}
 	</text>
 </svg>
 `;
@@ -79,7 +78,7 @@ function ioSVG_makeFontFace() {
 	let con = '';
 
 	con += `
-		${t}font-family="${fontSettings.family}"
+		${t}font-family="${sanitizeFontFamilyName(fontSettings.family)}"
 		${t}font-style="${fontSettings.style}"
 		${t}panose-1="${fontSettings.panose}"
 		${t}units-per-em="${fontSettings.upm}"
@@ -249,7 +248,16 @@ function ioSVG_makeOneGlyph(gl, id, tag = 'glyph') {
 
 	let pathData = gl.svgPathData;
 	pathData = pathData || 'M0,0Z';
-	let unicodeAttribute = escapeXMLValues(gl.chars);
+	let unicodeAttribute = '';
+	if (areCharsNice(gl.chars)) {
+		unicodeAttribute = gl.chars;
+	} else {
+		// split a string into an iterable array
+		[...gl.chars].forEach((c) => {
+			const hex = charToHex(c);
+			if (hex) unicodeAttribute += `&#x${hex.substring(2)};`;
+		});
+	}
 
 	let con = '\t\t\t<';
 	con += tag;
@@ -258,13 +266,29 @@ function ioSVG_makeOneGlyph(gl, id, tag = 'glyph') {
 		con += ` horiz-adv-x="${gl.advanceWidth}" `;
 		con += `d="${pathData}" />\n`;
 	} else {
-		con += ` glyph-name="${gl.name.replace(/ /g, '_')}" `;
+		// con += ` glyph-name="${gl.name.replace(/ /g, '_')}" `;
+		con += ` glyph-name="${gl.name}" `;
 		con += `unicode="${unicodeAttribute}" `;
 		con += `horiz-adv-x="${gl.advanceWidth}" `;
 		con += `d="${pathData}" />\n`;
 	}
 
 	return con;
+}
+
+/**
+ * For the readability of the glyph's `unicode` attribute, it's better to
+ * use XML Decimal Notation for each character rather than the raw character.
+ * The raw character could be tofu if the SVG font contains extended Unicode characters.
+ * @param {String} chars - characters to check
+ * @returns {Boolean} - true if all characters are in the nice set, false otherwise
+ */
+function areCharsNice(chars) {
+	let nice = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	for (let i = 0; i < chars.length; i++) {
+		if (nice.indexOf(chars[i]) === -1) return false;
+	}
+	return true;
 }
 
 /**
