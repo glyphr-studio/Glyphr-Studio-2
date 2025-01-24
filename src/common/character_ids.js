@@ -282,9 +282,9 @@ export function unicodesToUnicodeArray(input) {
  */
 export function charsToHexArray(input) {
 	const result = [];
-	for (let i = 0; i < input.length; i++) {
-		result.push(charToHex(input.charAt(i)));
-	}
+	[...input].forEach((char) => {
+		result.push(charToHex(char));
+	});
 	return result;
 }
 

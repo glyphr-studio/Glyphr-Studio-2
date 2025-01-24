@@ -124,15 +124,15 @@ function numericValuesAreRoughlyEqual(testObject, expectedObject, precision = 6,
 			const roundedTestValue = round(originalTestValue, precision);
 			const roundedExpectedValue = round(originalExpectedValue, precision);
 			if (roundedTestValue !== roundedExpectedValue) {
-				console.log(`>>>${t}t${originalTestValue} =?= e${originalExpectedValue}<<<`);
-				console.log(`!!!${t} RETURN FALSE: Test values are not equal`);
+				// console.log(`>>>${t}t${originalTestValue} =?= e${originalExpectedValue}<<<`);
+				// console.log(`!!!${t} RETURN FALSE: Test values are not equal`);
 				return false;
 			}
 		} else if (Array.isArray(expectedObject[key])) {
 			for (let j = 0; j < expectedObject[key].length; j++) {
 				// console.log(`${t}  ${key} index ${j} is ${expectedObject[key][j]}`);
 				if (!testObject[key] || !testObject[key][j]) {
-					console.log(`!!!${t} RETURN FALSE: e.length=${expectedObject[key].length} t[${j}]`);
+					// console.log(`!!!${t} RETURN FALSE: e.length=${expectedObject[key].length} t[${j}]`);
 					return false;
 				}
 				if (
@@ -148,7 +148,7 @@ function numericValuesAreRoughlyEqual(testObject, expectedObject, precision = 6,
 			}
 		} else if (typeof expectedObject[key] === 'object') {
 			if (!testObject[key]) {
-				console.log(`!!!${t} RETURN FALSE: test object is missing key ${key}`);
+				// console.log(`!!!${t} RETURN FALSE: test object is missing key ${key}`);
 				return false;
 			}
 			if (
@@ -166,7 +166,7 @@ function numericValuesAreRoughlyEqual(testObject, expectedObject, precision = 6,
 	{
 		name: 'Log SaveAs',
 		onClick: () => {
-			console.log(JSON.stringify(getCurrentProjectEditor().selectedGlyph.save()));
+			// console.log(JSON.stringify(getCurrentProjectEditor().selectedGlyph.save()));
 		}
 	}
 */
@@ -390,28 +390,28 @@ describe('Import examples from Inkscape', () => {
 	it('Import inkscape_at', () => {
 		// console.log('inkscape_at');
 		const testShape = importAndMakeSVGTestObject(inkscape_at);
-		console.log(JSON.stringify(testShape.save()));
+		// console.log(JSON.stringify(testShape.save()));
 		const expectedShape = JSON.parse(expected.inkscape_at);
 		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
 	});
 	it('Import inkscape_D', () => {
 		// console.log('inkscape_D');
 		const testShape = importAndMakeSVGTestObject(inkscape_D);
-		console.log(JSON.stringify(testShape.save()));
+		// console.log(JSON.stringify(testShape.save()));
 		const expectedShape = JSON.parse(expected.inkscape_D);
 		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
 	});
 	it('Import inkscape_F', () => {
 		// console.log('inkscape_F');
 		const testShape = importAndMakeSVGTestObject(inkscape_F);
-		console.log(JSON.stringify(testShape.save()));
+		// console.log(JSON.stringify(testShape.save()));
 		const expectedShape = JSON.parse(expected.inkscape_F);
 		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
 	});
 	it('Import inkscape_P', () => {
 		// console.log('inkscape_P');
 		const testShape = importAndMakeSVGTestObject(inkscape_P);
-		console.log(JSON.stringify(testShape.save()));
+		// console.log(JSON.stringify(testShape.save()));
 		const expectedShape = JSON.parse(expected.inkscape_P);
 		expect(numericValuesAreRoughlyEqual(testShape, expectedShape)).toBe(true);
 	});
