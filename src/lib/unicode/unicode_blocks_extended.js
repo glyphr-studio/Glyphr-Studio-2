@@ -7,3 +7,18 @@ export const unicodeBlocksSIP = [
 	{ begin: 0x2ebf0, end: 0x2ee5f, name: 'CJK Unified Ideographs Extension I' },
 	{ begin: 0x2f800, end: 0x2fa1f, name: 'CJK Compatibility Ideographs Supplement' },
 ];
+
+export const unicodeBlocksTIP = [
+	{ begin: 0x30000, end: 0x3134f, name: 'CJK Unified Ideographs Extension G' },
+	{ begin: 0x31350, end: 0x323af, name: 'CJK Unified Ideographs Extension H' },
+];
+
+export const unicodeBlocksSSP = [
+	{ begin: 0xe0000, end: 0xe007f, name: 'Tags' },
+	{ begin: 0xe0100, end: 0xe01ef, name: 'Variation Selectors Supplement' },
+];
+
+export const unicodeBlocksPUA = [
+	{ begin: 0xf0000, end: 0xfffff, name: 'Supplementary Private Use Area-A' },
+	{ begin: 0x100000, end: 0x10ffff, name: 'Supplementary Private Use Area-B' },
+];
