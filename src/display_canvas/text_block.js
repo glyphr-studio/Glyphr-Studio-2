@@ -203,7 +203,7 @@ export class TextBlock {
 			// log(`================ START textBlockNumber: ${textBlockNumber}`);
 
 			currentBlock = findAndMergeLigatures(
-				[...this.textBlocks[textBlockNumber]],
+				this.textBlocks[textBlockNumber].split(''),
 				this.project
 			);
 			this.data[textBlockNumber] = [];
