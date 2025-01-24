@@ -1,11 +1,21 @@
 import { parseNumber } from '../../common/functions.js';
-import { CharacterRange } from '../../project_data/character_range.js';
 import { unicodeBlocksBMP } from './unicode_blocks_0_bmp.js';
 import { unicodeBlocksSMP } from './unicode_blocks_1_smp.js';
-import { unicodeBlocksSIP } from './unicode_blocks_2_sip.js';
-import { unicodeBlocksTIP } from './unicode_blocks_3_tip.js';
+import {
+	unicodeBlocksPUA,
+	unicodeBlocksSIP,
+	unicodeBlocksSSP,
+	unicodeBlocksTIP,
+} from './unicode_blocks_extended.js';
 
-let allBlocks = [unicodeBlocksBMP, unicodeBlocksSMP, unicodeBlocksSIP, unicodeBlocksTIP];
+let allBlocks = [
+	unicodeBlocksBMP,
+	unicodeBlocksSMP,
+	unicodeBlocksSIP,
+	unicodeBlocksTIP,
+	unicodeBlocksSSP,
+	unicodeBlocksPUA,
+];
 
 export function getUnicodeBlockByName(name) {
 	// log(`getUnicodeBlockByName`, 'start');
@@ -55,17 +65,24 @@ export function isCharInRange(id, range) {
 
 /**
  * For a given character ID, return the parent Unicode Block
- * @param {Number} id
+ * @param {Number} id - decimal ID for the Unicode Character
  * @returns {Object | false}
  */
 export function getParentRange(id = -1) {
+	// log(`getParentRange`, 'start');
+	// log(`id: ${id}`);
 	for (let i = 0; i < allBlocks.length; i++) {
 		const currentBlock = allBlocks[i];
 		for (let b = 0; b < currentBlock.length; b++) {
 			if (id <= currentBlock[b].end && id >= currentBlock[b].begin) {
-				return currentBlock[b];
+				const result = currentBlock[b];
+				// log(`result: ${result}`);
+				// log(`getParentRange`, 'end');
+				return result;
 			}
 		}
 	}
+	// log(`Returning FALSE`);
+	// log(`getParentRange`, 'end');
 	return false;
 }
