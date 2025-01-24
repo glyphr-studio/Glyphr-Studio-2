@@ -21,7 +21,7 @@ import { isInteger, parseNumber } from './functions.js';
  */
 export function isChar(input) {
 	if (typeof input !== 'string') return false;
-	if (input.length > 1) return false;
+	if([...input].length !== 1) return false;
 	return true;
 }
 
@@ -202,7 +202,7 @@ export function decToHex(input) {
  */
 export function charToHex(input) {
 	if (!isChar(input)) return false;
-	return `0x${Number(input.charCodeAt(0)).toString(16).toUpperCase()}`;
+	return `0x${Number(input.codePointAt(0)).toString(16).toUpperCase()}`;
 }
 
 /**
