@@ -1,7 +1,12 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
-import { closeAllModalDialogs, showError, showModalDialog, showToast } from '../controls/dialogs/dialogs.js';
+import {
+	closeAllModalDialogs,
+	showError,
+	showModalDialog,
+	showToast,
+} from '../controls/dialogs/dialogs.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { glyphChanged } from '../project_editor/cross_item_actions.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
@@ -77,13 +82,8 @@ export function makePage_GlobalActions() {
 	const rightArea = content.querySelector('.content-page__right-area');
 	rightArea.innerHTML += ``;
 
-	let showFilterDialogButton = content.querySelector(
-		'#showFilterDialogButton'
-	);
-	showFilterDialogButton.addEventListener(
-		'click',
-		showFilterDialog
-	);
+	let showFilterDialogButton = content.querySelector('#showFilterDialogButton');
+	showFilterDialogButton.addEventListener('click', showFilterDialog);
 
 	let ligatureCheckbox = content.querySelector('#globalActionsSelectLigatureCheckbox');
 	ligatureCheckbox.addEventListener('change', () => {
@@ -251,13 +251,13 @@ function updateFilterCard() {
 	const componentsCheckbox = document.getElementById('globalActionsSelectComponentsCheckbox');
 	const characterRangesDisplay = document.getElementById('globalActionsCharacterRangesDisplay');
 
-	if(filters.ligatures) {
+	if (filters.ligatures) {
 		ligatureCheckbox.setAttribute('checked', '');
 	} else {
 		ligatureCheckbox.removeAttribute('checked');
 	}
 
-	if(filters.components) {
+	if (filters.components) {
 		componentsCheckbox.setAttribute('checked', '');
 	} else {
 		componentsCheckbox.removeAttribute('checked');
@@ -294,7 +294,7 @@ function showFilterDialog() {
 		onClick: () => {
 			closeAllModalDialogs();
 			updateFilterCard();
-		}
+		},
 	});
 
 	addAsChildren(rangeTable, [
