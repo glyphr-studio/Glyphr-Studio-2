@@ -908,8 +908,8 @@ export class ProjectEditor {
 				emWidth += getItemStringAdvanceWidth(leftChars);
 				emWidth += this.selectedItem.advanceWidth;
 				emWidth += getItemStringAdvanceWidth(rightChars);
-				emWidth += calculateKernOffset(leftChars.charAt(leftChars.length), selChar);
-				emWidth += calculateKernOffset(selChar, rightChars.charAt(0));
+				emWidth += calculateKernOffset([...leftChars].at(-1), selChar);
+				emWidth += calculateKernOffset(selChar, [...rightChars][0]);
 				// log(`leftChars: ${leftChars}`);
 				// log(`rightChars: ${rightChars}`);
 
