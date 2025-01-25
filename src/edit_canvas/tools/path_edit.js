@@ -99,6 +99,7 @@ export class Tool_PathEdit {
 			// log('detected PATH');
 			clickEmptySpace();
 			msShapes.select(clickedPath);
+			ehd.selecting = true;
 		} else {
 			// log('detected NOTHING');
 			if (!ehd.isCtrlDown) clickEmptySpace();
