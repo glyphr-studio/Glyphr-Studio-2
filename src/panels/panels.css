@@ -206,6 +206,18 @@
 	background-color: var(--blue-l95);
 }
 
+.panel__card.char-info {
+	grid-template-columns: max-content 1fr !important;
+	column-gap: 20px;
+	row-gap: 10px;
+}
+
+.char-info input {
+	font-family: monospace;
+	padding: 4px 8px;
+	height: 32px;
+}
+
 .rowPad {
 	display: block;
 	height: 10px;

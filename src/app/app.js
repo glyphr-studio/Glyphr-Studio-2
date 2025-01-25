@@ -32,9 +32,9 @@ export class GlyphrStudioApp {
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Global actions', // {Sentence case page name} navigate straight to a page
+				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: 'glyph-0x4F', // {glyph id} select a glyph
-				currentPanel: false, // {Title case panel name} navigate straight to a panel
+				currentPanel: 'Character info', // {Sentence case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
 				autoSave: false, // {bool} trigger auto saves
