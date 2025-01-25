@@ -43,27 +43,28 @@ export function makePage_GlobalActions() {
 						Global Actions are actions that affect many glyphs at once.
 						Actions taken here will not carry forward to glyphs that haven't been created yet.
 					</span>
-					<span class="panel__card full-width">
+					<span class="panel__card">
 						<h3>Filters</h3>
-						By default, global actions affect all characters, ligatures, and components. The
-						filters below can be used to target more specific ranges.
-						<br><br>
+						<p class="full-width">
+							By default, global actions affect all characters, ligatures, and components. The
+							filters below can be used to target more specific ranges.
+							<br><br>
+						</p>
 						<span id="globalActionsCharacterRangesDisplay">
-							${filters.characterRanges.length} character ranges selected.
+							${filters.characterRanges.length} ranges selected
 						</span>
 						<fancy-button
 							id="showFilterDialogButton"
 							secondary
 						>Select character ranges</fancy-button>
-						<input type="checkbox" checked id="globalActionsSelectLigaturesCheckbox" />
 						<label for="globalActionsSelectLigaturesCheckbox">Ligatures</label>
-						<input type="checkbox" checked id="globalActionsSelectComponentsCheckbox" />
-						<label for="globalActionsSelectComponentsCheckbox">Components</label>
+							<input type="checkbox" checked id="globalActionsSelectLigaturesCheckbox" />
+							<label for="globalActionsSelectComponentsCheckbox">Components</label>
+							<input type="checkbox" checked id="globalActionsSelectComponentsCheckbox" />
 					</span>
 					<span class="panel__card full-width">
 						Have an idea for a new global action?  They are easy for us to add - email us your idea!
 						<a href="mailto:mail@glyphrstudio.com">mail@glyphrstudio.com</a>
-						<br /> <br />
 					</span>
 				</div>
 			</div>
@@ -85,12 +86,12 @@ export function makePage_GlobalActions() {
 	let showFilterDialogButton = content.querySelector('#showFilterDialogButton');
 	showFilterDialogButton.addEventListener('click', showFilterDialog);
 
-	let ligatureCheckbox = content.querySelector('#globalActionsSelectLigatureCheckbox');
+	let ligatureCheckbox = content.querySelector('#globalActionsSelectLigaturesCheckbox');
 	ligatureCheckbox.addEventListener('change', () => {
 		filters.ligatures = ligatureCheckbox.hasAttribute('checked');
 	});
 
-	let componentCheckbox = content.querySelector('#globalActionsSelectComponentCheckbox');
+	let componentCheckbox = content.querySelector('#globalActionsSelectComponentsCheckbox');
 	componentCheckbox.addEventListener('change', () => {
 		filters.components = componentCheckbox.hasAttribute('checked');
 	});

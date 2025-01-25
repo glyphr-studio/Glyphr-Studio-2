@@ -113,6 +113,10 @@
 	margin-bottom: 0;
 }
 
+.panel__card .full-width {
+	grid-column: 1 / -1;
+}
+
 .panel__card label {
 	grid-column: 1;
 	line-height: 20px;
