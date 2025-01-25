@@ -26,6 +26,9 @@ export function makePanel_CharacterInfo() {
 		innerHTML: `
 			<h2>Character info</h2>
 
+			<label>Character name</label>
+			<code title="${selected.name}">${selected.name}</code>
+
 			<label>Character</label>
 			<input type="text" value="${selected.char}" readonly>
 
