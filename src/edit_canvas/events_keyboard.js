@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { makeElement } from '../common/dom.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
@@ -98,7 +99,26 @@ export function handleKeyPress(event) {
 	}
 
 	// Space
-	if (ehd.isSpaceDown && ehd.isMouseOverCanvas) {
+	if (ehd.isCtrlDown && ehd.isSpaceDown) {
+		// Ctrl+Space - Hide UI
+		if (!document.getElementById('hideUI')) {
+			//const scale = this.options.fontSize / this.project.totalVertical;
+			const fontSize = editor.project.totalVertical * editor.view.dz;
+			let text = editor.selectedItem.char;
+			if (editor.project.settings.app.contextCharacters.showCharacters) {
+				text = editor.selectedItem.contextCharacters;
+			}
+			const hideUI = makeElement({
+				tag: 'div',
+				id: 'hideUI',
+				style:
+					'display: block; position: absolute; z-index: 3000; background-color: white; top: 0; left: 0; width: 100vw; height: 100vh; overflow-x: hidden; overflow-y: hidden;',
+				innerHTML: `<display-canvas text="${text}" font-size="${fontSize}"></display-canvas>`,
+			});
+			document.body.appendChild(hideUI);
+		}
+	} else if (ehd.isSpaceDown && ehd.isMouseOverCanvas) {
+		// Space - Pan
 		cancelDefaultEventActions(event);
 		if (!ehd.isPanning) togglePanOn(event);
 	}
@@ -328,6 +348,7 @@ export function handleKeyUp(event) {
 
 	const editor = getCurrentProjectEditor();
 	const ehd = eventHandlerData;
+	const hideUI = document.getElementById('hideUI');
 	// log('ehd.lastTool: ' + ehd.lastTool);
 
 	handleSpecialKeys(key, 'up');
@@ -337,11 +358,13 @@ export function handleKeyUp(event) {
 	if (key === 'Control' && !ehd.isCtrlDown) {
 		// updateCursor();
 		editor.editCanvas.redraw();
+		if (hideUI) document.body.removeChild(hideUI);
 	}
 
 	// Space
-	if (key === 'Space' && !ehd.isSpaceDown && ehd.isMouseOverCanvas) {
-		togglePanOff(event);
+	if (key === 'Space' && !ehd.isSpaceDown) {
+		if (hideUI) document.body.removeChild(hideUI);
+		if (ehd.isMouseOverCanvas) togglePanOff(event);
 	}
 
 	// log(`handleKeyup`, 'end');
