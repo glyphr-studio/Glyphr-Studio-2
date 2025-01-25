@@ -386,7 +386,7 @@ function makePanelChooserContent() {
 	let content = makeElement();
 	let pageButton;
 	let panels = listOfPanels();
-	let shownPanels = ['Attributes', 'Layers', 'ContextCharacters', 'History', 'Guides', 'QualityChecks'];
+	let shownPanels = ['Attributes', 'Layers', 'ContextCharacters', 'History', 'Guides', 'CharacterInfo', 'QualityChecks'];
 	let page = getCurrentProjectEditor().nav.page;
 	if (page === 'Kerning') {
 		shownPanels = ['Attributes', 'History'];
@@ -453,6 +453,11 @@ function listOfPanels() {
 			name: 'Guides',
 			panelMaker: false,
 			iconName: 'panel_guides',
+		},
+		CharacterInfo: {
+			name: 'Character info',
+			panelMaker: false,
+			iconName: 'panel_characterInfo',
 		},
 		QualityChecks: {
 			name: 'Quality checks',

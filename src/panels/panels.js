@@ -3,6 +3,7 @@ import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { makePanel_GlyphAttributes } from './attributes_glyph_edit.js';
 import { makePanel_KernGroupAttributes } from './attributes_kern.js';
+import { makePanel_CharacterInfo } from './character_info.js';
 import { makePanel_ContextCharacters } from './context_characters.js';
 import { makePanel_Guides } from './guides.js';
 import { makePanel_History } from './history.js';
@@ -58,6 +59,9 @@ export function makePanel() {
 	} else if (panel === 'Guides') {
 		unsubscribeExcept('guidesPanel');
 		addAsChildren(content, makePanel_Guides());
+	} else if (panel === 'Character info') {
+		unsubscribeExcept('characterInfoPanel');
+		addAsChildren(content, makePanel_CharacterInfo());
 	} else if (panel === 'Quality checks') {
 		unsubscribeExcept('qualityChecksPanel');
 		addAsChildren(content, makePanel_QualityChecks());
@@ -71,7 +75,8 @@ function unsubscribeExcept(panelName = '') {
 	const editor = getCurrentProjectEditor();
 	if (panelName !== 'attributesPanel') editor.unsubscribe({ idToRemove: 'attributesPanel' });
 	if (panelName !== 'layersPanel') editor.unsubscribe({ idToRemove: 'layersPanel' });
-	if (panelName !== 'contextCharactersPanel') editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
+	if (panelName !== 'contextCharactersPanel')
+		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
 	if (panelName !== 'historyPanel') editor.unsubscribe({ idToRemove: 'historyPanel' });
 	if (panelName !== 'guidesPanel') editor.unsubscribe({ idToRemove: 'guidesPanel' });
 }
