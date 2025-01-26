@@ -1,6 +1,8 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
+import { DisplayCanvas } from '../display_canvas/display_canvas.js';
+import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import {
@@ -9,6 +11,7 @@ import {
 	deleteSelectedPaths,
 	deleteSelectedPoints,
 } from '../panels/actions.js';
+import { getItemStringAdvanceWidth } from './context_characters.js';
 import {
 	cancelDefaultEventActions,
 	eventHandlerData,
@@ -101,22 +104,7 @@ export function handleKeyPress(event) {
 	// Space
 	if (ehd.isCtrlDown && ehd.isSpaceDown) {
 		// Ctrl+Space - Hide UI
-		if (!document.getElementById('hideUI')) {
-			//const scale = this.options.fontSize / this.project.totalVertical;
-			const fontSize = editor.project.totalVertical * editor.view.dz;
-			let text = editor.selectedItem.char;
-			if (editor.project.settings.app.contextCharacters.showCharacters) {
-				text = editor.selectedItem.contextCharacters;
-			}
-			const hideUI = makeElement({
-				tag: 'div',
-				id: 'hideUI',
-				style:
-					'display: block; position: absolute; z-index: 3000; background-color: white; top: 0; left: 0; width: 100vw; height: 100vh; overflow-x: hidden; overflow-y: hidden;',
-				innerHTML: `<display-canvas text="${text}" font-size="${fontSize}"></display-canvas>`,
-			});
-			document.body.appendChild(hideUI);
-		}
+		addHideUIOverlay();
 	} else if (ehd.isSpaceDown && ehd.isMouseOverCanvas) {
 		// Space - Pan
 		cancelDefaultEventActions(event);
@@ -329,6 +317,52 @@ function getEditMode() {
 	if (editor.nav.page === 'Kerning') return 'kern';
 	if (editor.selectedTool === 'resize') return 'arrow';
 	if (editor.selectedTool === 'pathEdit') return 'pen';
+}
+
+function addHideUIOverlay() {
+	if (!document.getElementById('hideUI')) {
+		const editor = getCurrentProjectEditor();
+		//const scale = this.options.fontSize / this.project.totalVertical;
+		const fontSize = editor.project.totalVertical * editor.view.dz;
+		let text = editor.selectedItem.char;
+		if (editor.project.settings.app.contextCharacters.showCharacters) {
+			text = editor.selectedItem.contextCharacters;
+		}
+		const advance = getItemStringAdvanceWidth(text) + 100;
+		const windowSize = document.body.getBoundingClientRect();
+		const width = advance * editor.view.dz;
+		const offsetTop = (windowSize.height - fontSize) * 0.5;
+		const offsetLeft = (windowSize.width - width) * 0.5;
+
+		const hideUI = makeElement({
+			tag: 'div',
+			id: 'hideUI',
+			style: `
+				display: block;
+				position: absolute;
+				z-index: 3000;
+				background-color: white;
+				top: 0;
+				left: 0;
+				width: 100vw;
+				height: 100vh;
+				overflow-x: hidden;
+				overflow-y: hidden;
+			`,
+		});
+		const hideUIOptions = new TextBlockOptions({
+			fontSize: fontSize,
+			text: text,
+			pageWidth: width,
+		});
+		const hideUIDisplayCanvas = new DisplayCanvas(hideUIOptions);
+		hideUIDisplayCanvas.style.backgroundColor = 'white';
+		hideUIDisplayCanvas.style.position = 'absolute';
+		hideUIDisplayCanvas.style.top = offsetTop + 'px';
+		hideUIDisplayCanvas.style.left = offsetLeft + 'px';
+		hideUI.appendChild(hideUIDisplayCanvas);
+		document.body.appendChild(hideUI);
+	}
 }
 
 // --------------------------------------------------------------
