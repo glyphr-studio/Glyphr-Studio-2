@@ -124,10 +124,12 @@ export function makeSettingsTabContentProject() {
 function updateRangesTables() {
 	const enabled = document.querySelector('#enabled-range-table__wrapper');
 	const hidden = document.querySelector('#hidden-range-table__wrapper');
-	enabled.innerHTML = '';
-	hidden.innerHTML = '';
-	addAsChildren(enabled, makeEnabledRangesTable());
-	addAsChildren(hidden, makeHiddenRangesTable());
+	if (enabled && hidden) {
+		enabled.innerHTML = '';
+		hidden.innerHTML = '';
+		addAsChildren(enabled, makeEnabledRangesTable());
+		addAsChildren(hidden, makeHiddenRangesTable());
+	}
 }
 
 // --------------------------------------------------------------

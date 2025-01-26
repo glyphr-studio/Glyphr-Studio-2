@@ -642,7 +642,8 @@ export class Glyph extends GlyphElement {
 	 * @param {Number | Boolean =} args.width - new width
 	 * @param {Number | Boolean =} args.height - new height
 	 * @param {Boolean=} args.ratioLock - true to scale width and height 1:1
-	 * @param {Boolean=} args.updateComponentInstances
+	 * @param {Boolean=} args.updateComponentInstances - true to update component instances
+	 * @param {Array =} args.instanceIDsToSkip - component instances with these Item IDs will be skipped
 	 * @param {String =} args.transformOrigin - name of transform origin point
 	 */
 	setGlyphSize({
@@ -650,6 +651,7 @@ export class Glyph extends GlyphElement {
 		height = false,
 		ratioLock = false,
 		updateComponentInstances = true,
+		instanceIDsToSkip = [],
 		transformOrigin = '',
 	} = {}) {
 		const m = this.maxes;
@@ -670,6 +672,7 @@ export class Glyph extends GlyphElement {
 			width: dw,
 			height: dh,
 			updateComponentInstances: updateComponentInstances,
+			instanceIDsToSkip: instanceIDsToSkip,
 			transformOrigin: transformOrigin,
 		});
 	}
@@ -680,7 +683,8 @@ export class Glyph extends GlyphElement {
 	 * @param {Number =} args.width - delta width
 	 * @param {Number =} args.height - delta height
 	 * @param {Boolean =} args.ratioLock - true to scale width and height 1:1
-	 * @param {Boolean =} args.updateComponentInstances
+	 * @param {Boolean =} args.updateComponentInstances - true to update component instances
+	 * @param {Array =} args.instanceIDsToSkip - component instances with these Item IDs will be skipped
 	 * @param {String =} args.transformOrigin - name of transform origin point
 	 */
 	updateGlyphSize({
@@ -688,6 +692,7 @@ export class Glyph extends GlyphElement {
 		height = 0,
 		ratioLock = false,
 		updateComponentInstances = true,
+		instanceIDsToSkip = [],
 		transformOrigin = '',
 	} = {}) {
 		// log('Glyph.updateGlyphSize', 'start');
@@ -731,7 +736,10 @@ export class Glyph extends GlyphElement {
 		// log(`\n⮟this.maxes⮟`);
 		// log(this.maxes);
 		this.shapes.forEach((shape) => {
-			if (shape.objType === 'ComponentInstance' && !updateComponentInstances) return;
+			if (shape.objType === 'ComponentInstance') {
+				if (!updateComponentInstances) return;
+				if (instanceIDsToSkip?.includes(shape.link)) return;
+			}
 
 			const shapeMaxes = shape.maxes;
 
