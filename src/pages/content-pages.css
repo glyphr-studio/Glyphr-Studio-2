@@ -386,6 +386,9 @@ code,
 	grid-template-columns: 4fr 1fr 1fr 1fr 1fr;
 	column-gap: 5px;
 	row-gap: 5px;
+	max-height: calc(100vh - 300px);
+	min-height: 100px;
+	overflow-y: auto;
 }
 
 .range-table__list-area code,
