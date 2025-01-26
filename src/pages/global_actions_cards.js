@@ -597,7 +597,7 @@ export function makeCard_AllCaps() {
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
 		content:
-			'Capital letters will be added as Component Instances to their lowercase counterparts in the selected ranges.',
+			'Capital letters will be added as Component Instances to their lowercase counterparts in the selected ranges. The lowercase letters will also have their Advance Width updated to match their uppercase counterparts.',
 	});
 	card.appendChild(effect);
 
@@ -645,7 +645,7 @@ export function makeCard_AllCaps() {
 					destinationItemHex = decToHex(parseInt(destinationItemHex));
 					// log(`destinationItemHex: ${destinationItemHex}`);
 					if (destinationItemHex) {
-						insertComponentInstance(itemID, `glyph-${destinationItemHex}`, false);
+						insertComponentInstance(itemID, `glyph-${destinationItemHex}`, true);
 					}
 					// log(`glyphIterator>ConvertToAllCaps>Action`, 'end');
 				},
