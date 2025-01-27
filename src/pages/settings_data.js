@@ -246,5 +246,33 @@ export default {
 			This setting overrides the 'Move shapes when importing an SVG file' setting.`,
 			type: `Em`,
 		},
+		highlightPointsNearPoints: {
+			label: `Highlight points that are near other points`,
+			description: `This option will highlight points that are very close to other points. Sometimes this happens when exporting SVG code from another app. It is best practice to reduce the number of points in a path as much as possible.
+			<br>
+			This option can be toggled from the Quality control panel.`,
+			type: `Em`,
+		},
+		highlightPointsNearHandles: {
+			label: `Highlight points with short handles`,
+			description: `This option will highlight points that have very short handles.  Sometimes this happens when exporting SVG code from another app. It is best practice to reduce the number of uneccesary handles in a path as much as possible.
+			<br>
+			This option can be toggled from the Quality control panel.`,
+			type: `Em`,
+		},
+		highlightPointsNearXZero: {
+			label: `Highlight points that are near x=0`,
+			description: `This option will highlight points that are near x=0. Sometimes this happens when exporting SVG code from another app.
+			<br>
+			This option can be toggled from the Quality control panel.`,
+			type: `Em`,
+		},
+		highlightPointsNearYZero: {
+			label: `Highlight points that are near y=0`,
+			description: `This option will highlight points that are near y=0. Sometimes this happens when exporting SVG code from another app.
+			<br>
+			This option can be toggled from the Quality control panel.`,
+			type: `Em`,
+		},
 	},
 };

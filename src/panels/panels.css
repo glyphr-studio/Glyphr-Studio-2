@@ -122,6 +122,10 @@
 	line-height: 20px;
 }
 
+.panel__card label[disabled] {
+	color: var(--disabled-text);
+}
+
 .panel__card.full-width label {
 	height: 20px;
 	line-height: 20px;
@@ -237,6 +241,9 @@
 	padding-top: 6px;
 }
 
+/*
+	Points
+*/
 .pointTypeButton,
 .pointTypeButton:hover,
 .pointTypeButton:focus {
@@ -280,6 +287,9 @@
 	fill: var(--accent-color);
 }
 
+/*
+	Actions
+*/
 :root {
 	--action-icon-size: 30px;
 }
@@ -309,6 +319,29 @@
 	box-shadow: none;
 	opacity: 0.2;
 	filter: contrast(60%);
+}
+
+/*
+	Quality checks
+*/
+.quality-check__points-and-handles {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 20px 1fr 80px;
+	column-gap: 10px;
+}
+
+.quality-check__points-and-handles input[type='checkbox'] {
+	grid-column: 1;
+}
+
+.quality-check__points-and-handles label {
+	grid-column: 2;
+}
+
+.quality-check__points-and-handles input-number {
+	grid-column: 3;
+	max-width: 80px;
 }
 
 /*

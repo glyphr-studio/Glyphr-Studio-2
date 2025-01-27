@@ -51,12 +51,10 @@ export class GlyphrStudioProject {
 				exportUneditedItems: true,
 				moveShapesOnSVGDragDrop: false,
 				autoSideBearingsOnSVGDragDrop: 50,
-				highlightPoints: {
-					nearOtherPoints: 2,
-					nearItsOwnHandles: 10,
-					nearXZero: 0,
-					nearYZero: 0,
-				},
+				highlightPointsNearPoints: 2,
+				highlightPointsNearHandles: 2,
+				highlightPointsNearXZero: 2,
+				highlightPointsNearYZero: 2,
 				guides: {
 					drawGuidesOnTop: false,
 					systemShowGuides: true,
