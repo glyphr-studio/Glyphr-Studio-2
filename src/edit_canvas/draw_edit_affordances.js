@@ -14,6 +14,7 @@ import { ControlPoint } from '../project_data/control_point.js';
 import { Maxes } from '../project_data/maxes.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
+import { enabledQualityChecks } from '../project_editor/quality_checks.js';
 import { cXsX, cYsY, sXcX, sYcY } from './edit_canvas.js';
 import { eventHandlerData } from './events.js';
 import { canResize } from './events_mouse.js';
@@ -807,27 +808,49 @@ export function drawAllHighlightedPoints(ctx) {
 }
 
 function drawHighlightedPointsForPath(path, ctx) {
-	path.pathPoints.forEach((point, index) => {
-		if (path?.cache?.nearOtherPoints && path?.cache?.nearOtherPoints[index]) {
-			// log(path?.cache?.nearOtherPoints);
+	for (let p = 0; p < path.pathPoints.length; p++) {
+		const point = path.pathPoints[p];
+
+		if (
+			enabledQualityChecks.highlightPointsNearPoints &&
+			path?.cache?.pointsNearPoints &&
+			path?.cache?.pointsNearPoints[p]
+		) {
+			// log(path?.cache?.pointsNearPoints);
 			drawPointHighlight(point.p, ctx);
+			// break;
 		}
 
-		if (path?.cache?.nearItsOwnHandles && path?.cache?.nearItsOwnHandles[index]) {
-			// log(path?.cache?.nearItsOwnHandles);
+		if (
+			enabledQualityChecks.highlightPointsNearHandles &&
+			path?.cache?.pointsNearHandles &&
+			path?.cache?.pointsNearHandles[p]
+		) {
+			// log(path?.cache?.pointsNearHandles);
 			drawPointHighlight(point.p, ctx);
+			// break;
 		}
 
-		if (path?.cache?.nearXZero && path?.cache?.nearXZero[index]) {
+		if (
+			enabledQualityChecks.highlightPointsNearXZero &&
+			path?.cache?.nearXZero &&
+			path?.cache?.nearXZero[p]
+		) {
 			// log(path?.cache?.nearXZero);
 			drawPointHighlight(point.p, ctx);
+			// break;
 		}
 
-		if (path?.cache?.nearYZero && path?.cache?.nearYZero[index]) {
+		if (
+			enabledQualityChecks.highlightPointsNearYZero &&
+			path?.cache?.nearYZero &&
+			path?.cache?.nearYZero[p]
+		) {
 			// log(path?.cache?.nearYZero);
 			drawPointHighlight(point.p, ctx);
+			// break;
 		}
-	});
+	}
 }
 
 /**
