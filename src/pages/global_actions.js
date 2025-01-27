@@ -61,13 +61,13 @@ export function makePage_GlobalActions() {
 					</span>
 					<span class="panel__card full-width">
 						<h3>Some notes</h3>
-						Global Actions are actions that affect many glyphs at once.
+						Global Actions are actions that affect many items at once.
 						<ul>
-							<li>Actions taken here will not carry forward to glyphs that haven't been created yet.</li>
+							<li>Actions taken here will not carry forward to items that haven't been created yet.</li>
 							<li>Global actions to not affect hidden character ranges.</li>
 							<li>Changes will be grouped together in one History entry. Hitting 'Undo' will undo all changes made by the global action.</li>
 							<li>Components or Characters that are used as Component Roots in selected
-								ranges may be used as Component Instances outside of selected ranges. Moving or scaling Component
+								ranges may be linked to Component Instances outside of selected ranges. Moving or scaling Component
 								Roots may have effects outside of selected ranges.</li>
 						</ul>
 					</span>
@@ -136,9 +136,9 @@ export function makePage_GlobalActions() {
  * @param {Object} oa - options argument
  */
 export function glyphIterator(oa) {
-	log(`glyphIterator`, 'start');
-	log(oa);
-	log(itemFilterInputs);
+	// log(`glyphIterator`, 'start');
+	// log(oa);
+	// log(itemFilterInputs);
 
 	const project = getCurrentProject();
 	let listOfItemIDs = [];
@@ -207,8 +207,8 @@ export function glyphIterator(oa) {
 			const selectedCharacterRanges = itemFilterInputs.characterRanges.map((rangeID) =>
 				getRangeById(rangeID)
 			);
-			log(`\n⮟selectedCharacterRanges⮟`);
-			log(selectedCharacterRanges);
+			// log(`\n⮟selectedCharacterRanges⮟`);
+			// log(selectedCharacterRanges);
 			Object.keys(project.glyphs).forEach((glyphID) => {
 				for (let i = 0; i < selectedCharacterRanges.length; i++) {
 					const range = selectedCharacterRanges[i];
@@ -221,8 +221,8 @@ export function glyphIterator(oa) {
 			});
 		}
 
-		log('item list');
-		log(listOfItemIDs);
+		// log('item list');
+		// log(listOfItemIDs);
 		getCurrentProjectEditor().history.addWholeProjectChangePostState();
 		// Kick off the process
 		setTimeout(processOneItem, 10);
@@ -232,7 +232,7 @@ export function glyphIterator(oa) {
 
 	showToast(title + '<br>Starting...', 10000);
 	setTimeout(makeItemList, 500);
-	log(`glyphIterator`, 'end');
+	// log(`glyphIterator`, 'end');
 }
 
 const itemFilterInputs = {
@@ -244,8 +244,18 @@ const itemFilterInputs = {
 function selectAllRanges() {
 	itemFilterInputs.characterRanges = [];
 	getCurrentProject().settings.project.characterRanges.forEach((range) => {
-		if(range.enabled) itemFilterInputs.characterRanges.push(range.id);
+		if (range.enabled) itemFilterInputs.characterRanges.push(range.id);
 	});
+}
+
+export function addRangeToSelectedFilterInputs(range) {
+	// log(`addCharacterRangesToSelectedRanges`, 'start');
+	// log(`\n⮟range⮟`);
+	// log(range);
+	itemFilterInputs.characterRanges.push(range.id);
+	// log(`\n⮟itemFilterInputs.characterRanges⮟`);
+	// log(itemFilterInputs.characterRanges);
+	// log(`addCharacterRangesToSelectedRanges`, 'end');
 }
 
 function getRangeById(id) {
@@ -273,9 +283,9 @@ function updateFilterCard() {
 }
 
 function showFilterDialog() {
-	log(`showFilterDialog`, 'start');
-	log(`\n⮟itemFilterInputs⮟`);
-	log(itemFilterInputs);
+	// log(`showFilterDialog`, 'start');
+	// log(`\n⮟itemFilterInputs⮟`);
+	// log(itemFilterInputs);
 
 	const dialogContent = makeElement({
 		tag: 'div',
@@ -339,8 +349,8 @@ function showFilterDialog() {
 	}
 
 	projectRanges.forEach((range) => {
-		if(!range.enabled) return;
-		log(itemFilterInputs.characterRanges.includes(range.id));
+		if (!range.enabled) return;
+		// log(itemFilterInputs.characterRanges.includes(range.id));
 		const rangeCheckbox = makeElement({
 			tag: 'input',
 			attributes: {
@@ -380,5 +390,5 @@ function showFilterDialog() {
 	]);
 
 	showModalDialog(dialogContent, 850);
-	log(`showFilterDialog`, 'end');
+	// log(`showFilterDialog`, 'end');
 }
