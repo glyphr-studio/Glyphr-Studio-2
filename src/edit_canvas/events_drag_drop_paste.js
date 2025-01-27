@@ -34,7 +34,12 @@ export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 		msShapes.clear();
 		newShapes.forEach((shape) => msShapes.add(shape));
 
-		if (getCurrentProject().settings.app.moveShapesOnSVGDragDrop) {
+		const appSettings = getCurrentProject().settings.app;
+		if (appSettings.autoSideBearingsOnSVGDragDrop > -1) {
+			const sbValue = appSettings.autoSideBearingsOnSVGDragDrop;
+			msShapes.setShapePosition(sbValue);
+			editor.selectedItem.advanceWidth = msShapes.maxes.width + sbValue * 2;
+		} else if (getCurrentProject().settings.app.moveShapesOnSVGDragDrop) {
 			msShapes.setShapePosition(0, msShapes.maxes.height);
 		}
 
