@@ -214,12 +214,12 @@ export default {
 			description: `What text to show when previewing a project or switching between projects. If left blank, the string 'Aa Bb Cc Xx Yy Zz' will be used.`,
 		},
 		exportLigatures: {
-			label: `Export Ligatures to fonts (.otf and .svg)`,
+			label: `Export Ligatures to fonts`,
 			description: `Uncheck this option if don't want ligature data exported to fonts.`,
 			type: `Boolean`,
 		},
 		exportKerning: {
-			label: `Export Kern information to fonts (.svg only)`,
+			label: `Export Kern information to fonts`,
 			description: `Uncheck this option if don't want kern data exported to fonts.`,
 			type: `Boolean`,
 		},
@@ -233,9 +233,18 @@ export default {
 			type: `Boolean`,
 		},
 		moveShapesOnSVGDragDrop: {
-			label: `Move shapes when drag+dropping an SVG file`,
-			description: `When importing SVG by dragging and dropping a .svg file onto the canvas, move the imported shapes to the origin (x = 0, y = shapes height).`,
+			label: `Move shapes when importing an SVG file`,
+			description: `When importing SVG to a single item, move the imported shapes to the origin (x = 0, y = shapes height).`,
 			type: `Boolean`,
+		},
+		autoSideBearingsOnSVGDragDrop: {
+			label: `Add default Side Bearings when importing an SVG file`,
+			description: `When importing SVG to a single item, move the imported shapes such that the left hand side x is at the Side Bearing value, and the set the Advance With of the item so that there is a Side Bearing's worth of space on the right hand side.
+			<br><br>
+			Set this value to -1 to disable it.
+			<br><br>
+			This setting overrides the 'Move shapes when importing an SVG file' setting.`,
+			type: `Em`,
 		},
 	},
 };

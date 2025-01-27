@@ -57,6 +57,7 @@ export function makeSettingsTabContentApp() {
 		makeOneSettingsRow('app', 'exportKerning'),
 		makeOneSettingsRow('app', 'exportUneditedItems'),
 		makeOneSettingsRow('app', 'moveShapesOnSVGDragDrop'),
+		makeOneSettingsRow('app', 'autoSideBearingsOnSVGDragDrop'),
 	]);
 
 	return tabContent;

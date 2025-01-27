@@ -50,6 +50,7 @@ export class GlyphrStudioProject {
 				exportKerning: true,
 				exportUneditedItems: true,
 				moveShapesOnSVGDragDrop: false,
+				autoSideBearingsOnSVGDragDrop: 50,
 				highlightPoints: {
 					nearOtherPoints: 2,
 					nearItsOwnHandles: 10,
