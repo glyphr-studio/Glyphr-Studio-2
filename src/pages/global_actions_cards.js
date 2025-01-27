@@ -11,6 +11,7 @@ import {
 	unicodeLowercaseMap,
 } from '../lib/unicode/unicode_mappings.js';
 import { copyShapesFromTo } from '../panels/actions.js';
+import { CharacterRange } from '../project_data/character_range.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import {
@@ -18,7 +19,7 @@ import {
 	insertComponentInstance,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
-import { glyphIterator } from './global_actions.js';
+import { addRangeToSelectedFilterInputs, glyphIterator } from './global_actions.js';
 import { addCharacterRangeToCurrentProject } from './settings_project.js';
 
 // --------------------------------------------------------------
@@ -643,6 +644,8 @@ export function makeCard_AllCaps() {
 
 			glyphIterator({
 				title: 'Converting ' + range.name + ' to All Caps',
+				includeComponents: false,
+				includeLigatures: false,
 				// filter: { begin: range.begin, end: range.end }, // TODO fix filtering
 				action: (item) => {
 					const hexID = Number(remove(item.id, 'glyph-'));
@@ -668,8 +671,12 @@ export function makeCard_AllCaps() {
 		if (allCapsBasicBox.checked) {
 			// log(`Converting range: allCapsBasic`);
 			let range = getUnicodeBlockByName('Basic Latin');
-			addCharacterRangeToCurrentProject(range);
-			await convertRangeToAllCaps(range);
+			if (range) {
+				range = new CharacterRange(range);
+				addCharacterRangeToCurrentProject(range);
+				addRangeToSelectedFilterInputs(range);
+				await convertRangeToAllCaps(range);
+			}
 		}
 
 		// Latin-1 Supplement range
@@ -678,8 +685,12 @@ export function makeCard_AllCaps() {
 		if (allCapsSupplementBox.checked) {
 			// log(`Converting range: allCapsSupplement`);
 			let range = getUnicodeBlockByName('Latin-1 Supplement');
-			addCharacterRangeToCurrentProject(range);
-			await convertRangeToAllCaps(range);
+			if (range) {
+				range = new CharacterRange(range);
+				addCharacterRangeToCurrentProject(range);
+				addRangeToSelectedFilterInputs(range);
+				await convertRangeToAllCaps(range);
+			}
 		}
 
 		// Latin Extended-A range
@@ -688,18 +699,26 @@ export function makeCard_AllCaps() {
 		if (allCapsLatinABox.checked) {
 			// log(`Converting range: allCapsLatinA`);
 			let range = getUnicodeBlockByName('Latin Extended-A');
-			addCharacterRangeToCurrentProject(range);
-			await convertRangeToAllCaps(range);
+			if (range) {
+				range = new CharacterRange(range);
+				addCharacterRangeToCurrentProject(range);
+				addRangeToSelectedFilterInputs(range);
+				await convertRangeToAllCaps(range);
+			}
 		}
 
-		// Latin Extended-A range
+		// Latin Extended-B range
 		/** @type {HTMLInputElement} */
 		const allCapsLatinBBox = document.querySelector('#allCapsLatinB');
 		if (allCapsLatinBBox.checked) {
 			// log(`Converting range: allCapsLatinB`);
 			let range = getUnicodeBlockByName('Latin Extended-B');
-			addCharacterRangeToCurrentProject(range);
-			await convertRangeToAllCaps(range);
+			if (range) {
+				range = new CharacterRange(range);
+				addCharacterRangeToCurrentProject(range);
+				addRangeToSelectedFilterInputs(range);
+				await convertRangeToAllCaps(range);
+			}
 		}
 
 		// log('convertProjectToAllCaps', 'end');
