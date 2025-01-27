@@ -2,7 +2,7 @@ import {
 	clone,
 	hasNonValues,
 	isVal,
-	numSan,
+	parseNumber,
 	round,
 	xyPointsAreClose,
 } from '../common/functions.js';
@@ -53,16 +53,16 @@ export class Segment extends GlyphElement {
 		point2ID = false,
 	} = {}) {
 		super();
-		this.p1x = numSan(p1x);
-		this.p1y = numSan(p1y);
-		this.p4x = numSan(p4x);
-		this.p4y = numSan(p4y);
+		this.p1x = parseNumber(p1x);
+		this.p1y = parseNumber(p1y);
+		this.p4x = parseNumber(p4x);
+		this.p4y = parseNumber(p4y);
 		// For lines, it's better to default p2 to p1 values, and p3 to p4 values
 
-		this.p2x = p2x === undefined ? this.p1x : numSan(p2x);
-		this.p2y = p2y === undefined ? this.p1y : numSan(p2y);
-		this.p3x = p3x === undefined ? this.p4x : numSan(p3x);
-		this.p3y = p3y === undefined ? this.p4y : numSan(p3y);
+		this.p2x = p2x === undefined ? this.p1x : parseNumber(p2x);
+		this.p2y = p2y === undefined ? this.p1y : parseNumber(p2y);
+		this.p3x = p3x === undefined ? this.p4x : parseNumber(p3x);
+		this.p3y = p3y === undefined ? this.p4y : parseNumber(p3y);
 
 		// IDs for stitching
 		if (point1ID) this.point1ID = point1ID;
@@ -229,7 +229,7 @@ export class Segment extends GlyphElement {
 
 	/**
 	 * Splits a segment at a specific x/y position
-	 * @param {XYPoint} co - x/y point where to split
+	 * @param {Object | XYPoint} co - x/y point where to split
 	 * @returns {Array | Boolean} - Array with two segments resulting from the split
 	 */
 	splitAtPoint(co) {
@@ -389,7 +389,7 @@ export class Segment extends GlyphElement {
 
 	/**
 	 * Given an x/y point, find the equivalent split distance t
-	 * @param {XYPoint} point - place to look
+	 * @param {Object | XYPoint} point - place to look
 	 * @param {Number} threshold - how close to look
 	 * @returns {Object} - collection of results
 	 */
@@ -451,7 +451,7 @@ export class Segment extends GlyphElement {
 	/**
 	 * Given a percent distance, return a x/y value
 	 * @param {Number} t - between 0 and 1
-	 * @returns {XYPoint}
+	 * @returns {Object} - x and y
 	 */
 	findXYPointFromSplit(t = 0.5) {
 		const rs = 1 - t;
@@ -468,7 +468,7 @@ export class Segment extends GlyphElement {
 		const y234 = y23 * rs + y34 * t;
 		const x1234 = x123 * rs + x234 * t;
 		const y1234 = y123 * rs + y234 * t;
-		return new XYPoint(x1234, y1234);
+		return { x: x1234, y: y1234 };
 	}
 
 	/**
@@ -495,13 +495,15 @@ export class Segment extends GlyphElement {
 	 * 3 - second 'Handle'
 	 * 4 - second 'PathPoint'
 	 * @param {Number} pt - Which point to return
-	 * @returns {XYPoint}
+	 * @returns {Object} - x and y
 	 */
 	getXYPoint(pt) {
-		if (pt === 1) return new XYPoint(this.p1x, this.p1y);
-		else if (pt === 2) return new XYPoint(this.p2x, this.p2y);
-		else if (pt === 3) return new XYPoint(this.p3x, this.p3y);
-		else return new XYPoint(this.p4x, this.p4y); // Default to pt 4
+		let result = { x: this.p4x, y: this.p4y }; // Default to pt 4
+		if (pt === 1) result = { x: this.p1x, y: this.p1y };
+		else if (pt === 2) result = { x: this.p2x, y: this.p2y };
+		else if (pt === 3) result = { x: this.p3x, y: this.p3y };
+
+		return result;
 	}
 
 	// --------------------------------------------------------------
@@ -684,7 +686,7 @@ export class Segment extends GlyphElement {
 
 	/**
 	 * Checks to see if an x/y value is one of the points of this Segment
-	 * @param {XYPoint} pt - point to check
+	 * @param {Object | XYPoint} pt - point to check
 	 * @param {Number} threshold - how close to check
 	 * @returns {String | false}
 	 */
@@ -696,7 +698,7 @@ export class Segment extends GlyphElement {
 
 	/**
 	 * Checks to see if an x/y value is the start of this Segment
-	 * @param {XYPoint} pt - point to check
+	 * @param {Object | XYPoint} pt - point to check
 	 * @param {Number} threshold - how close to check
 	 * @returns {Boolean}
 	 */
@@ -705,7 +707,7 @@ export class Segment extends GlyphElement {
 	}
 	/**
 	 * Checks to see if an x/y value is the end of this Segment
-	 * @param {XYPoint} pt - point to check
+	 * @param {Object | XYPoint} pt - point to check
 	 * @param {Number} threshold - how close to check
 	 * @returns {Boolean}
 	 */
@@ -715,7 +717,7 @@ export class Segment extends GlyphElement {
 
 	/**
 	 * Checks to see if an x/y value is anywhere on this Segment
-	 * @param {XYPoint} pt - point to check
+	 * @param {Object | XYPoint} pt - point to check
 	 * @param {Number =} threshold - how close to check
 	 * @returns {Boolean}
 	 */
@@ -729,7 +731,7 @@ export class Segment extends GlyphElement {
 
 	/**
 	 * Checks to see if an x/y value is on this Line Segment
-	 * @param {XYPoint} pt - point to check
+	 * @param {Object | XYPoint} pt - point to check
 	 * @returns {Boolean}
 	 */
 	containsPointOnLine(pt) {
@@ -854,9 +856,9 @@ export function getLineLength(p1x, p1y, p2x, p2y) {
 
 /**
  * Returns true if three points are in a straight line
- * @param {XYPoint} a - point to evaluate
- * @param {XYPoint} b - point to evaluate
- * @param {XYPoint} c - point to evaluate
+ * @param {Object | XYPoint} a - point to evaluate
+ * @param {Object | XYPoint} b - point to evaluate
+ * @param {Object | XYPoint} c - point to evaluate
  * @param {Number =} precision - how close to compare
  * @returns {Boolean}
  */
