@@ -43,6 +43,7 @@ export function makeSettingsTabContentApp() {
 		textToNode('<br>'),
 		textToNode('<h3>Behavior</h3>'),
 		makeOneSettingsRow('app', 'unlinkComponentInstances'),
+		makeOneSettingsRow('app', 'directlyDragCurves'),
 		textToNode('<br>'),
 		textToNode('<h3>Visibility</h3>'),
 		makeOneSettingsRow('app', 'showNonCharPoints'),
