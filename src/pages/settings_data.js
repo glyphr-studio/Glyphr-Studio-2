@@ -1,3 +1,5 @@
+import { Description } from "@storybook/blocks";
+
 /**
  * Data that describes all the settings
  */
@@ -198,6 +200,11 @@ export default {
 			label: `Unlink component instances when deleting their root`,
 			description: `When selected, this option will unlink component instances and turn them into normal paths if their component root is deleted (the glyph will look the same, but some component instances will end up as stand-alone path objects).<br>If this option is unselected, component instances will be deleted when their component root is deleted (the glyph will look different because it will have less shapes).`,
 			type: `Boolean`,
+		},
+		directlyDragCurves: {
+			label: 'Directly click and drag curves to edit them',
+			description: `On the edit canvas, when in Path Edit mode (Pen tool) hover over a path's curve, then click and drag to move the curve directly. This will edit the handles of the two ajacent path points.`,
+			type: 'Boolean',
 		},
 		showNonCharPoints: {
 			label: `Show non-graphic control characters`,

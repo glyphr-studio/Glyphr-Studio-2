@@ -230,19 +230,21 @@ export class Tool_PathEdit {
 			ehd.undoQueueHasChanged = true;
 			editor.publish(`currentPath`, parent);
 		} else {
-			this.overCurve = false;
 			const editor = getCurrentProjectEditor();
-			let singlePath = editor.multiSelect.shapes.singleton;
-			if (singlePath) {
-				let mousePoint = eventHandlerData.mousePosition;
-				if (isPointNearShapeEdge(singlePath, mousePoint.x, mousePoint.y)) {
-					let curvePoint = singlePath.findClosestPointOnCurve({
-						x: cXsX(mousePoint.x),
-						y: cYsY(mousePoint.y),
-					});
-					this.overCurve = curvePoint;
-					// log(`\t⮟this.overCurve⮟`);
-					// log(this.overCurve);
+			if (editor.project.settings.app.directlyDragCurves) {
+				this.overCurve = false;
+				let singlePath = editor.multiSelect.shapes.singleton;
+				if (singlePath) {
+					let mousePoint = eventHandlerData.mousePosition;
+					if (isPointNearShapeEdge(singlePath, mousePoint.x, mousePoint.y)) {
+						let curvePoint = singlePath.findClosestPointOnCurve({
+							x: cXsX(mousePoint.x),
+							y: cYsY(mousePoint.y),
+						});
+						this.overCurve = curvePoint;
+						// log(`\t⮟this.overCurve⮟`);
+						// log(this.overCurve);
+					}
 				}
 			}
 		}
