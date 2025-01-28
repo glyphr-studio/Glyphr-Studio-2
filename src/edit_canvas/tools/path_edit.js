@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
+import { round } from '../../common/functions.js';
 import { refreshPanel } from '../../panels/panels.js';
 import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
@@ -16,6 +17,7 @@ import { getShapeAtLocation } from './tools.js';
 export class Tool_PathEdit {
 	constructor() {
 		this.dragging = false;
+		/** @type {Object | Boolean} */
 		this.overCurve = false;
 		this.draggingCurve = false;
 		eventHandlerData.selecting = false;
@@ -100,7 +102,6 @@ export class Tool_PathEdit {
 		} else if (this.overCurve) {
 			// log('detected CURVE');
 			this.draggingCurve = true;
-			/** @ts-ignore */
 			this.historyTitle = `Dragged the centerpoint of a curve after point ${this.overCurve.point}.`;
 		} else if (clickedPath) {
 			// log('detected PATH');
@@ -185,7 +186,6 @@ export class Tool_PathEdit {
 		} else if (this.draggingCurve) {
 			// Get the current path and path points
 			const parent = editor.multiSelect.shapes.singleton;
-			/** @ts-ignore */
 			const p1 = parent.pathPoints[this.overCurve.point];
 			const nextPointNumber = parent.getNextPointNumber(p1.pointNumber);
 			const p2 = parent.pathPoints[nextPointNumber];
@@ -195,11 +195,30 @@ export class Tool_PathEdit {
 			editor.multiSelect.points.add(p1);
 			editor.multiSelect.points.add(p2);
 
+			// An easing function based on quint 'ease-in-out'
+			function calculateWeight(x) {
+				let weight = 1;
+				if (x < 0.5) {
+					weight = 16 * x * x * x * x * x;
+				} else {
+					weight = 1 - Math.pow(-2 * x + 2, 5) / 2;
+				}
+				return weight;
+			}
+
 			// Make the updates
+			let t = this.overCurve.split || 0.5;
+			let weight = calculateWeight(t);
+			// log(`weight: ${weight}`);
+
 			let dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
 			let dy = (ehd.lastY - ehd.mousePosition.y) / view.dz;
-			p1.updatePathPointPosition('h2', dx, dy);
-			p2.updatePathPointPosition('h1', dx, dy);
+
+			let offsetP1 = (1 - weight) / (3 * t * (1 - t) * (1 - t));
+			let offsetP2 = weight / (3 * t * t * (1 - t));
+
+			p1.updatePathPointPosition('h2', offsetP1 * dx, offsetP1 * dy);
+			p2.updatePathPointPosition('h1', offsetP2 * dx, offsetP2 * dy);
 
 			// Finish up
 			ehd.lastX = ehd.mousePosition.x;
@@ -219,6 +238,8 @@ export class Tool_PathEdit {
 				// log(`curvePoint.distance: ${curvePoint.distance}`);
 				if (curvePoint && curvePoint.distance < 10) {
 					this.overCurve = curvePoint;
+					// log(`\t⮟this.overCurve⮟`);
+					// log(this.overCurve);
 				}
 			}
 		}

@@ -34,8 +34,8 @@ export class GlyphrStudioApp {
 				twoSampleProjects: false, // {bool} Load two sample projects
 				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: 'glyph-0x67', // {glyph id} select a glyph
-				currentPanel: 'Quality checks', // {Sentence case panel name} navigate straight to a panel
-				currentTool: false, // {Tool name} select a tool
+				currentPanel: false, // {Sentence case panel name} navigate straight to a panel
+				currentTool: 'pathEdit', // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
 				autoSave: false, // {bool} trigger auto saves
 				selectFirstShape: false, // {bool} select the first shape
