@@ -16,6 +16,8 @@ import { getShapeAtLocation } from './tools.js';
 export class Tool_PathEdit {
 	constructor() {
 		this.dragging = false;
+		this.overCurve = false;
+		this.draggingCurve = false;
 		eventHandlerData.selecting = false;
 		this.monitorForDeselect = false;
 		this.controlPoint = {};
@@ -95,16 +97,25 @@ export class Tool_PathEdit {
 			}
 
 			// selectPathsThatHaveSelectedPoints();
+		} else if (this.overCurve) {
+			// log('detected CURVE');
+			this.draggingCurve = true;
+			/** @ts-ignore */
+			this.historyTitle = `Dragged the centerpoint of a curve after point ${this.overCurve.point}.`;
 		} else if (clickedPath) {
 			// log('detected PATH');
 			clickEmptySpace();
 			msShapes.select(clickedPath);
 			ehd.selecting = true;
+			this.overCurve = false;
+			this.draggingCurve = false;
 		} else {
 			// log('detected NOTHING');
 			if (!ehd.isCtrlDown) clickEmptySpace();
 			const clickedHotspot = findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			if (!clickedHotspot) ehd.selecting = true;
+			this.overCurve = false;
+			this.draggingCurve = false;
 		}
 
 		// if (msShapes.members.length) editor.nav.panel = 'Attributes';
@@ -171,6 +182,45 @@ export class Tool_PathEdit {
 				'pathPoints'
 			);
 			editor.editCanvas.redraw();
+		} else if (this.draggingCurve) {
+			// Get the current path and path points
+			const parent = editor.multiSelect.shapes.singleton;
+			/** @ts-ignore */
+			const p1 = parent.pathPoints[this.overCurve.point];
+			const nextPointNumber = parent.getNextPointNumber(p1.pointNumber);
+			const p2 = parent.pathPoints[nextPointNumber];
+
+			// Select the points
+			editor.multiSelect.points.clear();
+			editor.multiSelect.points.add(p1);
+			editor.multiSelect.points.add(p2);
+
+			// Make the updates
+			let dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
+			let dy = (ehd.lastY - ehd.mousePosition.y) / view.dz;
+			p1.updatePathPointPosition('h2', dx, dy);
+			p2.updatePathPointPosition('h1', dx, dy);
+
+			// Finish up
+			ehd.lastX = ehd.mousePosition.x;
+			ehd.lastY = ehd.mousePosition.y;
+			ehd.undoQueueHasChanged = true;
+			editor.publish(`currentPath`, parent);
+		} else {
+			this.overCurve = false;
+			const editor = getCurrentProjectEditor();
+			let singlePath = editor.multiSelect.shapes.singleton;
+			if (singlePath) {
+				let mousePoint = eventHandlerData.mousePosition;
+				let curvePoint = singlePath.findClosestPointOnCurve({
+					x: cXsX(mousePoint.x),
+					y: cYsY(mousePoint.y),
+				});
+				// log(`curvePoint.distance: ${curvePoint.distance}`);
+				if (curvePoint && curvePoint.distance < 10) {
+					this.overCurve = curvePoint;
+				}
+			}
 		}
 
 		checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
@@ -219,6 +269,9 @@ export class Tool_PathEdit {
 			} else if (msPoints.singleton && hcpIsSelected) {
 				// Hovered over a handle
 				setCursor('penCircle');
+			} else if (this.overCurve) {
+				// Hovering over curve
+				setCursor('penCurve');
 			} else {
 				// Not hovering over anything
 				setCursor('pen');
@@ -252,6 +305,8 @@ export class Tool_PathEdit {
 
 		// set to defaults
 		this.dragging = false;
+		this.overCurve = false;
+		this.draggingCurve = false;
 		ehd.selecting = false;
 		this.controlPoint = false;
 		this.pathPoint = false;
