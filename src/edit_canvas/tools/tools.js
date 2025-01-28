@@ -444,6 +444,59 @@ export function isShapeHere(shape, cx, cy) {
 	return imageData.data[0] < 255;
 }
 
+/**
+ * Returns a true if an x/y point is near the edge of a shape
+ * @param {Path | ComponentInstance} shape - shape to check
+ * @param {Number} cx - clicked x value
+ * @param {Number} cy - clicked y value
+ * @param {Number} thickness - how close to the edge returns true
+ * @returns {Boolean}
+ */
+export function isPointNearShapeEdge(shape, cx, cy, thickness = 10) {
+	// log(`isPointNearShapeEdge`, 'start');
+	// log(`cx: ${cx} / cy: ${cy}`);
+	let sx = cXsX(cx);
+	let sy = cYsY(cy);
+	let sThickness = thickness / getCurrentProjectEditor().view.dz;
+	// log(`sx: ${sx} / sy: ${sy}`);
+
+	if (!shape.maxes.isPointInside(sx, sy, sThickness)) {
+		// log(`Outside maxes for this shape`);
+		// log(`isPointNearShapeEdge`, 'end');
+		return false;
+	}
+
+	let g1 = 100;
+	let g2 = 200;
+	let ghc = document.createElement('canvas');
+	ghc.width = shape.maxes.width + g2;
+	ghc.height = shape.maxes.height + g2;
+	let ctx = ghc.getContext('2d', {
+		alpha: false,
+		willReadFrequently: true,
+	});
+	let view = { dx: shape.maxes.xMin * -1 + g1, dy: shape.maxes.yMax + g1, dz: 1 };
+
+	ctx.fillStyle = 'rgb(255, 255, 255)';
+	ctx.fillRect(0, 0, shape.maxes.width + g2, shape.maxes.height + g2);
+
+	ctx.beginPath();
+	drawShape(shape, ctx, view);
+	ctx.closePath();
+
+	ctx.strokeStyle = 'rgb(0,0,0)';
+	ctx.lineWidth = sThickness;
+	ctx.fill();
+	ctx.stroke();
+
+	let xTest = sx + view.dx;
+	let yTest = view.dy - sy;
+	let imageData = ctx.getImageData(xTest, yTest, 1, 1);
+
+	// log(`isPointNearShapeEdge`, 'end');
+	return imageData.data[0] < 255;
+}
+
 // --------------------------------------------------------------
 // Tool button graphics
 // --------------------------------------------------------------

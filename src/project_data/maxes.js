@@ -212,13 +212,14 @@ export class Maxes extends GlyphElement {
 	 * Checks to see if a x/y point is inside this maxes
 	 * @param {Number} x - x value to check
 	 * @param {Number} y - y value to check
+	 * @param {Number} buffer - space outside to count as in
 	 * @returns {Boolean}
 	 */
-	isPointInside(x, y) {
-		if (x >= this.xMax) return false;
-		if (x <= this.xMin) return false;
-		if (y >= this.yMax) return false;
-		if (y <= this.yMin) return false;
+	isPointInside(x, y, buffer = 0) {
+		if (x >= this.xMax + buffer) return false;
+		if (x <= this.xMin - buffer) return false;
+		if (y >= this.yMax + buffer) return false;
+		if (y <= this.yMin - buffer) return false;
 		return true;
 	}
 

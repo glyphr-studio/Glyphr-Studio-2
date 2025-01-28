@@ -1,5 +1,4 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
-import { round } from '../../common/functions.js';
 import { refreshPanel } from '../../panels/panels.js';
 import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
@@ -7,7 +6,7 @@ import { isOverControlPoint } from '../detect_edit_affordances.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { checkForMouseOverHotspot, clickEmptySpace, selectItemsInArea } from '../events_mouse.js';
-import { getShapeAtLocation } from './tools.js';
+import { getShapeAtLocation, isPointNearShapeEdge } from './tools.js';
 
 /**
 	// ----------------------------------------------------------------
@@ -198,11 +197,8 @@ export class Tool_PathEdit {
 			// An easing function based on quint 'ease-in-out'
 			function calculateWeight(x) {
 				let weight = 1;
-				if (x < 0.5) {
-					weight = 16 * x * x * x * x * x;
-				} else {
-					weight = 1 - Math.pow(-2 * x + 2, 5) / 2;
-				}
+				if (x < 0.5) weight = 16 * x * x * x * x * x;
+				else weight = 1 - Math.pow(-2 * x + 2, 5) / 2;
 				return weight;
 			}
 
@@ -217,8 +213,16 @@ export class Tool_PathEdit {
 			let offsetP1 = (1 - weight) / (3 * t * (1 - t) * (1 - t));
 			let offsetP2 = weight / (3 * t * t * (1 - t));
 
-			p1.updatePathPointPosition('h2', offsetP1 * dx, offsetP1 * dy);
-			p2.updatePathPointPosition('h1', offsetP2 * dx, offsetP2 * dy);
+			p1.updatePathPointPosition(
+				'h2',
+				p1.h2.xLock ? 0 : offsetP1 * dx,
+				p1.h2.yLock ? 0 : offsetP1 * dy
+			);
+			p2.updatePathPointPosition(
+				'h1',
+				p2.h1.xLock ? 0 : offsetP2 * dx,
+				p2.h1.yLock ? 0 : offsetP2 * dy
+			);
 
 			// Finish up
 			ehd.lastX = ehd.mousePosition.x;
@@ -231,12 +235,11 @@ export class Tool_PathEdit {
 			let singlePath = editor.multiSelect.shapes.singleton;
 			if (singlePath) {
 				let mousePoint = eventHandlerData.mousePosition;
-				let curvePoint = singlePath.findClosestPointOnCurve({
-					x: cXsX(mousePoint.x),
-					y: cYsY(mousePoint.y),
-				});
-				// log(`curvePoint.distance: ${curvePoint.distance}`);
-				if (curvePoint && curvePoint.distance < 10) {
+				if (isPointNearShapeEdge(singlePath, mousePoint.x, mousePoint.y)) {
+					let curvePoint = singlePath.findClosestPointOnCurve({
+						x: cXsX(mousePoint.x),
+						y: cYsY(mousePoint.y),
+					});
 					this.overCurve = curvePoint;
 					// log(`\t⮟this.overCurve⮟`);
 					// log(this.overCurve);
