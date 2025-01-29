@@ -182,106 +182,163 @@ export function makeKeyboardShortcutReference() {
 	let content = makeElement({
 		innerHTML: `
 		<div class="keyboardShortcutTable">
-			<h3>View</h3>
-			<span>
-				<code>ctrl</code><code>scroll wheel</code>
-			</span>
-			<label>
-				Zoom in and out
-			</label>
+
+			<h3>Selecting and navigating</h3>
 
 			<span>
-				<code>ctrl</code><code>+</code>
+				<code>Ctrl</code> <code>.</code>
 			</span>
-			<label>
-				Zoom in
-			</label>
+			<label>Navigate to the next Item (Character, Ligature, Component, or Kern Group)</label>
 
 			<span>
-				<code>ctrl</code><code>-</code>
+				<code>Ctrl</code> <code>,</code>
 			</span>
-			<label>
-				Zoom out
-			</label>
+			<label>Navigate to the previous Item (Character, Ligature, Component, or Kern Group)</label>
 
 			<span>
-				<code>ctrl</code><code>0</code>
-			</span>
-			<label>
-				Auto-fit glyph on the screen
-			</label>
-
-			<h3>Editing</h3>
-			<span>
-				<code>ctrl</code><code>c</code>
-			</span>
-			<label>
-				Copy the selected shapes
-			</label>
-
-			<span>
-				<code>ctrl</code><code>v</code>
-			</span>
-			<label>
-				Paste the selected shapes
-			</label>
-
-			<span>
-				<code>ctrl</code><code>a</code>
+				<code>Ctrl</code><code>A</code>
 			</span>
 			<label>
 				Select all shapes
 			</label>
 
 			<span>
-				<code>del</code> or<br>
-				<code>backspace</code>
+				<code>]</code>
 			</span>
-			<label>
-				Delete the selected shapes or path points
-			</label>
+			<label>Select next shape</label>
 
 			<span>
-				<code>⇦</code>
-				<code>⇧</code>
-				<code>⇨</code>
-				<code>⇩</code>
+				<code>[</code>
 			</span>
-			<label>
-				Nudge the selected shape or path point <span class="number">1em</span><br>
-				Press <code>shift</code> to nudge <span class="number">10em</span>
-			</label>
+			<label>Select previous shape</label>
 
 			<span>
-				<code>ctrl</code><i><code>Click an Edit Canvas shape</code></i>
-				or<br>
-				<code>ctrl</code><i><code>Click a Layers Panel shape</code></i>
+			<code>Ctrl</code><i><code>Click an Edit Canvas shape</code></i>
 			</span>
 			<label>
 				Toggle selection for that shape (multi-select)
 			</label>
 
-			<h3>Tools</h3>
 			<span>
-				<code>v</code>
+				<code>Ctrl</code><i><code>Click a Layers Panel shape</code></i>
 			</span>
-			<label>Switch to the arrow tool</label>
+			<label>
+				Toggle selection for that shape (multi-select)
+			</label>
 
 			<span>
-				<code>b</code>
+				<code>Ctrl</code> <code class="arrow-key">➝</code>
 			</span>
-			<label>Switch to the pen tool</label>
+			<label>Select the next Path Point</label>
 
 			<span>
-				<code>space</code> or<br>
-				<code>scroll wheel click</code>
+				<code>Ctrl</code> <code class="arrow-key">⭠</code>
+			</span>
+			<label>Select the previous Path Point</label>
+
+			<h3>View</h3>
+
+			<span>
+				<code>Space</code> or<br>
+				<code>Scroll wheel click</code>
 			</span>
 			<label>
 				Toggle the pan tool
 			</label>
 
 			<span>
-				<code>shift</code>
+				<code>Ctrl</code><code>Scroll wheel</code>
+			</span>
+			<label>
+				Zoom in and out
+			</label>
+
+			<span>
+				<code>Ctrl</code><code>+</code>
+			</span>
+			<label>
+				Zoom in
+			</label>
+
+			<span>
+				<code>Ctrl</code><code>-</code>
+			</span>
+			<label>
+				Zoom out
+			</label>
+
+			<span>
+				<code>Ctrl</code><code>0</code>
+			</span>
+			<label>
+				Auto-fit glyph on the screen
+			</label>
+
+
+			<h3>Editing</h3>
+			<span>
+				<code>Ctrl</code><code>C</code>
+			</span>
+			<label>
+				Copy the selected shapes
+			</label>
+
+			<span>
+				<code>Ctrl</code><code>V</code>
+			</span>
+			<label>
+				Paste the selected shapes
+			</label>
+
+			<span>
+				<code>Ctrl</code> <code>]</code>
+			</span>
+			<label>Move shape up</label>
+
+			<span>
+				<code>Ctrl</code> <code>[</code>
+			</span>
+			<label>Move shape down</label>
+
+			<span>
+				<code>Ctrl</code> <code>Shift</code> <code>]</code>
+			</span>
+			<label>Move shape to the top</label>
+
+			<span>
+				<code>Ctrl</code> <code>Shift</code> <code>[</code>
+			</span>
+			<label>Move shape to the bottom</label>
+
+			<span>
+				<code>Delete</code> or<br>
+				<code>Backspace</code>
+			</span>
+			<label>
+				Delete the selected shapes or path points
+			</label>
+
+			<span>
+				<code class="arrow-key">⭠</code>
+				<code class="arrow-key">⭡</code>
+				<code class="arrow-key">➝</code>
+				<code class="arrow-key">⭣</code>
+			</span>
+			<label>
+				Nudge the selected shape or path point <span class="number">1em</span><br>
+				Press <code>Shift</code> to nudge <span class="number">10em</span>
+			</label>
+
+			<span>
+				<code>Ctrl</code> <code>R</code>
+			</span>
+			<label>
+				Round values for the current selection<br>
+				(Shapes for the Resize tool, Path Points + Handles for the Path Edit tool)
+			</label>
+
+			<span>
+				<code>Shift</code>
 				<i><code>Shape Rotation handle</code></i>
 			</span>
 			<label>
@@ -289,12 +346,47 @@ export function makeKeyboardShortcutReference() {
 			</label>
 
 			<span>
-				<code>shift</code>
+				<code>Shift</code>
+				<i><code>New Path tool</code></i> or<br>
+				<code>Shift</code>
 				<i><code>Add Path Point tool</code></i>
 			</span>
 			<label>
 				Snap the new point's coordinates to whole numbers
 			</label>
+
+
+
+			<h3>Tools</h3>
+			<span>
+				<code>B</code> or <code>P</code>
+			</span>
+			<label>Select the Path Edit (Pen) tool</label>
+
+			<span>
+				<code>V</code> or <code>A</code>
+			</span>
+			<label>Select the Resize (Arrow) tool</label>
+
+			<span>
+				<code>M</code>
+			</span>
+			<label>Select the New Rectangle tool</label>
+
+			<span>
+				<code>O</code>
+			</span>
+			<label>Select the New Oval tool</label>
+
+			<span>
+				<code>H</code>
+			</span>
+			<label>Select the New Path tool</label>
+
+			<span>
+				<code>U</code>
+			</span>
+			<label>Select the Path Add Point tool</label>
 
 		</div>
 	`,
