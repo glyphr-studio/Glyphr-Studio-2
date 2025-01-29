@@ -85,6 +85,7 @@
 	border: 0px;
 }
 
+
 .page__card {
 	/* display: grid;
 	grid-template-columns: clamp(110px, 150px, 190px) 1fr;
@@ -125,7 +126,8 @@
 .keyboardShortcutTable {
 	display: grid;
 	grid-template-columns: max-content 1fr;
-	gap: 20px;
+	row-gap: 20px;
+	column-gap: 40px;
 }
 
 .keyboardShortcutTable h3 {
@@ -134,7 +136,7 @@
 }
 
 .keyboardShortcutTable label {
-	margin: 6px 0px 0px 0px;
+	margin: 5px 0px 6px 0px;
 }
 
 code,
@@ -146,6 +148,13 @@ code,
 	border: 1px solid var(--gray-l90);
 	border-radius: 4px;
 	display: inline-block;
+	font-size: 1.1em !important;
+	min-width: 30px;
+	text-align: center;
+}
+
+code.arrow-key {
+	font-weight: bold;
 }
 
 /* Settings page */
