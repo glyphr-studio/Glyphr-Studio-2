@@ -51,7 +51,7 @@ Read more about how the code is structured and how to contribute features in: [/
 
 ## License
 
-Copyright (C) 2010 - 2024 Matthew LaGrandeur, released under
+Copyright (C) 2010 - 2025 Matthew LaGrandeur, released under
 [GPL 3.0](https://github.com/mattlag/Glyphr-Studio/blob/master/LICENSE-gpl-3.0.txt)
 
 ## Author

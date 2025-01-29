@@ -69,7 +69,7 @@ function makeLicenseInfo() {
 			which is a free / open source 'copyleft' license. You are free to use, distribute,
 			and modify Glyphr Studio as long as this license and its freeness stays intact.
 			<br><br>
-			Copyright © 2010 - 2024 Matthew LaGrandeur
+			Copyright © 2010 - 2025 Matthew LaGrandeur
 		</div>
 
 		<br><br><br>
@@ -115,7 +115,7 @@ function makeLicenseInfo() {
 			Licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
 			<br><br>
-			Copyright © 2024, Matthew LaGrandeur
+			Copyright © 2025, Matthew LaGrandeur
 		</div>
 
 		<div class="page__card">
@@ -125,7 +125,7 @@ function makeLicenseInfo() {
 			Licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
 			<br><br>
-			Copyright © 2024, Matthew LaGrandeur
+			Copyright © 2025, Matthew LaGrandeur
 		</div>
 
 
