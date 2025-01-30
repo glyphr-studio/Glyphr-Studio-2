@@ -5,7 +5,7 @@ import { PathPoint } from '../../project_data/path_point.js';
 import { setCursor } from '../cursors.js';
 import { isOverFirstPoint } from '../detect_edit_affordances.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
-import { cXsX, cYsY } from '../edit_canvas.js';
+import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { clickTool } from './tools.js';
 
@@ -30,7 +30,8 @@ export class Tool_NewPath {
 		const msPoints = editor.multiSelect.points;
 
 		// New point
-		let newPoint = new PathPoint();
+		log(`editor.project.settings.font.upm: ${editor.project.settings.font.upm}`);
+		let newPoint = new PathPoint({projectUPM: editor.project.settings.font.upm});
 		newPoint.p.x = cXsX(ehd.mousePosition.x);
 		newPoint.p.y = cYsY(ehd.mousePosition.y);
 
@@ -96,10 +97,9 @@ export class Tool_NewPath {
 
 		if (this.dragging) {
 			// avoid really small handles
-			let ps2 = canvasUIPointSize * 2;
 			if (
-				Math.abs(this.currentPoint.p.x - cXsX(ehd.mousePosition.x)) > ps2 ||
-				Math.abs(this.currentPoint.p.y - cYsY(ehd.mousePosition.y)) > ps2
+				Math.abs(sXcX(this.currentPoint.p.x) - ehd.mousePosition.x) > canvasUIPointSize ||
+				Math.abs(sYcY(this.currentPoint.p.y) - ehd.mousePosition.y) > canvasUIPointSize
 			) {
 				this.currentPoint.h1.use = true;
 				this.currentPoint.h2.use = true;
