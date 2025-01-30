@@ -86,14 +86,26 @@ export function handleKeyPress(event) {
 		editor.editCanvas.redraw();
 	}
 
-	// Ctrl+A - Select All
+	// Ctrl+A - Select / Ctrl+Shift+A - Deselect All
 	if (ehd.isCtrlDown && key === 'a') {
 		if (ehd.isMouseOverCanvas) {
-			if (editMode === 'arrow') {
+			if (ehd.isShiftDown) {
+				// Clear all selections
+				cancelDefaultEventActions(event);
+				editor.multiSelect.points.clear();
+				editor.multiSelect.shapes.clear();
+			} else if (editMode === 'arrow') {
+				// Select all shapes
 				cancelDefaultEventActions(event);
 				editor.multiSelect.points.clear();
 				editor.multiSelect.shapes.clear();
 				editor.multiSelect.shapes.selectAll();
+			} else if (editMode === 'pen') {
+				// Select all path points
+				cancelDefaultEventActions(event);
+				editor.multiSelect.points.clear();
+				editor.multiSelect.shapes.clear();
+				editor.multiSelect.points.selectAll();
 			}
 		}
 

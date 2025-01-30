@@ -199,7 +199,16 @@ export function makeKeyboardShortcutReference() {
 				<code>Ctrl</code><code>A</code>
 			</span>
 			<label>
-				Select all shapes
+				Resize (Arrow) tool: Select all shapes
+				<br>
+				Path Edit (Pen) tool: Select all path points
+			</label>
+
+			<span>
+				<code>Ctrl</code><code>Shift</code><code>A</code>
+			</span>
+			<label>
+				Clear all shape and path point selections
 			</label>
 
 			<span>
