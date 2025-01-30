@@ -65,7 +65,10 @@ import transforms_attribute_order from './transforms_attribute_order.svg?raw';
  * @returns {String} - json save code from the GS Glyph
  */
 function importAndMakeSVGTestString(testSVG) {
-	const resultGlyph = ioSVG_convertSVGTagsToGlyph(testSVG, false);
+	// These tests were written when the default handle length was 50.
+	// It has since changed, so we'll pass 999 as a small project UPM size
+	// So all the expected tests still match
+	const resultGlyph = ioSVG_convertSVGTagsToGlyph(testSVG, false, 999);
 	resultGlyph.id = 'glyph-0x41';
 	resultGlyph.flipNS();
 	resultGlyph.reverseWinding();
