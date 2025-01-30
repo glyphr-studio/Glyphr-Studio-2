@@ -219,6 +219,18 @@ export class MultiSelectPoints extends MultiSelect {
 		this.changed();
 	}
 
+	selectAll() {
+		const currItem = getCurrentProjectEditor().selectedItem;
+		if (currItem.shapes) {
+			currItem.shapes.forEach((shape) => {
+				getCurrentProjectEditor().multiSelect.shapes.add(shape);
+				if (shape.pathPoints) {
+					shape.pathPoints.forEach((point) => this.add(point));
+				}
+			});
+		}
+	}
+
 	deleteShapesPoints() {
 		let point;
 		let parentPath;
