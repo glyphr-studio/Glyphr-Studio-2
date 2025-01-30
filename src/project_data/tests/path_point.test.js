@@ -176,5 +176,12 @@ describe('PathPoint', () => {
 		const pp = samplePathPoint();
 		pp.h1.x = 39.9999;
 		expect(pp.roundAll(3).h1.x).toBe(40);
+
+		const pp2 = samplePathPoint();
+		pp2.h1.x = 39.9999;
+		pp2.h1.use = false;
+		pp2.roundAll(3);
+		pp2.h1.use = true;
+		expect(pp2.h1.x).toBe(40);
 	});
 });
