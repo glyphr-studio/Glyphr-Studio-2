@@ -960,24 +960,39 @@ export function deleteSelectedPoints() {
 // Layers
 // --------------------------------------------------------------
 
-function moveLayer(direction = 'up') {
+export function moveLayer(direction = 'up') {
 	const editor = getCurrentProjectEditor();
-	const selectedPath = editor.multiSelect.shapes.singleton;
-	const itemPaths = editor.selectedItem.shapes;
-	const currentIndex = itemPaths.indexOf(selectedPath);
-	let tempPath;
+	const selectedShape = editor.multiSelect.shapes.singleton;
+	const itemShapes = editor.selectedItem.shapes;
+	const currentIndex = itemShapes.indexOf(selectedShape);
+	let tempShape;
+
+	if (currentIndex < 0) {
+		log(`No selected layer to move`);
+		return;
+	}
 
 	if (direction === 'down') {
-		if (currentIndex > 0 && currentIndex < itemPaths.length) {
-			tempPath = itemPaths[currentIndex - 1];
-			itemPaths[currentIndex - 1] = itemPaths[currentIndex];
-			itemPaths[currentIndex] = tempPath;
+		if (currentIndex > 0 && currentIndex < itemShapes.length) {
+			tempShape = itemShapes[currentIndex - 1];
+			itemShapes[currentIndex - 1] = itemShapes[currentIndex];
+			itemShapes[currentIndex] = tempShape;
 		}
-	} else {
-		if (currentIndex > -1 && currentIndex < itemPaths.length - 1) {
-			tempPath = itemPaths[currentIndex + 1];
-			itemPaths[currentIndex + 1] = itemPaths[currentIndex];
-			itemPaths[currentIndex] = tempPath;
+	} else if (direction === 'bottom') {
+		if (currentIndex > 0) {
+			tempShape = itemShapes.splice(currentIndex, 1);
+			itemShapes.unshift(tempShape);
+		}
+	} else if (direction === 'up') {
+		if (currentIndex < itemShapes.length - 1) {
+			tempShape = itemShapes[currentIndex + 1];
+			itemShapes[currentIndex + 1] = itemShapes[currentIndex];
+			itemShapes[currentIndex] = tempShape;
+		}
+	} else if (direction === 'top') {
+		if (currentIndex !== itemShapes.length - 1) {
+			tempShape = itemShapes.splice(currentIndex, 1);
+			itemShapes.push(tempShape);
 		}
 	}
 }

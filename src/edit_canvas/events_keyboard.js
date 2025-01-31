@@ -10,6 +10,7 @@ import {
 	clipboardPaste,
 	deleteSelectedPaths,
 	deleteSelectedPoints,
+	moveLayer,
 } from '../panels/actions.js';
 import { getItemStringAdvanceWidth } from './context_characters.js';
 import {
@@ -95,7 +96,8 @@ export function handleKeyPress(event) {
 	if (ehd.isCtrlDown && ehd.isSpaceDown) {
 		// Ctrl+Space - Hide UI
 		addHideUIOverlay();
-	} else if (ehd.isSpaceDown) { // && ehd.isMouseOverCanvas) {
+	} else if (ehd.isSpaceDown) {
+		// && ehd.isMouseOverCanvas) {
 		// Space - Pan
 		cancelDefaultEventActions(event);
 		if (!ehd.isPanning) togglePanOn(event);
@@ -130,25 +132,29 @@ export function handleKeyPress(event) {
 	}
 
 	// LeftArrow - Nudge left
-	if (key === 'ArrowLeft'){// && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowLeft') {
+		// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(-1, 0);
 	}
 
 	// RightArrow - Nudge right
-	if (key === 'ArrowRight'){// && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowRight') {
+		// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(1, 0);
 	}
 
 	// UpArrow - Nudge up
-	if (key === 'ArrowUp'){// && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowUp') {
+		// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, 1);
 	}
 
 	// DownArrow - Nudge down
-	if (key === 'ArrowDown'){// && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowDown') {
+		// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, -1);
 	}
@@ -182,129 +188,141 @@ export function handleKeyPress(event) {
 
 	// Only do the below stuff if the canvas has focus
 	// if (ehd.isMouseOverCanvas) {
-		// Del, Backspace - delete selected items
-		if (key === 'Delete' || key === 'Backspace') {
+	// Del, Backspace - delete selected items
+	if (key === 'Delete' || key === 'Backspace') {
+		cancelDefaultEventActions(event);
+
+		if (editMode === 'pen') {
+			deleteSelectedPoints();
+		} else if (editMode === 'arrow') {
+			deleteSelectedPaths();
+		}
+	}
+
+	// Ctrl+A - Select / Ctrl+Shift+A - Deselect All
+	if (ehd.isCtrlDown && key === 'a') {
+		// if (ehd.isMouseOverCanvas) {
+		if (ehd.isShiftDown) {
+			// Clear all selections
 			cancelDefaultEventActions(event);
-
-			if (editMode === 'pen') {
-				deleteSelectedPoints();
-			} else if (editMode === 'arrow') {
-				deleteSelectedPaths();
-			}
-		}
-
-		// Ctrl+A - Select / Ctrl+Shift+A - Deselect All
-		if (ehd.isCtrlDown && key === 'a') {
-			// if (ehd.isMouseOverCanvas) {
-				if (ehd.isShiftDown) {
-					// Clear all selections
-					cancelDefaultEventActions(event);
-					editor.multiSelect.points.clear();
-					editor.multiSelect.shapes.clear();
-				} else if (editMode === 'arrow') {
-					// Select all shapes
-					cancelDefaultEventActions(event);
-					editor.multiSelect.points.clear();
-					editor.multiSelect.shapes.clear();
-					editor.multiSelect.shapes.selectAll();
-				} else if (editMode === 'pen') {
-					// Select all path points
-					cancelDefaultEventActions(event);
-					editor.multiSelect.points.clear();
-					editor.multiSelect.shapes.clear();
-					editor.multiSelect.points.selectAll();
-				// }
-			}
-
-			// log('handleKeyPress', 'end');
-			return;
-		}
-
-		// Shape Layer / Selection Actions
-		const msShapes = editor.multiSelect.shapes;
-		const selectedItem = editor.selectedItem;
-		if (key === ']') {
-			if (ehd.isCtrlDown) {
-				if (ehd.isShiftDown) {
-					// Ctrl+Shift+] - move shape layer to the top
-				} else {
-					// Ctrl+] - move shape layer up
-				}
-			} else {
-				// ] - select next shape
-				if (msShapes.length === 0) {
-					if (selectedItem.shapes.length > 0) {
-						msShapes.add(selectedItem.shapes.at(0));
-						editor.publish('currentItem', editor.selectedItem);
-					}
-				}
-			}
-		}
-
-		if (key === '[') {
-			if (ehd.isCtrlDown) {
-				if (ehd.isShiftDown) {
-					// Ctrl+Shift+[ - move shape layer to the bottom
-				} else {
-					// Ctrl+[ - move shape layer down
-				}
-			} else {
-				// [ - select previous shape
-				if (msShapes.length === 0) {
-					if (selectedItem.shapes.length > 0) {
-						msShapes.add(selectedItem.shapes.at(-1));
-						editor.publish('currentItem', editor.selectedItem);
-					}
-				}
-			}
-		}
-
-		// Ctrl+C - copy
-		if (ehd.isCtrlDown && key === 'c') {
+			editor.multiSelect.points.clear();
+			editor.multiSelect.shapes.clear();
+		} else if (editMode === 'arrow') {
+			// Select all shapes
 			cancelDefaultEventActions(event);
-			clipboardCopy();
-		}
-
-		// Ctrl+V - paste
-		if (ehd.isCtrlDown && key === 'v') {
-			// log(`\n⮟editor.clipboard⮟`);
-			// log(editor.clipboard);
-			let didStuff = false;
-			if (editor.clipboard) {
-				didStuff = clipboardPaste();
-				cancelDefaultEventActions(event);
-			}
-
-			if (!didStuff) {
-				handlePasteSVGonEditCanvas(event);
-			}
-		}
-
-		// Ctrl+R - round
-		if (ehd.isCtrlDown && key === 'r') {
+			editor.multiSelect.points.clear();
+			editor.multiSelect.shapes.clear();
+			editor.multiSelect.shapes.selectAll();
+		} else if (editMode === 'pen') {
+			// Select all path points
 			cancelDefaultEventActions(event);
-			if (editMode === 'pen') {
-				log(`Rounding all points`);
-				editor.multiSelect.points.roundAll(0);
-				editor.history.addState(
-					`Rounded path point and handle position values for ${editor.multiSelect.points.length} path point(s)`
-				);
+			editor.multiSelect.points.clear();
+			editor.multiSelect.shapes.clear();
+			editor.multiSelect.points.selectAll();
+			// }
+		}
+
+		// log('handleKeyPress', 'end');
+		return;
+	}
+
+	// Shape Layer / Selection Actions
+	const msShapes = editor.multiSelect.shapes;
+	const selectedItem = editor.selectedItem;
+	if (key === ']') {
+		if (ehd.isCtrlDown) {
+			if (ehd.isShiftDown) {
+				// Ctrl+Shift+] - move shape layer to the top
+				moveLayer('top');
+				editor.history.addState(`Moved layer to the top`);
 				editor.publish('currentItem', editor.selectedItem);
-				// refreshPanel();
-				showToast('Values were rounded for the selected path points.');
-			}
-
-			if (editMode === 'arrow') {
-				log(`Rounding all shapes`);
-				editor.multiSelect.shapes.roundAll(0);
-				editor.history.addState(
-					`Rounded path point and handle position values for ${editor.multiSelect.shapes.length} shape(s)`
-				);
+			} else {
+				// Ctrl+] - move shape layer up
+				moveLayer('up');
+				editor.history.addState(`Moved layer up`);
 				editor.publish('currentItem', editor.selectedItem);
-				// refreshPanel();
-				showToast('Values were rounded for the selected shapes.');
+			}
+		} else {
+			// ] - select next shape
+			if (msShapes.length === 0) {
+				if (selectedItem.shapes.length > 0) {
+					msShapes.add(selectedItem.shapes.at(0));
+					editor.publish('currentItem', editor.selectedItem);
+				}
 			}
 		}
+	}
+
+	if (key === '[') {
+		if (ehd.isCtrlDown) {
+			if (ehd.isShiftDown) {
+				// Ctrl+Shift+[ - move shape layer to the bottom
+				moveLayer('bottom');
+				editor.history.addState(`Moved layer to the bottom`);
+				editor.publish('currentItem', editor.selectedItem);
+			} else {
+				// Ctrl+[ - move shape layer down
+				moveLayer('down');
+				editor.history.addState(`Moved layer down`);
+				editor.publish('currentItem', editor.selectedItem);
+			}
+		} else {
+			// [ - select previous shape
+			if (msShapes.length === 0) {
+				if (selectedItem.shapes.length > 0) {
+					msShapes.add(selectedItem.shapes.at(-1));
+					editor.publish('currentItem', editor.selectedItem);
+				}
+			}
+		}
+	}
+
+	// Ctrl+C - copy
+	if (ehd.isCtrlDown && key === 'c') {
+		cancelDefaultEventActions(event);
+		clipboardCopy();
+	}
+
+	// Ctrl+V - paste
+	if (ehd.isCtrlDown && key === 'v') {
+		// log(`\n⮟editor.clipboard⮟`);
+		// log(editor.clipboard);
+		let didStuff = false;
+		if (editor.clipboard) {
+			didStuff = clipboardPaste();
+			cancelDefaultEventActions(event);
+		}
+
+		if (!didStuff) {
+			handlePasteSVGonEditCanvas(event);
+		}
+	}
+
+	// Ctrl+R - round
+	if (ehd.isCtrlDown && key === 'r') {
+		cancelDefaultEventActions(event);
+		if (editMode === 'pen') {
+			log(`Rounding all points`);
+			editor.multiSelect.points.roundAll(0);
+			editor.history.addState(
+				`Rounded path point and handle position values for ${editor.multiSelect.points.length} path point(s)`
+			);
+			editor.publish('currentItem', editor.selectedItem);
+			// refreshPanel();
+			showToast('Values were rounded for the selected path points.');
+		}
+
+		if (editMode === 'arrow') {
+			log(`Rounding all shapes`);
+			editor.multiSelect.shapes.roundAll(0);
+			editor.history.addState(
+				`Rounded path point and handle position values for ${editor.multiSelect.shapes.length} shape(s)`
+			);
+			editor.publish('currentItem', editor.selectedItem);
+			// refreshPanel();
+			showToast('Values were rounded for the selected shapes.');
+		}
+	}
 	// }
 	// log('handleKeyPress', 'end');
 }
@@ -573,7 +591,7 @@ function handleSpecialKeys(key, keyDirection) {
  * @returns {Boolean}
  */
 function isFocusedOnInput() {
-	const elements = ['input', 'input-number', 'option-chooser', 'option-toggle',  'textarea'];
+	const elements = ['input', 'input-number', 'option-chooser', 'option-toggle', 'textarea'];
 	const activeElement = document.activeElement.tagName.toLowerCase();
 	return elements.includes(activeElement);
 }
