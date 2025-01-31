@@ -233,11 +233,11 @@ export class Tool_PathEdit {
 			const editor = getCurrentProjectEditor();
 			if (editor.project.settings.app.directlyDragCurves) {
 				this.overCurve = false;
-				let singlePath = editor.multiSelect.shapes.singleton;
-				if (singlePath) {
+				let singleShape = editor.multiSelect.shapes.singleton;
+				if (singleShape && singleShape.objType !== 'ComponentInstance') {
 					let mousePoint = eventHandlerData.mousePosition;
-					if (isPointNearShapeEdge(singlePath, mousePoint.x, mousePoint.y)) {
-						let curvePoint = singlePath.findClosestPointOnCurve({
+					if (isPointNearShapeEdge(singleShape, mousePoint.x, mousePoint.y)) {
+						let curvePoint = singleShape.findClosestPointOnCurve({
 							x: cXsX(mousePoint.x),
 							y: cYsY(mousePoint.y),
 						});
