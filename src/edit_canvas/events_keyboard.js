@@ -31,8 +31,10 @@ import { clickTool } from './tools/tools.js';
  * @returns nothing
  */
 export function handleKeyPress(event) {
-	const editor = getCurrentProjectEditor();
 	// log('handleKeyPress', 'start');
+	if (isFocusedOnInput()) return;
+
+	const editor = getCurrentProjectEditor();
 	const key = getKeyFromEvent(event);
 	// log(`KEY ${key} from ${event.which}`);
 	// log(event);
@@ -93,7 +95,7 @@ export function handleKeyPress(event) {
 	if (ehd.isCtrlDown && ehd.isSpaceDown) {
 		// Ctrl+Space - Hide UI
 		addHideUIOverlay();
-	} else if (ehd.isSpaceDown && ehd.isMouseOverCanvas) {
+	} else if (ehd.isSpaceDown) { // && ehd.isMouseOverCanvas) {
 		// Space - Pan
 		cancelDefaultEventActions(event);
 		if (!ehd.isPanning) togglePanOn(event);
@@ -128,25 +130,25 @@ export function handleKeyPress(event) {
 	}
 
 	// LeftArrow - Nudge left
-	if (key === 'ArrowLeft' && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowLeft'){// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(-1, 0);
 	}
 
 	// RightArrow - Nudge right
-	if (key === 'ArrowRight' && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowRight'){// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(1, 0);
 	}
 
 	// UpArrow - Nudge up
-	if (key === 'ArrowUp' && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowUp'){// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, 1);
 	}
 
 	// DownArrow - Nudge down
-	if (key === 'ArrowDown' && ehd.isMouseOverCanvas) {
+	if (key === 'ArrowDown'){// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, -1);
 	}
@@ -179,7 +181,7 @@ export function handleKeyPress(event) {
 	}
 
 	// Only do the below stuff if the canvas has focus
-	if (ehd.isMouseOverCanvas) {
+	// if (ehd.isMouseOverCanvas) {
 		// Del, Backspace - delete selected items
 		if (key === 'Delete' || key === 'Backspace') {
 			cancelDefaultEventActions(event);
@@ -193,7 +195,7 @@ export function handleKeyPress(event) {
 
 		// Ctrl+A - Select / Ctrl+Shift+A - Deselect All
 		if (ehd.isCtrlDown && key === 'a') {
-			if (ehd.isMouseOverCanvas) {
+			// if (ehd.isMouseOverCanvas) {
 				if (ehd.isShiftDown) {
 					// Clear all selections
 					cancelDefaultEventActions(event);
@@ -211,7 +213,7 @@ export function handleKeyPress(event) {
 					editor.multiSelect.points.clear();
 					editor.multiSelect.shapes.clear();
 					editor.multiSelect.points.selectAll();
-				}
+				// }
 			}
 
 			// log('handleKeyPress', 'end');
@@ -303,7 +305,7 @@ export function handleKeyPress(event) {
 				showToast('Values were rounded for the selected shapes.');
 			}
 		}
-	}
+	// }
 	// log('handleKeyPress', 'end');
 }
 
@@ -475,6 +477,8 @@ function addHideUIOverlay() {
  */
 export function handleKeyUp(event) {
 	// log(`handleKeyup`, 'start');
+	if (isFocusedOnInput()) return;
+
 	let key = getKeyFromEvent(event);
 	// log(`KEY ${key} from ${event.which}`);
 	// log(event);
@@ -497,7 +501,8 @@ export function handleKeyUp(event) {
 	// Space
 	if (key === 'Space' && !ehd.isSpaceDown) {
 		if (hideUI) document.body.removeChild(hideUI);
-		if (ehd.isMouseOverCanvas) togglePanOff(event);
+		// if (ehd.isMouseOverCanvas) togglePanOff(event);
+		togglePanOff(event);
 	}
 
 	// log(`handleKeyup`, 'end');
@@ -560,4 +565,15 @@ function handleSpecialKeys(key, keyDirection) {
 	}
 
 	// log(`handleSpecialKeys`, 'end');
+}
+
+/**
+ * Ensures an input element doesn't have it's key inputs
+ * stolen by the keyboard event handlers
+ * @returns {Boolean}
+ */
+function isFocusedOnInput() {
+	const elements = ['input', 'input-number', 'option-chooser', 'option-toggle',  'textarea'];
+	const activeElement = document.activeElement.tagName.toLowerCase();
+	return elements.includes(activeElement);
 }
