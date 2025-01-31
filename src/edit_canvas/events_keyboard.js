@@ -11,7 +11,6 @@ import {
 	deleteSelectedPaths,
 	deleteSelectedPoints,
 } from '../panels/actions.js';
-import { refreshPanel } from '../panels/panels.js';
 import { getItemStringAdvanceWidth } from './context_characters.js';
 import {
 	cancelDefaultEventActions,
@@ -90,33 +89,6 @@ export function handleKeyPress(event) {
 		editor.editCanvas.redraw();
 	}
 
-	// Ctrl+A - Select / Ctrl+Shift+A - Deselect All
-	if (ehd.isCtrlDown && key === 'a') {
-		if (ehd.isMouseOverCanvas) {
-			if (ehd.isShiftDown) {
-				// Clear all selections
-				cancelDefaultEventActions(event);
-				editor.multiSelect.points.clear();
-				editor.multiSelect.shapes.clear();
-			} else if (editMode === 'arrow') {
-				// Select all shapes
-				cancelDefaultEventActions(event);
-				editor.multiSelect.points.clear();
-				editor.multiSelect.shapes.clear();
-				editor.multiSelect.shapes.selectAll();
-			} else if (editMode === 'pen') {
-				// Select all path points
-				cancelDefaultEventActions(event);
-				editor.multiSelect.points.clear();
-				editor.multiSelect.shapes.clear();
-				editor.multiSelect.points.selectAll();
-			}
-		}
-
-		// log('handleKeyPress', 'end');
-		return;
-	}
-
 	// Space
 	if (ehd.isCtrlDown && ehd.isSpaceDown) {
 		// Ctrl+Space - Hide UI
@@ -131,61 +103,84 @@ export function handleKeyPress(event) {
 		closeEveryTypeOfDialog();
 	}
 
-	// z
+	// Ctrl+Z - Undo
 	if (key === 'Undo' || (ehd.isCtrlDown && key === 'z')) {
 		cancelDefaultEventActions(event);
 		editor.history.restoreState();
 	}
 
-	// plus
+	// Ctrl+Plus - Zoom in
 	if (ehd.isCtrlDown && key === 'Plus') {
 		cancelDefaultEventActions(event);
 		editor.updateViewZoom(1.1);
 	}
 
-	// minus
+	// Ctrl+Minus - Zoom out
 	if (ehd.isCtrlDown && key === 'Minus') {
 		cancelDefaultEventActions(event);
 		editor.updateViewZoom(0.9);
 	}
 
-	// 0
+	// Ctrl+0 - Auto fit
 	if (ehd.isCtrlDown && key === '0') {
 		cancelDefaultEventActions(event);
 		editor.autoFitView();
 	}
 
-	// left
+	// LeftArrow - Nudge left
 	if (key === 'ArrowLeft' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(-1, 0);
 	}
 
-	// right
+	// RightArrow - Nudge right
 	if (key === 'ArrowRight' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(1, 0);
 	}
 
-	// up
+	// UpArrow - Nudge up
 	if (key === 'ArrowUp' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, 1);
 	}
 
-	// down
+	// DownArrow - Nudge down
 	if (key === 'ArrowDown' && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, -1);
 	}
 
-	// Only allow above stuff on Kerning page
 	if (editor.nav.page === 'Kerning') return;
+	// --------------------------------------------------------------
+	// Only stuff on Edit Canvas / Non Kerning pages
+	// Characters, Ligatures, and Components
+	// --------------------------------------------------------------
+
+	// Tool selection
+	if (!ehd.isCtrlDown) {
+		// v, a - resize
+		if (key === 'v' || key === 'a') clickTool('resize');
+
+		// b, p - path edit
+		if (key === 'b' || key === 'p') clickTool('pathEdit');
+
+		// m, r - new rectangle
+		if (key === 'm' || key === 'r') clickTool('newRectangle');
+
+		// o, q - new oval
+		if (key === 'o' || key === 'q') clickTool('newOval');
+
+		// h, w - new path
+		if (key === 'h' || key === 'w') clickTool('newPath');
+
+		// u, e - path add point
+		if (key === 'u' || key === 'e') clickTool('pathAddPoint');
+	}
 
 	// Only do the below stuff if the canvas has focus
-
 	if (ehd.isMouseOverCanvas) {
-		// del
+		// Del, Backspace - delete selected items
 		if (key === 'Delete' || key === 'Backspace') {
 			cancelDefaultEventActions(event);
 
@@ -196,13 +191,79 @@ export function handleKeyPress(event) {
 			}
 		}
 
-		// control + c
+		// Ctrl+A - Select / Ctrl+Shift+A - Deselect All
+		if (ehd.isCtrlDown && key === 'a') {
+			if (ehd.isMouseOverCanvas) {
+				if (ehd.isShiftDown) {
+					// Clear all selections
+					cancelDefaultEventActions(event);
+					editor.multiSelect.points.clear();
+					editor.multiSelect.shapes.clear();
+				} else if (editMode === 'arrow') {
+					// Select all shapes
+					cancelDefaultEventActions(event);
+					editor.multiSelect.points.clear();
+					editor.multiSelect.shapes.clear();
+					editor.multiSelect.shapes.selectAll();
+				} else if (editMode === 'pen') {
+					// Select all path points
+					cancelDefaultEventActions(event);
+					editor.multiSelect.points.clear();
+					editor.multiSelect.shapes.clear();
+					editor.multiSelect.points.selectAll();
+				}
+			}
+
+			// log('handleKeyPress', 'end');
+			return;
+		}
+
+		// Shape Layer / Selection Actions
+		const msShapes = editor.multiSelect.shapes;
+		const selectedItem = editor.selectedItem;
+		if (key === ']') {
+			if (ehd.isCtrlDown) {
+				if (ehd.isShiftDown) {
+					// Ctrl+Shift+] - move shape layer to the top
+				} else {
+					// Ctrl+] - move shape layer up
+				}
+			} else {
+				// ] - select next shape
+				if (msShapes.length === 0) {
+					if (selectedItem.shapes.length > 0) {
+						msShapes.add(selectedItem.shapes.at(0));
+						editor.publish('currentItem', editor.selectedItem);
+					}
+				}
+			}
+		}
+
+		if (key === '[') {
+			if (ehd.isCtrlDown) {
+				if (ehd.isShiftDown) {
+					// Ctrl+Shift+[ - move shape layer to the bottom
+				} else {
+					// Ctrl+[ - move shape layer down
+				}
+			} else {
+				// [ - select previous shape
+				if (msShapes.length === 0) {
+					if (selectedItem.shapes.length > 0) {
+						msShapes.add(selectedItem.shapes.at(-1));
+						editor.publish('currentItem', editor.selectedItem);
+					}
+				}
+			}
+		}
+
+		// Ctrl+C - copy
 		if (ehd.isCtrlDown && key === 'c') {
 			cancelDefaultEventActions(event);
 			clipboardCopy();
 		}
 
-		// control + v
+		// Ctrl+V - paste
 		if (ehd.isCtrlDown && key === 'v') {
 			// log(`\n⮟editor.clipboard⮟`);
 			// log(editor.clipboard);
@@ -217,7 +278,7 @@ export function handleKeyPress(event) {
 			}
 		}
 
-		// control + r - round
+		// Ctrl+R - round
 		if (ehd.isCtrlDown && key === 'r') {
 			cancelDefaultEventActions(event);
 			if (editMode === 'pen') {
@@ -241,27 +302,6 @@ export function handleKeyPress(event) {
 				// refreshPanel();
 				showToast('Values were rounded for the selected shapes.');
 			}
-		}
-
-		// Tool selection
-		if (!ehd.isCtrlDown) {
-			// v, a - resize
-			if (key === 'v' || key === 'a') clickTool('resize');
-
-			// b, p - path edit
-			if (key === 'b' || key === 'p') clickTool('pathEdit');
-
-			// m, r - new rectangle
-			if (key === 'm' || key === 'r') clickTool('newRectangle');
-
-			// o, q - new oval
-			if (key === 'o' || key === 'q') clickTool('newOval');
-
-			// h, w - new path
-			if (key === 'h' || key === 'w') clickTool('newPath');
-
-			// u, e - path add point
-			if (key === 'u' || key === 'e') clickTool('pathAddPoint');
 		}
 	}
 	// log('handleKeyPress', 'end');
@@ -377,8 +417,10 @@ function getEditMode() {
 }
 
 function addHideUIOverlay() {
+	const editor = getCurrentProjectEditor();
+	if (editor.nav.page === 'Kerning') return;
+
 	if (!document.getElementById('hideUI')) {
-		const editor = getCurrentProjectEditor();
 		//const scale = this.options.fontSize / this.project.totalVertical;
 		const fontSize = editor.project.totalVertical * editor.view.dz;
 		let text = editor.selectedItem.char;
