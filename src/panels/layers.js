@@ -3,6 +3,7 @@ import { addAsChildren, makeElement } from '../common/dom.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
 import { addChildActions, getActionData } from './actions.js';
 import { panelsEventHandlerData } from './panel_events.js';
+import { refreshPanel } from './panels.js';
 
 // --------------------------------------------------------------
 // Layer panel
@@ -120,13 +121,7 @@ export function makePanel_Layers() {
 		topic: ['currentPath', 'currentItem'],
 		subscriberID: 'layersPanel',
 		callback: () => {
-			const editor = getCurrentProjectEditor();
-			const project = getCurrentProject();
-			const thumbs = document.querySelectorAll('.item-link__thumbnail');
-			thumbs.forEach((thumb) => {
-				const pathIndex = thumb.getAttribute('target-path-index');
-				thumb.innerHTML = project.makeItemThumbnail(editor.selectedItem.shapes[pathIndex]);
-			});
+			refreshPanel();
 		},
 	});
 
