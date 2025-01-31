@@ -34,6 +34,12 @@ export class Tool_PathAddPoint {
 			);
 			if (addedPoint) {
 				editor.multiSelect.points.select(addedPoint);
+				if (eventHandlerData.isShiftDown) addedPoint.roundAll(0);
+				if (eventHandlerData.isCtrlDown) {
+					addedPoint.h1.use = false;
+					addedPoint.h2.use = false;
+				}
+				editor.publish('currentPathPoint', addedPoint);
 				editor.publish('currentPath', singlePath);
 				editor.history.addState('Added point to path');
 			}

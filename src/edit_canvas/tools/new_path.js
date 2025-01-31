@@ -31,9 +31,11 @@ export class Tool_NewPath {
 
 		// New point
 		log(`editor.project.settings.font.upm: ${editor.project.settings.font.upm}`);
-		let newPoint = new PathPoint({projectUPM: editor.project.settings.font.upm});
+		let newPoint = new PathPoint({ projectUPM: editor.project.settings.font.upm });
 		newPoint.p.x = cXsX(ehd.mousePosition.x);
 		newPoint.p.y = cYsY(ehd.mousePosition.y);
+
+		if (eventHandlerData.isShiftDown) newPoint.roundAll(0);
 
 		// Ensure selection
 		if (this.newPath) {
@@ -108,6 +110,8 @@ export class Tool_NewPath {
 				this.currentPoint.makeSymmetric('h2');
 			}
 
+			if (eventHandlerData.isShiftDown) this.currentPoint.roundAll(0);
+
 			setCursor('penCircle');
 			ehd.lastX = ehd.mousePosition.x;
 			ehd.lastY = ehd.mousePosition.y;
@@ -126,13 +130,18 @@ export class Tool_NewPath {
 
 	mouseup() {
 		// log('Tool_NewPath.mouseup', 'start');
+		const editor = getCurrentProjectEditor();
 		setCursor('penPlus');
 
 		if (eventHandlerData.undoQueueHasChanged) {
 			// For new path tools, mouse up always adds to the undo-queue
-			const editor = getCurrentProjectEditor();
 			editor.history.addState(`New path: added point ${this.currentPoint.pointNumber}`);
 			eventHandlerData.undoQueueHasChanged = false;
+		}
+
+		if (eventHandlerData.isShiftDown) {
+			this.currentPoint.roundAll(0);
+			editor.publish('currentPathPoint', this.currentPoint);
 		}
 
 		this.dragging = false;
