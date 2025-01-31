@@ -343,7 +343,7 @@ export function makeKeyboardShortcutReference() {
 			</span>
 			<label>
 				Round values for the current selection<br>
-				(Shapes for the Resize tool, Path Points + Handles for the Path Edit tool)
+				(Whole Shapes for the Resize tool, Path Points + Handles for the Path Edit tool)
 			</label>
 
 			<span>

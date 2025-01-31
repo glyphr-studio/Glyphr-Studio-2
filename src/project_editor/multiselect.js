@@ -590,6 +590,14 @@ export class MultiSelectShapes extends MultiSelect {
 		// log('Glyph.alignShapes', 'end');
 	}
 
+	roundAll(precision = 9) {
+		this.virtualGlyph.shapes.forEach((shape) => {
+			// log(this.members[m]);
+			shape.roundAll(precision);
+		});
+		this.changed();
+	}
+
 	updateShapePosition(dx, dy) {
 		// log(`MultiSelectShape.updateShapePosition`, 'start');
 		// log(`dx: ${dx} dy: ${dy}`);

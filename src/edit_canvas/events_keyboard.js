@@ -11,6 +11,7 @@ import {
 	deleteSelectedPaths,
 	deleteSelectedPoints,
 } from '../panels/actions.js';
+import { refreshPanel } from '../panels/panels.js';
 import { getItemStringAdvanceWidth } from './context_characters.js';
 import {
 	cancelDefaultEventActions,
@@ -216,24 +217,52 @@ export function handleKeyPress(event) {
 			}
 		}
 
+		// control + r - round
+		if (ehd.isCtrlDown && key === 'r') {
+			cancelDefaultEventActions(event);
+			if (editMode === 'pen') {
+				log(`Rounding all points`);
+				editor.multiSelect.points.roundAll(0);
+				editor.history.addState(
+					`Rounded path point and handle position values for ${editor.multiSelect.points.length} path point(s)`
+				);
+				editor.publish('currentItem', editor.selectedItem);
+				// refreshPanel();
+				showToast('Values were rounded for the selected path points.');
+			}
+
+			if (editMode === 'arrow') {
+				log(`Rounding all shapes`);
+				editor.multiSelect.shapes.roundAll(0);
+				editor.history.addState(
+					`Rounded path point and handle position values for ${editor.multiSelect.shapes.length} shape(s)`
+				);
+				editor.publish('currentItem', editor.selectedItem);
+				// refreshPanel();
+				showToast('Values were rounded for the selected shapes.');
+			}
+		}
+
 		// Tool selection
-		// v, a - resize
-		if (key === 'v' || key === 'a') clickTool('resize');
+		if (!ehd.isCtrlDown) {
+			// v, a - resize
+			if (key === 'v' || key === 'a') clickTool('resize');
 
-		// b, p - path edit
-		if (key === 'b' || key === 'p') clickTool('pathEdit');
+			// b, p - path edit
+			if (key === 'b' || key === 'p') clickTool('pathEdit');
 
-		// m, r - new rectangle
-		if (key === 'm' || key === 'r') clickTool('newRectangle');
+			// m, r - new rectangle
+			if (key === 'm' || key === 'r') clickTool('newRectangle');
 
-		// o, q - new oval
-		if (key === 'o' || key === 'q') clickTool('newOval');
+			// o, q - new oval
+			if (key === 'o' || key === 'q') clickTool('newOval');
 
-		// h, w - new path
-		if (key === 'h' || key === 'w') clickTool('newPath');
+			// h, w - new path
+			if (key === 'h' || key === 'w') clickTool('newPath');
 
-		// u, e - path add point
-		if (key === 'u' || key === 'e') clickTool('pathAddPoint');
+			// u, e - path add point
+			if (key === 'u' || key === 'e') clickTool('pathAddPoint');
+		}
 	}
 	// log('handleKeyPress', 'end');
 }
