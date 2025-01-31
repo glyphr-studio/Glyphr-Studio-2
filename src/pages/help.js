@@ -348,22 +348,29 @@ export function makeKeyboardShortcutReference() {
 
 			<span>
 				<code>Shift</code>
-				<i><code>Shape Rotation handle</code></i>
-			</span>
-			<label>
-				Snap rotation degrees to whole numbers
-			</label>
-
-			<span>
-				<code>Shift</code>
 				<i><code>New Path tool</code></i> or<br>
 				<code>Shift</code>
-				<i><code>Add Path Point tool</code></i>
+				<i><code>Path Add Point tool</code></i>
 			</span>
 			<label>
 				Snap the new point's coordinates to whole numbers
 			</label>
 
+			<span>
+				<code>Ctrl</code>
+				<i><code>Path Add Point tool</code></i>
+			</span>
+			<label>
+				Add the new point as a corner point with hidden handles
+			</label>
+
+			<span>
+				<code>Shift</code>
+				<i><code>Shape Rotation handle</code></i>
+			</span>
+			<label>
+				Snap rotation degrees to whole numbers
+			</label>
 
 
 			<h3>Tools</h3>
