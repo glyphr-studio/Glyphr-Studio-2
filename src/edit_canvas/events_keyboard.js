@@ -75,7 +75,10 @@ export function handleKeyPress(event) {
 		}
 	}
 
-	// Only allow the following stuff for canvas edit pages
+	// --------------------------------------------------------------
+	// Only the following stuff on Edit Canvas pages
+	// --------------------------------------------------------------
+
 	if (!editor.nav.isOnEditCanvasPage) return;
 	let editMode = getEditMode();
 	// log(`editMode: ${editMode}`);
@@ -213,11 +216,24 @@ export function handleKeyPress(event) {
 			}
 		}
 
-		// v
-		if (key === 'v') clickTool('resize');
+		// Tool selection
+		// v, a - resize
+		if (key === 'v' || key === 'a') clickTool('resize');
 
-		// b
-		if (key === 'b') clickTool('pathEdit');
+		// b, p - path edit
+		if (key === 'b' || key === 'p') clickTool('pathEdit');
+
+		// m, r - new rectangle
+		if (key === 'm' || key === 'r') clickTool('newRectangle');
+
+		// o, q - new oval
+		if (key === 'o' || key === 'q') clickTool('newOval');
+
+		// h, w - new path
+		if (key === 'h' || key === 'w') clickTool('newPath');
+
+		// u, e - path add point
+		if (key === 'u' || key === 'e') clickTool('pathAddPoint');
 	}
 	// log('handleKeyPress', 'end');
 }
