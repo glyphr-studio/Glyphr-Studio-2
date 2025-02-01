@@ -456,23 +456,45 @@ export function getActionData(name) {
 		actionData = [
 			{
 				iconName: 'moveLayerUp',
-				title: `Move Path Up\nMoves the path up in the path layer order.`,
+				title: `Move Shapes Up\nMoves shapes up in the layer order.`,
 				disabled: selectedPaths.length !== 1,
 				onClick: () => {
 					moveLayer('up');
 					const editor = getCurrentProjectEditor();
-					editor.history.addState(`Moved layer up`);
+					editor.history.addState(`Moved layers up`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
+			},
+			{
+				iconName: 'moveLayerTop',
+				title: `Move Shapes to the Top\nMoves shapes to the top of the layer order.`,
+				disabled: selectedPaths.length !== 1,
+				onClick: () => {
+					moveLayer('top');
+					const editor = getCurrentProjectEditor();
+					editor.history.addState(`Moved layers to the top`);
 					editor.publish('currentItem', editor.selectedItem);
 				},
 			},
 			{
 				iconName: 'moveLayerDown',
-				title: `Move Path Down\nMoves the path down in the path layer order.`,
+				title: `Move Shapes Down\nMoves shapes down in the layer order.`,
 				disabled: selectedPaths.length !== 1,
 				onClick: () => {
 					moveLayer('down');
 					const editor = getCurrentProjectEditor();
-					editor.history.addState(`Moved layer down`);
+					editor.history.addState(`Moved layers down`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
+			},
+			{
+				iconName: 'moveLayerBottom',
+				title: `Move Shapes to the Bottom\nMoves shapes to the bottom of the layer order.`,
+				disabled: selectedPaths.length !== 1,
+				onClick: () => {
+					moveLayer('bottom');
+					const editor = getCurrentProjectEditor();
+					editor.history.addState(`Moved layers to the bottom`);
 					editor.publish('currentItem', editor.selectedItem);
 				},
 			},

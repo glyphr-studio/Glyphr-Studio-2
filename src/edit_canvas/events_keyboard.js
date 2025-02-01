@@ -233,17 +233,20 @@ export function handleKeyPress(event) {
 		if (ehd.isCtrlDown) {
 			if (ehd.isShiftDown) {
 				// Ctrl+Shift+] - move shape layer to the top
+				log(`DETECTED: Ctrl+Shift+] - move shape layer to the top`);
 				moveLayer('top');
 				editor.history.addState(`Moved layer to the top`);
 				editor.publish('currentItem', editor.selectedItem);
 			} else {
 				// Ctrl+] - move shape layer up
+				log(`DETECTED: Ctrl+] - move shape layer up`);
 				moveLayer('up');
 				editor.history.addState(`Moved layer up`);
 				editor.publish('currentItem', editor.selectedItem);
 			}
 		} else {
 			// ] - select next shape
+			log(`DETECTED: ] - select next shape`);
 			if (msShapes.length === 0) {
 				if (selectedItem.shapes.length > 0) {
 					msShapes.add(selectedItem.shapes.at(0));
@@ -257,17 +260,20 @@ export function handleKeyPress(event) {
 		if (ehd.isCtrlDown) {
 			if (ehd.isShiftDown) {
 				// Ctrl+Shift+[ - move shape layer to the bottom
+				log(`DETECTED: Ctrl+Shift+[ - move shape layer to the bottom`);
 				moveLayer('bottom');
 				editor.history.addState(`Moved layer to the bottom`);
 				editor.publish('currentItem', editor.selectedItem);
 			} else {
 				// Ctrl+[ - move shape layer down
+				log(`DETECTED: Ctrl+[ - move shape layer down`);
 				moveLayer('down');
 				editor.history.addState(`Moved layer down`);
 				editor.publish('currentItem', editor.selectedItem);
 			}
 		} else {
 			// [ - select previous shape
+			log(`DETECTED: [ - select previous shape`);
 			if (msShapes.length === 0) {
 				if (selectedItem.shapes.length > 0) {
 					msShapes.add(selectedItem.shapes.at(-1));

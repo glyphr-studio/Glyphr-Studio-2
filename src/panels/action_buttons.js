@@ -517,6 +517,30 @@ makeActionButtonIcon.moveLayerUp = () => {
 	return svgWrap(re);
 };
 
+makeActionButtonIcon.moveLayerTop = () => {
+	const re = `
+		<g id="d" data-name="Layer Top / Bottom">
+			<polygon id="e" data-name="bottom" points="10 17.236 2.764 13.618 0 15 10 20 20 15 17.236 13.618 10 17.236" fill="${icon.lightGray}"/>
+			<polygon id="f" data-name="middle" points="10 12.236 2.764 8.618 0 10 10 15 20 10 17.236 8.618 10 12.236" fill="${icon.lightGray}"/>
+			<polygon id="g" data-name="top" points="10 10 0 5 10 0 20 5 10 10" fill="${icon.actionDarkBlue}"/>
+		</g>
+	`;
+
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.moveLayerBottom = () => {
+	const re = `
+		<g id="d" data-name="Layer Top / Bottom">
+			<polygon id="e" data-name="bottom" points="10 17.236 2.764 13.618 0 15 10 20 20 15 17.236 13.618 10 17.236" fill="${icon.actionDarkBlue}"/>
+			<polygon id="f" data-name="middle" points="10 12.236 2.764 8.618 0 10 10 15 20 10 17.236 8.618 10 12.236" fill="${icon.lightGray}"/>
+			<polygon id="g" data-name="top" points="10 10 0 5 10 0 20 5 10 10" fill="${icon.lightGray}"/>
+		</g>
+	`;
+
+	return svgWrap(re);
+};
+
 // Shape align actions
 makeActionButtonIcon.align_shapes = function (edge) {
 	let re = '';
