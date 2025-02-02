@@ -97,7 +97,6 @@ export function handleKeyPress(event) {
 		// Ctrl+Space - Hide UI
 		addHideUIOverlay();
 	} else if (ehd.isSpaceDown) {
-		// && ehd.isMouseOverCanvas) {
 		// Space - Pan
 		cancelDefaultEventActions(event);
 		if (!ehd.isPanning) togglePanOn(event);
@@ -133,28 +132,24 @@ export function handleKeyPress(event) {
 
 	// LeftArrow - Nudge left
 	if (key === 'ArrowLeft') {
-		// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(-1, 0);
 	}
 
 	// RightArrow - Nudge right
 	if (key === 'ArrowRight') {
-		// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(1, 0);
 	}
 
 	// UpArrow - Nudge up
 	if (key === 'ArrowUp') {
-		// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, 1);
 	}
 
 	// DownArrow - Nudge down
 	if (key === 'ArrowDown') {
-		// && ehd.isMouseOverCanvas) {
 		cancelDefaultEventActions(event);
 		nudge(0, -1);
 	}
@@ -186,8 +181,6 @@ export function handleKeyPress(event) {
 		if (key === 'u' || key === 'e') selectTool('pathAddPoint');
 	}
 
-	// Only do the below stuff if the canvas has focus
-	// if (ehd.isMouseOverCanvas) {
 	// Del, Backspace - delete selected items
 	if (key === 'Delete' || key === 'Backspace') {
 		cancelDefaultEventActions(event);
@@ -201,7 +194,6 @@ export function handleKeyPress(event) {
 
 	// Ctrl+A - Select / Ctrl+Shift+A - Deselect All
 	if (ehd.isCtrlDown && key === 'a') {
-		// if (ehd.isMouseOverCanvas) {
 		if (ehd.isShiftDown) {
 			// Clear all selections
 			cancelDefaultEventActions(event);
@@ -252,6 +244,14 @@ export function handleKeyPress(event) {
 					msShapes.add(selectedItem.shapes.at(0));
 					editor.publish('currentItem', editor.selectedItem);
 				}
+			} else {
+				let msShapes = editor.multiSelect.shapes.members;
+				const itemShapes = selectedItem.shapes;
+				msShapes = msShapes.sort((a, b) => itemShapes.indexOf(a) - itemShapes.indexOf(b));
+				const currentIndex = itemShapes.indexOf(msShapes.at(-1));
+				const newIndex = (currentIndex + 1) % itemShapes.length;
+				editor.multiSelect.shapes.clear();
+				editor.multiSelect.shapes.add(itemShapes[newIndex]);
 			}
 		}
 	}
@@ -279,6 +279,15 @@ export function handleKeyPress(event) {
 					msShapes.add(selectedItem.shapes.at(-1));
 					editor.publish('currentItem', editor.selectedItem);
 				}
+			} else {
+				let msShapes = editor.multiSelect.shapes.members;
+				const itemShapes = selectedItem.shapes;
+				msShapes = msShapes.sort((a, b) => itemShapes.indexOf(a) - itemShapes.indexOf(b));
+				const currentIndex = itemShapes.indexOf(msShapes[0]);
+				let newIndex = currentIndex - 1;
+				if (newIndex < 0) newIndex = itemShapes.length - 1;
+				editor.multiSelect.shapes.clear();
+				editor.multiSelect.shapes.add(itemShapes[newIndex]);
 			}
 		}
 	}
@@ -329,7 +338,6 @@ export function handleKeyPress(event) {
 			showToast('Values were rounded for the selected shapes.');
 		}
 	}
-	// }
 	// log('handleKeyPress', 'end');
 }
 
