@@ -7,7 +7,7 @@ import {
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { clickTool, getShapeAtLocation } from './tools.js';
+import { getShapeAtLocation, selectTool } from './tools.js';
 
 /**
 	// ----------------------------------------------------------------
@@ -48,7 +48,7 @@ export class Tool_PathAddPoint {
 			if (eventHandlerData.isCtrlDown) editor.multiSelect.shapes.add(clickedShape);
 			else editor.multiSelect.shapes.select(clickedShape);
 			if (clickedShape.objType === 'ComponentInstance') {
-				clickTool('pathEdit');
+				selectTool('pathEdit');
 				editor.publish('currentComponentInstance');
 			} else {
 				editor.publish('whichShapeIsSelected');

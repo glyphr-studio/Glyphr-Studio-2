@@ -7,7 +7,7 @@ import { isOverFirstPoint } from '../detect_edit_affordances.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { clickTool } from './tools.js';
+import { selectTool } from './tools.js';
 
 /**
 	// ----------------------------------------------------------------
@@ -175,7 +175,7 @@ export class Tool_NewPath {
 export function removeStopCreatingNewPathButton() {
 	if (document.querySelector('#done-creating-path-button')) {
 		stopCreatingNewPath();
-		clickTool('pathEdit');
+		selectTool('pathEdit');
 	}
 }
 

@@ -20,7 +20,7 @@ import {
 	togglePanOn,
 } from './events.js';
 import { handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
-import { clickTool } from './tools/tools.js';
+import { selectTool } from './tools/tools.js';
 
 // --------------------------------------------------------------
 // Key Down
@@ -168,22 +168,22 @@ export function handleKeyPress(event) {
 	// Tool selection
 	if (!ehd.isCtrlDown) {
 		// v, a - resize
-		if (key === 'v' || key === 'a') clickTool('resize');
+		if (key === 'v' || key === 'a') selectTool('resize');
 
 		// b, p - path edit
-		if (key === 'b' || key === 'p') clickTool('pathEdit');
+		if (key === 'b' || key === 'p') selectTool('pathEdit');
 
 		// m, r - new rectangle
-		if (key === 'm' || key === 'r') clickTool('newRectangle');
+		if (key === 'm' || key === 'r') selectTool('newRectangle');
 
 		// o, q - new oval
-		if (key === 'o' || key === 'q') clickTool('newOval');
+		if (key === 'o' || key === 'q') selectTool('newOval');
 
 		// h, w - new path
-		if (key === 'h' || key === 'w') clickTool('newPath');
+		if (key === 'h' || key === 'w') selectTool('newPath');
 
 		// u, e - path add point
-		if (key === 'u' || key === 'e') clickTool('pathAddPoint');
+		if (key === 'u' || key === 'e') selectTool('pathAddPoint');
 	}
 
 	// Only do the below stuff if the canvas has focus
@@ -229,24 +229,24 @@ export function handleKeyPress(event) {
 	// Shape Layer / Selection Actions
 	const msShapes = editor.multiSelect.shapes;
 	const selectedItem = editor.selectedItem;
-	if (key === ']') {
+	if (key === ']' || key === '}') {
 		if (ehd.isCtrlDown) {
-			if (ehd.isShiftDown) {
-				// Ctrl+Shift+] - move shape layer to the top
-				log(`DETECTED: Ctrl+Shift+] - move shape layer to the top`);
+			if (ehd.isShiftDown && key === '}') {
+				// Ctrl+Shift+] (Same as Ctrl+}) - move shape layer to the top
+				// log(`DETECTED: Ctrl+Shift+] - move shape layer to the top`);
 				moveLayer('top');
 				editor.history.addState(`Moved layer to the top`);
 				editor.publish('currentItem', editor.selectedItem);
 			} else {
 				// Ctrl+] - move shape layer up
-				log(`DETECTED: Ctrl+] - move shape layer up`);
+				// log(`DETECTED: Ctrl+] - move shape layer up`);
 				moveLayer('up');
 				editor.history.addState(`Moved layer up`);
 				editor.publish('currentItem', editor.selectedItem);
 			}
 		} else {
 			// ] - select next shape
-			log(`DETECTED: ] - select next shape`);
+			// log(`DETECTED: ] - select next shape`);
 			if (msShapes.length === 0) {
 				if (selectedItem.shapes.length > 0) {
 					msShapes.add(selectedItem.shapes.at(0));
@@ -256,24 +256,24 @@ export function handleKeyPress(event) {
 		}
 	}
 
-	if (key === '[') {
+	if (key === '[' || key === '{') {
 		if (ehd.isCtrlDown) {
-			if (ehd.isShiftDown) {
-				// Ctrl+Shift+[ - move shape layer to the bottom
-				log(`DETECTED: Ctrl+Shift+[ - move shape layer to the bottom`);
+			if (ehd.isShiftDown && key === '{') {
+				// Ctrl+Shift+[ (same as Ctrl+{)- move shape layer to the bottom
+				// log(`DETECTED: Ctrl+Shift+[ - move shape layer to the bottom`);
 				moveLayer('bottom');
 				editor.history.addState(`Moved layer to the bottom`);
 				editor.publish('currentItem', editor.selectedItem);
 			} else {
 				// Ctrl+[ - move shape layer down
-				log(`DETECTED: Ctrl+[ - move shape layer down`);
+				// log(`DETECTED: Ctrl+[ - move shape layer down`);
 				moveLayer('down');
 				editor.history.addState(`Moved layer down`);
 				editor.publish('currentItem', editor.selectedItem);
 			}
 		} else {
 			// [ - select previous shape
-			log(`DETECTED: [ - select previous shape`);
+			// log(`DETECTED: [ - select previous shape`);
 			if (msShapes.length === 0) {
 				if (selectedItem.shapes.length > 0) {
 					msShapes.add(selectedItem.shapes.at(-1));
@@ -308,7 +308,7 @@ export function handleKeyPress(event) {
 	if (ehd.isCtrlDown && key === 'r') {
 		cancelDefaultEventActions(event);
 		if (editMode === 'pen') {
-			log(`Rounding all points`);
+			// log(`Rounding all points`);
 			editor.multiSelect.points.roundAll(0);
 			editor.history.addState(
 				`Rounded path point and handle position values for ${editor.multiSelect.points.length} path point(s)`
@@ -319,7 +319,7 @@ export function handleKeyPress(event) {
 		}
 
 		if (editMode === 'arrow') {
-			log(`Rounding all shapes`);
+			// log(`Rounding all shapes`);
 			editor.multiSelect.shapes.roundAll(0);
 			editor.history.addState(
 				`Rounded path point and handle position values for ${editor.multiSelect.shapes.length} shape(s)`
@@ -348,25 +348,6 @@ export function getKeyFromEvent(event) {
 		https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values
 		'Meta' keys on Mac (Option or Command) are converted to windows 'Control'
 		'Space', 'Plus' and 'Minus' keywords are added for convenience.
-
-	const handledCharacterKeys = ['0', 'a', 'b', 'c', 'e', 'g', 'o', 's', 'q', 'v', 'z'];
-
-	const handledSpecialKeys = [
-		'Alt',
-		'ArrowDown',
-		'ArrowLeft',
-		'ArrowRight',
-		'ArrowUp',
-		'Backspace',
-		'Control',
-		'Delete',
-		'Escape',
-		'Minus',
-		'Plus',
-		'Shift',
-		'Space',
-		'Undo',
-	];
 	*/
 
 	let result = event.key;

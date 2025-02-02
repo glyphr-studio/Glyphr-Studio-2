@@ -33,8 +33,8 @@ export class GlyphrStudioApp {
 				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
 				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
-				currentGlyphID: 'glyph-0x67', // {glyph id} select a glyph
-				currentPanel: false, // {Sentence case panel name} navigate straight to a panel
+				currentGlyphID: 'glyph-0x25', // {glyph id} select a glyph
+				currentPanel: 'Layers', // {Sentence case panel name} navigate straight to a panel
 				currentTool: 'pathEdit', // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
 				autoSave: false, // {bool} trigger auto saves

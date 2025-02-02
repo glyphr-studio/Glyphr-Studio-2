@@ -457,7 +457,6 @@ export function getActionData(name) {
 			{
 				iconName: 'moveLayerUp',
 				title: `Move Shapes Up\nMoves shapes up in the layer order.`,
-				disabled: selectedPaths.length !== 1,
 				onClick: () => {
 					moveLayer('up');
 					const editor = getCurrentProjectEditor();
@@ -468,7 +467,6 @@ export function getActionData(name) {
 			{
 				iconName: 'moveLayerTop',
 				title: `Move Shapes to the Top\nMoves shapes to the top of the layer order.`,
-				disabled: selectedPaths.length !== 1,
 				onClick: () => {
 					moveLayer('top');
 					const editor = getCurrentProjectEditor();
@@ -479,7 +477,6 @@ export function getActionData(name) {
 			{
 				iconName: 'moveLayerDown',
 				title: `Move Shapes Down\nMoves shapes down in the layer order.`,
-				disabled: selectedPaths.length !== 1,
 				onClick: () => {
 					moveLayer('down');
 					const editor = getCurrentProjectEditor();
@@ -490,7 +487,6 @@ export function getActionData(name) {
 			{
 				iconName: 'moveLayerBottom',
 				title: `Move Shapes to the Bottom\nMoves shapes to the bottom of the layer order.`,
-				disabled: selectedPaths.length !== 1,
 				onClick: () => {
 					moveLayer('bottom');
 					const editor = getCurrentProjectEditor();
@@ -866,7 +862,7 @@ export function makeActionsArea_Path(test = false) {
 	}
 
 	// Layer actions
-	if (selectedPaths.length === 1 || test) {
+	if (selectedPaths.length || test) {
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}
 
@@ -889,7 +885,7 @@ export function makeActionsArea_ComponentInstance(test = false) {
 	}
 
 	// Layer actions
-	if (selectedPaths.length === 1 || test) {
+	if (selectedPaths.length || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'path layers'}));
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}
@@ -983,40 +979,68 @@ export function deleteSelectedPoints() {
 // --------------------------------------------------------------
 
 export function moveLayer(direction = 'up') {
+	// log(`moveLayer`, 'start');
 	const editor = getCurrentProjectEditor();
-	const selectedShape = editor.multiSelect.shapes.singleton;
+	let msShapes = editor.multiSelect.shapes.members;
 	const itemShapes = editor.selectedItem.shapes;
-	const currentIndex = itemShapes.indexOf(selectedShape);
-	let tempShape;
+	let tempShape, selectedShape, currentIndex;
+	// log(`direction: ${direction}`);
 
-	if (currentIndex < 0) {
-		log(`No selected layer to move`);
-		return;
+	if (msShapes.length === 0) return;
+	else if (msShapes.length > 1) {
+		if (direction === 'up' || direction === 'down') {
+			msShapes = msShapes.sort((a, b) => itemShapes.indexOf(b) - itemShapes.indexOf(a));
+		} else {
+			msShapes = msShapes.sort((a, b) => itemShapes.indexOf(a) - itemShapes.indexOf(b));
+		}
 	}
 
-	if (direction === 'down') {
-		if (currentIndex > 0 && currentIndex < itemShapes.length) {
-			tempShape = itemShapes[currentIndex - 1];
-			itemShapes[currentIndex - 1] = itemShapes[currentIndex];
-			itemShapes[currentIndex] = tempShape;
+	if (direction === 'up' || direction === 'top') {
+		for (let i = 0; i < msShapes.length; i++) {
+			// log(`iq: ${i}`);
+			selectedShape = msShapes[i];
+			currentIndex = itemShapes.indexOf(selectedShape);
+			if (currentIndex >= 0) moveOneShapeLayer(direction, currentIndex);
+			else log(`Could not find ${i} for ${direction}`);
 		}
-	} else if (direction === 'bottom') {
-		if (currentIndex > 0) {
-			tempShape = itemShapes.splice(currentIndex, 1);
-			itemShapes.unshift(tempShape);
-		}
-	} else if (direction === 'up') {
-		if (currentIndex < itemShapes.length - 1) {
-			tempShape = itemShapes[currentIndex + 1];
-			itemShapes[currentIndex + 1] = itemShapes[currentIndex];
-			itemShapes[currentIndex] = tempShape;
-		}
-	} else if (direction === 'top') {
-		if (currentIndex !== itemShapes.length - 1) {
-			tempShape = itemShapes.splice(currentIndex, 1);
-			itemShapes.push(tempShape);
+	} else {
+		for (let i = msShapes.length - 1; i >= 0; i--) {
+			// log(`iq: ${i}`);
+			selectedShape = msShapes[i];
+			currentIndex = itemShapes.indexOf(selectedShape);
+			if (currentIndex >= 0) moveOneShapeLayer(direction, currentIndex);
+			else log(`Could not find ${i} for ${direction}`);
 		}
 	}
+
+	function moveOneShapeLayer(direction, index) {
+		if (direction === 'down') {
+			if (index > 0 && index < itemShapes.length) {
+				tempShape = itemShapes[index - 1];
+				itemShapes[index - 1] = itemShapes[index];
+				itemShapes[index] = tempShape;
+			}
+		} else if (direction === 'bottom') {
+			if (index > 0) {
+				tempShape = itemShapes[index];
+				itemShapes.splice(index, 1);
+				itemShapes.unshift(tempShape);
+			}
+		} else if (direction === 'up') {
+			if (index < itemShapes.length - 1) {
+				tempShape = itemShapes[index + 1];
+				itemShapes[index + 1] = itemShapes[index];
+				itemShapes[index] = tempShape;
+			}
+		} else if (direction === 'top') {
+			if (index !== itemShapes.length - 1) {
+				tempShape = itemShapes[index];
+				itemShapes.splice(index, 1);
+				itemShapes.push(tempShape);
+			}
+		}
+	}
+	// log(`moveLayer`, 'end');
 }
 
 // --------------------------------------------------------------

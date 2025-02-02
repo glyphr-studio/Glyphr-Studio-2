@@ -87,7 +87,7 @@ export class Tool_Resize {
 				}
 			}
 
-			// 	if (this.clickedPath.objType === 'ComponentInstance') clickTool('pathEdit');
+			// 	if (this.clickedPath.objType === 'ComponentInstance') selectTool('pathEdit');
 			// 	editor.nav.panel = 'Attributes';
 			// }
 
