@@ -6,6 +6,7 @@ import { drawShape } from '../../display_canvas/draw_paths.js';
 import { ComponentInstance } from '../../project_data/component_instance.js';
 import { Path } from '../../project_data/path.js';
 import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
+import { updateCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { stopCreatingNewPath } from './new_path.js';
 
@@ -79,7 +80,7 @@ export function makeEditToolsButtons() {
 			}),
 		});
 
-		newToolButton.addEventListener('click', () => clickTool(buttonName));
+		newToolButton.addEventListener('click', () => selectTool(buttonName));
 
 		if (isSelected) newToolButton.classList.add('editor-page__tool-selected');
 
@@ -159,7 +160,7 @@ export function makeViewToolsButtons() {
 				selected: isSelected,
 			}),
 		});
-		newToolButton.addEventListener('click', () => clickTool(buttonName));
+		newToolButton.addEventListener('click', () => selectTool(buttonName));
 
 		if (isSelected) newToolButton.classList.add('editor-page__tool-selected');
 
@@ -249,8 +250,8 @@ export function makeViewToolsButtons() {
  * Event handler for clicking a tool button
  * @param {String} tool - which tool was clicked
  */
-export function clickTool(tool) {
-	// log('clickTool', 'start');
+export function selectTool(tool) {
+	// log('selectTool', 'start');
 	const editor = getCurrentProjectEditor();
 	let zoomTools = ['zoom1to1', 'zoomEm', 'zoomIn', 'zoomOut'];
 
@@ -262,6 +263,7 @@ export function clickTool(tool) {
 		editor.publish('editCanvasView', editor.view);
 	} else {
 		switchToolTo(tool);
+		updateCursor();
 	}
 
 	if (tool === 'resize') editor.multiSelect.points.clear();
@@ -273,7 +275,7 @@ export function clickTool(tool) {
 		stopCreatingNewPath();
 	}
 
-	// log('clickTool', 'end');
+	// log('selectTool', 'end');
 }
 
 /**
@@ -307,7 +309,7 @@ export function makeKernToolButton() {
 		}),
 	});
 
-	kernToolButton.addEventListener('click', () => clickTool('kern'));
+	kernToolButton.addEventListener('click', () => selectTool('kern'));
 
 	editor.subscribe({
 		topic: 'whichToolIsSelected',

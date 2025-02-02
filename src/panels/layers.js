@@ -145,7 +145,7 @@ function makeActionArea_Layers() {
 
 	let selectedPaths = editor.multiSelect.shapes.members;
 	let totalPaths = editor.selectedItem.shapes.length;
-	if (totalPaths > 1 && selectedPaths.length === 1) {
+	if (totalPaths > 1 && selectedPaths.length) {
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}
 

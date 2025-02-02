@@ -135,7 +135,7 @@ export class Tool_NewBasicPath {
 			ehd.undoQueueHasChanged = false;
 		}
 
-		// clickTool('pathEdit');
+		// selectTool('pathEdit');
 		editor.editCanvas.redraw();
 		// log(`Tool_NewBasicPath.mouseup`, 'end');
 	}
