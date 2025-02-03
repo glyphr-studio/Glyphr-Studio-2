@@ -1,11 +1,11 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { duplicates } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
-import { copyShapesFromTo } from '../panels/actions.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { Path } from '../project_data/path.js';
+import { copyShapesFromTo } from './actions.js';
 /**
 		Cross-item actions
 		By default, items in the Glyph Element hierarchy shouldn't 'reach out' and

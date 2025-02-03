@@ -10,10 +10,10 @@ import {
 	unicodeDiacriticsMapSimple,
 	unicodeLowercaseMap,
 } from '../lib/unicode/unicode_mappings.js';
-import { copyShapesFromTo } from '../panels/actions.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
+import { copyShapesFromTo } from '../project_editor/actions.js';
 import {
 	getComponentInstancesFromRoot,
 	insertComponentInstance,

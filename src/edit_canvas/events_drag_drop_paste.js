@@ -1,7 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outlines/svg_outline_import.js';
-import { copyShapesFromTo } from '../panels/actions.js';
+import { copyShapesFromTo } from '../project_editor/actions.js';
 import { cancelDefaultEventActions } from './events.js';
 
 /**
