@@ -5,13 +5,8 @@ import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
-import {
-	clipboardCopy,
-	clipboardPaste,
-	deleteSelectedPaths,
-	deleteSelectedPoints,
-	moveLayer,
-} from '../panels/actions.js';
+import { clipboardCopy, clipboardPaste, deleteSelectedPaths, deleteSelectedPoints, moveLayer, selectNextPathPoint, selectPreviousPathPoint } from '../project_editor/actions.js';
+
 import { getItemStringAdvanceWidth } from './context_characters.js';
 import {
 	cancelDefaultEventActions,
@@ -133,13 +128,15 @@ export function handleKeyPress(event) {
 	// LeftArrow - Nudge left
 	if (key === 'ArrowLeft') {
 		cancelDefaultEventActions(event);
-		nudge(-1, 0);
+		if(ehd.isCtrlDown) selectPreviousPathPoint();
+		else nudge(-1, 0);
 	}
 
 	// RightArrow - Nudge right
 	if (key === 'ArrowRight') {
 		cancelDefaultEventActions(event);
-		nudge(1, 0);
+		if (ehd.isCtrlDown) selectNextPathPoint();
+		else nudge(1, 0);
 	}
 
 	// UpArrow - Nudge up
@@ -250,8 +247,10 @@ export function handleKeyPress(event) {
 				msShapes = msShapes.sort((a, b) => itemShapes.indexOf(a) - itemShapes.indexOf(b));
 				const currentIndex = itemShapes.indexOf(msShapes.at(-1));
 				const newIndex = (currentIndex + 1) % itemShapes.length;
-				editor.multiSelect.shapes.clear();
-				editor.multiSelect.shapes.add(itemShapes[newIndex]);
+
+				// Select or add to selection
+				if (key === '}') editor.multiSelect.shapes.add(itemShapes[newIndex]);
+				else editor.multiSelect.shapes.select(itemShapes[newIndex]);
 			}
 		}
 	}
@@ -286,8 +285,10 @@ export function handleKeyPress(event) {
 				const currentIndex = itemShapes.indexOf(msShapes[0]);
 				let newIndex = currentIndex - 1;
 				if (newIndex < 0) newIndex = itemShapes.length - 1;
-				editor.multiSelect.shapes.clear();
-				editor.multiSelect.shapes.add(itemShapes[newIndex]);
+
+				// Select or add to selection
+				if (key === '{') editor.multiSelect.shapes.add(itemShapes[newIndex]);
+				else editor.multiSelect.shapes.select(itemShapes[newIndex]);
 			}
 		}
 	}
