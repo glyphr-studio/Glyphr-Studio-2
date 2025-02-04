@@ -502,6 +502,11 @@ export class MultiSelectShapes extends MultiSelect {
 		return false;
 	}
 
+	sort() {
+		const itemShapes = this.members[0].parent.shapes;
+		this.members = this.members.sort((a, b) => itemShapes.indexOf(a) - itemShapes.indexOf(b));
+	}
+
 	combine(operation = 'unite') {
 		// log('MultiSelectShapes.combine', 'start');
 		let success = true;

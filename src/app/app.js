@@ -32,10 +32,10 @@ export class GlyphrStudioApp {
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
+				currentPage: 'Kerning', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: 'glyph-0x25', // {glyph id} select a glyph
-				currentPanel: 'Layers', // {Sentence case panel name} navigate straight to a panel
-				currentTool: 'pathEdit', // {Tool name} select a tool
+				currentPanel: false, // {Sentence case panel name} navigate straight to a panel
+				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
 				autoSave: false, // {bool} trigger auto saves
 				selectFirstShape: false, // {bool} select the first shape
