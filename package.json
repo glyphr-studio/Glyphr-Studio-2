@@ -39,7 +39,7 @@
     "storybook": "^8.1.11",
     "vi-canvas-mock": "^1.0.0",
     "vite": ">=5.4.14",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.1"
   },
   "bugs": {
     "url": "https://github.com/glyphr-studio/Glyphr-Studio-2/issues"
