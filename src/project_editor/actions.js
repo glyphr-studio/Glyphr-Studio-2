@@ -8,6 +8,7 @@ import {
 	showToast,
 } from '../controls/dialogs/dialogs.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
+import { selectTool } from '../edit_canvas/tools/tools.js';
 import { makeSingleLabel } from '../panels/cards.js';
 import { makeAllItemTypeChooserContent } from '../panels/item_chooser.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
@@ -41,7 +42,7 @@ export function deleteSelectedPaths() {
 
 export function deleteSelectedPoints() {
 	const editor = getCurrentProjectEditor();
-	let msPoints = editor.multiSelect.points;
+	const msPoints = editor.multiSelect.points;
 
 	let historyTitle;
 	if (msPoints.length > 1) {
@@ -68,34 +69,102 @@ export function deleteSelectedPoints() {
 
 export function selectNextPathPoint() {
 	const editor = getCurrentProjectEditor();
-	let msPoints = editor.multiSelect.points;
-	if (msPoints.length === 0) return;
-	let path = msPoints.members[0].parent;
-	let thisIndex = msPoints.highestSelectedPointNumber;
-	let nextIndex = path.getNextPointNumber(thisIndex);
-
-	if (eventHandlerData.isShiftDown) {
-		msPoints.add(path.pathPoints[nextIndex]);
-	} else {
-		msPoints.select(path.pathPoints[nextIndex]);
+	const msShapes = editor.multiSelect.shapes;
+	if (msShapes.length === 0) {
+		const selShape = currentItemFindSelectableShapeAt(0, true);
+		if (selShape) msShapes.select(selShape);
+		else return;
 	}
-	editor.publish('whichPathPointIsSelected', path.pathPoints[nextIndex]);
+
+	let selectedPoint;
+	const msPoints = editor.multiSelect.points;
+	if (msPoints.length === 0) {
+		if (msShapes.members[0].objType === 'ComponentInstance') return;
+		selectedPoint = msShapes.members[0].pathPoints[0];
+		msPoints.select(selectedPoint);
+	} else {
+		let path = msPoints.members[0].parent;
+		let thisIndex = msPoints.highestSelectedPointNumber;
+		let nextIndex = path.getNextPointNumber(thisIndex);
+
+		selectedPoint = path.pathPoints[nextIndex];
+		if (eventHandlerData.isShiftDown) {
+			msPoints.add(selectedPoint);
+		} else {
+			msPoints.select(selectedPoint);
+		}
+	}
+	selectTool('pathEdit');
+	editor.publish('whichPathPointIsSelected', selectedPoint);
 }
 
 export function selectPreviousPathPoint() {
 	const editor = getCurrentProjectEditor();
-	let msPoints = editor.multiSelect.points;
-	if (msPoints.length === 0) return;
-	let path = msPoints.members[0].parent;
-	let thisIndex = msPoints.lowestSelectedPointNumber;
-	let previousIndex = path.getPreviousPointNumber(thisIndex);
-
-	if (eventHandlerData.isShiftDown) {
-		msPoints.add(path.pathPoints[previousIndex]);
-	} else {
-		msPoints.select(path.pathPoints[previousIndex]);
+	const msShapes = editor.multiSelect.shapes;
+	if (msShapes.length === 0) {
+		const selShape = currentItemFindSelectableShapeAt(-1, true);
+		if (selShape) msShapes.select(selShape);
+		else return;
 	}
-	editor.publish('whichPathPointIsSelected', path.pathPoints[previousIndex]);
+
+	let selectedPoint;
+	const msPoints = editor.multiSelect.points;
+	if (msPoints.length === 0) {
+		if (msShapes.members[0].objType === 'ComponentInstance') return;
+		let selectedPoint = msShapes.members[0].pathPoints[0];
+		msPoints.select(selectedPoint);
+	} else {
+		let path = msPoints.members[0].parent;
+		let thisIndex = msPoints.lowestSelectedPointNumber;
+		let previousIndex = path.getPreviousPointNumber(thisIndex);
+
+		selectedPoint = path.pathPoints[previousIndex];
+		if (eventHandlerData.isShiftDown) {
+			msPoints.add(selectedPoint);
+		} else {
+			msPoints.select(selectedPoint);
+		}
+	}
+	selectTool('pathEdit');
+	editor.publish('whichPathPointIsSelected', selectedPoint);
+}
+
+export function currentItemFindSelectableShapeAt(index = 0, onlyPaths = false) {
+	log(`currentItemFindSelectableShapeAt`, 'start');
+	const editor = getCurrentProjectEditor();
+	const selectedItem = editor.selectedItem;
+	let foundShape;
+
+	if (index === 0) {
+		for (let i = 0; i < selectedItem.shapes.length; i++) {
+			if (onlyPaths) {
+				if (selectedItem.shapes[i].objType === 'Path') {
+					foundShape = selectedItem.shapes[i];
+					break;
+				}
+			} else {
+				foundShape = selectedItem.shapes[i];
+				break;
+			}
+		}
+	} else if (index === -1) {
+		for (let i = selectedItem.shapes.length - 1; i >= 0; i--) {
+			if (onlyPaths) {
+				if (selectedItem.shapes[i].objType === 'Path') {
+					foundShape = selectedItem.shapes[i];
+					break;
+				}
+			} else {
+				foundShape = selectedItem.shapes[i];
+				break;
+			}
+		}
+	}
+
+	log(`\n⮟foundShape⮟`);
+	log(foundShape);
+	log(`currentItemFindSelectableShapeAt`, 'end');
+	return foundShape || false;
 }
 
 // --------------------------------------------------------------
@@ -313,16 +382,21 @@ export function updateClipboardActionIcons(numberOfClipboardItems = 0) {
 	let pasteButton = document.querySelector('#actionButtonPaste');
 	let clearButton = document.querySelector('#actionButtonClearClipboard');
 
-	if (editor.clipboard) {
-		pasteButton.removeAttribute('disabled');
-		clearButton.removeAttribute('disabled');
-	} else {
-		pasteButton.setAttribute('disabled', 'disabled');
-		clearButton.setAttribute('disabled', 'disabled');
-	}
+	if (pasteButton && clearButton) {
+		if (editor.clipboard) {
+			pasteButton.removeAttribute('disabled');
+			clearButton.removeAttribute('disabled');
+		} else {
+			pasteButton.setAttribute('disabled', 'disabled');
+			clearButton.setAttribute('disabled', 'disabled');
+		}
 
-	pasteButton.setAttribute('title', makeActionButtonPasteTooltip(numberOfClipboardItems));
-	clearButton.setAttribute('title', makeActionButtonClearClipboardTooltip(numberOfClipboardItems));
+		pasteButton.setAttribute('title', makeActionButtonPasteTooltip(numberOfClipboardItems));
+		clearButton.setAttribute(
+			'title',
+			makeActionButtonClearClipboardTooltip(numberOfClipboardItems)
+		);
+	}
 }
 
 export function makeActionButtonPasteTooltip(clipBoardPathCount) {
