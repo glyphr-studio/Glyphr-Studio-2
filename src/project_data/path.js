@@ -599,17 +599,23 @@ export class Path extends GlyphElement {
 	 */
 	updateShapePosition(dx = 0, dy = 0) {
 		// log('Path.updateShapePosition', 'start');
-
+		// log(`\n⮟this⮟`);
+		// log(this);
 		dx = parseNumber(dx);
 		dy = parseNumber(dy);
 
 		// log(`dx:${dx}\tdy:${dy}`);
+		// log(`this.pathPoints.length: ${this.pathPoints.length}`);
 		for (let d = 0; d < this.pathPoints.length; d++) {
 			const pp = this.pathPoints[d];
-			// log('-------------------- pathPoint #' + d);
-			// log(`BEFORE pp.p.x: ${pp.p.x}`);
-			pp.updatePathPointPosition('p', dx, dy);
-			// log(`AFTERS pp.p.x: ${pp.p.x}`);
+			if (pp && pp.p) {
+				// log(`\n⮟pp⮟`);
+				// log(pp);
+				// log('-------------------- pathPoint #' + d);
+				// log(`BEFORE pp.p.x: ${pp.p.x}`);
+				pp.updatePathPointPosition('p', dx, dy);
+				// log(`AFTERS pp.p.x: ${pp.p.x}`);
+			}
 		}
 		// We need this here even though .changed()
 		// should have propagated from the PathPoint

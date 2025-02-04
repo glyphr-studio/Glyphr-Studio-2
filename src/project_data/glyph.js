@@ -446,6 +446,7 @@ export class Glyph extends GlyphElement {
 			this._shapes.push(new ComponentInstance(newShape));
 		} else {
 			// log(`hydrating path - name: ${newShape.name}`);
+			if(newShape.pathPoints.length === 0) return; // Don't import paths with no PathPoints
 			newShape.parent = this;
 			this._shapes.push(new Path(newShape));
 		}

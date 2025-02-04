@@ -136,7 +136,10 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 		// delete shape.__ID;
 		// delete shape.parent;
 		if (shape.objType === 'Path') {
-			newPaths.push(new Path(shape));
+			if (shape.pathPoints.length) newPaths.push(new Path(shape));
+			else console.warn(
+				'Path was found with empty PathPoints array. [cross_item_actions.js makeGlyphWithResolvedLinks]'
+			);
 		} else if (shape.objType === 'ComponentInstance') {
 			const transformedGlyph = shape.transformedGlyph;
 			if (transformedGlyph && transformedGlyph.shapes) {
