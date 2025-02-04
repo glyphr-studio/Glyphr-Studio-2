@@ -2,6 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { makeElement } from '../common/dom.js';
 import { getParentRange } from '../lib/unicode/unicode_blocks.js';
+import { makeCard_itemNavigation } from './card_glyph.js';
 
 // --------------------------------------------------------------
 // Quality Checks panel
@@ -19,7 +20,6 @@ export function makePanel_CharacterInfo() {
 	let base = ('' + decToHex(range.begin)).substring(2);
 	while (base.length < 4) base = '0' + base;
 	if (base === '0020') base = '0000';
-
 
 	let charInfo = makeElement({
 		className: 'panel__card char-info',
@@ -79,5 +79,5 @@ export function makePanel_CharacterInfo() {
 	});
 
 	// log(`makePanel_CharacterInfo`, 'end');
-	return [charInfo, rangeInfo];
+	return [charInfo, rangeInfo, makeCard_itemNavigation(editor.selectedItem)];
 }

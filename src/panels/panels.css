@@ -57,12 +57,28 @@
 	margin: 0px 0px 0px 10px;
 }
 
+.button-left div {
+	display: inline-block;
+	width: 18px;
+	text-align: left;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
 .button-right svg {
 	margin-right: -4px;
 }
 
 .button-right span {
 	margin: 0px 10px 0px 0px;
+}
+
+.button-right div {
+	display: inline-block;
+	width: 18px;
+	text-align: right;
+	font-size: 1.2em;
+	font-weight: bold;
 }
 
 .thumbnail-button:hover svg,

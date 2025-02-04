@@ -2,6 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
 import { addChildActions, getActionData } from './actions.js';
+import { makeCard_itemNavigation } from './card_glyph.js';
 import { panelsEventHandlerData } from './panel_events.js';
 import { refreshPanel } from './panels.js';
 
@@ -126,7 +127,7 @@ export function makePanel_Layers() {
 	});
 
 	// log(`makePanel_Layers`, 'end');
-	return [rowsArea, makeActionArea_Layers()];
+	return [rowsArea, makeActionArea_Layers(), makeCard_itemNavigation(editor.selectedItem)];
 }
 
 function makeActionArea_Layers() {

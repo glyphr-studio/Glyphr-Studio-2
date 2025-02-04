@@ -5,7 +5,8 @@ import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
-import { clipboardCopy, clipboardPaste, deleteSelectedPaths, deleteSelectedPoints, moveLayer, selectNextPathPoint, selectPreviousPathPoint } from '../project_editor/actions.js';
+import { getAdjacentItem } from '../panels/card_glyph.js';
+import { clipboardCopy, clipboardPaste, currentItemFindSelectableShapeAt, deleteSelectedPaths, deleteSelectedPoints, moveLayer, selectNextPathPoint, selectPreviousPathPoint } from '../project_editor/actions.js';
 
 import { getItemStringAdvanceWidth } from './context_characters.js';
 import {
@@ -151,6 +152,26 @@ export function handleKeyPress(event) {
 		nudge(0, -1);
 	}
 
+	// Ctrl+Period - Navigate to Next Item
+	if (key === '.' && ehd.isCtrlDown) {
+		// log(`Detected Next Item`);
+		cancelDefaultEventActions(event);
+		const item = getAdjacentItem(editor.selectedItem, 1);
+		const itemName = editor.project.getItemName(item.id, true);
+		editor.selectedItemID = item.id;
+		editor.history.addState(`Navigated to ${itemName}`);
+	}
+
+	// Ctrl+Comma - Navigate to Previous Item
+	if (key === ',' && ehd.isCtrlDown) {
+		// log(`Detected Previous Item`);
+		cancelDefaultEventActions(event);
+		const item = getAdjacentItem(editor.selectedItem, -1);
+		const itemName = editor.project.getItemName(item.id, true);
+		editor.selectedItemID = item.id;
+		editor.history.addState(`Navigated to ${itemName}`);
+	}
+
 	if (editor.nav.page === 'Kerning') return;
 	// --------------------------------------------------------------
 	// Only stuff on Edit Canvas / Non Kerning pages
@@ -236,15 +257,16 @@ export function handleKeyPress(event) {
 		} else {
 			// ] - select next shape
 			// log(`DETECTED: ] - select next shape`);
+			editor.multiSelect.points.clear();
 			if (msShapes.length === 0) {
-				if (selectedItem.shapes.length > 0) {
-					msShapes.add(selectedItem.shapes.at(0));
-					editor.publish('currentItem', editor.selectedItem);
+				const selShape = currentItemFindSelectableShapeAt(0, false);
+				if(selShape) {
+					editor.multiSelect.shapes.select(selShape);
 				}
 			} else {
 				let msShapes = editor.multiSelect.shapes.members;
 				const itemShapes = selectedItem.shapes;
-				msShapes = msShapes.sort((a, b) => itemShapes.indexOf(a) - itemShapes.indexOf(b));
+				msShapes.sort();
 				const currentIndex = itemShapes.indexOf(msShapes.at(-1));
 				const newIndex = (currentIndex + 1) % itemShapes.length;
 
@@ -273,15 +295,16 @@ export function handleKeyPress(event) {
 		} else {
 			// [ - select previous shape
 			// log(`DETECTED: [ - select previous shape`);
+			editor.multiSelect.points.clear();
 			if (msShapes.length === 0) {
-				if (selectedItem.shapes.length > 0) {
-					msShapes.add(selectedItem.shapes.at(-1));
-					editor.publish('currentItem', editor.selectedItem);
+				const selShape = currentItemFindSelectableShapeAt(-1, false);
+				if(selShape) {
+					editor.multiSelect.shapes.select(selShape);
 				}
 			} else {
 				let msShapes = editor.multiSelect.shapes.members;
 				const itemShapes = selectedItem.shapes;
-				msShapes = msShapes.sort((a, b) => itemShapes.indexOf(a) - itemShapes.indexOf(b));
+				msShapes.sort();
 				const currentIndex = itemShapes.indexOf(msShapes[0]);
 				let newIndex = currentIndex - 1;
 				if (newIndex < 0) newIndex = itemShapes.length - 1;

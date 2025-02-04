@@ -1,8 +1,9 @@
-import { getCurrentProjectEditor } from '../app/main';
-import { makeElement } from '../common/dom';
-import { countItems } from '../common/functions';
-import { showAddEditKernGroupDialog } from '../pages/kerning';
-import { makeCard_kernGroup, makeCard_otherKernGroupActions } from './card_kern_group';
+import { getCurrentProjectEditor } from '../app/main.js';
+import { makeElement } from '../common/dom.js';
+import { countItems } from '../common/functions.js';
+import { showAddEditKernGroupDialog } from '../pages/kerning.js';
+import { makeCard_itemNavigation } from './card_glyph.js';
+import { makeCard_kernGroup, makeCard_otherKernGroupActions } from './card_kern_group.js';
 
 // --------------------------------------------------------------
 // Kern page attributes panel
@@ -17,13 +18,14 @@ export function makePanel_KernGroupAttributes() {
 	const createButton = makeElement({
 		tag: 'fancy-button',
 		content: 'Create a new kern group',
-		attributes: { secondary: '' },
+		attributes: { secondary: '', style: 'margin-top: 6px;' },
 		onClick: () => showAddEditKernGroupDialog(false),
 	});
-	
+
 	return [
 		makeCard_kernGroup(editor.selectedKernGroup),
 		makeCard_otherKernGroupActions(),
-		createButton
+		createButton,
+		makeCard_itemNavigation(editor.selectedItem)
 	];
 }
