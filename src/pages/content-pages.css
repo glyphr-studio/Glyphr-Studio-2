@@ -139,6 +139,11 @@
 	margin: 5px 0px 6px 0px;
 }
 
+.keyboardShortcutTable svg {
+	position: relative;
+	top: 5px;
+}
+
 code,
 .keyboardShortcutTable code {
 	font-family: monospace;
@@ -153,8 +158,25 @@ code,
 	text-align: center;
 }
 
+.keyboardShortcutTable code,
+.keyboardShortcutTable i {
+	height: 28px;
+	padding-top: 4px;
+	padding-bottom: 0px;
+}
+
 code.arrow-key {
 	font-weight: bold;
+	position: relative;
+	top: 3px;
+}
+
+.keyboardShortcutTable img {
+	display: inline-block;
+	width: 20px;
+	margin: 0px 8px 0px 5px;
+	position: relative;
+	top: 7px;
 }
 
 span.spacer {
