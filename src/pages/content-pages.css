@@ -157,6 +157,12 @@ code.arrow-key {
 	font-weight: bold;
 }
 
+span.spacer {
+	width: 30px;
+	text-align: center;
+	display: inline-block;
+}
+
 /* Settings page */
 
 .settings-table {

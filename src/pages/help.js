@@ -1,5 +1,5 @@
 import { emailLink } from '../app/app.js';
-import { makeElement } from '../common/dom.js';
+import { makeElement, textToNode } from '../common/dom.js';
 import { TabControl } from '../controls/tabs/tab_control.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
@@ -179,234 +179,95 @@ function makeHelpOverview() {
  * @returns {Element}
  */
 export function makeKeyboardShortcutReference() {
-	let content = makeElement({
-		innerHTML: `
-		<div class="keyboardShortcutTable">
+	let table = makeElement({ className: 'keyboardShortcutTable' });
 
-			<h3>Selecting and navigating</h3>
+	function makeOneRow(combo, description, options = {}) {
+		let row = `<span>`;
+		combo.forEach((key, i) => {
+			if (options.spacer && i > 0) row += `<span class="spacer">${options.spacer}</span>`;
+			if (options.classes && options.classes[i]) {
+				row += `<code class="${options.classes[i]}">${key}</code>`;
+			} else {
+				row += `<code>${key}</code>`;
+			}
+		});
+		row += `</span><label>${description}</label>`;
 
-			<span>
-				<code>Ctrl</code> <code>.</code>
-			</span>
-			<label>Navigate to the next Item (Character, Ligature, Component, or Kern Group)</label>
+		table.innerHTML += row;
+	}
 
-			<span>
-				<code>Ctrl</code> <code>,</code>
-			</span>
-			<label>Navigate to the previous Item (Character, Ligature, Component, or Kern Group)</label>
+	table.appendChild(textToNode('<h3>Selecting and navigating</h3>'));
+	makeOneRow(
+		['Ctrl', '.'],
+		`Navigate to the next Item (Character, Ligature, Component, or Kern Group)`
+	);
+	makeOneRow(
+		['Ctrl', ','],
+		`Navigate to the previous Item (Character, Ligature, Component, or Kern Group)`
+	);
+	makeOneRow(['Ctrl', 'A'], `Resize (Arrow) tool: Select all shapes`);
+	makeOneRow(['Ctrl', 'A'], `Path Edit (Pen) tool: Select all path points`);
+	makeOneRow(['Ctrl', 'Shift', 'A'], `Clear all shape and path point selections`);
+	makeOneRow([']'], `Select next shape`);
+	makeOneRow(['['], `Select previous shape`);
+	makeOneRow(
+		['Ctrl', '<i>Click an Edit Canvas shape</i>'],
+		`Toggle selection for that shape (multi-select)`
+	);
+	makeOneRow(
+		['Ctrl', '<i>Click a Layers Panel shape</i>'],
+		`Toggle selection for that shape (multi-select)`
+	);
+	makeOneRow(['Ctrl', '➝'], `Select the next Path Point`, { classes: [false, 'arrow-key'] });
+	makeOneRow(['Ctrl', '⭠'], `Select the previous Path Point`, { classes: [false, 'arrow-key'] });
 
-			<span>
-				<code>Ctrl</code><code>A</code>
-			</span>
-			<label>
-				Resize (Arrow) tool: Select all shapes
-				<br>
-				Path Edit (Pen) tool: Select all path points
-			</label>
+	table.appendChild(textToNode('<h3>View</h3>'));
+	makeOneRow(['Space', 'Scroll wheel click'], `Toggle the pan tool`, { spacer: 'or' });
+	makeOneRow(['Ctrl', 'Scroll wheel'], `Zoom in and out`);
+	makeOneRow(['Ctrl', '+'], `Zoom in`);
+	makeOneRow(['Ctrl', '-'], `Zoom out`);
+	makeOneRow(['Ctrl', '0'], `Auto-fit glyph on the screen`);
 
-			<span>
-				<code>Ctrl</code><code>Shift</code><code>A</code>
-			</span>
-			<label>
-				Clear all shape and path point selections
-			</label>
-
-			<span>
-				<code>]</code>
-			</span>
-			<label>Select next shape</label>
-
-			<span>
-				<code>[</code>
-			</span>
-			<label>Select previous shape</label>
-
-			<span>
-			<code>Ctrl</code><i><code>Click an Edit Canvas shape</code></i>
-			</span>
-			<label>
-				Toggle selection for that shape (multi-select)
-			</label>
-
-			<span>
-				<code>Ctrl</code><i><code>Click a Layers Panel shape</code></i>
-			</span>
-			<label>
-				Toggle selection for that shape (multi-select)
-			</label>
-
-			<span>
-				<code>Ctrl</code> <code class="arrow-key">➝</code>
-			</span>
-			<label>Select the next Path Point</label>
-
-			<span>
-				<code>Ctrl</code> <code class="arrow-key">⭠</code>
-			</span>
-			<label>Select the previous Path Point</label>
-
-			<h3>View</h3>
-
-			<span>
-				<code>Space</code> or<br>
-				<code>Scroll wheel click</code>
-			</span>
-			<label>
-				Toggle the pan tool
-			</label>
-
-			<span>
-				<code>Ctrl</code><code>Scroll wheel</code>
-			</span>
-			<label>
-				Zoom in and out
-			</label>
-
-			<span>
-				<code>Ctrl</code><code>+</code>
-			</span>
-			<label>
-				Zoom in
-			</label>
-
-			<span>
-				<code>Ctrl</code><code>-</code>
-			</span>
-			<label>
-				Zoom out
-			</label>
-
-			<span>
-				<code>Ctrl</code><code>0</code>
-			</span>
-			<label>
-				Auto-fit glyph on the screen
-			</label>
-
-
-			<h3>Editing</h3>
-			<span>
-				<code>Ctrl</code><code>C</code>
-			</span>
-			<label>
-				Copy the selected shapes
-			</label>
-
-			<span>
-				<code>Ctrl</code><code>V</code>
-			</span>
-			<label>
-				Paste the selected shapes
-			</label>
-
-			<span>
-				<code>Ctrl</code> <code>]</code>
-			</span>
-			<label>Move shape up</label>
-
-			<span>
-				<code>Ctrl</code> <code>[</code>
-			</span>
-			<label>Move shape down</label>
-
-			<span>
-				<code>Ctrl</code> <code>Shift</code> <code>]</code>
-			</span>
-			<label>Move shape to the top</label>
-
-			<span>
-				<code>Ctrl</code> <code>Shift</code> <code>[</code>
-			</span>
-			<label>Move shape to the bottom</label>
-
-			<span>
-				<code>Delete</code> or<br>
-				<code>Backspace</code>
-			</span>
-			<label>
-				Delete the selected shapes or path points
-			</label>
-
-			<span>
-				<code class="arrow-key">⭠</code>
-				<code class="arrow-key">⭡</code>
-				<code class="arrow-key">➝</code>
-				<code class="arrow-key">⭣</code>
-			</span>
-			<label>
-				Nudge the selected shape or path point <span class="number">1em</span><br>
-				Press <code>Shift</code> to nudge <span class="number">10em</span>
-			</label>
-
-			<span>
-				<code>Ctrl</code> <code>R</code>
-			</span>
-			<label>
-				Round values for the current selection<br>
-				(Whole Shapes for the Resize tool, Path Points + Handles for the Path Edit tool)
-			</label>
-
-			<span>
-				<code>Shift</code>
-				<i><code>New Path tool</code></i> or<br>
-				<code>Shift</code>
-				<i><code>Path Add Point tool</code></i>
-			</span>
-			<label>
-				Snap the new point's coordinates to whole numbers
-			</label>
-
-			<span>
-				<code>Ctrl</code>
-				<i><code>Path Add Point tool</code></i>
-			</span>
-			<label>
-				Add the new point as a corner point with hidden handles
-			</label>
-
-			<span>
-				<code>Shift</code>
-				<i><code>Shape Rotation handle</code></i>
-			</span>
-			<label>
-				Snap rotation degrees to whole numbers
-			</label>
-
-
-			<h3>Tools</h3>
-			<span>
-				<code>B</code> or <code>P</code>
-			</span>
-			<label>Select the Path Edit (Pen) tool</label>
-
-			<span>
-				<code>V</code> or <code>A</code>
-			</span>
-			<label>Select the Resize (Arrow) tool</label>
-
-			<span>
-				<code>M</code>
-			</span>
-			<label>Select the New Rectangle tool</label>
-
-			<span>
-				<code>O</code>
-			</span>
-			<label>Select the New Oval tool</label>
-
-			<span>
-				<code>H</code>
-			</span>
-			<label>Select the New Path tool</label>
-
-			<span>
-				<code>U</code>
-			</span>
-			<label>Select the Path Add Point tool</label>
-
-		</div>
-	`,
+	table.appendChild(textToNode('<h3>Editing</h3>'));
+	makeOneRow(['Ctrl', 'C'], `Copy the selected shapes`);
+	makeOneRow(['Ctrl', 'V'], `Paste the selected shapes`);
+	makeOneRow(['Ctrl', ']'], `Move shape up`);
+	makeOneRow(['Ctrl', '['], `Move shape down`);
+	makeOneRow(['Ctrl', 'Shift', ']'], `Move shape to the top`);
+	makeOneRow(['Ctrl', 'Shift', '['], `Move shape to the bottom`);
+	makeOneRow(['Delete', 'Backspace'], `Delete the selected shapes or path points`, {
+		spacer: 'or',
 	});
+	makeOneRow(
+		['⭠', '⭡', '➝', '⭣'],
+		`Nudge the selected shape or path point <span class="number">1em</span><br>Press <code>Shift</code> to nudge <span class="number">10em`,
+		{ classes: ['arrow-key', 'arrow-key', 'arrow-key', 'arrow-key'] }
+	);
+	makeOneRow(
+		['Ctrl', 'R'],
+		'Round values for the current selection<br>(Whole Shapes for the Resize tool, Path Points + Handles for the Path Edit tool)'
+	);
+	makeOneRow(
+		['Shift', '<i>New Path tool</i>'],
+		`Snap the new point's coordinates to whole numbers`
+	);
+	makeOneRow(
+		['Shift', '<i>Path Add Point tool</i>'],
+		`Snap the new point's coordinates to whole numbers`
+	);
+	makeOneRow(
+		['Ctrl', '<i>Path Add Point tool</i>'],
+		'Add the new point as a corner point with hidden handles'
+	);
+	makeOneRow(['Shift', '<i>Shape Rotation handle</i>'], 'Snap rotation degrees to whole numbers');
 
-	return content;
+	table.appendChild(textToNode('<h3>Tools</h3>'));
+	makeOneRow(['B', 'P'], 'Select the Path Edit (Pen) tool', { spacer: 'or' });
+	makeOneRow(['V', 'A'], 'Select the Resize (Arrow) tool', { spacer: 'or' });
+	makeOneRow(['M'], 'Select the New Rectangle tool');
+	makeOneRow(['O'], 'Select the New Oval tool');
+	makeOneRow(['H'], 'Select the New Path tool');
+	makeOneRow(['U'], 'Select the Path Add Point tool');
+
+	return table;
 }

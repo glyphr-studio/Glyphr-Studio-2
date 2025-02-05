@@ -18,14 +18,14 @@ export function makePanel_KernGroupAttributes() {
 	const createButton = makeElement({
 		tag: 'fancy-button',
 		content: 'Create a new kern group',
-		attributes: { secondary: '', style: 'margin-top: 6px;' },
+		attributes: { secondary: '' },
 		onClick: () => showAddEditKernGroupDialog(false),
 	});
 
 	return [
 		makeCard_kernGroup(editor.selectedKernGroup),
 		makeCard_otherKernGroupActions(),
+		makeCard_itemNavigation(editor.selectedItem),
 		createButton,
-		makeCard_itemNavigation(editor.selectedItem)
 	];
 }
