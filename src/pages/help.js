@@ -212,9 +212,15 @@ export function makeKeyboardShortcutReference() {
 		}
 
 		table.innerHTML += row;
+		makeOneMarkdownRow(combo, description, options);
 	}
 
-	table.appendChild(textToNode('<h3>Selecting and navigating</h3>'));
+	function makeOneHeader(text) {
+		table.appendChild(textToNode(`<h3>${text}</h3>`));
+		makeOneMarkdownHeader(text);
+	}
+
+	makeOneHeader('Selecting and navigating');
 	makeOneRow(
 		['Ctrl', '.'],
 		`Navigate to the next Item (Character, Ligature, Component, or Kern Group)`
@@ -251,14 +257,14 @@ export function makeKeyboardShortcutReference() {
 		{ toolIconAction: 'pathEdit' }
 	);
 
-	table.appendChild(textToNode('<h3>View</h3>'));
+	makeOneHeader('View');
 	makeOneRow(['Space', 'Scroll wheel click'], `Toggle the pan tool`, { spacer: 'or' });
 	makeOneRow(['Ctrl', 'Scroll wheel'], `Zoom in and out`);
 	makeOneRow(['Ctrl', '+'], `Zoom in`);
 	makeOneRow(['Ctrl', '-'], `Zoom out`);
 	makeOneRow(['Ctrl', '0'], `Auto-fit glyph on the screen`);
 
-	table.appendChild(textToNode('<h3>Editing</h3>'));
+	makeOneHeader('Editing');
 	makeOneRow(['Ctrl', 'C'], `Copy the selected shapes`);
 	makeOneRow(['Ctrl', 'V'], `Paste the selected shapes`);
 	makeOneRow(['Ctrl', ']'], `Move shape up`);
@@ -292,7 +298,7 @@ export function makeKeyboardShortcutReference() {
 		{ toolIconAction: 'rotate' }
 	);
 
-	table.appendChild(textToNode('<h3>Tools</h3>'));
+	makeOneHeader('Tools');
 	makeOneRow(['B', 'P'], 'Select the Path Edit (Pen) tool', {
 		spacer: 'or',
 		toolIconDescription: 'pathEdit',
@@ -318,5 +324,43 @@ export function makeKeyboardShortcutReference() {
 		toolIconDescription: 'pathAddPoint',
 	});
 
+	console.log(markdownOutput);
 	return table;
+}
+
+let markdownOutput = '';
+function makeOneMarkdownRow(combo, description, options = {}) {
+	let row = `| `;
+	combo.forEach((key, i) => {
+		if (options.spacer && i > 0) row += ` ${options.spacer} `;
+		if (i === 1 && options.toolIconAction) {
+			if (options.toolIconAction === 'rotate') {
+				row += `<img src='${cursors.rotate.substring(5, cursors.rotate.length - 19)}'/>`;
+			} else {
+				row += makeToolButtonSVG({ name: options.toolIconAction });
+			}
+			row += `*${key}*`;
+		} else {
+			row += `\`${key}\``;
+		}
+	});
+	row += ` | `;
+
+	if (options.toolIconDescription) {
+		row += makeToolButtonSVG({ name: options.toolIconDescription });
+		row += ' ';
+		row += description;
+	} else {
+		row += ` ${description}`;
+	}
+
+	row += ` |\n`;
+
+	markdownOutput += row;
+}
+
+function makeOneMarkdownHeader(text, first = false) {
+	if (!first) markdownOutput += `\n\n`;
+	markdownOutput += `### ${text}\n`
+	markdownOutput += `| Key combination | Description |\n| --- | --- |\n`;
 }
