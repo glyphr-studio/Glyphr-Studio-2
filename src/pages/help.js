@@ -181,6 +181,7 @@ function makeHelpOverview() {
  * @returns {Element}
  */
 export function makeKeyboardShortcutReference() {
+	const outputMarkdownToConsole = false;
 	let table = makeElement({ className: 'keyboardShortcutTable' });
 
 	function makeOneRow(combo, description, options = {}) {
@@ -212,13 +213,21 @@ export function makeKeyboardShortcutReference() {
 		}
 
 		table.innerHTML += row;
-		makeOneMarkdownRow(combo, description, options);
+		if(outputMarkdownToConsole) makeOneMarkdownRow(combo, description, options);
 	}
 
 	function makeOneHeader(text) {
 		table.appendChild(textToNode(`<h3>${text}</h3>`));
-		makeOneMarkdownHeader(text);
+		if(outputMarkdownToConsole) makeOneMarkdownHeader(text);
 	}
+
+	makeOneHeader('Project actions');
+	makeOneRow(['Ctrl', 'S'], 'Save a Glyphr Studio Project File (.gs2)');
+	makeOneRow(['Ctrl', 'E'], 'Export an OTF Font (.otf)');
+	makeOneRow(['Ctrl', 'G'], 'Export an SVG Font (.svg)');
+	makeOneRow(['Ctrl', 'G'], 'Export an SVG Font (.svg)');
+	makeOneRow(['Ctrl', 'O'], 'Open a project in a new tab');
+
 
 	makeOneHeader('Selecting and navigating');
 	makeOneRow(
@@ -263,10 +272,12 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(['Ctrl', '+'], `Zoom in`);
 	makeOneRow(['Ctrl', '-'], `Zoom out`);
 	makeOneRow(['Ctrl', '0'], `Auto-fit glyph on the screen`);
+	makeOneRow(['Ctrl', 'Space'], `Toggle distraction free preview mode`);
+
 
 	makeOneHeader('Editing');
 	makeOneRow(['Ctrl', 'C'], `Copy the selected shapes`);
-	makeOneRow(['Ctrl', 'V'], `Paste the selected shapes`);
+	makeOneRow(['Ctrl', 'V'], `Paste the selected shapes (Glyphr Studio Clipboard)<br>Paste to import copied SVG Code (Operating System Clipboard)`);
 	makeOneRow(['Ctrl', ']'], `Move shape up`);
 	makeOneRow(['Ctrl', '['], `Move shape down`);
 	makeOneRow(['Ctrl', 'Shift', ']'], `Move shape to the top`);
@@ -276,7 +287,7 @@ export function makeKeyboardShortcutReference() {
 	});
 	makeOneRow(
 		['⭠', '⭡', '➝', '⭣'],
-		`Nudge the selected shape or path point <span class="number">1em</span><br>Press <code>Shift</code> to nudge <span class="number">10em`,
+		`Nudge the selected shape or path point <span class="number">1em</span><br>Press <code>Shift</code> to nudge <span class="number">10em</span>`,
 		{ classes: ['arrow-key', 'arrow-key', 'arrow-key', 'arrow-key'] }
 	);
 	makeOneRow(
@@ -292,11 +303,10 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(['Ctrl', 'Click'], 'Add the new point as a corner point with hidden handles', {
 		toolIconAction: 'pathAddPoint',
 	});
-	makeOneRow(
-		['Shift', 'Shape Rotation handle'],
-		'Snap rotation degrees to whole numbers',
-		{ toolIconAction: 'rotate' }
-	);
+	makeOneRow(['Shift', 'Shape Rotation handle'], 'Snap rotation degrees to whole numbers', {
+		toolIconAction: 'rotate',
+	});
+	makeOneRow(['Esc'], `Close all dialogs`);
 
 	makeOneHeader('Tools');
 	makeOneRow(['B', 'P'], 'Select the Path Edit (Pen) tool', {
@@ -324,7 +334,7 @@ export function makeKeyboardShortcutReference() {
 		toolIconDescription: 'pathAddPoint',
 	});
 
-	console.log(markdownOutput);
+	if(outputMarkdownToConsole) console.log(markdownOutput);
 	return table;
 }
 
@@ -334,26 +344,14 @@ function makeOneMarkdownRow(combo, description, options = {}) {
 	combo.forEach((key, i) => {
 		if (options.spacer && i > 0) row += ` ${options.spacer} `;
 		if (i === 1 && options.toolIconAction) {
-			if (options.toolIconAction === 'rotate') {
-				row += `<img src='${cursors.rotate.substring(5, cursors.rotate.length - 19)}'/>`;
-			} else {
-				row += makeToolButtonSVG({ name: options.toolIconAction });
-			}
-			row += `*${key}*`;
+			row += `*\`${key}\`* `;
 		} else {
-			row += `\`${key}\``;
+			row += `\` ${key} \` `;
 		}
 	});
 	row += ` | `;
-
-	if (options.toolIconDescription) {
-		row += makeToolButtonSVG({ name: options.toolIconDescription });
-		row += ' ';
-		row += description;
-	} else {
-		row += ` ${description}`;
-	}
-
+	if(options.toolIconAction) row += `[${toolNames[options.toolIconAction]}] `;
+	row += ` ${description}`;
 	row += ` |\n`;
 
 	markdownOutput += row;
@@ -361,6 +359,14 @@ function makeOneMarkdownRow(combo, description, options = {}) {
 
 function makeOneMarkdownHeader(text, first = false) {
 	if (!first) markdownOutput += `\n\n`;
-	markdownOutput += `### ${text}\n`
+	markdownOutput += `### ${text}\n`;
 	markdownOutput += `| Key combination | Description |\n| --- | --- |\n`;
+}
+
+const toolNames = {
+	'resize' : 'Resize (Arrow) Tool',
+	'pathEdit' : 'Path Edit (Pen) Tool',
+	'newPath': 'New Path Tool',
+	'pathAddPoint': 'Path Add Point Tool',
+	'rotate': 'Shape Rotate Handle',
 }
