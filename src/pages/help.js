@@ -1,6 +1,8 @@
 import { emailLink } from '../app/app.js';
 import { makeElement, textToNode } from '../common/dom.js';
 import { TabControl } from '../controls/tabs/tab_control.js';
+import { cursors } from '../edit_canvas/cursors.js';
+import { makeToolButtonSVG } from '../edit_canvas/tools/tools.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
@@ -187,11 +189,27 @@ export function makeKeyboardShortcutReference() {
 			if (options.spacer && i > 0) row += `<span class="spacer">${options.spacer}</span>`;
 			if (options.classes && options.classes[i]) {
 				row += `<code class="${options.classes[i]}">${key}</code>`;
+			} else if (i === 1 && options.toolIconAction) {
+				if (options.toolIconAction === 'rotate') {
+					row += `<img src='${cursors.rotate.substring(5, cursors.rotate.length - 19)}'/>`;
+				} else {
+					row += makeToolButtonSVG({ name: options.toolIconAction });
+				}
+				row += `<i>${key}</i>`;
 			} else {
 				row += `<code>${key}</code>`;
 			}
 		});
-		row += `</span><label>${description}</label>`;
+		row += `</span>`;
+
+		if (options.toolIconDescription) {
+			row += `<label>&emsp;`;
+			row += makeToolButtonSVG({ name: options.toolIconDescription });
+			row += description;
+			row += `</label >`;
+		} else {
+			row += `<label>${description}</label>`;
+		}
 
 		table.innerHTML += row;
 	}
@@ -209,17 +227,29 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(['Ctrl', 'A'], `Path Edit (Pen) tool: Select all path points`);
 	makeOneRow(['Ctrl', 'Shift', 'A'], `Clear all shape and path point selections`);
 	makeOneRow([']'], `Select next shape`);
+	makeOneRow(['Shift', ']'], `Add the next shape to the selection (multi-select)`);
 	makeOneRow(['['], `Select previous shape`);
+	makeOneRow(['Shift', '['], `Add the previous shape to the selection (multi-select)`);
 	makeOneRow(
-		['Ctrl', '<i>Click an Edit Canvas shape</i>'],
-		`Toggle selection for that shape (multi-select)`
-	);
-	makeOneRow(
-		['Ctrl', '<i>Click a Layers Panel shape</i>'],
-		`Toggle selection for that shape (multi-select)`
+		['Ctrl', 'Click a shape'],
+		`Toggle selection for that shape (multi-select)<br>Either on the edit canvas, or the layers panel`,
+		{ toolIconAction: 'resize' }
 	);
 	makeOneRow(['Ctrl', '➝'], `Select the next Path Point`, { classes: [false, 'arrow-key'] });
+	makeOneRow(['Ctrl', 'Shift', '➝'], `Add the next Path Point to the selection (multi-select)`, {
+		classes: [false, false, 'arrow-key'],
+	});
 	makeOneRow(['Ctrl', '⭠'], `Select the previous Path Point`, { classes: [false, 'arrow-key'] });
+	makeOneRow(
+		['Ctrl', 'Shift', '⭠'],
+		`Add the previous Path Point to the selection (multi-select)`,
+		{ classes: [false, false, 'arrow-key'] }
+	);
+	makeOneRow(
+		['Ctrl', 'Click a path point'],
+		`Toggle selection for that path point (multi-select)`,
+		{ toolIconAction: 'pathEdit' }
+	);
 
 	table.appendChild(textToNode('<h3>View</h3>'));
 	makeOneRow(['Space', 'Scroll wheel click'], `Toggle the pan tool`, { spacer: 'or' });
@@ -247,27 +277,46 @@ export function makeKeyboardShortcutReference() {
 		['Ctrl', 'R'],
 		'Round values for the current selection<br>(Whole Shapes for the Resize tool, Path Points + Handles for the Path Edit tool)'
 	);
+	makeOneRow(['Shift', 'Click'], `Snap the new point's coordinates to whole numbers`, {
+		toolIconAction: 'newPath',
+	});
+	makeOneRow(['Shift', 'Click'], `Snap the new point's coordinates to whole numbers`, {
+		toolIconAction: 'pathAddPoint',
+	});
+	makeOneRow(['Ctrl', 'Click'], 'Add the new point as a corner point with hidden handles', {
+		toolIconAction: 'pathAddPoint',
+	});
 	makeOneRow(
-		['Shift', '<i>New Path tool</i>'],
-		`Snap the new point's coordinates to whole numbers`
+		['Shift', 'Shape Rotation handle'],
+		'Snap rotation degrees to whole numbers',
+		{ toolIconAction: 'rotate' }
 	);
-	makeOneRow(
-		['Shift', '<i>Path Add Point tool</i>'],
-		`Snap the new point's coordinates to whole numbers`
-	);
-	makeOneRow(
-		['Ctrl', '<i>Path Add Point tool</i>'],
-		'Add the new point as a corner point with hidden handles'
-	);
-	makeOneRow(['Shift', '<i>Shape Rotation handle</i>'], 'Snap rotation degrees to whole numbers');
 
 	table.appendChild(textToNode('<h3>Tools</h3>'));
-	makeOneRow(['B', 'P'], 'Select the Path Edit (Pen) tool', { spacer: 'or' });
-	makeOneRow(['V', 'A'], 'Select the Resize (Arrow) tool', { spacer: 'or' });
-	makeOneRow(['M'], 'Select the New Rectangle tool');
-	makeOneRow(['O'], 'Select the New Oval tool');
-	makeOneRow(['H'], 'Select the New Path tool');
-	makeOneRow(['U'], 'Select the Path Add Point tool');
+	makeOneRow(['B', 'P'], 'Select the Path Edit (Pen) tool', {
+		spacer: 'or',
+		toolIconDescription: 'pathEdit',
+	});
+	makeOneRow(['V', 'A'], 'Select the Resize (Arrow) tool', {
+		spacer: 'or',
+		toolIconDescription: 'resize',
+	});
+	makeOneRow(['M', 'R'], 'Select the New Rectangle tool', {
+		spacer: 'or',
+		toolIconDescription: 'newRectangle',
+	});
+	makeOneRow(['O', 'Q'], 'Select the New Oval tool', {
+		spacer: 'or',
+		toolIconDescription: 'newOval',
+	});
+	makeOneRow(['H', 'W'], 'Select the New Path tool', {
+		spacer: 'or',
+		toolIconDescription: 'newPath',
+	});
+	makeOneRow(['U', 'E'], 'Select the Path Add Point tool', {
+		spacer: 'or',
+		toolIconDescription: 'pathAddPoint',
+	});
 
 	return table;
 }
