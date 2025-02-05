@@ -115,7 +115,13 @@ export class Glyph extends GlyphElement {
 
 		if (this.shapes && this.shapes.length) {
 			re.shapes = [];
-			for (let s = 0; s < this.shapes.length; s++) re.shapes.push(this.shapes[s].save(verbose));
+			for (let s = 0; s < this.shapes.length; s++) {
+				if (this.shapes[s].objType === 'Path' && this.shapes[s].pathPoints.length === 0) {
+					console.warn(`Empty Path found in Glyph ${this.id} - ${this.name}`);
+				} else {
+					re.shapes.push(this.shapes[s].save(verbose));
+				}
+			}
 		}
 
 		if (verbose) {
@@ -446,7 +452,7 @@ export class Glyph extends GlyphElement {
 			this._shapes.push(new ComponentInstance(newShape));
 		} else {
 			// log(`hydrating path - name: ${newShape.name}`);
-			if(newShape.pathPoints.length === 0) return; // Don't import paths with no PathPoints
+			if (newShape.pathPoints.length === 0) return; // Don't import paths with no PathPoints
 			newShape.parent = this;
 			this._shapes.push(new Path(newShape));
 		}
