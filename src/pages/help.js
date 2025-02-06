@@ -97,18 +97,21 @@ function makeHelpOverview() {
 
 		<div class="page__card">
 			<h3>Getting started</h3>
-			<span class="page__card__help-links">
+			<span class="page__card__help-links" style="grid-template-columns:1fr max-content; column-gap: 10px; padding-right: 10px;">
 				<a href="https://www.glyphrstudio.com/help/getting-started/navigation.html" target="_blank">
 					Navigation
+				</a>
+				<a href="https://www.glyphrstudio.com/help/getting-started/working-with-multiple-projects.html" target="_blank">
+					Working with multiple projects
 				</a>
 				<a href="https://www.glyphrstudio.com/help/getting-started/editing.html" target="_blank">
 					Editing
 				</a>
+				<a href="https://www.glyphrstudio.com/help/getting-started/keyboard-shortcuts.html" target="_blank">
+					Keyboard shortcuts
+				</a>
 				<a href="https://www.glyphrstudio.com/help/getting-started/import-export.html" target="_blank">
 					Import / Export
-				</a>
-				<a href="https://www.glyphrstudio.com/help/getting-started/working-with-multiple-projects.html" target="_blank">
-					Working with multiple projects
 				</a>
 			</span>
 		</div>
@@ -213,12 +216,12 @@ export function makeKeyboardShortcutReference() {
 		}
 
 		table.innerHTML += row;
-		if(outputMarkdownToConsole) makeOneMarkdownRow(combo, description, options);
+		if (outputMarkdownToConsole) makeOneMarkdownRow(combo, description, options);
 	}
 
 	function makeOneHeader(text) {
 		table.appendChild(textToNode(`<h3>${text}</h3>`));
-		if(outputMarkdownToConsole) makeOneMarkdownHeader(text);
+		if (outputMarkdownToConsole) makeOneMarkdownHeader(text);
 	}
 
 	makeOneHeader('Project actions');
@@ -227,7 +230,6 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(['Ctrl', 'G'], 'Export an SVG Font (.svg)');
 	makeOneRow(['Ctrl', 'G'], 'Export an SVG Font (.svg)');
 	makeOneRow(['Ctrl', 'O'], 'Open a project in a new tab');
-
 
 	makeOneHeader('Selecting and navigating');
 	makeOneRow(
@@ -274,10 +276,12 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(['Ctrl', '0'], `Auto-fit glyph on the screen`);
 	makeOneRow(['Ctrl', 'Space'], `Toggle distraction free preview mode`);
 
-
 	makeOneHeader('Editing');
 	makeOneRow(['Ctrl', 'C'], `Copy the selected shapes`);
-	makeOneRow(['Ctrl', 'V'], `Paste the selected shapes (Glyphr Studio Clipboard)<br>Paste to import copied SVG Code (Operating System Clipboard)`);
+	makeOneRow(
+		['Ctrl', 'V'],
+		`Paste the selected shapes (Glyphr Studio Clipboard)<br>Paste to import copied SVG Code (Operating System Clipboard)`
+	);
 	makeOneRow(['Ctrl', ']'], `Move shape up`);
 	makeOneRow(['Ctrl', '['], `Move shape down`);
 	makeOneRow(['Ctrl', 'Shift', ']'], `Move shape to the top`);
@@ -334,7 +338,7 @@ export function makeKeyboardShortcutReference() {
 		toolIconDescription: 'pathAddPoint',
 	});
 
-	if(outputMarkdownToConsole) console.log(markdownOutput);
+	if (outputMarkdownToConsole) console.log(markdownOutput);
 	return table;
 }
 
@@ -350,7 +354,7 @@ function makeOneMarkdownRow(combo, description, options = {}) {
 		}
 	});
 	row += ` | `;
-	if(options.toolIconAction) row += `[${toolNames[options.toolIconAction]}] `;
+	if (options.toolIconAction) row += `[${toolNames[options.toolIconAction]}] `;
 	row += ` ${description}`;
 	row += ` |\n`;
 
@@ -364,9 +368,9 @@ function makeOneMarkdownHeader(text, first = false) {
 }
 
 const toolNames = {
-	'resize' : 'Resize (Arrow) Tool',
-	'pathEdit' : 'Path Edit (Pen) Tool',
-	'newPath': 'New Path Tool',
-	'pathAddPoint': 'Path Add Point Tool',
-	'rotate': 'Shape Rotate Handle',
-}
+	resize: 'Resize (Arrow) Tool',
+	pathEdit: 'Path Edit (Pen) Tool',
+	newPath: 'New Path Tool',
+	pathAddPoint: 'Path Add Point Tool',
+	rotate: 'Shape Rotate Handle',
+};
