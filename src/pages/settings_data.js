@@ -203,7 +203,7 @@ export default {
 		},
 		directlyDragCurves: {
 			label: 'Directly click and drag curves to edit them',
-			description: `On the edit canvas, when in Path Edit mode (Pen tool) hover over a path's curve, then click and drag to move the curve directly. This will edit the handles of the two ajacent path points.`,
+			description: `On the edit canvas, when in Path Edit mode (Pen tool) hover over a path's curve, then click and drag to move the curve directly. This will edit the handles of the two adjacent path points.`,
 			type: 'Boolean',
 		},
 		showNonCharPoints: {
@@ -262,7 +262,7 @@ export default {
 		},
 		highlightPointsNearHandles: {
 			label: `Highlight points with short handles`,
-			description: `This option will highlight points that have very short handles.  Sometimes this happens when exporting SVG code from another app. It is best practice to reduce the number of uneccesary handles in a path as much as possible.
+			description: `This option will highlight points that have very short handles.  Sometimes this happens when exporting SVG code from another app. It is best practice to reduce the number of unnecessary handles in a path as much as possible.
 			<br>
 			This option can be toggled from the Quality control panel.`,
 			type: `Em`,
