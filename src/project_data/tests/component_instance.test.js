@@ -85,13 +85,13 @@ describe('ComponentInstance', () => {
 
 	it('get/set isFlippedNS', () => {
 		const ci = sampleComponentInstance();
-		ci.isFlippedNS = 123;
+		ci.isFlippedNS = true;
 		expect(ci.isFlippedNS).toBe(true);
 	});
 
 	it('get/set isFlippedEW', () => {
 		const ci = sampleComponentInstance();
-		ci.isFlippedEW = 123;
+		ci.isFlippedEW = true;
 		expect(ci.isFlippedEW).toBe(true);
 	});
 
@@ -160,6 +160,14 @@ describe('ComponentInstance', () => {
 		const ci = sampleComponentInstance();
 		ci.flipNS();
 		expect(ci.isFlippedNS).toBeTruthy();
+	});
+
+	it('roundAll', () => {
+		const ci = sampleComponentInstance();
+		ci.translateX = 39.9999;
+		ci.translateY = 39.9999;
+		expect(ci.roundAll().translateX).toBe(40);
+		expect(ci.roundAll().translateY).toBe(40);
 	});
 
 	it('rotate', () => {

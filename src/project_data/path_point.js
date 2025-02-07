@@ -20,16 +20,18 @@ export class PathPoint extends GlyphElement {
 	/**
 	 * Create a PathPoint
 	 * @param {Object} arg
-	 * @param {ControlPoint | undefined =} arg.p - Main control point
-	 * @param {ControlPoint | undefined =} arg.h1 - First handle
-	 * @param {ControlPoint | undefined =} arg.h2 - Second handle
+	 * @param {ControlPoint | Object | undefined =} arg.p - Main control point
+	 * @param {ControlPoint | Object | undefined =} arg.h1 - First handle
+	 * @param {ControlPoint | Object | undefined =} arg.h2 - Second handle
 	 * @param {String =} arg.type - corner, flat, or symmetric
+	 * @param {Number =} arg.projectUPM - project size for default handle lengths
 	 * @param {Object =} arg.parent - link to the parent Path object
 	 */
-	constructor({ p, h1, h2, type = 'corner', parent = false } = {}) {
+	constructor({ p, h1, h2, type = 'corner', projectUPM = 2048, parent = false } = {}) {
 		// log(`PathPoint.constructor`, 'start');
 		super();
 		this.parent = parent;
+		this.projectUPM = projectUPM;
 		this.p = p;
 		this.h1 = h1;
 		this.h2 = h2;
@@ -169,6 +171,24 @@ export class PathPoint extends GlyphElement {
 		return false;
 	}
 
+	/**
+	 * Makes a default handle length that roughly
+	 * scales with the project's UPM
+	 */
+	get defaultHandleLength() {
+		// log(`defaultHandleLength`, 'start');
+		// log(`this.projectUPM: ${this.projectUPM}`);
+		let result;
+		if (this.projectUPM < 100) result = 2;
+		else if (this.projectUPM < 500) result = 10;
+		else if (this.projectUPM < 1000) result = 50;
+		else if (this.projectUPM < 2050) result = 100;
+		else result = 200;
+		// log(`result: ${result}`);
+		// log(`defaultHandleLength`, 'end');
+		return result;
+	}
+
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------
@@ -195,7 +215,7 @@ export class PathPoint extends GlyphElement {
 			needToInitialize = true;
 		}
 		if (!newPoint.coord || needToInitialize) {
-			newPoint.coord = new Coord({ x: this.p.x - 50, y: this.p.y });
+			newPoint.coord = new Coord({ x: this.p.x - this.defaultHandleLength, y: this.p.y });
 			newPoint.use = false;
 		}
 		newPoint.type = 'h1';
@@ -214,7 +234,7 @@ export class PathPoint extends GlyphElement {
 			needToInitialize = true;
 		}
 		if (!newPoint.coord || needToInitialize) {
-			newPoint.coord = new Coord({ x: this.p.x + 50, y: this.p.y });
+			newPoint.coord = new Coord({ x: this.p.x + this.defaultHandleLength, y: this.p.y });
 			newPoint.use = false;
 		}
 		newPoint.type = 'h2';
@@ -616,9 +636,9 @@ export class PathPoint extends GlyphElement {
 		this.type = 'corner';
 		this.h1.use = true;
 		this.h2.use = true;
-		this.h2.x = this.p.x - 100;
+		this.h2.x = this.p.x - this.defaultHandleLength;
 		this.h2.y = this.p.y;
-		this.h1.x = this.p.x + 100;
+		this.h1.x = this.p.x + this.defaultHandleLength;
 		this.h1.y = this.p.y;
 
 		return this;
@@ -632,14 +652,18 @@ export class PathPoint extends GlyphElement {
 	roundAll(precision = 9) {
 		this.p.x = round(this.p.x, precision);
 		this.p.y = round(this.p.y, precision);
+
 		let h1use = this.h1.use;
+		this.h1.use = true; // temporarily turn on so real x/y values are used
 		this.h1.x = round(this.h1.x, precision);
 		this.h1.y = round(this.h1.y, precision);
-		this.h1.use = h1use;
+		this.h1.use = h1use; // revert to previous value
+
 		let h2use = this.h2.use;
+		this.h2.use = true; // temporarily turn on so real x/y values are used
 		this.h2.x = round(this.h2.x, precision);
 		this.h2.y = round(this.h2.y, precision);
-		this.h2.use = h2use;
+		this.h2.use = h2use; // revert to previous value
 
 		return this;
 	}

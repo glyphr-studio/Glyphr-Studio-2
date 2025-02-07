@@ -1,3 +1,5 @@
+import { Description } from "@storybook/blocks";
+
 /**
  * Data that describes all the settings
  */
@@ -199,6 +201,11 @@ export default {
 			description: `When selected, this option will unlink component instances and turn them into normal paths if their component root is deleted (the glyph will look the same, but some component instances will end up as stand-alone path objects).<br>If this option is unselected, component instances will be deleted when their component root is deleted (the glyph will look different because it will have less shapes).`,
 			type: `Boolean`,
 		},
+		directlyDragCurves: {
+			label: 'Directly click and drag curves to edit them',
+			description: `On the edit canvas, when in Path Edit mode (Pen tool) hover over a path's curve, then click and drag to move the curve directly. This will edit the handles of the two adjacent path points.`,
+			type: 'Boolean',
+		},
 		showNonCharPoints: {
 			label: `Show non-graphic control characters`,
 			description: `Show the Unicode code points represent things that aren't letters. In Unicode, the C0 and C1 control code or control character sets define control codes for use in text by computer systems that use ASCII and derivatives of ASCII.<br><br>This setting should probably stay turned off, control characters can probably be safely ignored.`,
@@ -214,12 +221,12 @@ export default {
 			description: `What text to show when previewing a project or switching between projects. If left blank, the string 'Aa Bb Cc Xx Yy Zz' will be used.`,
 		},
 		exportLigatures: {
-			label: `Export Ligatures to fonts (.otf and .svg)`,
+			label: `Export Ligatures to fonts`,
 			description: `Uncheck this option if don't want ligature data exported to fonts.`,
 			type: `Boolean`,
 		},
 		exportKerning: {
-			label: `Export Kern information to fonts (.svg only)`,
+			label: `Export Kern information to fonts`,
 			description: `Uncheck this option if don't want kern data exported to fonts.`,
 			type: `Boolean`,
 		},
@@ -233,9 +240,46 @@ export default {
 			type: `Boolean`,
 		},
 		moveShapesOnSVGDragDrop: {
-			label: `Move shapes when drag+dropping an SVG file`,
-			description: `When importing SVG by dragging and dropping a .svg file onto the canvas, move the imported shapes to the origin (x = 0, y = shapes height).`,
+			label: `Move shapes when importing an SVG file`,
+			description: `When importing SVG to a single item, move the imported shapes to the origin (x = 0, y = shapes height).`,
 			type: `Boolean`,
+		},
+		autoSideBearingsOnSVGDragDrop: {
+			label: `Add default Side Bearings when importing an SVG file`,
+			description: `When importing SVG to a single item, move the imported shapes such that the left hand side x is at the Side Bearing value, and the set the Advance With of the item so that there is a Side Bearing's worth of space on the right hand side.
+			<br><br>
+			Set this value to -1 to disable it.
+			<br><br>
+			This setting overrides the 'Move shapes when importing an SVG file' setting.`,
+			type: `Em`,
+		},
+		highlightPointsNearPoints: {
+			label: `Highlight points that are near other points`,
+			description: `This option will highlight points that are very close to other points. Sometimes this happens when exporting SVG code from another app. It is best practice to reduce the number of points in a path as much as possible.
+			<br>
+			This option can be toggled from the Quality control panel.`,
+			type: `Em`,
+		},
+		highlightPointsNearHandles: {
+			label: `Highlight points with short handles`,
+			description: `This option will highlight points that have very short handles.  Sometimes this happens when exporting SVG code from another app. It is best practice to reduce the number of unnecessary handles in a path as much as possible.
+			<br>
+			This option can be toggled from the Quality control panel.`,
+			type: `Em`,
+		},
+		highlightPointsNearXZero: {
+			label: `Highlight points that are near x=0`,
+			description: `This option will highlight points that are near x=0. Sometimes this happens when exporting SVG code from another app.
+			<br>
+			This option can be toggled from the Quality control panel.`,
+			type: `Em`,
+		},
+		highlightPointsNearYZero: {
+			label: `Highlight points that are near y=0`,
+			description: `This option will highlight points that are near y=0. Sometimes this happens when exporting SVG code from another app.
+			<br>
+			This option can be toggled from the Quality control panel.`,
+			type: `Em`,
 		},
 	},
 };

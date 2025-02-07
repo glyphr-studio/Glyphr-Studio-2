@@ -78,9 +78,6 @@ describe('Character IDs - Format Detection', () => {
 	it('isChar - bad length', () => {
 		expect(isChar('aa')).toBeFalsy();
 	});
-	it('isChar - surrogate pair', () => {
-		expect(isChar('😄')).toBeTruthy();
-	});
 
 	it('isUnicode', () => {
 		expect(isUnicode('U+123F')).toBeTruthy();
@@ -142,10 +139,6 @@ describe('Character IDs - Single to Single Conversion', () => {
 		expect(charToHex('a')).toBe('0x61');
 	});
 
-	it('charToHex - surrogate pair', () => {
-		expect(charToHex('😄')).toBe('0x1F604');
-	});
-
 	it('unicodeToHex', () => {
 		expect(unicodeToHex('U+3F')).toBe('0x3F');
 	});
@@ -172,10 +165,6 @@ describe('Character IDs - Splitting a string of many IDs', () => {
 describe('Character IDs - Many to many conversions', () => {
 	it('charsToHexArray', () => {
 		expect(charsToHexArray('abc')).toEqual(['0x61', '0x62', '0x63']);
-	});
-
-	it('charsToHexArray - with surrogate pairs', () => {
-		expect(charsToHexArray('😄😄')).toEqual(['0x1F604', '0x1F604']);
 	});
 
 	it('hexesToChars', () => {

@@ -3,7 +3,6 @@ import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { clone, remove, round, trim } from '../common/functions.js';
 import { showError } from '../controls/dialogs/dialogs.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
-import { sanitizeFontFamilyName } from '../formats_io/otf/font_export.js';
 import { getParentRange } from '../lib/unicode/unicode_blocks.js';
 import { getUnicodeName, getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { unicodeNonCharPointNames } from '../lib/unicode/unicode_names_0_bmp.js';
@@ -44,6 +43,7 @@ export class GlyphrStudioProject {
 				autoSave: true,
 				savePreferences: false,
 				unlinkComponentInstances: true,
+				directlyDragCurves: true,
 				showNonCharPoints: false,
 				itemChooserPageSize: 256,
 				previewText: false,
@@ -51,6 +51,11 @@ export class GlyphrStudioProject {
 				exportKerning: true,
 				exportUneditedItems: true,
 				moveShapesOnSVGDragDrop: false,
+				autoSideBearingsOnSVGDragDrop: 50,
+				highlightPointsNearPoints: 2,
+				highlightPointsNearHandles: 2,
+				highlightPointsNearXZero: 2,
+				highlightPointsNearYZero: 2,
 				guides: {
 					drawGuidesOnTop: false,
 					systemShowGuides: true,
@@ -123,9 +128,6 @@ export class GlyphrStudioProject {
 			this.settings = merge(this.settings, newProject.settings);
 		}
 
-		// validate Family Name
-		this.settings.font.family = sanitizeFontFamilyName(this.settings.font.family);
-		
 		// Project version
 		const app = getGlyphrStudioApp();
 		this.settings.project.latestVersion = app.version;

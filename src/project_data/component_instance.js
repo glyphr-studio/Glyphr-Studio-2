@@ -1,4 +1,4 @@
-import { deg, parseNumber, rad, strSan } from '../common/functions.js';
+import { deg, parseNumber, rad, round, strSan } from '../common/functions.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 import { GlyphElement } from './glyph_element.js';
 
@@ -620,7 +620,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * flipEW
-	 * @param {Number} mid - x value about which to flip
+	 * @param {Number =} mid - x value about which to flip
 	 * @returns {ComponentInstance} - reference to this component instance
 	 */
 	flipEW(mid) {
@@ -635,7 +635,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * flipNS
-	 * @param {Number} mid - y value about which to flip
+	 * @param {Number =} mid - y value about which to flip
 	 * @returns {ComponentInstance} - reference to this component instance
 	 */
 	flipNS(mid) {
@@ -645,6 +645,17 @@ export class ComponentInstance extends GlyphElement {
 			this.translateY += mid - g.yMax + mid - g.yMin;
 		}
 		if (this.rotation === 0) this.rotateFirst = false;
+		return this;
+	}
+
+	/**
+	 * Round translate x/y values to a certain precision
+	 * @param {Number} precision - how many decimal places to round to
+	 * @returns {ComponentInstance} - reference to this Component Instance
+	 */
+	roundAll(precision = 0) {
+		this.translateX = round(this.translateX, precision);
+		this.translateY = round(this.translateY, precision);
 		return this;
 	}
 

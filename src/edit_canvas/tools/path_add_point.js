@@ -7,7 +7,7 @@ import {
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { clickTool, getShapeAtLocation } from './tools.js';
+import { getShapeAtLocation, selectTool } from './tools.js';
 
 /**
 	// ----------------------------------------------------------------
@@ -34,6 +34,12 @@ export class Tool_PathAddPoint {
 			);
 			if (addedPoint) {
 				editor.multiSelect.points.select(addedPoint);
+				if (eventHandlerData.isShiftDown) addedPoint.roundAll(0);
+				if (eventHandlerData.isCtrlDown) {
+					addedPoint.h1.use = false;
+					addedPoint.h2.use = false;
+				}
+				editor.publish('currentPathPoint', addedPoint);
 				editor.publish('currentPath', singlePath);
 				editor.history.addState('Added point to path');
 			}
@@ -42,7 +48,7 @@ export class Tool_PathAddPoint {
 			if (eventHandlerData.isCtrlDown) editor.multiSelect.shapes.add(clickedShape);
 			else editor.multiSelect.shapes.select(clickedShape);
 			if (clickedShape.objType === 'ComponentInstance') {
-				clickTool('pathEdit');
+				selectTool('pathEdit');
 				editor.publish('currentComponentInstance');
 			} else {
 				editor.publish('whichShapeIsSelected');
@@ -63,8 +69,8 @@ export class Tool_PathAddPoint {
 	mousemove() {
 		const editor = getCurrentProjectEditor();
 		let singlePath = editor.multiSelect.shapes.singleton;
-		let mousePoint = eventHandlerData.mousePosition;
 		if (singlePath) {
+			let mousePoint = eventHandlerData.mousePosition;
 			let curvePoint = singlePath.findClosestPointOnCurve({
 				x: cXsX(mousePoint.x),
 				y: cYsY(mousePoint.y),

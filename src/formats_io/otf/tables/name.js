@@ -1,5 +1,4 @@
 import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project';
-import { sanitizeFontFamilyName } from '../font_export';
 
 /**
  * Finds metadata from the name table in the opentype.js font object,
@@ -15,7 +14,8 @@ export function importTable_name(importedFont, project) {
 	// Font Family
 	const familyName = getTableValue('fontFamily', importedFont) || 'My Font';
 	project.settings.project.name = familyName;
-    fontSettings.family = sanitizeFontFamilyName(familyName);
+	fontSettings.name = familyName;
+	fontSettings.family = familyName.substring(0, 31); // long family names cause errors
 
 	// Table data
 	fontSettings.style = getTableValue('fontSubfamily', importedFont) || 'Regular';

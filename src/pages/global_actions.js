@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
+import { remove } from '../common/functions.js';
 import {
 	closeAllModalDialogs,
 	showError,
@@ -29,6 +30,9 @@ import {
  * @returns {Element} - page content
  */
 export function makePage_GlobalActions() {
+	// Start things off by defaulting to selecting all ranges
+	selectAllRanges();
+
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
@@ -39,31 +43,37 @@ export function makePage_GlobalActions() {
 					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Global actions' })}
 				</div>
 				<div id="content-page__panel">
-					<span class="panel__card full-width">
-						Global Actions are actions that affect many glyphs at once.
-						Actions taken here will not carry forward to glyphs that haven't been created yet.
-					</span>
-					<span class="panel__card full-width">
-						<h3>Filters</h3>
+				<span class="panel__card">
+					<h3>Filters</h3>
+					<p class="full-width">
 						By default, global actions affect all characters, ligatures, and components. The
 						filters below can be used to target more specific ranges.
 						<br><br>
-						<span id="globalActionsCharacterRangesDisplay">
-							${filters.characterRanges.length} character ranges selected.
-						</span>
-						<fancy-button
-							id="showFilterDialogButton"
-							secondary
-						>Select character ranges</fancy-button>
-						<input type="checkbox" checked id="globalActionsSelectLigaturesCheckbox" />
+					</p>
+					<span id="globalActionsCharacterRangesDisplay">
+						${itemFilterInputs.characterRanges.length} ranges selected
+					</span>
+						<fancy-button id="showFilterDialogButton" secondary>Select character ranges</fancy-button>
 						<label for="globalActionsSelectLigaturesCheckbox">Ligatures</label>
-						<input type="checkbox" checked id="globalActionsSelectComponentsCheckbox" />
+						<input type="checkbox" checked id="globalActionsSelectLigaturesCheckbox" />
 						<label for="globalActionsSelectComponentsCheckbox">Components</label>
+						<input type="checkbox" checked id="globalActionsSelectComponentsCheckbox" />
+					</span>
+					<span class="panel__card full-width">
+						<h3>Some notes</h3>
+						Global Actions are actions that affect many items at once.
+						<ul>
+							<li>Actions taken here will not carry forward to items that haven't been created yet.</li>
+							<li>Global actions to not affect hidden character ranges.</li>
+							<li>Changes will be grouped together in one History entry. Hitting 'Undo' will undo all changes made by the global action.</li>
+							<li>Components or Characters that are used as Component Roots in selected
+								ranges may be linked to Component Instances outside of selected ranges. Moving or scaling Component
+								Roots may have effects outside of selected ranges.</li>
+						</ul>
 					</span>
 					<span class="panel__card full-width">
 						Have an idea for a new global action?  They are easy for us to add - email us your idea!
 						<a href="mailto:mail@glyphrstudio.com">mail@glyphrstudio.com</a>
-						<br /> <br />
 					</span>
 				</div>
 			</div>
@@ -85,14 +95,14 @@ export function makePage_GlobalActions() {
 	let showFilterDialogButton = content.querySelector('#showFilterDialogButton');
 	showFilterDialogButton.addEventListener('click', showFilterDialog);
 
-	let ligatureCheckbox = content.querySelector('#globalActionsSelectLigatureCheckbox');
+	let ligatureCheckbox = content.querySelector('#globalActionsSelectLigaturesCheckbox');
 	ligatureCheckbox.addEventListener('change', () => {
-		filters.ligatures = ligatureCheckbox.hasAttribute('checked');
+		itemFilterInputs.ligatures = ligatureCheckbox.hasAttribute('checked');
 	});
 
-	let componentCheckbox = content.querySelector('#globalActionsSelectComponentCheckbox');
+	let componentCheckbox = content.querySelector('#globalActionsSelectComponentsCheckbox');
 	componentCheckbox.addEventListener('change', () => {
-		filters.components = componentCheckbox.hasAttribute('checked');
+		itemFilterInputs.components = componentCheckbox.hasAttribute('checked');
 	});
 
 	addAsChildren(rightArea, [
@@ -128,46 +138,17 @@ export function makePage_GlobalActions() {
 export function glyphIterator(oa) {
 	// log(`glyphIterator`, 'start');
 	// log(oa);
+	// log(itemFilterInputs);
 
 	const project = getCurrentProject();
 	let listOfItemIDs = [];
 	let itemNumber = 0;
 	let title = oa.title || 'Iterating on Glyph';
-
-	/**
-	 * Filter function that gets overwritten by various things
-	 * to include or not include items in Global Actions
-	 * @param {String} itemID - check this ID against a filter function
-	 * @returns {Boolean} - include this Item or not
-	 */
-	let filter = (itemID = '') => {
-		return !!itemID;
-	};
-
+	const includeGlyphs = oa.includeGlyphs || true;
+	const includeLigatures = oa.includeLigatures || true;
+	const includeComponents = oa.includeComponents || true;
 	let callback = oa.callback || false;
 	let currentItem, currentItemID;
-
-	// Translate range notation to filter function
-	if (oa.filter) {
-		if (oa.filter.begin && oa.filter.end) {
-			let begin = parseInt(oa.filter.begin);
-			let end = parseInt(oa.filter.end);
-			let itemIntegerID;
-
-			filter = (itemID) => {
-				if (itemID.startsWith('glyph-')) {
-					itemIntegerID = parseInt(itemID.substring(6), 16);
-					return itemIntegerID >= begin && itemIntegerID <= end;
-				} else {
-					return false;
-				}
-			};
-		} else {
-			filter = oa.filter;
-		}
-	}
-
-	// Functions
 
 	function processOneItem() {
 		// log(`glyphIterator>processOneItem`, 'start');
@@ -180,7 +161,7 @@ export function glyphIterator(oa) {
 		showToast(title + '<br>' + currentItem.name, 10000);
 
 		try {
-			oa.action(currentItem, currentItemID);
+			oa.action(currentItem, listOfItemIDs);
 			glyphChanged(currentItem);
 		} catch (error) {
 			failures.push({
@@ -212,19 +193,33 @@ export function glyphIterator(oa) {
 
 	function makeItemList() {
 		// Components
-		Object.keys(project.components).forEach((id) => {
-			if (filter(id)) listOfItemIDs.push(id);
-		});
+		if (includeComponents && itemFilterInputs.components) {
+			Object.keys(project.components).forEach((componentID) => listOfItemIDs.push(componentID));
+		}
 
 		// Ligatures
-		Object.keys(project.ligatures).forEach((id) => {
-			if (filter(id)) listOfItemIDs.push(id);
-		});
+		if (includeLigatures && itemFilterInputs.ligatures) {
+			Object.keys(project.ligatures).forEach((ligatureID) => listOfItemIDs.push(ligatureID));
+		}
 
 		// Glyphs
-		Object.keys(project.glyphs).forEach((id) => {
-			if (filter(id)) listOfItemIDs.push(id);
-		});
+		if (includeGlyphs) {
+			const selectedCharacterRanges = itemFilterInputs.characterRanges.map((rangeID) =>
+				getRangeById(rangeID)
+			);
+			// log(`\n⮟selectedCharacterRanges⮟`);
+			// log(selectedCharacterRanges);
+			Object.keys(project.glyphs).forEach((glyphID) => {
+				for (let i = 0; i < selectedCharacterRanges.length; i++) {
+					const range = selectedCharacterRanges[i];
+					const hexID = Number(remove(glyphID, 'glyph-'));
+					if (range.isWithinRange(hexID)) {
+						listOfItemIDs.push(glyphID);
+						break;
+					}
+				}
+			});
+		}
 
 		// log('item list');
 		// log(listOfItemIDs);
@@ -240,44 +235,69 @@ export function glyphIterator(oa) {
 	// log(`glyphIterator`, 'end');
 }
 
-const filters = {
+const itemFilterInputs = {
 	characterRanges: [],
 	ligatures: true,
 	components: true,
 };
+
+function selectAllRanges() {
+	itemFilterInputs.characterRanges = [];
+	getCurrentProject().settings.project.characterRanges.forEach((range) => {
+		if (range.enabled) itemFilterInputs.characterRanges.push(range.id);
+	});
+}
+
+export function addRangeToSelectedFilterInputs(range) {
+	// log(`addCharacterRangesToSelectedRanges`, 'start');
+	// log(`\n⮟range⮟`);
+	// log(range);
+	itemFilterInputs.characterRanges.push(range.id);
+	// log(`\n⮟itemFilterInputs.characterRanges⮟`);
+	// log(itemFilterInputs.characterRanges);
+	// log(`addCharacterRangesToSelectedRanges`, 'end');
+}
+
+function getRangeById(id) {
+	return getCurrentProject().settings.project.characterRanges.find((range) => range.id === id);
+}
 
 function updateFilterCard() {
 	const ligatureCheckbox = document.getElementById('globalActionsSelectLigaturesCheckbox');
 	const componentsCheckbox = document.getElementById('globalActionsSelectComponentsCheckbox');
 	const characterRangesDisplay = document.getElementById('globalActionsCharacterRangesDisplay');
 
-	if (filters.ligatures) {
+	if (itemFilterInputs.ligatures) {
 		ligatureCheckbox.setAttribute('checked', '');
 	} else {
 		ligatureCheckbox.removeAttribute('checked');
 	}
 
-	if (filters.components) {
+	if (itemFilterInputs.components) {
 		componentsCheckbox.setAttribute('checked', '');
 	} else {
 		componentsCheckbox.removeAttribute('checked');
 	}
 
-	characterRangesDisplay.innerHTML = `${filters.characterRanges.length} character ranges selected.`;
+	characterRangesDisplay.innerHTML = `${itemFilterInputs.characterRanges.length} ranges selected`;
 }
 
 function showFilterDialog() {
+	// log(`showFilterDialog`, 'start');
+	// log(`\n⮟itemFilterInputs⮟`);
+	// log(itemFilterInputs);
+
 	const dialogContent = makeElement({
 		tag: 'div',
 		innerHTML: `
-			<h1>Select character ranges</h1>
-			<p>
-				The selected character ranges below will be included
-				in the global actions that you perform. If you want
-				different character ranges than what are shown here, you can
-				add or edit character ranges on the Settings > Project page.
-			</p>
-			<br>
+		<h1>Select character ranges</h1>
+		<p>
+			The selected character ranges below will be included
+			in the global actions that you perform. If you want
+			different character ranges than what are shown here, you can
+			add or edit character ranges on the Settings > Project page.
+		</p>
+		<br>
 		`,
 	});
 
@@ -294,6 +314,16 @@ function showFilterDialog() {
 		onClick: () => {
 			closeAllModalDialogs();
 			updateFilterCard();
+		},
+	});
+
+	const selectAllButton = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Select all',
+		onClick: () => {
+			selectAllRanges();
+			showFilterDialog();
 		},
 	});
 
@@ -319,7 +349,8 @@ function showFilterDialog() {
 	}
 
 	projectRanges.forEach((range) => {
-		log(filters.characterRanges.includes(range.id));
+		if (!range.enabled) return;
+		// log(itemFilterInputs.characterRanges.includes(range.id));
 		const rangeCheckbox = makeElement({
 			tag: 'input',
 			attributes: {
@@ -328,16 +359,16 @@ function showFilterDialog() {
 		});
 
 		rangeCheckbox.addEventListener('change', () => {
-			const index = filters.characterRanges.indexOf(range.id);
+			const index = itemFilterInputs.characterRanges.indexOf(range.id);
 			/**@ts-ignore */
 			if (index === -1 && rangeCheckbox.checked) {
-				filters.characterRanges.push(range.id);
+				itemFilterInputs.characterRanges.push(range.id);
 			} else {
-				filters.characterRanges.splice(index, 1);
+				itemFilterInputs.characterRanges.splice(index, 1);
 			}
 		});
 
-		if (filters.characterRanges.includes(range.id)) {
+		if (itemFilterInputs.characterRanges.includes(range.id)) {
 			rangeCheckbox.setAttribute('checked', '');
 		}
 
@@ -350,7 +381,14 @@ function showFilterDialog() {
 		]);
 	});
 
-	addAsChildren(dialogContent, [rangeTable, textToNode('<br>'), saveButton]);
+	addAsChildren(dialogContent, [
+		rangeTable,
+		textToNode('<br>'),
+		saveButton,
+		textToNode('<span>&emsp;</span>'),
+		selectAllButton,
+	]);
 
-	showModalDialog(dialogContent);
+	showModalDialog(dialogContent, 850);
+	// log(`showFilterDialog`, 'end');
 }

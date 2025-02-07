@@ -56,8 +56,8 @@ function trianglePath() {
 	setShapePosition
 	updateShapePosition
 	rotate
-	getNextPointNum
-	getPreviousPointNum
+	getNextPointNumber
+	getPreviousPointNumber
 	containsPoint
 	makeSVGPathData
 	makePostScript
@@ -98,14 +98,14 @@ describe('Path', () => {
 				{
 					h1: {
 						coord: {
-							x: 50,
+							x: 0,
 							y: 200,
 						},
 						use: false,
 					},
 					h2: {
 						coord: {
-							x: 150,
+							x: 200,
 							y: 200,
 						},
 						use: false,
@@ -121,14 +121,14 @@ describe('Path', () => {
 				{
 					h1: {
 						coord: {
-							x: 250,
+							x: 200,
 							y: 600,
 						},
 						use: false,
 					},
 					h2: {
 						coord: {
-							x: 350,
+							x: 400,
 							y: 600,
 						},
 						use: false,
@@ -144,14 +144,14 @@ describe('Path', () => {
 				{
 					h1: {
 						coord: {
-							x: 350,
+							x: 300,
 							y: 500,
 						},
 						use: false,
 					},
 					h2: {
 						coord: {
-							x: 450,
+							x: 500,
 							y: 500,
 						},
 						use: false,
@@ -286,14 +286,14 @@ describe('Path', () => {
 		expect(path.svgPathData).toBe('<svg>hi</svg>');
 	});
 
-	it('getNextPointNum', () => {
+	it('getNextPointNumber', () => {
 		const path = samplePath();
-		expect(path.getNextPointNum(3)).toBe(0);
+		expect(path.getNextPointNumber(3)).toBe(0);
 	});
 
-	it('getPreviousPointNum', () => {
+	it('getPreviousPointNumber', () => {
 		const path = samplePath();
-		expect(path.getPreviousPointNum(0)).toBe(3);
+		expect(path.getPreviousPointNumber(0)).toBe(3);
 	});
 
 	it('containsPoint', () => {

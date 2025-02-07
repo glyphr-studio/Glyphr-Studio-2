@@ -64,7 +64,6 @@ function importOneGlyph(otfGlyph, project, finalGlyphs) {
 
 	const glyphID = `glyph-${uni}`;
 	importedGlyph.id = glyphID;
-	importedGlyph.parent = project;
 	finalGlyphs[glyphID] = importedGlyph;
 
 	if (isControlChar(uni) && uni !== '0x0') {

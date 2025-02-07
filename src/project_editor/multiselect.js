@@ -3,10 +3,9 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
-import { ComponentInstance } from '../project_data/component_instance.js';
+import { ControlPoint } from '../project_data/control_point.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-import { PathPoint } from '../project_data/path_point.js';
 // import { combinePaths } from './boolean_combine.js';
 import { combinePaths } from './boolean_combine.js';
 import { makeGlyphWithResolvedLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
@@ -194,7 +193,7 @@ export class MultiSelectPoints extends MultiSelect {
 
 	publishChanges(topic = 'whichPathPointIsSelected') {
 		// log(`MultiSelectPoints.publishChanges`, 'start');
-		if(this.allowPublishing) {
+		if (this.allowPublishing) {
 			const editor = getCurrentProjectEditor();
 			editor.publish(topic, this.members);
 		}
@@ -220,6 +219,18 @@ export class MultiSelectPoints extends MultiSelect {
 		this.changed();
 	}
 
+	selectAll() {
+		const currItem = getCurrentProjectEditor().selectedItem;
+		if (currItem.shapes) {
+			currItem.shapes.forEach((shape) => {
+				getCurrentProjectEditor().multiSelect.shapes.add(shape);
+				if (shape.pathPoints) {
+					shape.pathPoints.forEach((point) => this.add(point));
+				}
+			});
+		}
+	}
+
 	deleteShapesPoints() {
 		let point;
 		let parentPath;
@@ -240,6 +251,21 @@ export class MultiSelectPoints extends MultiSelect {
 
 		this.clear();
 		return minPointIndex;
+	}
+
+	align(edge) {
+		// showToast('align ' + edge);
+		const shapeMaxes = this.virtualShape.maxes;
+		this.virtualShape.pathPoints.forEach((point) => {
+			if (edge === 'top') point.p.y = shapeMaxes.yMax;
+			if (edge === 'middle') point.p.y = shapeMaxes.center.y;
+			if (edge === 'bottom') point.p.y = shapeMaxes.yMin;
+			if (edge === 'left') point.p.x = shapeMaxes.xMin;
+			if (edge === 'center') point.p.x = shapeMaxes.center.x;
+			if (edge === 'right') point.p.x = shapeMaxes.xMax;
+		});
+
+		// log('Glyph.alignShapes', 'end');
 	}
 
 	get highestSelectedPointNumber() {
@@ -278,6 +304,61 @@ export class MultiSelectPoints extends MultiSelect {
 		}
 		// log(`lowest selected point number: ${lowest}`);
 		return lowest;
+	}
+
+	canMergeSelectedPathPoints() {
+		// Only merge two points at a time
+		if (this.members.length !== 2) return false;
+
+		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
+		let lowPoint = this.members[0];
+		let highPoint = this.members[1];
+
+		// Make sure points are from the same path
+		if (lowPoint.parent !== highPoint.parent) return false;
+
+		const lowPointNext = lowPoint.parent.getNextPointNumber(lowPoint.pointNumber);
+		const lowPointPrev = lowPoint.parent.getPreviousPointNumber(lowPoint.pointNumber);
+
+		// Make sure points are adjacent
+		if (lowPointNext === highPoint.pointNumber || lowPointPrev === highPoint.pointNumber) {
+			return true;
+		}
+
+		return false;
+	}
+
+	mergeTwoPathPoints() {
+		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
+		let lowPoint = this.members[0];
+		let highPoint = this.members[1];
+
+		// Fencepost for if point zero and point -1 are selected
+		if (
+			lowPoint.pointNumber === 0 &&
+			highPoint.pointNumber === highPoint.parent.pathPoints.length - 1
+		) {
+			lowPoint = this.members[1];
+			highPoint = this.members[0];
+		}
+
+		// Save the original handle positions
+		const highPointH2 = new ControlPoint(highPoint.h2);
+		const lowPointH1 = new ControlPoint(lowPoint.h1);
+
+		// Use lowPoint as the final result, update the Point position
+		lowPoint.p.x = (lowPoint.p.x + highPoint.p.x) / 2;
+		lowPoint.p.y = (lowPoint.p.y + highPoint.p.y) / 2;
+
+		// Updating the base point also moves the handles
+		// But we want to preseve the original handle positions
+		lowPoint.h1 = new ControlPoint(lowPointH1);
+		lowPoint.h2 = new ControlPoint(highPointH2);
+
+		// Remove the highPoint
+		this.clear();
+		this.select(highPoint);
+		this.deleteShapesPoints();
 	}
 
 	setPointType(t) {
@@ -367,7 +448,7 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	publishChanges(topic = 'whichShapeIsSelected') {
-		if(this.allowPublishing) {
+		if (this.allowPublishing) {
 			const editor = getCurrentProjectEditor();
 			editor.publish(topic, this.members);
 		}
@@ -419,6 +500,11 @@ export class MultiSelectShapes extends MultiSelect {
 		}
 
 		return false;
+	}
+
+	sort() {
+		const itemShapes = this.members[0].parent.shapes;
+		this.members = this.members.sort((a, b) => itemShapes.indexOf(a) - itemShapes.indexOf(b));
 	}
 
 	combine(operation = 'unite') {
@@ -507,6 +593,14 @@ export class MultiSelectShapes extends MultiSelect {
 		});
 
 		// log('Glyph.alignShapes', 'end');
+	}
+
+	roundAll(precision = 9) {
+		this.virtualGlyph.shapes.forEach((shape) => {
+			// log(this.members[m]);
+			shape.roundAll(precision);
+		});
+		this.changed();
 	}
 
 	updateShapePosition(dx, dy) {

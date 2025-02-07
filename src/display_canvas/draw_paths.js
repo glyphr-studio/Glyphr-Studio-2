@@ -155,7 +155,7 @@ function drawPathToCanvas(path, ctx, view, snap = false) {
 	for (let cp = 0; cp < path.pathPoints.length; cp++) {
 		pp = path.pathPoints[cp];
 		// np = path.pathPoints[(cp+1) % path.pathPoints.length];
-		np = path.pathPoints[path.getNextPointNum(cp)];
+		np = path.pathPoints[path.getNextPointNumber(cp)];
 
 		if (!pp.h2.use && !np.h1.use) {
 			// straight line

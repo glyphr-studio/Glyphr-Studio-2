@@ -500,11 +500,11 @@ function searchForLetterPairs() {
 	// log(`searchForLetterPairs`, 'start');
 	/** @type {HTMLInputElement} */
 	const leftGroup = document.querySelector('#kerning__letter-pair__left-group');
-	const leftLetter = [...leftGroup.value][0];
+	const leftLetter = leftGroup.value.charAt(0);
 	// log(`leftLetter: ${leftLetter} : ${charToHex(leftLetter)}`);
 	/** @type {HTMLInputElement} */
 	const rightGroup = document.querySelector('#kerning__letter-pair__right-group');
-	const rightLetter = [...rightGroup.value][0];
+	const rightLetter = rightGroup.value.charAt(0);
 	// log(`rightLetter: ${rightLetter} : ${charToHex(rightLetter)}`);
 
 	const groups = getCurrentProject().kerning;
@@ -554,11 +554,11 @@ function deleteLetterPairs() {
 	// log(`deleteLetterPairs`, 'start');
 	/** @type {HTMLInputElement} */
 	const leftGroup = document.querySelector('#kerning__letter-pair__left-group');
-	const leftLetter = [...leftGroup.value][0];
+	const leftLetter = leftGroup.value.charAt(0);
 	// log(`leftLetter: ${leftLetter} : ${charToHex(leftLetter)}`);
 	/** @type {HTMLInputElement} */
 	const rightGroup = document.querySelector('#kerning__letter-pair__right-group');
-	const rightLetter = [...rightGroup.value][0];
+	const rightLetter = rightGroup.value.charAt(0);
 	// log(`rightLetter: ${rightLetter} : ${charToHex(rightLetter)}`);
 
 	const resultMessage = document.querySelector('#kerning__result-message');

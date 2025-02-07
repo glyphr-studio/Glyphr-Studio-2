@@ -286,7 +286,7 @@ export function remove(base = '', searchTerm = '') {
 export function caseCamelToKebab(camel = '') {
 	let kebab = '';
 	for (let i = 0; i < camel.length; i++) {
-		let char = camel.codePointAt(i);
+		let char = camel.charCodeAt(i);
 		if (char <= 0x5a && char >= 0x41) {
 			kebab += '-';
 		}

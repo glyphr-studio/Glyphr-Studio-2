@@ -1,6 +1,8 @@
 import { emailLink } from '../app/app.js';
-import { makeElement } from '../common/dom.js';
+import { makeElement, textToNode } from '../common/dom.js';
 import { TabControl } from '../controls/tabs/tab_control.js';
+import { cursors } from '../edit_canvas/cursors.js';
+import { makeToolButtonSVG } from '../edit_canvas/tools/tools.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
@@ -95,18 +97,21 @@ function makeHelpOverview() {
 
 		<div class="page__card">
 			<h3>Getting started</h3>
-			<span class="page__card__help-links">
+			<span class="page__card__help-links" style="grid-template-columns:1fr max-content; column-gap: 10px; padding-right: 10px;">
 				<a href="https://www.glyphrstudio.com/help/getting-started/navigation.html" target="_blank">
 					Navigation
+				</a>
+				<a href="https://www.glyphrstudio.com/help/getting-started/working-with-multiple-projects.html" target="_blank">
+					Working with multiple projects
 				</a>
 				<a href="https://www.glyphrstudio.com/help/getting-started/editing.html" target="_blank">
 					Editing
 				</a>
+				<a href="https://www.glyphrstudio.com/help/getting-started/keyboard-shortcuts.html" target="_blank">
+					Keyboard shortcuts
+				</a>
 				<a href="https://www.glyphrstudio.com/help/getting-started/import-export.html" target="_blank">
 					Import / Export
-				</a>
-				<a href="https://www.glyphrstudio.com/help/getting-started/working-with-multiple-projects.html" target="_blank">
-					Working with multiple projects
 				</a>
 			</span>
 		</div>
@@ -179,126 +184,193 @@ function makeHelpOverview() {
  * @returns {Element}
  */
 export function makeKeyboardShortcutReference() {
-	let content = makeElement({
-		innerHTML: `
-		<div class="keyboardShortcutTable">
-			<h3>View</h3>
-			<span>
-				<code>ctrl</code><code>scroll wheel</code>
-			</span>
-			<label>
-				Zoom in and out
-			</label>
+	const outputMarkdownToConsole = false;
+	let table = makeElement({ className: 'keyboardShortcutTable' });
 
-			<span>
-				<code>ctrl</code><code>+</code>
-			</span>
-			<label>
-				Zoom in
-			</label>
+	function makeOneRow(combo, description, options = {}) {
+		let row = `<span>`;
+		combo.forEach((key, i) => {
+			if (options.spacer && i > 0) row += `<span class="spacer">${options.spacer}</span>`;
+			if (options.classes && options.classes[i]) {
+				row += `<code class="${options.classes[i]}">${key}</code>`;
+			} else if (i === 1 && options.toolIconAction) {
+				if (options.toolIconAction === 'rotate') {
+					row += `<img src='${cursors.rotate.substring(5, cursors.rotate.length - 19)}'/>`;
+				} else {
+					row += makeToolButtonSVG({ name: options.toolIconAction });
+				}
+				row += `<i>${key}</i>`;
+			} else {
+				row += `<code>${key}</code>`;
+			}
+		});
+		row += `</span>`;
 
-			<span>
-				<code>ctrl</code><code>-</code>
-			</span>
-			<label>
-				Zoom out
-			</label>
+		if (options.toolIconDescription) {
+			row += `<label>&emsp;`;
+			row += makeToolButtonSVG({ name: options.toolIconDescription });
+			row += description;
+			row += `</label >`;
+		} else {
+			row += `<label>${description}</label>`;
+		}
 
-			<span>
-				<code>ctrl</code><code>0</code>
-			</span>
-			<label>
-				Auto-fit glyph on the screen
-			</label>
+		table.innerHTML += row;
+		if (outputMarkdownToConsole) makeOneMarkdownRow(combo, description, options);
+	}
 
-			<h3>Editing</h3>
-			<span>
-				<code>ctrl</code><code>c</code>
-			</span>
-			<label>
-				Copy the selected shapes
-			</label>
+	function makeOneHeader(text) {
+		table.appendChild(textToNode(`<h3>${text}</h3>`));
+		if (outputMarkdownToConsole) makeOneMarkdownHeader(text);
+	}
 
-			<span>
-				<code>ctrl</code><code>v</code>
-			</span>
-			<label>
-				Paste the selected shapes
-			</label>
+	makeOneHeader('Project actions');
+	makeOneRow(['Ctrl', 'S'], 'Save a Glyphr Studio Project File (.gs2)');
+	makeOneRow(['Ctrl', 'E'], 'Export an OTF Font (.otf)');
+	makeOneRow(['Ctrl', 'G'], 'Export an SVG Font (.svg)');
+	makeOneRow(['Ctrl', 'G'], 'Export an SVG Font (.svg)');
+	makeOneRow(['Ctrl', 'O'], 'Open a project in a new tab');
 
-			<span>
-				<code>ctrl</code><code>a</code>
-			</span>
-			<label>
-				Select all shapes
-			</label>
+	makeOneHeader('Selecting and navigating');
+	makeOneRow(
+		['Ctrl', '.'],
+		`Navigate to the next Item (Character, Ligature, Component, or Kern Group)`
+	);
+	makeOneRow(
+		['Ctrl', ','],
+		`Navigate to the previous Item (Character, Ligature, Component, or Kern Group)`
+	);
+	makeOneRow(['Ctrl', 'A'], `Resize (Arrow) tool: Select all shapes`);
+	makeOneRow(['Ctrl', 'A'], `Path Edit (Pen) tool: Select all path points`);
+	makeOneRow(['Ctrl', 'Shift', 'A'], `Clear all shape and path point selections`);
+	makeOneRow([']'], `Select next shape`);
+	makeOneRow(['Shift', ']'], `Add the next shape to the selection (multi-select)`);
+	makeOneRow(['['], `Select previous shape`);
+	makeOneRow(['Shift', '['], `Add the previous shape to the selection (multi-select)`);
+	makeOneRow(
+		['Ctrl', 'Click a shape'],
+		`Toggle selection for that shape (multi-select)<br>Either on the edit canvas, or the layers panel`,
+		{ toolIconAction: 'resize' }
+	);
+	makeOneRow(['Ctrl', '➝'], `Select the next Path Point`, { classes: [false, 'arrow-key'] });
+	makeOneRow(['Ctrl', 'Shift', '➝'], `Add the next Path Point to the selection (multi-select)`, {
+		classes: [false, false, 'arrow-key'],
+	});
+	makeOneRow(['Ctrl', '⭠'], `Select the previous Path Point`, { classes: [false, 'arrow-key'] });
+	makeOneRow(
+		['Ctrl', 'Shift', '⭠'],
+		`Add the previous Path Point to the selection (multi-select)`,
+		{ classes: [false, false, 'arrow-key'] }
+	);
+	makeOneRow(
+		['Ctrl', 'Click a path point'],
+		`Toggle selection for that path point (multi-select)`,
+		{ toolIconAction: 'pathEdit' }
+	);
 
-			<span>
-				<code>del</code> or<br>
-				<code>backspace</code>
-			</span>
-			<label>
-				Delete the selected shapes or path points
-			</label>
+	makeOneHeader('View');
+	makeOneRow(['Space', 'Scroll wheel click'], `Toggle the pan tool`, { spacer: 'or' });
+	makeOneRow(['Ctrl', 'Scroll wheel'], `Zoom in and out`);
+	makeOneRow(['Ctrl', '+'], `Zoom in`);
+	makeOneRow(['Ctrl', '-'], `Zoom out`);
+	makeOneRow(['Ctrl', '0'], `Auto-fit glyph on the screen`);
+	makeOneRow(['Ctrl', 'Space'], `Toggle distraction free preview mode`);
 
-			<span>
-				<code>⇦</code>
-				<code>⇧</code>
-				<code>⇨</code>
-				<code>⇩</code>
-			</span>
-			<label>
-				Nudge the selected shape or path point <span class="number">1em</span><br>
-				Press <code>shift</code> to nudge <span class="number">10em</span>
-			</label>
+	makeOneHeader('Editing');
+	makeOneRow(['Ctrl', 'C'], `Copy the selected shapes`);
+	makeOneRow(
+		['Ctrl', 'V'],
+		`Paste the selected shapes (Glyphr Studio Clipboard)<br>Paste to import copied SVG Code (Operating System Clipboard)`
+	);
+	makeOneRow(['Ctrl', ']'], `Move shape up`);
+	makeOneRow(['Ctrl', '['], `Move shape down`);
+	makeOneRow(['Ctrl', 'Shift', ']'], `Move shape to the top`);
+	makeOneRow(['Ctrl', 'Shift', '['], `Move shape to the bottom`);
+	makeOneRow(['Delete', 'Backspace'], `Delete the selected shapes or path points`, {
+		spacer: 'or',
+	});
+	makeOneRow(
+		['⭠', '⭡', '➝', '⭣'],
+		`Nudge the selected shape or path point <span class="number">1em</span><br>Press <code>Shift</code> to nudge <span class="number">10em</span>`,
+		{ classes: ['arrow-key', 'arrow-key', 'arrow-key', 'arrow-key'] }
+	);
+	makeOneRow(
+		['Ctrl', 'R'],
+		'Round values for the current selection<br>(Whole Shapes for the Resize tool, Path Points + Handles for the Path Edit tool)'
+	);
+	makeOneRow(['Shift', 'Click'], `Snap the new point's coordinates to whole numbers`, {
+		toolIconAction: 'newPath',
+	});
+	makeOneRow(['Shift', 'Click'], `Snap the new point's coordinates to whole numbers`, {
+		toolIconAction: 'pathAddPoint',
+	});
+	makeOneRow(['Ctrl', 'Click'], 'Add the new point as a corner point with hidden handles', {
+		toolIconAction: 'pathAddPoint',
+	});
+	makeOneRow(['Shift', 'Shape Rotation handle'], 'Snap rotation degrees to whole numbers', {
+		toolIconAction: 'rotate',
+	});
+	makeOneRow(['Esc'], `Close all dialogs`);
 
-			<span>
-				<code>ctrl</code><i><code>Click an Edit Canvas shape</code></i>
-				or<br>
-				<code>ctrl</code><i><code>Click a Layers Panel shape</code></i>
-			</span>
-			<label>
-				Toggle selection for that shape (multi-select)
-			</label>
-
-			<h3>Tools</h3>
-			<span>
-				<code>v</code>
-			</span>
-			<label>Switch to the arrow tool</label>
-
-			<span>
-				<code>b</code>
-			</span>
-			<label>Switch to the pen tool</label>
-
-			<span>
-				<code>space</code> or<br>
-				<code>scroll wheel click</code>
-			</span>
-			<label>
-				Toggle the pan tool
-			</label>
-
-			<span>
-				<code>shift</code>
-				<i><code>Shape Rotation handle</code></i>
-			</span>
-			<label>
-				Snap rotation degrees to whole numbers
-			</label>
-
-			<span>
-				<code>shift</code>
-				<i><code>Add Path Point tool</code></i>
-			</span>
-			<label>
-				Snap the new point's coordinates to whole numbers
-			</label>
-
-		</div>
-	`,
+	makeOneHeader('Tools');
+	makeOneRow(['B', 'P'], 'Select the Path Edit (Pen) tool', {
+		spacer: 'or',
+		toolIconDescription: 'pathEdit',
+	});
+	makeOneRow(['V', 'A'], 'Select the Resize (Arrow) tool', {
+		spacer: 'or',
+		toolIconDescription: 'resize',
+	});
+	makeOneRow(['M', 'R'], 'Select the New Rectangle tool', {
+		spacer: 'or',
+		toolIconDescription: 'newRectangle',
+	});
+	makeOneRow(['O', 'Q'], 'Select the New Oval tool', {
+		spacer: 'or',
+		toolIconDescription: 'newOval',
+	});
+	makeOneRow(['H', 'W'], 'Select the New Path tool', {
+		spacer: 'or',
+		toolIconDescription: 'newPath',
+	});
+	makeOneRow(['U', 'E'], 'Select the Path Add Point tool', {
+		spacer: 'or',
+		toolIconDescription: 'pathAddPoint',
 	});
 
-	return content;
+	if (outputMarkdownToConsole) console.log(markdownOutput);
+	return table;
 }
+
+let markdownOutput = '';
+function makeOneMarkdownRow(combo, description, options = {}) {
+	let row = `| `;
+	combo.forEach((key, i) => {
+		if (options.spacer && i > 0) row += ` ${options.spacer} `;
+		if (i === 1 && options.toolIconAction) {
+			row += `*\`${key}\`* `;
+		} else {
+			row += `\` ${key} \` `;
+		}
+	});
+	row += ` | `;
+	if (options.toolIconAction) row += `[${toolNames[options.toolIconAction]}] `;
+	row += ` ${description}`;
+	row += ` |\n`;
+
+	markdownOutput += row;
+}
+
+function makeOneMarkdownHeader(text, first = false) {
+	if (!first) markdownOutput += `\n\n`;
+	markdownOutput += `### ${text}\n`;
+	markdownOutput += `| Key combination | Description |\n| --- | --- |\n`;
+}
+
+const toolNames = {
+	resize: 'Resize (Arrow) Tool',
+	pathEdit: 'Path Edit (Pen) Tool',
+	newPath: 'New Path Tool',
+	pathAddPoint: 'Path Add Point Tool',
+	rotate: 'Shape Rotate Handle',
+};

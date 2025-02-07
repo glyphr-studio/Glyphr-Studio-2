@@ -130,7 +130,7 @@ function migrate__v1_13_2_to_v2_0_0(oldProject) {
 		const newID = migrate_ItemID(oldID);
 		const chars = hexesToChars(oldID);
 		if (chars !== false) {
-			const newGsub = [...chars].map(charToHex);
+			const newGsub = chars.split('').map(charToHex);
 			const newLigature = migrate_Glyph(
 				oldProject.ligatures[oldID],
 				newID,

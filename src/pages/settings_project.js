@@ -10,7 +10,8 @@ import {
 } from '../controls/dialogs/dialogs.js';
 import { unicodeBlocksBMP } from '../lib/unicode/unicode_blocks_0_bmp.js';
 import { unicodeBlocksSMP } from '../lib/unicode/unicode_blocks_1_smp.js';
-import { unicodeBlocksSIP, unicodeBlocksTIP } from '../lib/unicode/unicode_blocks_extended.js';
+import { unicodeBlocksSIP } from '../lib/unicode/unicode_blocks_2_sip.js';
+import { unicodeBlocksTIP } from '../lib/unicode/unicode_blocks_3_tip.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { makeDirectCheckbox } from '../panels/cards';
 import { CharacterRange } from '../project_data/character_range.js';
@@ -123,10 +124,12 @@ export function makeSettingsTabContentProject() {
 function updateRangesTables() {
 	const enabled = document.querySelector('#enabled-range-table__wrapper');
 	const hidden = document.querySelector('#hidden-range-table__wrapper');
-	enabled.innerHTML = '';
-	hidden.innerHTML = '';
-	addAsChildren(enabled, makeEnabledRangesTable());
-	addAsChildren(hidden, makeHiddenRangesTable());
+	if (enabled && hidden) {
+		enabled.innerHTML = '';
+		hidden.innerHTML = '';
+		addAsChildren(enabled, makeEnabledRangesTable());
+		addAsChildren(hidden, makeHiddenRangesTable());
+	}
 }
 
 // --------------------------------------------------------------
