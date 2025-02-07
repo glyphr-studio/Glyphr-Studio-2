@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { clone } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
 import { Glyph } from '../glyph.js';
+import { Path } from '../path.js';
 
 /**
  * Create a sample Glyph
@@ -109,7 +110,7 @@ describe('Glyph - Getters and Setters', () => {
 
 	it('get/set paths', () => {
 		const g = new Glyph();
-		g.shapes = [{ path: { pathPoints: clone(samples.pathPoints) } }];
+		g.shapes = [new Path({ pathPoints: samples.pathPoints })];
 		expect(g.shapes.length).toBe(1);
 	});
 
