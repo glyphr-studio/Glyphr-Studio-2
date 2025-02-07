@@ -1,5 +1,4 @@
 import { makeLigatureID } from '../../../pages/ligatures';
-import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project';
 import {
 	decrementItemTotal,
 	incrementItemCounter,
@@ -11,10 +10,9 @@ import {
  * Converts opentype.js ligatures into Glyphr Studio ligatures
  * @param {Object} importedFont - opentype.js font object
  * @param {Object} fontLigatures - opentype.js ligature table
- * @param {GlyphrStudioProject} project - current project
  * @returns {Promise<Object>} - imported ligature groups
  */
-export async function importLigatures(importedFont, fontLigatures, project) {
+export async function importLigatures(importedFont, fontLigatures) {
 	const finalLigatures = {};
 	for (const liga of fontLigatures) {
 		await updateFontImportProgressIndicator('ligature');
@@ -24,12 +22,7 @@ export async function importLigatures(importedFont, fontLigatures, project) {
 		} catch {
 			console.warn(`Ligature import error: could not get ${liga.by} (${liga.sub})`);
 		}
-		importOneLigature(
-			{ glyph: thisLigature, gsub: liga.sub },
-			importedFont,
-			project,
-			finalLigatures
-		);
+		importOneLigature({ glyph: thisLigature, gsub: liga.sub }, importedFont, finalLigatures);
 	}
 
 	return finalLigatures;
@@ -43,11 +36,9 @@ export async function importLigatures(importedFont, fontLigatures, project) {
  * to the current project
  * @param {Object} otfLigature - Opentype.js Ligature object
  * @param {Object} importedFont - entire Opentype.js Font object
- * @param {GlyphrStudioProject} project - current project
- * @param {Object} finalLigatures - imported ligature groups
  * @returns nothing
  */
-function importOneLigature(otfLigature, importedFont, project, finalLigatures) {
+function importOneLigature(otfLigature, importedFont, finalLigatures) {
 	// log(`importOneLigature`, 'start');
 	// log(`otfLigature.glyph.name: ${otfLigature.glyph.name}`);
 	// log(otfLigature);
@@ -85,7 +76,6 @@ function importOneLigature(otfLigature, importedFont, project, finalLigatures) {
 		// log(`newLigatureID: ${newLigatureID}`);
 		if (newLigatureID) {
 			importedLigature.id = newLigatureID;
-			importedLigature.parent = project;
 			finalLigatures[newLigatureID] = importedLigature;
 			incrementItemCounter();
 			// log(importedLigature);

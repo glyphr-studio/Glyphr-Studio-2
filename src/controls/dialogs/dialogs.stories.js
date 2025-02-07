@@ -119,7 +119,7 @@ export const Notation = {
 						<span></span>
 					</div>`;
 				showNotation(content, e.offsetX - 530, e.offsetY - 55 );
-				// console.log(e);
+				console.log(e);
 			});
 
 			return target;

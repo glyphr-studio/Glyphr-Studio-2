@@ -6,6 +6,7 @@ import { drawShape } from '../../display_canvas/draw_paths.js';
 import { ComponentInstance } from '../../project_data/component_instance.js';
 import { Path } from '../../project_data/path.js';
 import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
+import { updateCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { stopCreatingNewPath } from './new_path.js';
 
@@ -79,7 +80,7 @@ export function makeEditToolsButtons() {
 			}),
 		});
 
-		newToolButton.addEventListener('click', () => clickTool(buttonName));
+		newToolButton.addEventListener('click', () => selectTool(buttonName));
 
 		if (isSelected) newToolButton.classList.add('editor-page__tool-selected');
 
@@ -159,7 +160,7 @@ export function makeViewToolsButtons() {
 				selected: isSelected,
 			}),
 		});
-		newToolButton.addEventListener('click', () => clickTool(buttonName));
+		newToolButton.addEventListener('click', () => selectTool(buttonName));
 
 		if (isSelected) newToolButton.classList.add('editor-page__tool-selected');
 
@@ -249,8 +250,8 @@ export function makeViewToolsButtons() {
  * Event handler for clicking a tool button
  * @param {String} tool - which tool was clicked
  */
-export function clickTool(tool) {
-	// log('clickTool', 'start');
+export function selectTool(tool) {
+	// log('selectTool', 'start');
 	const editor = getCurrentProjectEditor();
 	let zoomTools = ['zoom1to1', 'zoomEm', 'zoomIn', 'zoomOut'];
 
@@ -262,6 +263,7 @@ export function clickTool(tool) {
 		editor.publish('editCanvasView', editor.view);
 	} else {
 		switchToolTo(tool);
+		updateCursor();
 	}
 
 	if (tool === 'resize') editor.multiSelect.points.clear();
@@ -273,7 +275,7 @@ export function clickTool(tool) {
 		stopCreatingNewPath();
 	}
 
-	// log('clickTool', 'end');
+	// log('selectTool', 'end');
 }
 
 /**
@@ -307,7 +309,7 @@ export function makeKernToolButton() {
 		}),
 	});
 
-	kernToolButton.addEventListener('click', () => clickTool('kern'));
+	kernToolButton.addEventListener('click', () => selectTool('kern'));
 
 	editor.subscribe({
 		topic: 'whichToolIsSelected',
@@ -441,6 +443,59 @@ export function isShapeHere(shape, cx, cy) {
 
 	// log('red = ' + imageData.data[0] + '  returning: ' + (imageData.data[0] < 255));
 	// log(`isShapeHere`, 'end');
+	return imageData.data[0] < 255;
+}
+
+/**
+ * Returns a true if an x/y point is near the edge of a shape
+ * @param {Path | ComponentInstance} shape - shape to check
+ * @param {Number} cx - clicked x value
+ * @param {Number} cy - clicked y value
+ * @param {Number} thickness - how close to the edge returns true
+ * @returns {Boolean}
+ */
+export function isPointNearShapeEdge(shape, cx, cy, thickness = 10) {
+	// log(`isPointNearShapeEdge`, 'start');
+	// log(`cx: ${cx} / cy: ${cy}`);
+	let sx = cXsX(cx);
+	let sy = cYsY(cy);
+	let sThickness = thickness / getCurrentProjectEditor().view.dz;
+	// log(`sx: ${sx} / sy: ${sy}`);
+
+	if (!shape.maxes.isPointInside(sx, sy, sThickness)) {
+		// log(`Outside maxes for this shape`);
+		// log(`isPointNearShapeEdge`, 'end');
+		return false;
+	}
+
+	let g1 = 100;
+	let g2 = 200;
+	let ghc = document.createElement('canvas');
+	ghc.width = shape.maxes.width + g2;
+	ghc.height = shape.maxes.height + g2;
+	let ctx = ghc.getContext('2d', {
+		alpha: false,
+		willReadFrequently: true,
+	});
+	let view = { dx: shape.maxes.xMin * -1 + g1, dy: shape.maxes.yMax + g1, dz: 1 };
+
+	ctx.fillStyle = 'rgb(255, 255, 255)';
+	ctx.fillRect(0, 0, shape.maxes.width + g2, shape.maxes.height + g2);
+
+	ctx.beginPath();
+	drawShape(shape, ctx, view);
+	ctx.closePath();
+
+	ctx.strokeStyle = 'rgb(0,0,0)';
+	ctx.lineWidth = sThickness;
+	ctx.fill();
+	ctx.stroke();
+
+	let xTest = sx + view.dx;
+	let yTest = view.dy - sy;
+	let imageData = ctx.getImageData(xTest, yTest, 1, 1);
+
+	// log(`isPointNearShapeEdge`, 'end');
 	return imageData.data[0] < 255;
 }
 

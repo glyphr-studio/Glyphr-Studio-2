@@ -336,7 +336,7 @@ function addLigature(sequence) {
 			id: newID,
 			parent: project,
 			objType: 'Ligature',
-			gsub: [...sequence].map((char) => char.codePointAt(0)),
+			gsub: sequence.split('').map((char) => char.codePointAt(0)),
 		}),
 		'Ligature',
 		newID
@@ -357,10 +357,10 @@ export function makeLigatureID(sequence = '') {
 	// log(`sequence: ${sequence}`);
 	if (sequence === '') return false;
 	let newID = 'liga';
-	let chars = [...sequence];
+	let chars = sequence.split('');
 	chars.forEach((char) => {
 		// If basic latin letter, use the letter
-		let code = char.codePointAt(0);
+		let code = char.charCodeAt(0);
 		if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
 			newID += '-' + char;
 		} else {

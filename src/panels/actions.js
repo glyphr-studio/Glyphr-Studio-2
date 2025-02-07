@@ -1,15 +1,8 @@
-import { addCrossProjectCopyShapeOptionControls } from '../app/cross_project_actions/action_copy_shapes.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { getFilesFromFilePicker } from '../app/open_project.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
-import {
-	closeEveryTypeOfDialog,
-	showError,
-	showModalDialog,
-	showToast,
-} from '../controls/dialogs/dialogs.js';
-import { eventHandlerData } from '../edit_canvas/events.js';
+import { showError, showToast } from '../controls/dialogs/dialogs.js';
 import { importSVGtoCurrentItem } from '../edit_canvas/events_drag_drop_paste.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { addComponent } from '../pages/components.js';
@@ -22,16 +15,29 @@ import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import {
+	clipboardClear,
+	clipboardCopy,
+	clipboardPaste,
+	combineSelectedPaths,
+	combineUniteAllGlyphPaths,
+	copyShapesFromTo,
+	deleteSelectedPaths,
+	deleteSelectedPoints,
+	makeActionButtonClearClipboardTooltip,
+	makeActionButtonPasteTooltip,
+	moveLayer,
+	selectNextPathPoint,
+	selectPreviousPathPoint,
+	showDialogChooseItemFromOtherProject,
+	showDialogChooseOtherItem,
+} from '../project_editor/actions.js';
+import {
 	addLinkToUsedIn,
-	canAddComponentInstance,
 	makeGlyphSVGforExport,
-	makeGlyphWithResolvedLinks,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
 import { saveTextFile } from '../project_editor/file_io.js';
 import { makeActionButton } from './action_buttons.js';
-import { makeSingleLabel } from './cards.js';
-import { makeAllItemTypeChooserContent } from './item_chooser.js';
 import { refreshPanel } from './panels.js';
 
 // --------------------------------------------------------------
@@ -113,7 +119,7 @@ export function getActionData(name) {
 	if (name === 'addShapeActions') {
 		actionData = [
 			{
-				iconName: 'addPath',
+				iconName: 'addShape',
 				iconOptions: false,
 				title: `Add Path\nCreates a new default path and adds it to this glyph.`,
 				onClick: () => {
@@ -126,7 +132,7 @@ export function getActionData(name) {
 				},
 			},
 			{
-				iconName: 'addPath',
+				iconName: 'addShape',
 				iconOptions: true,
 				title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
 				onClick: () => {
@@ -289,7 +295,7 @@ export function getActionData(name) {
 				onClick: clipboardCopy,
 			},
 			{
-				iconName: 'deletePath',
+				iconName: 'deleteShape',
 				title: 'Delete\nRemoves the currently selected shape(s) from this glyph.',
 				onClick: deleteSelectedPaths,
 			},
@@ -384,9 +390,7 @@ export function getActionData(name) {
 							const transformedGlyph = shape.transformedGlyph;
 							// log(`\n⮟transformedGlyph⮟`);
 							// log(transformedGlyph);
-							newShapes = newShapes.concat(
-								copyShapesFromTo(transformedGlyph, editor.selectedItem)
-							);
+							newShapes = newShapes.concat(copyShapesFromTo(transformedGlyph, editor.selectedItem));
 							if (editor.selectedItemID) removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
 						}
 					});
@@ -399,7 +403,7 @@ export function getActionData(name) {
 				},
 			},
 			{
-				iconName: 'deletePath',
+				iconName: 'deleteShape',
 				iconOptions: true,
 				title: 'Delete\nRemoves the currently selected component instance from this glyph.',
 				onClick: deleteSelectedPaths,
@@ -458,35 +462,53 @@ export function getActionData(name) {
 		actionData = [
 			{
 				iconName: 'moveLayerUp',
-				title: `Move Path Up\nMoves the path up in the path layer order.`,
-				disabled: selectedPaths.length !== 1,
+				title: `Move Shapes Up\nMoves shapes up in the layer order.`,
 				onClick: () => {
 					moveLayer('up');
 					const editor = getCurrentProjectEditor();
-					editor.history.addState(`Moved layer up`);
+					editor.history.addState(`Moved layers up`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
+			},
+			{
+				iconName: 'moveLayerTop',
+				title: `Move Shapes to the Top\nMoves shapes to the top of the layer order.`,
+				onClick: () => {
+					moveLayer('top');
+					const editor = getCurrentProjectEditor();
+					editor.history.addState(`Moved layers to the top`);
 					editor.publish('currentItem', editor.selectedItem);
 				},
 			},
 			{
 				iconName: 'moveLayerDown',
-				title: `Move Path Down\nMoves the path down in the path layer order.`,
-				disabled: selectedPaths.length !== 1,
+				title: `Move Shapes Down\nMoves shapes down in the layer order.`,
 				onClick: () => {
 					moveLayer('down');
 					const editor = getCurrentProjectEditor();
-					editor.history.addState(`Moved layer down`);
+					editor.history.addState(`Moved layers down`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
+			},
+			{
+				iconName: 'moveLayerBottom',
+				title: `Move Shapes to the Bottom\nMoves shapes to the bottom of the layer order.`,
+				onClick: () => {
+					moveLayer('bottom');
+					const editor = getCurrentProjectEditor();
+					editor.history.addState(`Moved layers to the bottom`);
 					editor.publish('currentItem', editor.selectedItem);
 				},
 			},
 		];
 	}
 
-	// ALIGN
-	if (name === 'alignActions') {
+	// ALIGN SHAPES
+	if (name === 'alignShapeActions') {
 		actionData = [
 			{
-				title: `Align Left\nMoves all the selected shape so they are left aligned with the leftmost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Left\nMoves all the selected shape so they are left aligned with the leftmost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'left',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -497,8 +519,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'center',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -509,8 +531,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Right\nMoves all the selected shapes so they are right aligned with the rightmost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'right',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -521,8 +543,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Top\nMoves all the selected shapes so they are top aligned with the topmost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'top',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -533,8 +555,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'middle',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -545,8 +567,8 @@ export function getActionData(name) {
 				},
 			},
 			{
-				title: `Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape.`,
-				iconName: 'align',
+				title: `Align Shapes: Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape.`,
+				iconName: 'align_shapes',
 				iconOptions: 'bottom',
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
@@ -554,6 +576,84 @@ export function getActionData(name) {
 					vGlyph.align('bottom');
 					editor.history.addState(`Bottom aligned ${editor.multiSelect.shapes.length} shapes`);
 					editor.publish('currentItem', vGlyph);
+				},
+			},
+		];
+	}
+
+	// ALIGN PATH POINTS
+	if (name === 'alignPointActions') {
+		actionData = [
+			{
+				iconName: 'align_points',
+				iconOptions: 'left',
+				title: `Align Path Points: Left\nMoves all the selected points so they are left aligned with the leftmost point.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('left');
+					editor.history.addState(`Left aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'center',
+				title: `Align Path Points: Center\nMoves all the selected points so they are center aligned between the leftmost and rightmost point.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('center');
+					editor.history.addState(`Center aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'right',
+				title: `Align Path Points: Right\nMoves all the selected points so they are right aligned with the rightmost point.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('right');
+					editor.history.addState(`Right aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'top',
+				title: `Align Path Points: Top\nMoves all the selected points so they are top aligned with the topmost point.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('top');
+					editor.history.addState(`Top aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'middle',
+				title: `Align Path Points: Middle\nMoves all the selected points so they are middle aligned between the topmost and bottommost point.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('middle');
+					editor.history.addState(`Middle aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
+				},
+			},
+			{
+				iconName: 'align_points',
+				iconOptions: 'bottom',
+				title: `Align Path Points: Bottom\nMoves all the selected points so they are bottom aligned with the bottommost point.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vShape = editor.multiSelect.points;
+					vShape.align('bottom');
+					editor.history.addState(`Bottom aligned ${editor.multiSelect.points.length} points`);
+					editor.publish('currentItem', vShape);
 				},
 			},
 		];
@@ -645,44 +745,27 @@ export function getActionData(name) {
 				},
 			},
 			{
+				iconName: 'mergePathPoints',
+				title: `Merge Path Points\nMerges 2 selected path points into a single path point.`,
+				disabled: !getCurrentProjectEditor().multiSelect.points.canMergeSelectedPathPoints(),
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					editor.multiSelect.points.mergeTwoPathPoints();
+					editor.history.addState(`Merged two path points into one`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
+			},
+			{
 				iconName: 'selectPreviousPathPoint',
 				disabled: editor.multiSelect.points.hasMultipleParents,
 				title: `Select pervious Path Point\nSelect the path point that comes before the currently selected path point.\nHold [Ctrl] to add the previous path point to the selection.`,
-				onClick: () => {
-					const editor = getCurrentProjectEditor();
-					let msPoints = editor.multiSelect.points;
-					let path = msPoints.members[0].parent;
-					let thisIndex = msPoints.lowestSelectedPointNumber;
-					let previousIndex = path.getPreviousPointNum(thisIndex);
-					// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
-
-					if (eventHandlerData.isCtrlDown) {
-						msPoints.add(path.pathPoints[previousIndex]);
-					} else {
-						msPoints.select(path.pathPoints[previousIndex]);
-					}
-					editor.publish('whichPathPointIsSelected', path.pathPoints[previousIndex]);
-				},
+				onClick: selectPreviousPathPoint,
 			},
 			{
 				iconName: 'selectNextPathPoint',
 				disabled: editor.multiSelect.points.hasMultipleParents,
 				title: `Select next Path Point\nSelect the path point that comes after the currently selected path point.\nHold [Ctrl] to add the next path point to the selection.`,
-				onClick: () => {
-					const editor = getCurrentProjectEditor();
-					let msPoints = editor.multiSelect.points;
-					let path = msPoints.members[0].parent;
-					let thisIndex = msPoints.highestSelectedPointNumber;
-					let nextIndex = path.getNextPointNum(thisIndex);
-					// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
-
-					if (eventHandlerData.isCtrlDown) {
-						msPoints.add(path.pathPoints[nextIndex]);
-					} else {
-						msPoints.select(path.pathPoints[nextIndex]);
-					}
-					editor.publish('whichPathPointIsSelected', path.pathPoints[nextIndex]);
-				},
+				onClick: selectNextPathPoint,
 			},
 		];
 	}
@@ -757,13 +840,13 @@ export function makeActionsArea_Path(test = false) {
 	}
 
 	// Layer actions
-	if (selectedPaths.length === 1 || test) {
+	if (selectedPaths.length || test) {
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}
 
 	// Path align actions
 	if (selectedPaths.length > 1 || test) {
-		addChildActions(multiActions, getActionData('alignActions'));
+		addChildActions(multiActions, getActionData('alignShapeActions'));
 	}
 
 	return selectedPaths.length > 1 ? [actionsArea, multiActions] : actionsArea;
@@ -771,7 +854,7 @@ export function makeActionsArea_Path(test = false) {
 
 export function makeActionsArea_ComponentInstance(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
-	let alignActions = false;
+	let alignShapeActions = false;
 	let selectedPaths = getCurrentProjectEditor().multiSelect.shapes.members;
 
 	if (selectedPaths.length > 0 || test) {
@@ -780,7 +863,7 @@ export function makeActionsArea_ComponentInstance(test = false) {
 	}
 
 	// Layer actions
-	if (selectedPaths.length === 1 || test) {
+	if (selectedPaths.length || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'path layers'}));
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}
@@ -789,11 +872,11 @@ export function makeActionsArea_ComponentInstance(test = false) {
 	if (selectedPaths.length > 1 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
 		// @ts-ignore
-		alignActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
-		addChildActions(alignActions, getActionData('alignActions'));
+		alignShapeActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
+		addChildActions(alignShapeActions, getActionData('alignShapeActions'));
 	}
 
-	return alignActions ? [actionsArea, alignActions] : actionsArea;
+	return alignShapeActions ? [actionsArea, alignShapeActions] : actionsArea;
 }
 
 // Point actions
@@ -801,14 +884,22 @@ export function makeActionsArea_PathPoint(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	let selectedPoints = getCurrentProjectEditor().multiSelect.points;
 	let isPointSelected = false;
+	let alignPointActions = false;
 	if (selectedPoints.length > 0) isPointSelected = true;
 	// if (_UI.selectedTool !== 'pathEdit') isPointSelected = false;
+
 	if (isPointSelected || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'path point'}));
 		addChildActions(actionsArea, getActionData('pointActions'));
 	}
 
-	return actionsArea;
+	if (selectedPoints.length > 1 || test) {
+		// @ts-ignore
+		alignPointActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
+		addChildActions(alignPointActions, getActionData('alignPointActions'));
+	}
+
+	return alignPointActions ? [actionsArea, alignPointActions] : actionsArea;
 }
 
 // Kern Group actions
@@ -816,526 +907,4 @@ export function makeActionsArea_KernGroup() {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	addChildActions(actionsArea, getActionData('kernGroupActions'));
 	return actionsArea;
-}
-
-// --------------------------------------------------------------
-// Delete selected path / point
-// --------------------------------------------------------------
-
-export function deleteSelectedPaths() {
-	const editor = getCurrentProjectEditor();
-	let msShapes = editor.multiSelect.shapes;
-
-	let historyTitle;
-	if (msShapes.length > 1) {
-		historyTitle = `Deleted ${msShapes.length} paths`;
-	} else {
-		historyTitle = `Deleted path: ${msShapes.singleton.name}`;
-	}
-
-	msShapes.deleteShapes();
-	editor.history.addState(historyTitle);
-	editor.publish('currentItem', editor.multiSelect.shapes.virtualGlyph);
-}
-
-export function deleteSelectedPoints() {
-	const editor = getCurrentProjectEditor();
-	let msPoints = editor.multiSelect.points;
-
-	let historyTitle;
-	if (msPoints.length > 1) {
-		historyTitle = `Deleted ${msPoints.length} path points`;
-	} else {
-		historyTitle = `Deleted path point: ${msPoints.singleton.pointNumber}`;
-	}
-
-	let minDeletedPoint = msPoints.deleteShapesPoints();
-	editor.history.addState(historyTitle);
-	let pathSingleton = editor.multiSelect.shapes.singleton;
-	if (pathSingleton) {
-		msPoints.select(pathSingleton.pathPoints[pathSingleton.getPreviousPointNum(minDeletedPoint)]);
-	} else {
-		editor.publish('whichPathPointIsSelected', editor.multiSelect.shapes);
-	}
-}
-
-// --------------------------------------------------------------
-// Layers
-// --------------------------------------------------------------
-
-function moveLayer(direction = 'up') {
-	const editor = getCurrentProjectEditor();
-	const selectedPath = editor.multiSelect.shapes.singleton;
-	const itemPaths = editor.selectedItem.shapes;
-	const currentIndex = itemPaths.indexOf(selectedPath);
-	let tempPath;
-
-	if (direction === 'down') {
-		if (currentIndex > 0 && currentIndex < itemPaths.length) {
-			tempPath = itemPaths[currentIndex - 1];
-			itemPaths[currentIndex - 1] = itemPaths[currentIndex];
-			itemPaths[currentIndex] = tempPath;
-		}
-	} else {
-		if (currentIndex > -1 && currentIndex < itemPaths.length - 1) {
-			tempPath = itemPaths[currentIndex + 1];
-			itemPaths[currentIndex + 1] = itemPaths[currentIndex];
-			itemPaths[currentIndex] = tempPath;
-		}
-	}
-}
-
-// --------------------------------------------------------------
-// Combine
-// --------------------------------------------------------------
-
-function combineSelectedPaths(operation = 'unite') {
-	showToast(`Combine: ${operation} - selected shapes... `, 10000);
-	const editor = getCurrentProjectEditor();
-	setTimeout(function () {
-		let successful = editor.multiSelect.shapes.combine(operation);
-		if (successful) editor.history.addState(`Combine: ${operation} - all selected paths`);
-	}, 200);
-}
-
-function combineUniteAllGlyphPaths() {
-	showToast('Uniting all glyph shapes... ', 10000);
-	const editor = getCurrentProjectEditor();
-	setTimeout(function () {
-		editor.multiSelect.shapes.selectAll();
-		let successful = editor.multiSelect.shapes.combine('unite');
-		if (successful) editor.history.addState('Combine: unite - all glyph paths');
-	}, 200);
-}
-
-// --------------------------------------------------------------
-// Copy Paste
-// --------------------------------------------------------------
-export function clipboardCopy() {
-	// log(`clipboardCopy`, 'start');
-
-	const editor = getCurrentProjectEditor();
-	let selPaths = [];
-	editor.multiSelect.shapes.members.forEach((shape) => {
-		selPaths.push(shape.save(true));
-	});
-
-	if (selPaths.length) {
-		editor.clipboard = {
-			shapes: selPaths,
-			sourceID: editor.selectedItemID,
-			dx: 0,
-			dy: 0,
-		};
-	} else {
-		editor.clipboard = false;
-	}
-
-	updateClipboardActionIcons(selPaths.length);
-	// log(editor.clipboard);
-	// log(`clipboardCopy`, 'end');
-}
-
-export function clipboardPaste() {
-	// log('clipboardPaste', 'start');
-	const editor = getCurrentProjectEditor();
-	let clipboard = editor.clipboard;
-	let offsetPaths = clipboard.sourceID === editor.selectedItemID;
-
-	if (clipboard && offsetPaths) {
-		clipboard.dx += 20;
-		clipboard.dy -= 20;
-	}
-
-	if (clipboard && clipboard?.shapes?.length) {
-		let newShapes = [];
-
-		let newShape, newName, newSuffix, caret, suffix;
-		clipboard.shapes.forEach((shape) => {
-			if (shape.objType === 'ComponentInstance') {
-				newShape = new ComponentInstance(shape);
-			} else {
-				newShape = new Path(shape);
-			}
-
-			if (offsetPaths) {
-				newShape.updateShapePosition(clipboard.dx, clipboard.dy);
-			}
-
-			newName = newShape.name;
-			newSuffix = ' (copy)';
-			caret = newShape.name.lastIndexOf('(copy');
-
-			if (caret > 0) {
-				suffix = newName.substring(caret + 5);
-				newName = newName.substring(0, caret);
-				if (suffix === ')') {
-					newSuffix = '(copy 2)';
-				} else {
-					// log("\t - suffix " + suffix);
-					suffix = suffix.substring(1);
-					// log("\t - suffix " + suffix);
-					suffix = suffix.substring(0, suffix.length - 1);
-					// log("\t - suffix " + suffix);
-					newSuffix = '(copy ' + (parseInt(suffix) + 1) + ')';
-					// log("\t - newSuffix " + newSuffix);
-				}
-			}
-			newShape.name = newName + newSuffix;
-
-			if (newShape.objType === 'ComponentInstance' && newShape?.link && editor.selectedItemID) {
-				let newShapeLink = '' + newShape.link;
-				addLinkToUsedIn(editor.project.getItem(newShapeLink), editor.selectedItemID);
-			}
-
-			newShapes.push(newShape);
-		});
-
-		// log(`New paths that have been copied`);
-		// log(newShapes);
-
-		editor.multiSelect.shapes.clear();
-		editor.multiSelect.points.clear();
-
-		const addedShapes = [];
-		newShapes.forEach((shape) => {
-			addedShapes.push(editor.selectedItem.addOneShape(shape));
-		});
-
-		addedShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
-
-		clipboard.sourceID = editor.selectedItemID;
-
-		let len = newShapes.length;
-		editor.history.addState(len === 1 ? 'Pasted Path' : `Pasted ${len} Paths`);
-		showToast(
-			len === 1
-				? 'Pasted Path<br>from the Glyphr Studio clipboard'
-				: `Pasted ${len} Paths<br>from the Glyphr Studio clipboard`
-		);
-		editor.publish('currentItem', editor.selectedItem);
-		return true;
-	}
-	return false;
-	// log('clipboardPaste', 'end');
-}
-
-export function clipboardClear() {
-	const editor = getCurrentProjectEditor();
-	editor.clipboard = false;
-	updateClipboardActionIcons(0);
-}
-
-function updateClipboardActionIcons(numberOfClipboardItems = 0) {
-	const editor = getCurrentProjectEditor();
-	let pasteButton = document.querySelector('#actionButtonPaste');
-	let clearButton = document.querySelector('#actionButtonClearClipboard');
-
-	if (editor.clipboard) {
-		pasteButton.removeAttribute('disabled');
-		clearButton.removeAttribute('disabled');
-	} else {
-		pasteButton.setAttribute('disabled', 'disabled');
-		clearButton.setAttribute('disabled', 'disabled');
-	}
-
-	pasteButton.setAttribute('title', makeActionButtonPasteTooltip(numberOfClipboardItems));
-	clearButton.setAttribute('title', makeActionButtonClearClipboardTooltip(numberOfClipboardItems));
-}
-
-export function makeActionButtonPasteTooltip(clipBoardPathCount) {
-	let re = `Paste\nAdds the previously-copied shape(s) into this glyph.\n\n`;
-	re += `Currently ${clipBoardPathCount} Path${
-		clipBoardPathCount === 1 ? '' : 's'
-	} on the clipboard.`;
-	return re;
-}
-
-export function makeActionButtonClearClipboardTooltip(clipBoardPathCount) {
-	let re = `Clear Glyphr Studio Clipboard\n`;
-	re += `In order to use your Operating System clipboard for copy / paste, the Glyphr Studio clipboard must be empty.\n\n`;
-	re += `Currently ${clipBoardPathCount} Path${
-		clipBoardPathCount === 1 ? '' : 's'
-	} on the clipboard.`;
-	return re;
-}
-
-function showDialogChooseOtherItem(actionName = '') {
-	// log(`showDialogChooseOtherItem`, 'start');
-	// log(`actionName: ${actionName}`);
-	let content;
-	let onClick;
-	let itemChooserType = 'Characters';
-
-	if (actionName === 'copyPaths') {
-		content = makeElement({
-			innerHTML: `<h2>Copy paths from another glyph</h2>`,
-		});
-		content.innerHTML += `All the paths from the glyph you select will be copied and pasted into this glyph.<br><br>`;
-		addCopyActionsForChooseOtherItem(content);
-		onClick = (itemID) => {
-			const editor = getCurrentProjectEditor();
-			const otherItem = editor.project.getItem(itemID);
-			if (!otherItem || otherItem.shapes.length === 0) {
-				showToast(`Item doesn't exist, or has no shapes.`);
-				return;
-			}
-			const thisItem = editor.selectedItem;
-			const oldRSB = thisItem.rightSideBearing;
-			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
-			editor.multiSelect.shapes.clear();
-			newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
-			/** @ts-ignore */
-			if (document.querySelector('#checkbox-maintain-rsb').checked) {
-				thisItem.rightSideBearing = oldRSB;
-			}
-			editor.publish('currentItem', thisItem);
-			editor.history.addState(`Paths were copied from ${otherItem.name}.`);
-			closeEveryTypeOfDialog();
-			showToast(`${otherItem.shapes.length} paths copied from<br>${otherItem.name}`);
-		};
-	}
-
-	if (actionName === 'addAsComponentInstance') {
-		// log(`Dialog addAsComponentInstance`, 'start');
-		itemChooserType = 'Components';
-		content = makeElement({
-			innerHTML: `<h2>Add another glyph as a component instance</h2>`,
-		});
-		content.innerHTML += `The glyph you select will be treated as a root component, and added to this glyph as a component instance.<br><br>`;
-		addCopyActionsForChooseOtherItem(content);
-
-		onClick = (itemID) => {
-			const editor = getCurrentProjectEditor();
-			let otherItem = editor.project.getItem(itemID);
-			if (!otherItem) {
-				editor.project.addItemByType(new Glyph({}), 'Glyph', itemID);
-				otherItem = editor.project.getItem(itemID);
-			}
-			const thisItem = editor.selectedItem;
-			const oldRSB = thisItem.rightSideBearing;
-
-			editor.history.addWholeProjectChangePreState(
-				`Component instance was linked from ${otherItem.name}.`
-			);
-			const newInstance = linkComponentFromTo(otherItem, thisItem);
-			if (newInstance) {
-				editor.publish('currentItem', thisItem);
-				editor.multiSelect.shapes.add(newInstance);
-				/** @ts-ignore */
-				if (document.querySelector('#checkbox-maintain-rsb').checked) {
-					thisItem.rightSideBearing = oldRSB;
-				}
-				editor.history.addWholeProjectChangePostState();
-				closeEveryTypeOfDialog();
-				showToast(`Component instance linked from<br>${otherItem.name}`);
-			} else {
-				editor.history.queue.shift();
-				closeEveryTypeOfDialog();
-				showError(`
-				Cannot add ${thisItem.name} to ${otherItem.name} as a component instance.
-				<br>
-				This is usually because adding the link would create a circular reference.
-				`);
-			}
-		};
-		// log(`Dialog addAsComponentInstance`, 'end');
-	}
-
-	if (actionName === 'linkAsComponent') {
-		content = makeElement({
-			innerHTML: `<h2>Link this component to another glyph</h2>`,
-		});
-		content.innerHTML += `This component will be linked to the glyph you select as a component instance.<br><br>`;
-		onClick = (itemID) => {
-			const editor = getCurrentProjectEditor();
-			let destinationItem = editor.project.getItem(itemID);
-			if (!destinationItem) {
-				editor.project.addItemByType(new Glyph({}), 'Glyph', itemID);
-				destinationItem = editor.project.getItem(itemID);
-			}
-			editor.history.addWholeProjectChangePreState(
-				`Component was linked to ${destinationItem.name}.`
-			);
-			const thisItem = editor.selectedItem;
-			const newInstance = linkComponentFromTo(thisItem, destinationItem);
-			if (newInstance) {
-				editor.publish('currentItem', thisItem);
-				editor.history.addWholeProjectChangePostState();
-				closeEveryTypeOfDialog();
-				showToast(`Component was linked to<br>${destinationItem.name}`);
-			} else {
-				editor.history.queue.shift();
-				closeEveryTypeOfDialog();
-				showError(`
-				Cannot add ${thisItem.name} to ${destinationItem.name} as a component instance.
-					<br>
-					This is usually because adding the link would create a circular reference.
-					`);
-			}
-		};
-	}
-
-	const chooserArea = makeAllItemTypeChooserContent(onClick, itemChooserType);
-	content.appendChild(chooserArea);
-	showModalDialog(content);
-	// log(`showDialogChooseOtherItem`, 'end');
-}
-
-function addCopyActionsForChooseOtherItem(parent) {
-	parent.appendChild(
-		makeElement({
-			tag: 'strong',
-			content: 'Copy options:',
-			style: 'display: inline-block; margin-bottom: 10px;',
-		})
-	);
-	parent.appendChild(makeElement({ tag: 'br' }));
-	parent.appendChild(
-		makeElement({
-			tag: 'input',
-			attributes: { type: 'checkbox' },
-			className: 'copy-shapes-options__checkbox',
-			id: 'checkbox-maintain-rsb',
-		})
-	);
-	parent.appendChild(
-		makeSingleLabel(
-			`Maintain right side bearing, accounting for the width of the added items.`,
-			false,
-			'checkbox-maintain-rsb',
-			'copy-shapes-options__label'
-		)
-	);
-	parent.appendChild(makeElement({ tag: 'br' }));
-	parent.appendChild(makeElement({ tag: 'br' }));
-}
-
-function showDialogChooseItemFromOtherProject() {
-	let content = makeElement({
-		innerHTML: `
-			<h2>Copy shapes from a glyph in the other open project</h2>
-			All the paths from the glyph you select will be copied and pasted into this glyph.
-			<br><br>
-			<strong style="display: inline-block; margin-bottom:10px;">Copy options:</strong>
-			<br>`,
-	});
-
-	const thisEditor = getCurrentProjectEditor();
-	const otherEditor = getGlyphrStudioApp().otherProjectEditor;
-	addCrossProjectCopyShapeOptionControls(content, otherEditor, thisEditor);
-
-	let onClick = (itemID) => {
-		const sourceItem = otherEditor.project.getItem(itemID);
-		const resolvedGlyph = makeGlyphWithResolvedLinks(sourceItem);
-		const thisItem = thisEditor.selectedItem;
-		const emRatio = thisEditor.project.settings.font.upm / otherEditor.project.settings.font.upm;
-		// log(`emRatio: ${emRatio}`);
-
-		/**@type {HTMLInputElement} */
-		const updateAdvanceWidthBox = document.querySelector('#checkbox-advance-width');
-		const updateAdvanceWidth = updateAdvanceWidthBox.checked;
-		// log(`updateAdvanceWidth: ${updateAdvanceWidth}`);
-
-		/**@type {HTMLInputElement} */
-		const scaleItemsBox = document.querySelector('#checkbox-scale');
-		let scaleItems = false;
-		if (scaleItemsBox) scaleItems = scaleItemsBox?.checked;
-		// log(`scaleItems: ${scaleItems}`);
-
-		/**@type {HTMLInputElement} */
-		const reverseWindingsBox = document.querySelector('#checkbox-reverse-windings');
-		const reverseWindings = reverseWindingsBox.checked;
-		// log(`reverseWindings: ${reverseWindings}`);
-
-		const oldRSB = thisItem.rightSideBearing;
-		const newShapes = copyShapesFromTo(resolvedGlyph, thisItem, false);
-		const msShapes = thisEditor.multiSelect.shapes;
-		msShapes.clear();
-		newShapes.forEach((shape) => msShapes.add(shape));
-
-		if (scaleItems) {
-			let deltaWidth = resolvedGlyph.advanceWidth * emRatio - resolvedGlyph.advanceWidth;
-			// log(`deltaWidth: ${deltaWidth}`);
-			msShapes.virtualGlyph.updateGlyphSize({
-				width: deltaWidth,
-				ratioLock: true,
-				transformOrigin: 'baseline-left',
-			});
-		}
-
-		if (reverseWindings) msShapes.virtualGlyph.reverseWinding();
-		if (updateAdvanceWidth) thisItem.rightSideBearing = oldRSB;
-
-		thisEditor.publish('currentItem', thisItem);
-		let title = `
-			${resolvedGlyph.shapes.length} paths were copied<br>
-			from ${otherEditor.project.settings.project.name} : ${resolvedGlyph.name}`;
-		thisEditor.history.addState(title);
-		closeEveryTypeOfDialog();
-		showToast(title);
-	};
-
-	const chooserArea = makeAllItemTypeChooserContent(
-		onClick,
-		'Characters',
-		getGlyphrStudioApp().otherProjectEditor
-	);
-	content.appendChild(chooserArea);
-	showModalDialog(content);
-}
-
-/**
- * Create a component instance given another item.
- * @param {Glyph} sourceItem - new component root
- * @param {Glyph} destinationItem - where to put the component instance
- */
-export function linkComponentFromTo(sourceItem, destinationItem) {
-	if (!canAddComponentInstance(destinationItem, sourceItem.id)) return false;
-	const newInstance = new ComponentInstance({ link: sourceItem.id });
-	destinationItem.addOneShape(newInstance);
-	addLinkToUsedIn(sourceItem, destinationItem.id);
-	return newInstance;
-}
-
-/**
- * Copy paths (and attributes) from one glyph to another
- * @param {Glyph} sourceItem - source to copy paths from
- * @param {Glyph} destinationItem - where to copy paths to
- * @param {Object} updateWidth - should advance width copy as well
- */
-export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = false) {
-	// log('copyShapesFromTo', 'start');
-	// log(`Source item`);
-	// log(sourceItem);
-	// log(`Destination item`);
-	// log(destinationItem);
-
-	const editor = getCurrentProjectEditor();
-	let item;
-	let newShape;
-	let newShapes = [];
-	for (let c = 0; c < sourceItem.shapes.length; c++) {
-		item = sourceItem.shapes[c];
-		if (item.objType === 'ComponentInstance') {
-			addLinkToUsedIn(editor.project.getItem(item.link), destinationItem.id);
-			item = new ComponentInstance(item);
-		} else if (item.objType === 'Path') {
-			item = new Path(item);
-		}
-
-		newShape = destinationItem.addOneShape(item);
-		newShapes.push(newShape);
-	}
-
-	if (updateWidth) {
-		destinationItem.advanceWidth = sourceItem.advanceWidth;
-	}
-
-	// log('Result for destination item:');
-	// log(destinationItem);
-	// log(`Returning newShapes`);
-	// log(newShapes);
-	// log('copyShapesFromTo', 'end');
-	return newShapes;
 }

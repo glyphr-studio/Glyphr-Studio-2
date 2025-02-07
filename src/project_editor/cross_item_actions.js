@@ -1,11 +1,11 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { duplicates } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
-import { copyShapesFromTo } from '../panels/actions.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { Path } from '../project_data/path.js';
+import { copyShapesFromTo } from './actions.js';
 /**
 		Cross-item actions
 		By default, items in the Glyph Element hierarchy shouldn't 'reach out' and
@@ -136,7 +136,10 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 		// delete shape.__ID;
 		// delete shape.parent;
 		if (shape.objType === 'Path') {
-			newPaths.push(new Path(shape));
+			if (shape.pathPoints.length) newPaths.push(new Path(shape));
+			else console.warn(
+				'Path was found with empty PathPoints array. [cross_item_actions.js makeGlyphWithResolvedLinks]'
+			);
 		} else if (shape.objType === 'ComponentInstance') {
 			const transformedGlyph = shape.transformedGlyph;
 			if (transformedGlyph && transformedGlyph.shapes) {

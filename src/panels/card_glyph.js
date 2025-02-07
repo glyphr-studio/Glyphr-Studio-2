@@ -153,9 +153,11 @@ export function makeCard_glyphLinks(item) {
 	return linksCard;
 }
 
-export function makeCard_glyphNavigation(item) {
+export function makeCard_itemNavigation(item) {
 	const project = getCurrentProject();
 	const editor = getCurrentProjectEditor();
+	const isKern = item?.id?.startsWith('kern');
+
 	let wrapper = makeElement({
 		tag: 'div',
 		className: 'panel__card no-card',
@@ -171,8 +173,10 @@ export function makeCard_glyphNavigation(item) {
 		attributes: { minimal: '' },
 		title: `Navigate to:\n${previousItemName}\n${previousItem.id}`,
 	});
-	previousButton.innerHTML =
-		project.makeItemThumbnail(previousItem, 24) + '<span>Previous&nbsp;item</span>';
+
+	if (isKern) previousButton.innerHTML += '<div>&#x2b60;</div>';
+	else previousButton.innerHTML += project.makeItemThumbnail(previousItem, 24);
+	previousButton.innerHTML += '<span>Previous&nbsp;item</span>';
 	previousButton.addEventListener('click', () => {
 		editor.selectedItemID = previousItem.id;
 		editor.history.addState(`Navigated to ${previousItemName}`);
@@ -187,7 +191,10 @@ export function makeCard_glyphNavigation(item) {
 		attributes: { minimal: '' },
 		title: `Navigate to:\n${nextItemName}\n${nextItem.id}`,
 	});
-	nextButton.innerHTML = '<span>Next&nbsp;item</span>' + project.makeItemThumbnail(nextItem, 24);
+
+	nextButton.innerHTML += '<span>Next&nbsp;item</span>';
+	if (isKern) nextButton.innerHTML += '<div>&#x2b62;</div>';
+	else nextButton.innerHTML += project.makeItemThumbnail(nextItem, 24);
 	nextButton.addEventListener('click', () => {
 		editor.selectedItemID = nextItem.id;
 		editor.history.addState(`Navigated to ${nextItemName}`);
@@ -198,7 +205,7 @@ export function makeCard_glyphNavigation(item) {
 	return wrapper;
 }
 
-function getAdjacentItem(item, delta) {
+export function getAdjacentItem(item, delta) {
 	const project = getCurrentProject();
 	const thisID = item.id;
 

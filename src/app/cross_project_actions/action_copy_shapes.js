@@ -1,9 +1,9 @@
-import { makeElement, textToNode } from '../../common/dom';
-import { showToast } from '../../controls/dialogs/dialogs';
-import { copyShapesFromTo } from '../../panels/actions';
-import { makeSingleLabel } from '../../panels/cards';
-import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions';
-import { ProjectEditor } from '../../project_editor/project_editor';
+import { makeElement, textToNode } from '../../common/dom.js';
+import { showToast } from '../../controls/dialogs/dialogs.js';
+import { copyShapesFromTo } from '../../project_editor/actions.js';
+import { makeSingleLabel } from '../../panels/cards.js';
+import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
+import { ProjectEditor } from '../../project_editor/project_editor.js';
 import {
 	clearAllSelections,
 	destinationEditor,

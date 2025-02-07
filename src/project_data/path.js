@@ -599,17 +599,23 @@ export class Path extends GlyphElement {
 	 */
 	updateShapePosition(dx = 0, dy = 0) {
 		// log('Path.updateShapePosition', 'start');
-
+		// log(`\n⮟this⮟`);
+		// log(this);
 		dx = parseNumber(dx);
 		dy = parseNumber(dy);
 
 		// log(`dx:${dx}\tdy:${dy}`);
+		// log(`this.pathPoints.length: ${this.pathPoints.length}`);
 		for (let d = 0; d < this.pathPoints.length; d++) {
 			const pp = this.pathPoints[d];
-			// log('-------------------- pathPoint #' + d);
-			// log(`BEFORE pp.p.x: ${pp.p.x}`);
-			pp.updatePathPointPosition('p', dx, dy);
-			// log(`AFTERS pp.p.x: ${pp.p.x}`);
+			if (pp && pp.p) {
+				// log(`\n⮟pp⮟`);
+				// log(pp);
+				// log('-------------------- pathPoint #' + d);
+				// log(`BEFORE pp.p.x: ${pp.p.x}`);
+				pp.updatePathPointPosition('p', dx, dy);
+				// log(`AFTERS pp.p.x: ${pp.p.x}`);
+			}
 		}
 		// We need this here even though .changed()
 		// should have propagated from the PathPoint
@@ -645,7 +651,7 @@ export class Path extends GlyphElement {
 	 * @param {Number} pointNumber - point number
 	 * @returns {Number}
 	 */
-	getNextPointNum(pointNumber = 0) {
+	getNextPointNumber(pointNumber = 0) {
 		pointNumber = parseNumber(pointNumber);
 		pointNumber += 1;
 		pointNumber = pointNumber % this.pathPoints.length;
@@ -658,7 +664,7 @@ export class Path extends GlyphElement {
 	 * @param {Number} pointNumber - point number
 	 * @returns {Number}
 	 */
-	getPreviousPointNum(pointNumber = 0) {
+	getPreviousPointNumber(pointNumber = 0) {
 		pointNumber = parseNumber(pointNumber);
 		pointNumber -= 1;
 		if (pointNumber < 0) {
@@ -719,7 +725,7 @@ export class Path extends GlyphElement {
 		for (let cp = 0; cp < this.pathPoints.length; cp++) {
 			p1 = this.pathPoints[cp];
 			// p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
-			p2 = this.pathPoints[this.getNextPointNum(cp)];
+			p2 = this.pathPoints[this.getNextPointNumber(cp)];
 			trr =
 				' C' +
 				round(p1.h2.x, roundValue) +
@@ -776,7 +782,7 @@ export class Path extends GlyphElement {
 		for (let cp = 0; cp < this.pathPoints.length; cp++) {
 			p1 = this.pathPoints[cp];
 			// p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
-			p2 = this.pathPoints[this.getNextPointNum(cp)];
+			p2 = this.pathPoints[this.getNextPointNumber(cp)];
 			p1h2x = p1.h2.x - p1.p.x;
 			p1h2y = p1.h2.y - p1.p.y;
 			p2h1x = p2.h1.x - p1.h2.x;
@@ -845,7 +851,7 @@ export class Path extends GlyphElement {
 		let randomID = Math.round(Math.random() * 10000);
 		if (!pp1.pointID) pp1.pointID = `point-${num}-${randomID}`;
 		// let pp2 = this.pathPoints[(num+1)%this.pathPoints.length];
-		const next = this.getNextPointNum(num);
+		const next = this.getNextPointNumber(num);
 		const pp2 = this.pathPoints[next];
 		if (!pp2.pointID) pp2.pointID = `point-${next}-${randomID}`;
 		// log(pp1);
@@ -1095,7 +1101,7 @@ export class Path extends GlyphElement {
 		// log(`round: ${round}`);
 
 		const pp1 = this.pathPoints[pointNumber];
-		const pp2i = this.getNextPointNum(pointNumber);
+		const pp2i = this.getNextPointNumber(pointNumber);
 		const pp2 = this.pathPoints[pp2i];
 		let nP;
 		let nH1;
@@ -1146,6 +1152,57 @@ export class Path extends GlyphElement {
 
 		// log(`Path.insertPathPoint`, 'end');
 		return ppn;
+	}
+
+	/**
+	 * Takes two or more Path Points from this path and merges them.
+	 * The new P coordinate will be an average of all the other P coordinates.
+	 * The resulting H1 will be the H1 from the first Path Point.
+	 * The resulting H2 will be the H2 from the last Path Point.
+	 * H1 and H2 will be moved according to the delta between their previous P
+	 * coordinates and the new resulting P cooridinate.
+	 * @param {Array} points - points in this path to merge
+	 * @returns - nothing
+	 */
+	mergePathPoints(points = []) {
+		if (points.length < 2) return;
+		points = points.sort((a, b) => a.pointNumber - b.pointNumber);
+
+		// find new x and y
+		let newX = 0;
+		let newY = 0;
+		for (let i = 0; i < points.length; i++) {
+			newX += points[i].p.x;
+			newY += points[i].p.y;
+		}
+		newX /= points.length;
+		newY /= points.length;
+
+		// find new h1 and h2
+		let h1 = new ControlPoint(points.at(0).h1);
+		h1.coord.x += points.at(0).p.x - newX;
+		h1.coord.y += points.at(0).p.y - newY;
+		let h2 = new ControlPoint(points.at(-1).h2);
+		h2.coord.x += points.at(-1).p.x - newX;
+		h2.coord.y += points.at(-1).p.y - newY;
+
+		// Assemble new point
+		const newPoint = new PathPoint({
+			p: new ControlPoint({ coord: { x: newX, y: newY } }),
+			h1: h1,
+			h2: h2,
+		});
+		newPoint.parent = this;
+
+		// Remove old points
+		const insertPosition = points[0].pointNumber;
+		for (let i = 0; i < points.length; i++) {
+			this.pathPoints.splice(points[i].pointNumber, 1);
+		}
+
+		// Add new point
+		this.pathPoints.splice(insertPosition, 0, newPoint);
+		this.changed();
 	}
 
 	/**
@@ -1238,6 +1295,16 @@ export class Path extends GlyphElement {
 		// log(maxesArray);
 
 		this.cache.maxes = getOverallMaxes(maxesArray);
+		// for (let s = 0; s < this.pathPoints.length; s++) {
+		// 	// log('++++++ starting seg ' + s);
+		// 	seg = this.makeSegment(s);
+		// 	// log(`this seg maxes ${seg.maxes.print()}`);
+		// 	// log(`this maxes ${this.cache.maxes.print()}`);
+
+		// 	this.cache.maxes = getOverallMaxes([this.cache.maxes, seg.maxes]);
+		// 	// log(`path maxes is now ${this.cache.maxes.print()}`);
+		// 	// log('++++++ ending seg ' + s);
+		// }
 
 		// this.maxes.roundAll(4);
 		// log(`after> ${this.cache.maxes.print()}`);

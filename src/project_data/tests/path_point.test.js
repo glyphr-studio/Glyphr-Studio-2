@@ -26,6 +26,7 @@ function samplePathPoint() {
 	get/set h2
 	get/set type
 	// get pointNumber - TESTED IN PATH
+	get defaultHandleLength
 	updatePathPointPosition
 	makeSymmetric
 	makeFlat
@@ -55,6 +56,11 @@ describe('PathPoint', () => {
 		expect(pp.type).toBe('corner');
 	});
 
+	it('Constructor - projectUPM', () => {
+		const pp = samplePathPoint();
+		expect(pp.projectUPM).toBe(2048);
+	});
+
 	it('save', () => {
 		const pp = samplePathPoint();
 		expect(pp.save()).toEqual(
@@ -80,6 +86,23 @@ describe('PathPoint', () => {
     use: true
   }
 }/PathPoint`);
+	});
+
+	it('ControlPoint: get defaultHandleLength', () => {
+		const pp = new PathPoint();
+		expect(pp.defaultHandleLength).toBe(100);
+
+		const pp1 = new PathPoint({ projectUPM: 99 });
+		expect(pp1.defaultHandleLength).toBe(2);
+
+		const pp2 = new PathPoint({ projectUPM: 499 });
+		expect(pp2.defaultHandleLength).toBe(10);
+
+		const pp3 = new PathPoint({ projectUPM: 999 });
+		expect(pp3.defaultHandleLength).toBe(50);
+
+		const pp4 = new PathPoint({ projectUPM: 2050 });
+		expect(pp4.defaultHandleLength).toBe(200);
 	});
 
 	it('ControlPoint: use', () => {
@@ -153,5 +176,12 @@ describe('PathPoint', () => {
 		const pp = samplePathPoint();
 		pp.h1.x = 39.9999;
 		expect(pp.roundAll(3).h1.x).toBe(40);
+
+		const pp2 = samplePathPoint();
+		pp2.h1.x = 39.9999;
+		pp2.h1.use = false;
+		pp2.roundAll(3);
+		pp2.h1.use = true;
+		expect(pp2.h1.x).toBe(40);
 	});
 });

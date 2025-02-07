@@ -115,7 +115,13 @@ export class Glyph extends GlyphElement {
 
 		if (this.shapes && this.shapes.length) {
 			re.shapes = [];
-			for (let s = 0; s < this.shapes.length; s++) re.shapes.push(this.shapes[s].save(verbose));
+			for (let s = 0; s < this.shapes.length; s++) {
+				if (this.shapes[s].objType === 'Path' && this.shapes[s].pathPoints.length === 0) {
+					console.warn(`Empty Path found in Glyph ${this.id} - ${this.name}`);
+				} else {
+					re.shapes.push(this.shapes[s].save(verbose));
+				}
+			}
 		}
 
 		if (verbose) {
@@ -446,6 +452,9 @@ export class Glyph extends GlyphElement {
 			this._shapes.push(new ComponentInstance(newShape));
 		} else {
 			// log(`hydrating path - name: ${newShape.name}`);
+			// Don't import paths with no PathPoints
+			if (!newShape.pathPoints) return;
+			if (newShape.pathPoints.length === 0) return;
 			newShape.parent = this;
 			this._shapes.push(new Path(newShape));
 		}
@@ -642,7 +651,8 @@ export class Glyph extends GlyphElement {
 	 * @param {Number | Boolean =} args.width - new width
 	 * @param {Number | Boolean =} args.height - new height
 	 * @param {Boolean=} args.ratioLock - true to scale width and height 1:1
-	 * @param {Boolean=} args.updateComponentInstances
+	 * @param {Boolean=} args.updateComponentInstances - true to update component instances
+	 * @param {Array =} args.instanceIDsToSkip - component instances with these Item IDs will be skipped
 	 * @param {String =} args.transformOrigin - name of transform origin point
 	 */
 	setGlyphSize({
@@ -650,6 +660,7 @@ export class Glyph extends GlyphElement {
 		height = false,
 		ratioLock = false,
 		updateComponentInstances = true,
+		instanceIDsToSkip = [],
 		transformOrigin = '',
 	} = {}) {
 		const m = this.maxes;
@@ -670,6 +681,7 @@ export class Glyph extends GlyphElement {
 			width: dw,
 			height: dh,
 			updateComponentInstances: updateComponentInstances,
+			instanceIDsToSkip: instanceIDsToSkip,
 			transformOrigin: transformOrigin,
 		});
 	}
@@ -680,7 +692,8 @@ export class Glyph extends GlyphElement {
 	 * @param {Number =} args.width - delta width
 	 * @param {Number =} args.height - delta height
 	 * @param {Boolean =} args.ratioLock - true to scale width and height 1:1
-	 * @param {Boolean =} args.updateComponentInstances
+	 * @param {Boolean =} args.updateComponentInstances - true to update component instances
+	 * @param {Array =} args.instanceIDsToSkip - component instances with these Item IDs will be skipped
 	 * @param {String =} args.transformOrigin - name of transform origin point
 	 */
 	updateGlyphSize({
@@ -688,6 +701,7 @@ export class Glyph extends GlyphElement {
 		height = 0,
 		ratioLock = false,
 		updateComponentInstances = true,
+		instanceIDsToSkip = [],
 		transformOrigin = '',
 	} = {}) {
 		// log('Glyph.updateGlyphSize', 'start');
@@ -731,7 +745,10 @@ export class Glyph extends GlyphElement {
 		// log(`\n⮟this.maxes⮟`);
 		// log(this.maxes);
 		this.shapes.forEach((shape) => {
-			if (shape.objType === 'ComponentInstance' && !updateComponentInstances) return;
+			if (shape.objType === 'ComponentInstance') {
+				if (!updateComponentInstances) return;
+				if (instanceIDsToSkip?.includes(shape.link)) return;
+			}
 
 			const shapeMaxes = shape.maxes;
 

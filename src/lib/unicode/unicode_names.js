@@ -7,46 +7,42 @@ import { unicodeNamesSMP } from './unicode_names_1_smp.js';
 
 /**
  * Gets the name of a Unicode character
- * @param {Number | String} charID - Unicode code point (in hex)
+ * @param {Number | String} id - Unicode code point
  * @returns {String} - name
  */
-export function getUnicodeName(charID) {
+export function getUnicodeName(id) {
 	// log('getUnicodeName', 'start');
-	// log('passed ' + charID);
+	// log('passed ' + id);
 
 	let name;
-	let decPoint = 0;
-	let hexPoint = validateAsHex('' + charID);
-	let hexPointSuffix = '0x0000';
-	if (hexPoint) {
-		hexPointSuffix = hexPoint.substring(2);
-		decPoint = parseNumber(hexPoint);
+	let chn = 0;
+	let codePoint = validateAsHex('' + id);
+	let codePointSuffix = '0x0000';
+	if (codePoint) {
+		codePointSuffix = codePoint.substring(2);
+		chn = parseNumber(codePoint);
 	}
-	const genericName = `U+${hexPointSuffix}`;
+	// log('normalized ' + codePoint);
 
-	// log(`decPoint: ${decPoint}`);
-	// log(`hexPoint: ${hexPoint}`);
-	// log(`hexPointSuffix: ${hexPointSuffix}`);
-	// log(`genericName: ${genericName}`);
 
-	if ((decPoint >= 0x4e00 && decPoint < 0xa000) || (decPoint >= 0x20000 && decPoint < 0x323af)) {
-		name = `CJK Unified Ideograph U+${hexPointSuffix}`;
-	} else if (decPoint < 0xffff) {
-		name = unicodeNamesBMP[hexPoint] || unicodeNonCharPointNames[hexPoint] || genericName;
-	} else if (decPoint >= 0x18b00 && decPoint <= 0x18cd5) {
-		name = `Khitan Small Script Character U+${hexPointSuffix}`;
-	} else if (decPoint >= 0x18800 && decPoint <= 0x18aff) {
-		name = `Tangut Component ${decPoint - 0x18800 + 1}`;
-	} else if (decPoint >= 0x1b170 && decPoint <= 0x1b2fb) {
-		name = `Nushu Character U+${hexPointSuffix}`;
-	} else if (decPoint < 0x1fbf9) {
-		name = unicodeNamesSMP[hexPoint] || genericName;
-	} else if (decPoint < 0x3ffff) {
-		let block = getParentRange(decPoint);
-		if (block) name = `${block.name} ${genericName}`;
-		else name = genericName;
+	if ((chn >= 0x4e00 && chn < 0xa000) || (chn >= 0x20000 && chn < 0x323af)) {
+		name = `CJK Unified Ideograph ${codePointSuffix}`;
+	} else if (chn < 0xffff) {
+		name = unicodeNamesBMP[codePoint] || unicodeNonCharPointNames[codePoint] || '[name not found]';
+	} else if (chn >= 0x18b00 && chn <= 0x18cd5) {
+		name = `Khitan Small Script Character ${codePointSuffix}`;
+	} else if (chn >= 0x18800 && chn <= 0x18aff) {
+		name = `Tangut Component ${chn - 0x18800 + 1}`;
+	} else if (chn >= 0x1b170 && chn <= 0x1b2fb) {
+		name = `Nushu Character ${codePointSuffix}`;
+	} else if (chn < 0x1fbf9) {
+		name = unicodeNamesSMP[codePoint] || '[name not found]';
+	} else if (chn < 0x1ffff) {
+		let block = getParentRange(parseNumber(id));
+		if (block) name = `${block.name} ${codePointSuffix}`;
+		else name = '[name not found]';
 	} else {
-		name = genericName;
+		name = '[name not found]';
 	}
 
 	// log(`name: ${name}`);
@@ -67,12 +63,12 @@ export function getUnicodeShortName(codePoint) {
 	let name = shortUnicodeNames[codePoint];
 	if (!name) {
 		name = getUnicodeName(codePoint);
-		if (name){
+		if (name)
 			name = name
 				.replace(/latin /gi, '')
-				.replace(/ /g, '_')
-				.substr(0, 20);}
-		else name = '?';
+				.replace(/ /g, '')
+				.substr(0, 20);
+		else name = '[name not found]';
 	}
 
 	// log(`name: ${name}`);

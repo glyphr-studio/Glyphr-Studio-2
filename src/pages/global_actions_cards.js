@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
 import { makeElement } from '../common/dom.js';
+import { remove } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks.js';
 import {
@@ -9,15 +10,16 @@ import {
 	unicodeDiacriticsMapSimple,
 	unicodeLowercaseMap,
 } from '../lib/unicode/unicode_mappings.js';
-import { copyShapesFromTo } from '../panels/actions.js';
+import { CharacterRange } from '../project_data/character_range.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
+import { copyShapesFromTo } from '../project_editor/actions.js';
 import {
 	getComponentInstancesFromRoot,
 	insertComponentInstance,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
-import { glyphIterator } from './global_actions.js';
+import { addRangeToSelectedFilterInputs, glyphIterator } from './global_actions.js';
 import { addCharacterRangeToCurrentProject } from './settings_project.js';
 
 // --------------------------------------------------------------
@@ -40,7 +42,9 @@ export function makeCard_Move() {
 
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
-		content: `Individual Glyphs, Ligatures, and Components will be moved. To avoid double-moving Component Instances (since they inherit their position from Components) this algorithm will look into each Glyph or Ligature or Component and move each shape the specified amount as long as that shape is not a Component Instance.`,
+		content: `Individual Glyphs, Ligatures, and Components will be moved.
+		<br>
+		<strong>Note:</strong> Component Instances that are linked to Items that are also moved will be skipped. If a Component Root and an Item that contains a Component Instance are both moved, the Component Instance would have been moved twice.`,
 	});
 	card.appendChild(effect);
 
@@ -68,7 +72,7 @@ export function makeCard_Move() {
 
 		glyphIterator({
 			title: 'Moving glyph',
-			action: function (glyph) {
+			action: (glyph) => {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				glyph.shapes.forEach((shape) => {
 					if (shape.objType !== 'ComponentInstance') {
@@ -105,7 +109,9 @@ export function makeCard_ScaleVertical() {
 
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
-		content: `Individual Glyphs, Ligatures, and Components will have a new height calculated based on the overall height of the shapes in that glyph (not the ascender or descender values from the font). The new height will be applied, and the shapes will be moved to maintain a common baseline.`,
+		content: `Individual Glyphs, Ligatures, and Components will have a new height calculated based on the overall height of the shapes in that glyph (not the ascender or descender values from the font). The new height will be applied, and the shapes will be moved to maintain a common baseline.
+		<br>
+		<strong>Note:</strong> Component Instances that are linked to Items that are also re-sized will be skipped. If a Component Root and an Item that contains a Component Instance are both re-sized, the Component Instance would have been re-sized twice.`,
 	});
 	card.appendChild(effect);
 
@@ -127,13 +133,13 @@ export function makeCard_ScaleVertical() {
 
 		glyphIterator({
 			title: 'Vertically scaling glyph',
-			action: function (glyph) {
+			action: (glyph, otherScaledItems) => {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				const newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
 				glyph.setGlyphSize({
 					height: newHeight,
-					updateComponentInstances: false,
 					transformOrigin: 'baseline-left',
+					instanceIDsToSkip: otherScaledItems,
 				});
 			},
 		});
@@ -163,7 +169,9 @@ export function makeCard_ScaleHorizontal() {
 
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
-		content: `Individual Glyphs, Ligatures, and Components will have a new width calculated based on the overall width of the shapes in that glyph (not the advance width of the glyph). The new width will be applied.`,
+		content: `Individual Glyphs, Ligatures, and Components will have a new width calculated based on the overall width of the shapes in that glyph (not the advance width of the glyph). The new width will be applied.
+		<br>
+		<strong>Note:</strong> Component Instances that are linked to Items that are also re-sized will be skipped. If a Component Root and an Item that contains a Component Instance are both re-sized, the Component Instance would have been re-sized twice.`,
 	});
 	card.appendChild(effect);
 
@@ -197,13 +205,13 @@ export function makeCard_ScaleHorizontal() {
 
 		glyphIterator({
 			title: 'Horizontally scaling glyph',
-			action: function (glyph) {
+			action: (glyph, otherScaledItems) => {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let newWidth = (glyph.maxes.xMax - glyph.maxes.xMin) * scaleHorizontal;
 				glyph.setGlyphSize({
 					width: newWidth,
-					updateComponentInstances: false,
 					transformOrigin: 'baseline-left',
+					instanceIDsToSkip: otherScaledItems,
 				});
 				if (updateAdvanceWidth) glyph.advanceWidth = glyph.advanceWidth * scaleHorizontal;
 			},
@@ -234,7 +242,9 @@ export function makeCard_Resize() {
 
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
-		content: `Individual Glyphs, Ligatures, and Components will be re-sized. To avoid double-re-sizing Component Instances (since they inherit their size from Components) this algorithm will look into each Glyph or Ligature or Component and re-size each shape as long as that shape is not a Component Instance.<br><br><b>WARNING</b>: Re-sizing component instances will almost always <b>not</b> turn out the way you want. Due to the nature of Components and Component Instances, and their aspect ratios vs. their parent glyphs, it is impossible to "do the right thing" in all cases.`,
+		content: `Individual Glyphs, Ligatures, and Components will be re-sized.
+		<br>
+		<strong>Note:</strong> Component Instances that are linked to Items that are also re-sized will be skipped. If a Component Root and an Item that contains a Component Instance are both re-sized, the Component Instance would have been re-sized twice.`,
 	});
 	card.appendChild(effect);
 
@@ -293,13 +303,14 @@ export function makeCard_Resize() {
 
 		glyphIterator({
 			title: 'Re-sizing glyph',
-			action: function (glyph) {
+			action: (glyph, otherResizedItems) => {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				glyph.updateGlyphSize({
 					width: resizeW,
 					height: resizeH,
 					ratioLock: ratio,
 					transformOrigin: 'baseline-left',
+					instanceIDsToSkip: otherResizedItems,
 				});
 				if (updateAdvanceWidth) glyph.advanceWidth += resizeW;
 			},
@@ -344,7 +355,7 @@ export function makeCard_Flatten() {
 	button.addEventListener('click', () => {
 		glyphIterator({
 			title: 'Converting Component Instances to Paths',
-			action: function (workingItem) {
+			action: (workingItem) => {
 				// log(`Global Action: Flatten`, 'start');
 				// log(workingItem);
 				const editor = getCurrentProjectEditor();
@@ -440,10 +451,8 @@ export function makeCard_SideBearings() {
 			} else {
 				glyphIterator({
 					title: 'Updating Side Bearings',
-					filter: function (itemID) {
-						return itemID.startsWith('glyph-') || itemID.startsWith('liga-');
-					},
-					action: function (glyph) {
+					includeComponents: false,
+					action: (glyph) => {
 						if (glyph.shapes.length) {
 							if (leftCheckbox && !isNaN(left)) {
 								glyph.leftSideBearing = left;
@@ -497,7 +506,7 @@ export function makeCard_Round() {
 	button.addEventListener('click', () => {
 		glyphIterator({
 			title: 'Rounding point values',
-			action: function (workingItem) {
+			action: (workingItem) => {
 				workingItem.roundAll();
 				if (workingItem.advanceWidth)
 					workingItem.advanceWidth = Math.round(workingItem.advanceWidth);
@@ -560,10 +569,8 @@ export function makeCard_Monospace() {
 		} else {
 			glyphIterator({
 				title: 'Converting to Monospace',
-				filter: function (itemID) {
-					return itemID.startsWith('glyph-') || itemID.startsWith('liga-');
-				},
-				action: function (glyph) {
+				includeComponents: false,
+				action: (glyph) => {
 					glyph.advanceWidth = width;
 				},
 			});
@@ -597,7 +604,7 @@ export function makeCard_AllCaps() {
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
 		content:
-			'Capital letters will be added as Component Instances to their lowercase counterparts in the selected ranges.',
+			'Capital letters will be added as Component Instances to their lowercase counterparts in the selected ranges. The lowercase letters will also have their Advance Width updated to match their uppercase counterparts.',
 	});
 	card.appendChild(effect);
 
@@ -637,17 +644,22 @@ export function makeCard_AllCaps() {
 
 			glyphIterator({
 				title: 'Converting ' + range.name + ' to All Caps',
-				filter: { begin: range.begin, end: range.end },
-				action: function (item, itemID) {
-					// log(`glyphIterator>ConvertToAllCaps>Action`, 'start');
-					let destinationItemHex = findMappedValue(unicodeLowercaseMap, itemID.substring(6));
-					// log(`destinationItemHex: ${destinationItemHex}`);
-					destinationItemHex = decToHex(parseInt(destinationItemHex));
-					// log(`destinationItemHex: ${destinationItemHex}`);
-					if (destinationItemHex) {
-						insertComponentInstance(itemID, `glyph-${destinationItemHex}`, false);
+				includeComponents: false,
+				includeLigatures: false,
+				// filter: { begin: range.begin, end: range.end }, // TODO fix filtering
+				action: (item) => {
+					const hexID = Number(remove(item.id, 'glyph-'));
+					if (range.isWithinRange(hexID)) {
+						// log(`glyphIterator>ConvertToAllCaps>Action`, 'start');
+						let destinationItemHex = findMappedValue(unicodeLowercaseMap, item.id.substring(6));
+						// log(`destinationItemHex: ${destinationItemHex}`);
+						destinationItemHex = decToHex(parseInt(destinationItemHex));
+						// log(`destinationItemHex: ${destinationItemHex}`);
+						if (destinationItemHex) {
+							insertComponentInstance(item.id, `glyph-${destinationItemHex}`, true);
+						}
+						// log(`glyphIterator>ConvertToAllCaps>Action`, 'end');
 					}
-					// log(`glyphIterator>ConvertToAllCaps>Action`, 'end');
 				},
 				callback: callback,
 			});
@@ -659,8 +671,12 @@ export function makeCard_AllCaps() {
 		if (allCapsBasicBox.checked) {
 			// log(`Converting range: allCapsBasic`);
 			let range = getUnicodeBlockByName('Basic Latin');
-			addCharacterRangeToCurrentProject(range);
-			await convertRangeToAllCaps(range);
+			if (range) {
+				range = new CharacterRange(range);
+				addCharacterRangeToCurrentProject(range);
+				addRangeToSelectedFilterInputs(range);
+				await convertRangeToAllCaps(range);
+			}
 		}
 
 		// Latin-1 Supplement range
@@ -669,8 +685,12 @@ export function makeCard_AllCaps() {
 		if (allCapsSupplementBox.checked) {
 			// log(`Converting range: allCapsSupplement`);
 			let range = getUnicodeBlockByName('Latin-1 Supplement');
-			addCharacterRangeToCurrentProject(range);
-			await convertRangeToAllCaps(range);
+			if (range) {
+				range = new CharacterRange(range);
+				addCharacterRangeToCurrentProject(range);
+				addRangeToSelectedFilterInputs(range);
+				await convertRangeToAllCaps(range);
+			}
 		}
 
 		// Latin Extended-A range
@@ -679,18 +699,26 @@ export function makeCard_AllCaps() {
 		if (allCapsLatinABox.checked) {
 			// log(`Converting range: allCapsLatinA`);
 			let range = getUnicodeBlockByName('Latin Extended-A');
-			addCharacterRangeToCurrentProject(range);
-			await convertRangeToAllCaps(range);
+			if (range) {
+				range = new CharacterRange(range);
+				addCharacterRangeToCurrentProject(range);
+				addRangeToSelectedFilterInputs(range);
+				await convertRangeToAllCaps(range);
+			}
 		}
 
-		// Latin Extended-A range
+		// Latin Extended-B range
 		/** @type {HTMLInputElement} */
 		const allCapsLatinBBox = document.querySelector('#allCapsLatinB');
 		if (allCapsLatinBBox.checked) {
 			// log(`Converting range: allCapsLatinB`);
 			let range = getUnicodeBlockByName('Latin Extended-B');
-			addCharacterRangeToCurrentProject(range);
-			await convertRangeToAllCaps(range);
+			if (range) {
+				range = new CharacterRange(range);
+				addCharacterRangeToCurrentProject(range);
+				addRangeToSelectedFilterInputs(range);
+				await convertRangeToAllCaps(range);
+			}
 		}
 
 		// log('convertProjectToAllCaps', 'end');

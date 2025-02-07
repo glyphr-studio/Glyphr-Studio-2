@@ -3,11 +3,13 @@ import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { makePanel_GlyphAttributes } from './attributes_glyph_edit.js';
 import { makePanel_KernGroupAttributes } from './attributes_kern.js';
+import { makePanel_CharacterInfo } from './character_info.js';
 import { makePanel_ContextCharacters } from './context_characters.js';
 import { makePanel_Guides } from './guides.js';
 import { makePanel_History } from './history.js';
 import { makePanel_Layers } from './layers.js';
 import { handlePanelsKeyPress, handlePanelsKeyUp } from './panel_events.js';
+import { makePanel_QualityChecks } from './quality_checks.js';
 
 /**
  * Assembles the correct panel based on the current
@@ -40,42 +42,43 @@ export function makePanel() {
 	}
 
 	if (panel === 'Attributes') {
-		editor.unsubscribe({ idToRemove: 'layersPanel' });
-		editor.unsubscribe({ idToRemove: 'historyPanel' });
-		editor.unsubscribe({ idToRemove: 'guidesPanel' });
-		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
+		unsubscribeExcept('attributesPanel');
 		if (editor.nav.page === 'Kerning') addAsChildren(content, makePanel_KernGroupAttributes());
 		else addAsChildren(content, makePanel_GlyphAttributes());
 	} else if (panel === 'Layers') {
-		editor.unsubscribe({ idToRemove: 'attributesPanel' });
-		editor.unsubscribe({ idToRemove: 'historyPanel' });
-		editor.unsubscribe({ idToRemove: 'guidesPanel' });
-		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
+		unsubscribeExcept('layersPanel');
 		addAsChildren(content, makePanel_Layers());
 		document.addEventListener('keydown', handlePanelsKeyPress, false);
 		document.addEventListener('keyup', handlePanelsKeyUp, false);
 	} else if (panel === 'Context characters') {
-		editor.unsubscribe({ idToRemove: 'attributesPanel' });
-		editor.unsubscribe({ idToRemove: 'layersPanel' });
-		editor.unsubscribe({ idToRemove: 'historyPanel' });
-		editor.unsubscribe({ idToRemove: 'guidesPanel' });
+		unsubscribeExcept('contextCharactersPanel');
 		addAsChildren(content, makePanel_ContextCharacters());
 	} else if (panel === 'History') {
-		editor.unsubscribe({ idToRemove: 'attributesPanel' });
-		editor.unsubscribe({ idToRemove: 'layersPanel' });
-		editor.unsubscribe({ idToRemove: 'guidesPanel' });
-		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
+		unsubscribeExcept('historyPanel');
 		addAsChildren(content, makePanel_History());
 	} else if (panel === 'Guides') {
-		editor.unsubscribe({ idToRemove: 'attributesPanel' });
-		editor.unsubscribe({ idToRemove: 'layersPanel' });
-		editor.unsubscribe({ idToRemove: 'historyPanel' });
-		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
+		unsubscribeExcept('guidesPanel');
 		addAsChildren(content, makePanel_Guides());
+	} else if (panel === 'Character info') {
+		unsubscribeExcept('characterInfoPanel');
+		addAsChildren(content, makePanel_CharacterInfo());
+	} else if (panel === 'Quality checks') {
+		unsubscribeExcept('qualityChecksPanel');
+		addAsChildren(content, makePanel_QualityChecks());
 	}
 
 	// log(`makePanel`, 'end');
 	return content;
+}
+
+function unsubscribeExcept(panelName = '') {
+	const editor = getCurrentProjectEditor();
+	if (panelName !== 'attributesPanel') editor.unsubscribe({ idToRemove: 'attributesPanel' });
+	if (panelName !== 'layersPanel') editor.unsubscribe({ idToRemove: 'layersPanel' });
+	if (panelName !== 'contextCharactersPanel')
+		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
+	if (panelName !== 'historyPanel') editor.unsubscribe({ idToRemove: 'historyPanel' });
+	if (panelName !== 'guidesPanel') editor.unsubscribe({ idToRemove: 'guidesPanel' });
 }
 
 /**

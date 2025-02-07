@@ -122,25 +122,18 @@ export function makePage_Characters() {
 		},
 	});
 
-	editor.subscribe({
-		topic: 'whichShapeIsSelected',
-		subscriberID: 'editCanvas.selectedPath',
-		callback: () => {
-			removeStopCreatingNewPathButton();
-			/** @type {EditCanvas} */
-			const canvas = editor.editCanvas;
-			if (canvas.redraw) canvas.redraw();
-		},
-	});
+	const simpleRedraws = ['whichShapeIsSelected', 'whichPathPointIsSelected', 'qualityChecks'];
 
-	editor.subscribe({
-		topic: 'whichPathPointIsSelected',
-		subscriberID: 'editCanvas.selectedPathPoint',
-		callback: () => {
-			/** @type {EditCanvas} */
-			const canvas = editor.editCanvas;
-			if (canvas.redraw) canvas.redraw();
-		},
+	simpleRedraws.forEach((topic) => {
+		editor.subscribe({
+			topic: topic,
+			subscriberID: `editCanvas.${topic}`,
+			callback: () => {
+				/** @type {EditCanvas} */
+				const canvas = editor.editCanvas;
+				if (canvas.redraw) canvas.redraw();
+			},
+		});
 	});
 
 	// log(`makePage_Characters`, 'end');

@@ -149,7 +149,7 @@ export function togglePanOn(event) {
 export function togglePanOff(event) {
 	const editor = getCurrentProjectEditor();
 	editor.eventHandlers.tool_pan.mouseup(event);
-	editor.selectedTool = eventHandlerData.lastTool;
+	editor.selectedTool = editor.nav.page === 'Kerning' ? 'kern' : eventHandlerData.lastTool;
 	eventHandlerData.lastTool = false;
 	eventHandlerData.isPanning = false;
 	updateCursor();

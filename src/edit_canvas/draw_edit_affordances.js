@@ -14,6 +14,7 @@ import { ControlPoint } from '../project_data/control_point.js';
 import { Maxes } from '../project_data/maxes.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
+import { enabledQualityChecks } from '../project_editor/quality_checks.js';
 import { cXsX, cYsY, sXcX, sYcY } from './edit_canvas.js';
 import { eventHandlerData } from './events.js';
 import { canResize } from './events_mouse.js';
@@ -586,7 +587,7 @@ export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 		shape.pathPoints.forEach((point, index) => {
 			if (index === 0) {
 				// This could just be '1' but whatever
-				let nextPoint = shape.pathPoints[shape.getNextPointNum(0)];
+				let nextPoint = shape.pathPoints[shape.getNextPointNumber(0)];
 				drawDirectionalityPoint(point, ctx, editor.multiSelect.points.isSelected(point), nextPoint);
 			} else {
 				drawPoint(point, ctx, editor.multiSelect.points.isSelected(point));
@@ -783,6 +784,91 @@ export function computeAndDrawDragToSelectBox(ctx, eventHandlerData) {
 	ctx.fillRect(box.xMin, box.yMin, box.width, box.height);
 	ctx.strokeRect(makeCrisp(box.xMin), makeCrisp(box.yMin), box.width, box.height);
 	ctx.setLineDash([]);
+}
+
+// --------------------------------------------------------------
+// Highlight points
+// --------------------------------------------------------------
+
+export function drawAllHighlightedPoints(ctx) {
+	// log(`drawAllHighligthedPoints`, 'start');
+	let editor = getCurrentProjectEditor();
+	let currentItem = editor.selectedItem;
+
+	if (currentItem.shapes) {
+		currentItem.shapes.forEach((shape) => {
+			if (shape.objType === 'Path') {
+				// log(`\n⮟shape.cache⮟`);
+				// log(shape.cache);
+				drawHighlightedPointsForPath(shape, ctx);
+			}
+		});
+	}
+	// log(`drawAllHighligthedPoints`, 'end');
+}
+
+function drawHighlightedPointsForPath(path, ctx) {
+	for (let p = 0; p < path.pathPoints.length; p++) {
+		const point = path.pathPoints[p];
+
+		if (
+			enabledQualityChecks.highlightPointsNearPoints &&
+			path?.cache?.pointsNearPoints &&
+			path?.cache?.pointsNearPoints[p]
+		) {
+			// log(path?.cache?.pointsNearPoints);
+			drawPointHighlight(point.p, ctx);
+			// break;
+		}
+
+		if (
+			enabledQualityChecks.highlightPointsNearHandles &&
+			path?.cache?.pointsNearHandles &&
+			path?.cache?.pointsNearHandles[p]
+		) {
+			// log(path?.cache?.pointsNearHandles);
+			drawPointHighlight(point.p, ctx);
+			// break;
+		}
+
+		if (
+			enabledQualityChecks.highlightPointsNearXZero &&
+			path?.cache?.nearXZero &&
+			path?.cache?.nearXZero[p]
+		) {
+			// log(path?.cache?.nearXZero);
+			drawPointHighlight(point.p, ctx);
+			// break;
+		}
+
+		if (
+			enabledQualityChecks.highlightPointsNearYZero &&
+			path?.cache?.nearYZero &&
+			path?.cache?.nearYZero[p]
+		) {
+			// log(path?.cache?.nearYZero);
+			drawPointHighlight(point.p, ctx);
+			// break;
+		}
+	}
+}
+
+/**
+ * Draws a circle around a point in the highlight point style
+ * @param {ControlPoint | Object} point - point to draw a circle around
+ * @param {CanvasRenderingContext2D} ctx - canvas context
+ */
+export function drawPointHighlight(point, ctx) {
+	// log(`drawPointHighlight`, 'start');
+	let px = sXcX(point.x);
+	let py = sYcY(point.y);
+	// log(`canvas: ${px}, ${py}`);
+	ctx.beginPath();
+	ctx.arc(px, py, canvasUIPointSize + 4, 0, Math.PI * 2, true);
+	ctx.closePath();
+	ctx.strokeStyle = 'red';
+	ctx.stroke();
+	// log(`drawPointHighlight`, 'end');
 }
 
 // --------------------------------------------------------------

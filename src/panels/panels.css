@@ -28,7 +28,7 @@
 	background-color: transparent;
 	border-color: transparent;
 	box-shadow: none;
-	padding: 10px 0px 15px 0px;
+	padding: 10px 0px 10px 0px;
 }
 
 .thumbnail-button {
@@ -57,12 +57,28 @@
 	margin: 0px 0px 0px 10px;
 }
 
+.button-left div {
+	display: inline-block;
+	width: 18px;
+	text-align: left;
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
 .button-right svg {
 	margin-right: -4px;
 }
 
 .button-right span {
 	margin: 0px 10px 0px 0px;
+}
+
+.button-right div {
+	display: inline-block;
+	width: 18px;
+	text-align: right;
+	font-size: 1.2em;
+	font-weight: bold;
 }
 
 .thumbnail-button:hover svg,
@@ -113,9 +129,17 @@
 	margin-bottom: 0;
 }
 
+.panel__card .full-width {
+	grid-column: 1 / -1;
+}
+
 .panel__card label {
 	grid-column: 1;
 	line-height: 20px;
+}
+
+.panel__card label[disabled] {
+	color: var(--disabled-text);
 }
 
 .panel__card.full-width label {
@@ -202,6 +226,18 @@
 	background-color: var(--blue-l95);
 }
 
+.panel__card.char-info {
+	grid-template-columns: max-content 1fr !important;
+	column-gap: 20px;
+	row-gap: 10px;
+}
+
+.char-info input {
+	font-family: monospace;
+	padding: 4px 8px;
+	height: 32px;
+}
+
 .rowPad {
 	display: block;
 	height: 10px;
@@ -221,6 +257,9 @@
 	padding-top: 6px;
 }
 
+/*
+	Points
+*/
 .pointTypeButton,
 .pointTypeButton:hover,
 .pointTypeButton:focus {
@@ -238,8 +277,8 @@
 }
 
 .pointTypeButton[selected] {
-	border-color: var(--blue-l65);
-	background-color: var(--blue-l65);
+	border-color: var(--accent-color);
+	background-color: var(--accent-color);
 }
 
 .pointTypeButton[selected] svg g {
@@ -249,21 +288,24 @@
 .pointTypeButton[selected]:hover {
 	cursor: default;
 	border-color: var(--blue-l55);
-	background-color: var(--blue-l65);
+	background-color: var(--accent-color);
 }
 .pointTypeButton[selected]:hover svg g {
 	fill: white;
 }
 
 .pointTypeButton:hover {
-	border-color: var(--blue-l65);
+	border-color: var(--accent-color);
 	background-color: var(--blue-l95);
 }
 
 .pointTypeButton:hover svg g {
-	fill: var(--blue-l65);
+	fill: var(--accent-color);
 }
 
+/*
+	Actions
+*/
 :root {
 	--action-icon-size: 30px;
 }
@@ -293,6 +335,29 @@
 	box-shadow: none;
 	opacity: 0.2;
 	filter: contrast(60%);
+}
+
+/*
+	Quality checks
+*/
+.quality-check__points-and-handles {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 20px 1fr 80px;
+	column-gap: 10px;
+}
+
+.quality-check__points-and-handles input[type='checkbox'] {
+	grid-column: 1;
+}
+
+.quality-check__points-and-handles label {
+	grid-column: 2;
+}
+
+.quality-check__points-and-handles input-number {
+	grid-column: 3;
+	max-width: 80px;
 }
 
 /*
