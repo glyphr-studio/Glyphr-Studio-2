@@ -30,7 +30,7 @@ export class Tool_NewPath {
 		const msPoints = editor.multiSelect.points;
 
 		// New point
-		log(`editor.project.settings.font.upm: ${editor.project.settings.font.upm}`);
+		// log(`editor.project.settings.font.upm: ${editor.project.settings.font.upm}`);
 		let newPoint = new PathPoint({ projectUPM: editor.project.settings.font.upm });
 		newPoint.p.x = cXsX(ehd.mousePosition.x);
 		newPoint.p.y = cYsY(ehd.mousePosition.y);

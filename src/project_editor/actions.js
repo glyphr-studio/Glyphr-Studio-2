@@ -130,7 +130,7 @@ export function selectPreviousPathPoint() {
 }
 
 export function currentItemFindSelectableShapeAt(index = 0, onlyPaths = false) {
-	log(`currentItemFindSelectableShapeAt`, 'start');
+	// log(`currentItemFindSelectableShapeAt`, 'start');
 	const editor = getCurrentProjectEditor();
 	const selectedItem = editor.selectedItem;
 	let foundShape;
@@ -161,9 +161,9 @@ export function currentItemFindSelectableShapeAt(index = 0, onlyPaths = false) {
 		}
 	}
 
-	log(`\n⮟foundShape⮟`);
-	log(foundShape);
-	log(`currentItemFindSelectableShapeAt`, 'end');
+	// log(`\n⮟foundShape⮟`);
+	// log(foundShape);
+	// log(`currentItemFindSelectableShapeAt`, 'end');
 	return foundShape || false;
 }
 
