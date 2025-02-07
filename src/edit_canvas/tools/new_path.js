@@ -44,6 +44,9 @@ export class Tool_NewPath {
 			}
 		}
 
+		// log(`this.firstPoint: ${this.firstPoint}`);
+		// log(`this.newPath: ${this.newPath}`);
+
 		if (this.firstPoint) {
 			// make a new path with the new PathPoint
 			let count =
@@ -54,6 +57,8 @@ export class Tool_NewPath {
 			count += 1;
 
 			this.newPath = editor.selectedItem.addOneShape(new Path({ name: 'Path ' + count }));
+			// log(`\n⮟this.newPath⮟`);
+			// log(this.newPath);
 			if (this.newPath) {
 				this.currentPoint = this.newPath.addPathPoint(newPoint);
 				msShapes.select(this.newPath);
@@ -85,6 +90,8 @@ export class Tool_NewPath {
 			msPoints.select(this.currentPoint);
 		}
 
+		// log(`\n⮟this.currentPoint⮟`);
+		// log(this.currentPoint);
 		this.firstPoint = false;
 		this.dragging = true;
 		ehd.lastX = ehd.mousePosition.x;
@@ -98,6 +105,9 @@ export class Tool_NewPath {
 		const editor = getCurrentProjectEditor();
 
 		if (this.dragging) {
+
+					// log(`\n⮟this.currentPoint⮟`);
+					// log(this.currentPoint);
 			// avoid really small handles
 			if (
 				Math.abs(sXcX(this.currentPoint.p.x) - ehd.mousePosition.x) > canvasUIPointSize ||
