@@ -156,7 +156,7 @@ export function makeCard_glyphLinks(item) {
 export function makeCard_itemNavigation(item) {
 	const project = getCurrentProject();
 	const editor = getCurrentProjectEditor();
-	const isKern = item.id.startsWith('kern');
+	const isKern = item?.id?.startsWith('kern');
 
 	let wrapper = makeElement({
 		tag: 'div',
