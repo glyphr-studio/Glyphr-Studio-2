@@ -228,7 +228,6 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(['Ctrl', 'S'], 'Save a Glyphr Studio Project File (.gs2)');
 	makeOneRow(['Ctrl', 'E'], 'Export an OTF Font (.otf)');
 	makeOneRow(['Ctrl', 'G'], 'Export an SVG Font (.svg)');
-	makeOneRow(['Ctrl', 'G'], 'Export an SVG Font (.svg)');
 	makeOneRow(['Ctrl', 'O'], 'Open a project in a new tab');
 
 	makeOneHeader('Selecting and navigating');
