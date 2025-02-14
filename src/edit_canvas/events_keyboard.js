@@ -16,6 +16,7 @@ import {
 	togglePanOn,
 } from './events.js';
 import { handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
+import { unsnapAngle } from './tools/path_edit.js';
 import { selectTool } from './tools/tools.js';
 
 // --------------------------------------------------------------
@@ -593,6 +594,7 @@ function handleSpecialKeys(key, keyDirection) {
 		}
 		if (key === 'Shift') {
 			ehd.isShiftDown = false;
+			unsnapAngle();
 			// log(`setting isShiftDown to false`);
 		}
 		if (key === 'Alt') {

@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
+import { calculateAngle, radiansToNiceAngle } from '../../common/functions.js';
 import { refreshPanel } from '../../panels/panels.js';
 import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
@@ -24,6 +25,8 @@ export class Tool_PathEdit {
 		this.controlPoint = {};
 		this.pathPoint = {};
 		this.historyTitle = 'Path edit tool';
+		/** @type {Boolean | Number} */
+		this.snappedAngle = false;
 	}
 
 	mousedown() {
@@ -93,6 +96,9 @@ export class Tool_PathEdit {
 				// log('detected HANDLE');
 				msPoints.singleHandle = this.controlPoint.type;
 				this.historyTitle = `Moved path point: ${this.pathPoint.pointNumber} ${this.controlPoint.type}`;
+
+				if (ehd.isShiftDown) this.snapAngle();
+
 				// log(`set ms.singleHandle: ${msPoints.singleHandle}`);
 				// setCursor('penCircle');
 			}
@@ -152,12 +158,34 @@ export class Tool_PathEdit {
 			let dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
 			let dy = (ehd.lastY - ehd.mousePosition.y) / view.dz;
 			const cpt = this.controlPoint.type;
+			if (ehd.isShiftDown) this.snapAngle();
+			// log(`dragging with ms.singleHandle: ${msPoints.singleHandle}`);
+			// log(`cpt: ${cpt}`);
 
 			if (msPoints.members.length === 1) {
-				if (this.controlPoint && this.controlPoint.xLock) dx = 0;
-				if (this.controlPoint && this.controlPoint.yLock) dy = 0;
 				if (cpt === 'p') {
 					this.historyTitle = `Moved path point: ${this.pathPoint.pointNumber}`;
+				}
+
+				// Check for locked values
+				if (this.controlPoint && this.controlPoint.xLock) dx = 0;
+				if (this.controlPoint && this.controlPoint.yLock) dy = 0;
+
+				// Check for snapped angle
+				if (typeof this.snappedAngle === 'number') {
+					const ang = radiansToNiceAngle(this.snappedAngle);
+					const parentPoint = this.controlPoint.parent.p;
+					if ((ang >= 45 && ang <= 135) || (ang >= 225 && ang <= 315)) {
+						// Handle is more horizontal, snap to mouse x
+						const base = this.controlPoint.x - parentPoint.x + dx;
+						const newY = base * Math.tan(this.snappedAngle) + parentPoint.y;
+						dy = newY - this.controlPoint.y;
+					} else {
+						// Handle is more vertical, snap to mouse y
+						const base = this.controlPoint.y - parentPoint.y + dy;
+						const newX = base / Math.tan(this.snappedAngle) + parentPoint.x;
+						dx = newX - this.controlPoint.x;
+					}
 				}
 			} else {
 				if (cpt === 'p') {
@@ -165,7 +193,6 @@ export class Tool_PathEdit {
 				}
 			}
 
-			// log(`dragging with ms.singleHandle: ${msPoints.singleHandle}`);
 			// log(`dx: ${dx}, dy: ${dy}`);
 			msPoints.updatePathPointPosition(dx, dy);
 
@@ -337,6 +364,7 @@ export class Tool_PathEdit {
 		this.controlPoint = false;
 		this.pathPoint = false;
 		this.monitorForDeselect = false;
+		unsnapAngle();
 		ehd.toolHandoff = false;
 		msPoints.singleHandle = false;
 		ehd.lastX = -100;
@@ -346,4 +374,18 @@ export class Tool_PathEdit {
 
 		// log('Tool_PathEdit.mouseup', 'end');
 	}
+
+	snapAngle() {
+		if (this.snappedAngle !== false) return;
+		// log(`Tool_PathEdit.snapAngle`, 'start');
+		const handle = this.controlPoint.parent[this.controlPoint.type];
+		this.snappedAngle = calculateAngle(handle, handle.parent.p);
+		// log(`this.snappedAngle: ${this.snappedAngle}`);
+		// log(`Tool_PathEdit.snapAngle`, 'end');
+	}
+}
+
+export function unsnapAngle() {
+	// log(`unsnapAngle`);
+	getCurrentProjectEditor().eventHandlers.tool_pathEdit.snappedAngle = false;
 }
