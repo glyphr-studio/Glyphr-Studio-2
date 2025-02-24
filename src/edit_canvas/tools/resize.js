@@ -6,12 +6,14 @@ import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
+import { unsetInitialPoint } from '../events_keyboard.js';
 import {
 	checkForMouseOverHotspot,
 	clickEmptySpace,
 	resizePath,
 	selectItemsInArea,
 } from '../events_mouse.js';
+import { isAngleMoreHorizontal } from './path_edit.js';
 import { getShapeAtLocation } from './tools.js';
 
 /**
@@ -27,7 +29,8 @@ export class Tool_Resize {
 		eventHandlerData.selecting = false;
 		this.monitorForDeselect = false;
 		this.didStuff = false;
-		this.clickedPath = false;
+		/** @type {Object | Boolean} */
+		this.clickedShape = false;
 		this.historyTitle = 'Path resize tool';
 		eventHandlerData.handle = '';
 	}
@@ -46,13 +49,13 @@ export class Tool_Resize {
 		ehd.handle = msShapes.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y) || '';
 
 		this.didStuff = false;
-		this.clickedPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+		this.clickedShape = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
 		this.resizing = false;
 		this.dragging = false;
 		this.rotating = false;
 		ehd.selecting = false;
 
-		// log('clickedPath: ' + this.clickedPath);
+		// log('clickedShape: ' + this.clickedShape);
 		// log('corner: ' + ehd.handle);
 
 		if (ehd.handle) {
@@ -70,24 +73,25 @@ export class Tool_Resize {
 				this.resizing = true;
 			}
 			setCursor(ehd.handle);
-		} else if (this.clickedPath) {
+		} else if (this.clickedShape) {
+			if (ehd.isShiftDown) this.setInitialPoint();
 			if (ehd.isCtrlDown) {
-				if (msShapes.isSelected(this.clickedPath)) {
+				if (msShapes.isSelected(this.clickedShape)) {
 					// If we don't drag this shape, then deselect it on mouseup
 					this.monitorForDeselect = true;
 				} else {
-					msShapes.add(this.clickedPath);
+					msShapes.add(this.clickedShape);
 				}
 			} else {
-				if (msShapes.isSelected(this.clickedPath)) {
+				if (msShapes.isSelected(this.clickedShape)) {
 					// If we don't drag this shape, then deselect it on mouseup
 					this.monitorForDeselect = true;
 				} else {
-					msShapes.select(this.clickedPath);
+					msShapes.select(this.clickedShape);
 				}
 			}
 
-			// 	if (this.clickedPath.objType === 'ComponentInstance') selectTool('pathEdit');
+			// 	if (this.clickedShape.objType === 'ComponentInstance') selectTool('pathEdit');
 			// 	editor.nav.panel = 'Attributes';
 			// }
 
@@ -118,6 +122,7 @@ export class Tool_Resize {
 			this.monitorForDeselect = false;
 			let dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
 			let dy = (ehd.lastY - ehd.mousePosition.y) / view.dz;
+			if (ehd.isShiftDown) this.setInitialPoint();
 
 			if (singlePath) {
 				if (singlePath.xLock) dx = 0;
@@ -125,6 +130,24 @@ export class Tool_Resize {
 				this.historyTitle = `Moved shape: ${singlePath.name}`;
 			} else {
 				this.historyTitle = `Moved ${msShapes.members.length} shapes`;
+			}
+
+			// Snapping
+			if (ehd.isShiftDown) {
+				const mouseSX = cXsX(ehd.mousePosition.x);
+				const mouseSY = cYsY(ehd.mousePosition.y);
+				const mouse = { x: mouseSX, y: mouseSY };
+				const firstClick = { x: ehd.initialPoint.mouseSX, y: ehd.initialPoint.mouseSY };
+				const ang = calculateAngle(mouse, firstClick);
+				if (isAngleMoreHorizontal(ang)) {
+					// Point is moving more horizontal, snap to mouse y
+					dx = mouse.x - this.clickedShape.x - (firstClick.x - ehd.initialPoint.shapeX);
+					dy = ehd.initialPoint.shapeY - this.clickedShape.y;
+				} else {
+					// Point is moving more vertical, snap to mouse x
+					dx = ehd.initialPoint.shapeX - this.clickedShape.x;
+					dy = mouse.y - this.clickedShape.y - (firstClick.y - ehd.initialPoint.shapeY);
+				}
 			}
 
 			msShapes.updateShapePosition(dx, dy);
@@ -215,7 +238,7 @@ export class Tool_Resize {
 		}
 
 		if (this.monitorForDeselect) {
-			editor.multiSelect.shapes.remove(this.clickedPath);
+			editor.multiSelect.shapes.remove(this.clickedShape);
 		}
 
 		if (ehd.selecting) {
@@ -224,13 +247,14 @@ export class Tool_Resize {
 		}
 
 		// Finish Up
-		this.clickedPath = false;
+		this.clickedShape = false;
 		this.didStuff = false;
 		this.dragging = false;
 		this.resizing = false;
 		this.rotating = false;
 		ehd.selecting = false;
 		this.monitorForDeselect = false;
+		unsetInitialPoint();
 		ehd.handle = '';
 		ehd.lastX = -100;
 		ehd.lastY = -100;
@@ -242,5 +266,22 @@ export class Tool_Resize {
 		ehd.undoQueueHasChanged = false;
 		editor.publish('currentItem', editor.selectedItem);
 		// log(`Tool_Resize.mouseup`, 'end');
+	}
+
+	setInitialPoint() {
+		const ehd = eventHandlerData;
+		if (ehd.initialPoint !== false) return;
+		log(`Tool_Resize.setInitialPoint`, 'start');
+		ehd.initialPoint = {};
+		if (this.clickedShape && typeof this.clickedShape === 'object') {
+			ehd.initialPoint.shapeX = this.clickedShape.x;
+			ehd.initialPoint.shapeY = this.clickedShape.y;
+			ehd.initialPoint.mouseSX = cXsX(ehd.mousePosition.x);
+			ehd.initialPoint.mouseSY = cYsY(ehd.mousePosition.y);
+		}
+
+		log(`shape: ${ehd.initialPoint.shapeX}, ${ehd.initialPoint.shapeY}`);
+		log(`mouse: ${ehd.initialPoint.mouseSX}, ${ehd.initialPoint.mouseSY}`);
+		log(`Tool_Resize.setInitialPoint`, 'end');
 	}
 }

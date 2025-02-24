@@ -6,6 +6,7 @@ import { setCursor } from '../cursors.js';
 import { isOverControlPoint } from '../detect_edit_affordances.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
+import { unsetInitialPoint } from '../events_keyboard.js';
 import { checkForMouseOverHotspot, clickEmptySpace, selectItemsInArea } from '../events_mouse.js';
 import { getShapeAtLocation, isPointNearShapeEdge } from './tools.js';
 
@@ -26,7 +27,7 @@ export class Tool_PathEdit {
 		this.pathPoint = {};
 		this.historyTitle = 'Path edit tool';
 		/** @type {Object | Boolean} */
-		this.initialPoint = false;
+		eventHandlerData.initialPoint = false;
 	}
 
 	mousedown() {
@@ -173,29 +174,29 @@ export class Tool_PathEdit {
 					// Check for point snap to horizontal/vertical
 					if (cpt === 'p') {
 						const mouse = { x: cXsX(ehd.mousePosition.x), y: cYsY(ehd.mousePosition.y) };
-						const base = { x: this.initialPoint.baseX, y: this.initialPoint.baseY };
+						const base = { x: ehd.initialPoint.baseX, y: ehd.initialPoint.baseY };
 						const ang = calculateAngle(mouse, base);
 						if (isAngleMoreHorizontal(ang)) {
 							// Point is moving more horizontal, snap to mouse y
 							dx = mouse.x - this.controlPoint.x;
-							dy = this.initialPoint.baseY - this.controlPoint.y;
+							dy = ehd.initialPoint.baseY - this.controlPoint.y;
 						} else {
 							// Point is moving more vertical, snap to mouse x
-							dx = this.initialPoint.baseX - this.controlPoint.x;
+							dx = ehd.initialPoint.baseX - this.controlPoint.x;
 							dy = mouse.y - this.controlPoint.y;
 						}
-					} else if (typeof this.initialPoint?.angle === 'number') {
+					} else if (typeof ehd.initialPoint?.angle === 'number') {
 						// Check for handle snap to original angle
 						const parentPoint = this.controlPoint.parent.p;
-						if (isAngleMoreHorizontal(this.initialPoint.angle)) {
+						if (isAngleMoreHorizontal(ehd.initialPoint.angle)) {
 							// Handle is more horizontal, snap to mouse x
 							const base = this.controlPoint.x - parentPoint.x + dx;
-							const newY = base * Math.tan(this.initialPoint.angle) + parentPoint.y;
+							const newY = base * Math.tan(ehd.initialPoint.angle) + parentPoint.y;
 							dy = newY - this.controlPoint.y;
 						} else {
 							// Handle is more vertical, snap to mouse y
 							const base = this.controlPoint.y - parentPoint.y + dy;
-							const newX = base / Math.tan(this.initialPoint.angle) + parentPoint.x;
+							const newX = base / Math.tan(ehd.initialPoint.angle) + parentPoint.x;
 							dx = newX - this.controlPoint.x;
 						}
 					}
@@ -395,29 +396,25 @@ export class Tool_PathEdit {
 	}
 
 	setInitialPoint() {
-		if (this.initialPoint !== false) return;
+		const ehd = eventHandlerData;
+		if (ehd.initialPoint !== false) return;
 		log(`Tool_PathEdit.setInitialPoint`, 'start');
-		this.initialPoint = {};
+		ehd.initialPoint = {};
 		if (this.controlPoint.type === 'p') {
-			this.initialPoint.angle = 0;
+			ehd.initialPoint.angle = 0;
 		} else {
 			const handle = this.controlPoint.parent[this.controlPoint.type];
-			this.initialPoint.angle = calculateAngle(handle, handle.parent.p);
+			ehd.initialPoint.angle = calculateAngle(handle, handle.parent.p);
 		}
-		this.initialPoint.x = this.controlPoint.x;
-		this.initialPoint.y = this.controlPoint.y;
-		this.initialPoint.baseX = this.controlPoint.parent.p.x;
-		this.initialPoint.baseY = this.controlPoint.parent.p.y;
-		log(`angle: ${this.initialPoint.angle}`);
-		log(`point: ${this.initialPoint.x}, ${this.initialPoint.y}`);
-		log(`base: ${this.initialPoint.baseX}, ${this.initialPoint.baseY}`);
+		ehd.initialPoint.x = this.controlPoint.x;
+		ehd.initialPoint.y = this.controlPoint.y;
+		ehd.initialPoint.baseX = this.controlPoint.parent.p.x;
+		ehd.initialPoint.baseY = this.controlPoint.parent.p.y;
+		log(`angle: ${ehd.initialPoint.angle}`);
+		log(`point: ${ehd.initialPoint.x}, ${ehd.initialPoint.y}`);
+		log(`base: ${ehd.initialPoint.baseX}, ${ehd.initialPoint.baseY}`);
 		log(`Tool_PathEdit.setInitialPoint`, 'end');
 	}
-}
-
-export function unsetInitialPoint() {
-	log(`unsetInitialPoint`);
-	getCurrentProjectEditor().eventHandlers.tool_pathEdit.initialPoint = false;
 }
 
 /**
@@ -425,7 +422,7 @@ export function unsetInitialPoint() {
  * @param {Number} angle - in radians
  * @returns {Boolean} - true if angle is more horizontal
  */
-function isAngleMoreHorizontal(angle) {
+export function isAngleMoreHorizontal(angle) {
 	const ang = radiansToNiceAngle(angle);
 	return (ang >= 45 && ang <= 135) || (ang >= 225 && ang <= 315);
 }

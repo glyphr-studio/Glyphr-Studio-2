@@ -25,7 +25,6 @@ import {
 	togglePanOn,
 } from './events.js';
 import { handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
-import { unsetInitialPoint } from './tools/path_edit.js';
 import { selectTool } from './tools/tools.js';
 
 // --------------------------------------------------------------
@@ -613,6 +612,14 @@ function handleSpecialKeys(key, keyDirection) {
 	}
 
 	// log(`handleSpecialKeys`, 'end');
+}
+
+export function unsetInitialPoint() {
+	log(`unsetInitialPoint`);
+	// const editor = getCurrentProjectEditor();
+	// editor.eventHandlers.tool_pathEdit.initialPoint = false;
+	// editor.eventHandlers.tool_resize.initialPoint = false;
+	eventHandlerData.initialPoint = false;
 }
 
 /**
