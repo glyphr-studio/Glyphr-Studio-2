@@ -6,7 +6,6 @@ import { setCursor } from '../cursors.js';
 import { isOverControlPoint } from '../detect_edit_affordances.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { unsetInitialPoint } from '../events_keyboard.js';
 import { checkForMouseOverHotspot, clickEmptySpace, selectItemsInArea } from '../events_mouse.js';
 import { getShapeAtLocation, isPointNearShapeEdge } from './tools.js';
 
@@ -172,7 +171,7 @@ export class Tool_PathEdit {
 				// --------------------------------------------------------------
 				if (ehd.isShiftDown) {
 					// Check for point snap to horizontal/vertical
-					if (cpt === 'p') {
+					if (cpt === 'p' || ehd.isCtrlDown) {
 						const mouse = { x: cXsX(ehd.mousePosition.x), y: cYsY(ehd.mousePosition.y) };
 						const base = { x: ehd.initialPoint.baseX, y: ehd.initialPoint.baseY };
 						const ang = calculateAngle(mouse, base);
@@ -302,7 +301,7 @@ export class Tool_PathEdit {
 		let hoverDetection;
 		let hcpIsSelected;
 
-		if (ehd.isCtrlDown) {
+		if (ehd.isCtrlDown && !ehd.isShiftDown) {
 			// Multi-selection
 
 			hoverDetection = isOverControlPoint(
@@ -384,7 +383,7 @@ export class Tool_PathEdit {
 		this.controlPoint = false;
 		this.pathPoint = false;
 		this.monitorForDeselect = false;
-		unsetInitialPoint();
+		ehd.initialPoint = false;
 		ehd.toolHandoff = false;
 		msPoints.singleHandle = false;
 		ehd.lastX = -100;
@@ -398,7 +397,7 @@ export class Tool_PathEdit {
 	setInitialPoint() {
 		const ehd = eventHandlerData;
 		if (ehd.initialPoint !== false) return;
-		log(`Tool_PathEdit.setInitialPoint`, 'start');
+		// log(`Tool_PathEdit.setInitialPoint`, 'start');
 		ehd.initialPoint = {};
 		if (this.controlPoint.type === 'p') {
 			ehd.initialPoint.angle = 0;
@@ -410,10 +409,10 @@ export class Tool_PathEdit {
 		ehd.initialPoint.y = this.controlPoint.y;
 		ehd.initialPoint.baseX = this.controlPoint.parent.p.x;
 		ehd.initialPoint.baseY = this.controlPoint.parent.p.y;
-		log(`angle: ${ehd.initialPoint.angle}`);
-		log(`point: ${ehd.initialPoint.x}, ${ehd.initialPoint.y}`);
-		log(`base: ${ehd.initialPoint.baseX}, ${ehd.initialPoint.baseY}`);
-		log(`Tool_PathEdit.setInitialPoint`, 'end');
+		// log(`angle: ${ehd.initialPoint.angle}`);
+		// log(`point: ${ehd.initialPoint.x}, ${ehd.initialPoint.y}`);
+		// log(`base: ${ehd.initialPoint.baseX}, ${ehd.initialPoint.baseY}`);
+		// log(`Tool_PathEdit.setInitialPoint`, 'end');
 	}
 }
 

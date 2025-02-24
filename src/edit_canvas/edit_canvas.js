@@ -185,6 +185,7 @@ export class EditCanvas extends HTMLElement {
 			// log(`EditCanvas.redrawGlyphEdit`, 'start');
 			editor.autoFitIfViewIsDefault();
 			ctx.clearRect(0, 0, width, height);
+			const ehd = eventHandlerData;
 
 			// Guides
 			const guidesSettings = editor.project.settings.app.guides;
@@ -200,10 +201,10 @@ export class EditCanvas extends HTMLElement {
 			// Draw selected shape
 			const editMode = editor.selectedTool;
 			// log(`editMode: ${editMode}`);
-			// log(`eventHandlerData.handle: ${eventHandlerData.handle}`);
+			// log(`ehd.handle: ${ehd.handle}`);
 			if (editMode === 'resize') {
 				drawSelectedPathOutline(ctx, view);
-				if (eventHandlerData.handle === 'rotate') {
+				if (ehd.handle === 'rotate') {
 					computeAndDrawRotationAffordance(ctx);
 				} else {
 					computeAndDrawBoundingBox(ctx);
@@ -211,19 +212,19 @@ export class EditCanvas extends HTMLElement {
 				}
 			} else if (editMode === 'pathEdit') {
 				drawSelectedPathOutline(ctx, view);
-				if (eventHandlerData.isCtrlDown || eventHandlerData.selecting) {
+				if (ehd.selecting) {
 					computeAndDrawPathPoints(ctx, true);
 					// testDrawAllPathPointHandles(ctx);
 				} else {
 					computeAndDrawPathPointHandles(ctx);
 					computeAndDrawPathPoints(ctx);
-					// drawPathPointHover(ctx, eventHandlerData.hoverPoint);
+					// drawPathPointHover(ctx, ehd.hoverPoint);
 				}
 			} else if (editMode === 'pathAddPoint') {
 				drawSelectedPathOutline(ctx, view);
 				computeAndDrawPathPoints(ctx);
-				if (eventHandlerData.hoverPoint) {
-					drawPathPointHover(ctx, eventHandlerData.hoverPoint);
+				if (ehd.hoverPoint) {
+					drawPathPointHover(ctx, ehd.hoverPoint);
 				}
 			} else if (editMode === 'newPath') {
 				computeAndDrawPathPointHandles(ctx);
@@ -232,7 +233,7 @@ export class EditCanvas extends HTMLElement {
 
 			// Draw temporary new paths
 			if (eventHandlerData?.newBasicPath?.objType) {
-				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
+				drawNewBasicPath(ctx, ehd.newBasicPath, view);
 			}
 
 			// Guides (if draw on top)
@@ -252,7 +253,7 @@ export class EditCanvas extends HTMLElement {
 			drawAllHighlightedPoints(ctx);
 
 			// Drag to select box
-			if (eventHandlerData.selecting) {
+			if (ehd.selecting) {
 				computeAndDrawDragToSelectBox(ctx, eventHandlerData);
 			}
 			// log(`EditCanvas.redrawGlyphEdit`, 'end');

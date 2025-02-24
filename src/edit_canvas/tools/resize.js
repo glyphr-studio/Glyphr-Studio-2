@@ -6,7 +6,6 @@ import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { unsetInitialPoint } from '../events_keyboard.js';
 import {
 	checkForMouseOverHotspot,
 	clickEmptySpace,
@@ -254,7 +253,7 @@ export class Tool_Resize {
 		this.rotating = false;
 		ehd.selecting = false;
 		this.monitorForDeselect = false;
-		unsetInitialPoint();
+		ehd.initialPoint = false;
 		ehd.handle = '';
 		ehd.lastX = -100;
 		ehd.lastY = -100;
@@ -271,7 +270,7 @@ export class Tool_Resize {
 	setInitialPoint() {
 		const ehd = eventHandlerData;
 		if (ehd.initialPoint !== false) return;
-		log(`Tool_Resize.setInitialPoint`, 'start');
+		// log(`Tool_Resize.setInitialPoint`, 'start');
 		ehd.initialPoint = {};
 		if (this.clickedShape && typeof this.clickedShape === 'object') {
 			ehd.initialPoint.shapeX = this.clickedShape.x;
@@ -280,8 +279,8 @@ export class Tool_Resize {
 			ehd.initialPoint.mouseSY = cYsY(ehd.mousePosition.y);
 		}
 
-		log(`shape: ${ehd.initialPoint.shapeX}, ${ehd.initialPoint.shapeY}`);
-		log(`mouse: ${ehd.initialPoint.mouseSX}, ${ehd.initialPoint.mouseSY}`);
-		log(`Tool_Resize.setInitialPoint`, 'end');
+		// log(`shape: ${ehd.initialPoint.shapeX}, ${ehd.initialPoint.shapeY}`);
+		// log(`mouse: ${ehd.initialPoint.mouseSX}, ${ehd.initialPoint.mouseSY}`);
+		// log(`Tool_Resize.setInitialPoint`, 'end');
 	}
 }

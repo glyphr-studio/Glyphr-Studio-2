@@ -602,7 +602,7 @@ function handleSpecialKeys(key, keyDirection) {
 		}
 		if (key === 'Shift') {
 			ehd.isShiftDown = false;
-			unsetInitialPoint();
+			eventHandlerData.initialPoint = false;
 			// log(`setting isShiftDown to false`);
 		}
 		if (key === 'Alt') {
@@ -612,14 +612,6 @@ function handleSpecialKeys(key, keyDirection) {
 	}
 
 	// log(`handleSpecialKeys`, 'end');
-}
-
-export function unsetInitialPoint() {
-	log(`unsetInitialPoint`);
-	// const editor = getCurrentProjectEditor();
-	// editor.eventHandlers.tool_pathEdit.initialPoint = false;
-	// editor.eventHandlers.tool_resize.initialPoint = false;
-	eventHandlerData.initialPoint = false;
 }
 
 /**
