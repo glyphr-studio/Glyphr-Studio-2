@@ -193,9 +193,13 @@ export function makeKeyboardShortcutReference() {
 			if (options.spacer && i > 0) row += `<span class="spacer">${options.spacer}</span>`;
 			if (options.classes && options.classes[i]) {
 				row += `<code class="${options.classes[i]}">${key}</code>`;
-			} else if (i === 1 && options.toolIconAction) {
-				if (options.toolIconAction === 'rotate') {
-					row += `<img src='${cursors.rotate.substring(5, cursors.rotate.length - 19)}'/>`;
+			} else if (i === combo.length - 1 && options.toolIconAction) {
+				// if (options.toolIconAction === 'rotate') {
+				if (cursors[options.toolIconAction]) {
+					row += `<img src='${cursors[options.toolIconAction].substring(
+						5,
+						cursors[options.toolIconAction].length - 19
+					)}'/>`;
 				} else {
 					row += makeToolButtonSVG({ name: options.toolIconAction });
 				}
@@ -224,12 +228,14 @@ export function makeKeyboardShortcutReference() {
 		if (outputMarkdownToConsole) makeOneMarkdownHeader(text);
 	}
 
+	// Project actions
 	makeOneHeader('Project actions');
 	makeOneRow(['Ctrl', 'S'], 'Save a Glyphr Studio Project File (.gs2)');
 	makeOneRow(['Ctrl', 'E'], 'Export an OTF Font (.otf)');
 	makeOneRow(['Ctrl', 'G'], 'Export an SVG Font (.svg)');
 	makeOneRow(['Ctrl', 'O'], 'Open a project in a new tab');
 
+	// Selecting and navigating
 	makeOneHeader('Selecting and navigating');
 	makeOneRow(
 		['Ctrl', '.'],
@@ -249,7 +255,7 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(
 		['Ctrl', 'Click a shape'],
 		`Toggle selection for that shape (multi-select)<br>Either on the edit canvas, or the layers panel`,
-		{ toolIconAction: 'resize' }
+		{ toolIconAction: 'arrowSquare' }
 	);
 	makeOneRow(['Ctrl', '➝'], `Select the next Path Point`, { classes: [false, 'arrow-key'] });
 	makeOneRow(['Ctrl', 'Shift', '➝'], `Add the next Path Point to the selection (multi-select)`, {
@@ -264,9 +270,12 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(
 		['Ctrl', 'Click a path point'],
 		`Toggle selection for that path point (multi-select)`,
-		{ toolIconAction: 'pathEdit' }
+		{ toolIconAction: 'penSquare' }
 	);
 
+	makeOneRow(['Esc'], `Close all dialogs`);
+
+	// View
 	makeOneHeader('View');
 	makeOneRow(['Space', 'Scroll wheel click'], `Toggle the pan tool`, { spacer: 'or' });
 	makeOneRow(['Ctrl', 'Scroll wheel'], `Zoom in and out`);
@@ -275,6 +284,7 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(['Ctrl', '0'], `Auto-fit glyph on the screen`);
 	makeOneRow(['Ctrl', 'Space'], `Toggle distraction free preview mode`);
 
+	// Editing
 	makeOneHeader('Editing');
 	makeOneRow(['Ctrl', 'C'], `Copy the selected shapes`);
 	makeOneRow(
@@ -293,6 +303,18 @@ export function makeKeyboardShortcutReference() {
 		`Nudge the selected shape or path point <span class="number">1em</span><br>Press <code>Shift</code> to nudge <span class="number">10em</span>`,
 		{ classes: ['arrow-key', 'arrow-key', 'arrow-key', 'arrow-key'] }
 	);
+	makeOneRow(['Shift', 'Drag path point'], `Snap point movement to horizontal or vertical`, {
+		toolIconAction: 'penSquare',
+	});
+	makeOneRow(['Shift', 'Drag handle'], `Maintain original handle angle`, {
+		toolIconAction: 'penCircle',
+	});
+	makeOneRow(['Ctrl', 'Shift', 'Drag handle'], `Snap handle movement to horizontal or vertical`, {
+		toolIconAction: 'penCircle',
+	});
+	makeOneRow(['Shift', 'Shape Rotation handle'], 'Snap rotation degrees to whole numbers', {
+		toolIconAction: 'rotate',
+	});
 	makeOneRow(
 		['Ctrl', 'R'],
 		'Round values for the current selection<br>(Whole Shapes for the Resize tool, Path Points + Handles for the Path Edit tool)'
@@ -306,11 +328,8 @@ export function makeKeyboardShortcutReference() {
 	makeOneRow(['Ctrl', 'Click'], 'Add the new point as a corner point with hidden handles', {
 		toolIconAction: 'pathAddPoint',
 	});
-	makeOneRow(['Shift', 'Shape Rotation handle'], 'Snap rotation degrees to whole numbers', {
-		toolIconAction: 'rotate',
-	});
-	makeOneRow(['Esc'], `Close all dialogs`);
 
+	// Tools
 	makeOneHeader('Tools');
 	makeOneRow(['B', 'P'], 'Select the Path Edit (Pen) tool', {
 		spacer: 'or',
@@ -368,7 +387,10 @@ function makeOneMarkdownHeader(text, first = false) {
 
 const toolNames = {
 	resize: 'Resize (Arrow) Tool',
+	arrowSquare: 'Resize (Arrow) Tool - hovering over a shape',
 	pathEdit: 'Path Edit (Pen) Tool',
+	penCircle: 'Path Edit (Pen) Tool - hovering over a handle',
+	penSquare: 'Path Edit (Pen) Tool - hovering over a path point',
 	newPath: 'New Path Tool',
 	pathAddPoint: 'Path Add Point Tool',
 	rotate: 'Shape Rotate Handle',

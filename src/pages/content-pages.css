@@ -85,7 +85,6 @@
 	border: 0px;
 }
 
-
 .page__card {
 	/* display: grid;
 	grid-template-columns: clamp(110px, 150px, 190px) 1fr;
@@ -168,7 +167,8 @@ code,
 code.arrow-key {
 	font-weight: bold;
 	position: relative;
-	top: 3px;
+	top: 1px;
+	line-height: 1.3em;
 }
 
 .keyboardShortcutTable img {

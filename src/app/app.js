@@ -32,7 +32,7 @@ export class GlyphrStudioApp {
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
+				currentPage: 'Help', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: 'glyph-0x25', // {glyph id} select a glyph
 				currentPanel: false, // {Sentence case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
