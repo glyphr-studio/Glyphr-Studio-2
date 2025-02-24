@@ -211,7 +211,7 @@ export function resizePath() {
 	let dh = ly - my;
 	let dw = lx - mx;
 	// let rl = selected.virtualGlyph.ratioLock || false;
-	let rl = selected.ratioLock;
+	let rl = selected.ratioLock || eventHandlerData.isShiftDown;
 
 	// Check that the path won't have negative dimensions
 	let maxes = selected.maxes;

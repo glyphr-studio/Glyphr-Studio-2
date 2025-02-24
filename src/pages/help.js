@@ -303,6 +303,12 @@ export function makeKeyboardShortcutReference() {
 		`Nudge the selected shape or path point <span class="number">1em</span><br>Press <code>Shift</code> to nudge <span class="number">10em</span>`,
 		{ classes: ['arrow-key', 'arrow-key', 'arrow-key', 'arrow-key'] }
 	);
+	makeOneRow(['Shift', 'Resize shape'], `Maintain aspect ratio`, {
+		toolIconAction: 'arrow',
+	});
+	makeOneRow(['Shift', 'Drag shape'], `Snap shape movement to horizontal or vertical`, {
+		toolIconAction: 'arrowSquare',
+	});
 	makeOneRow(['Shift', 'Drag path point'], `Snap point movement to horizontal or vertical`, {
 		toolIconAction: 'penSquare',
 	});

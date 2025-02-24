@@ -126,7 +126,7 @@
 	display: grid;
 	grid-template-columns: max-content 1fr;
 	row-gap: 20px;
-	column-gap: 40px;
+	column-gap: 20px;
 }
 
 .keyboardShortcutTable h3 {
@@ -136,6 +136,8 @@
 
 .keyboardShortcutTable label {
 	margin: 5px 0px 6px 0px;
+	padding-top: 6px;
+	padding-bottom: 0px;
 }
 
 .keyboardShortcutTable svg {
@@ -173,7 +175,7 @@ code.arrow-key {
 
 .keyboardShortcutTable img {
 	display: inline-block;
-	width: 20px;
+	height: 24px;
 	margin: 0px 8px 0px 5px;
 	position: relative;
 	top: 7px;
