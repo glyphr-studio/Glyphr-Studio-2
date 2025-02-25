@@ -244,7 +244,7 @@ function collectAllUpstreamLinks(item, result = []) {
  * 		if false, component instances will simply be removed
  */
 export function resolveItemLinks(item, unlinkComponentInstances = false) {
-	// log('Glyph.resolveItemLinks', 'start');
+	// log(`resolveItemLinks`, 'start');
 	// log('passed this as id: ' + item.id);
 	// Delete upstream Component Instances
 	if (item.objType === 'KernGroup') return;
@@ -276,6 +276,7 @@ export function resolveItemLinks(item, unlinkComponentInstances = false) {
 			removeLinkFromUsedIn(project.getItem(item.shapes[s].link), item.id);
 		}
 	}
+	// log(`resolveItemLinks`, 'end');
 }
 
 /**

@@ -18,6 +18,7 @@ import {
 	makeCard_Flatten,
 	makeCard_Monospace,
 	makeCard_Move,
+	makeCard_RemoveItems,
 	makeCard_Resize,
 	makeCard_Round,
 	makeCard_ScaleHorizontal,
@@ -95,14 +96,18 @@ export function makePage_GlobalActions() {
 	let showFilterDialogButton = content.querySelector('#showFilterDialogButton');
 	showFilterDialogButton.addEventListener('click', showFilterDialog);
 
+	/** @type {HTMLInputElement} */
 	let ligatureCheckbox = content.querySelector('#globalActionsSelectLigaturesCheckbox');
 	ligatureCheckbox.addEventListener('change', () => {
-		itemFilterInputs.ligatures = ligatureCheckbox.hasAttribute('checked');
+		itemFilterInputs.ligatures = ligatureCheckbox.checked;
+		// log(`itemFilterInputs.ligatures is now ${itemFilterInputs.ligatures}`);
 	});
 
+	/** @type {HTMLInputElement} */
 	let componentCheckbox = content.querySelector('#globalActionsSelectComponentsCheckbox');
 	componentCheckbox.addEventListener('change', () => {
-		itemFilterInputs.components = componentCheckbox.hasAttribute('checked');
+		itemFilterInputs.components = componentCheckbox.checked;
+		// log(`itemFilterInputs.components is now ${itemFilterInputs.components}`);
 	});
 
 	addAsChildren(rightArea, [
@@ -114,6 +119,7 @@ export function makePage_GlobalActions() {
 		makeCard_Flatten(),
 		makeCard_SideBearings(),
 		makeCard_Round(),
+		makeCard_RemoveItems(),
 		makeElement({ tag: 'h1', content: 'Font types' }),
 		makeCard_Monospace(),
 		makeCard_AllCaps(),
@@ -192,6 +198,9 @@ export function glyphIterator(oa) {
 	}
 
 	function makeItemList() {
+		// log(`makeItemList`, 'start');
+		// log(`\n⮟itemFilterInputs⮟`);
+		// log(itemFilterInputs);
 		// Components
 		if (includeComponents && itemFilterInputs.components) {
 			Object.keys(project.components).forEach((componentID) => listOfItemIDs.push(componentID));
@@ -226,6 +235,7 @@ export function glyphIterator(oa) {
 		getCurrentProjectEditor().history.addWholeProjectChangePostState();
 		// Kick off the process
 		setTimeout(processOneItem, 10);
+		// log(`makeItemList`, 'end');
 	}
 
 	// Do Stuff
