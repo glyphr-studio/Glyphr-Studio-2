@@ -366,14 +366,36 @@ export class EditCanvas extends HTMLElement {
 
 			// Verticals
 			if (drawVerticals) {
+				/** @type {String | false} */
+				let sbHover = false;
+				if (editor.selectedTool === 'resize') {
+					const tool = editor.eventHandlers.tool_resize;
+					sbHover = tool.sideBearingHover || tool.sideBearingEdit;
+				}
+
 				if (editor.systemGuides.leftSide) {
-					setSystemGuideColor('dark', alpha);
-					drawEmVerticalLine(ctx, 0, view);
+					if (sbHover === 'lsb') {
+						setSystemGuideColor('dark', 0.8);
+						drawGuideLabel(`Left side bearing: ${currentItem.leftSideBearing}`, 0, false);
+					} else {
+						setSystemGuideColor('dark', alpha);
+					}
+					drawEmVerticalLine(ctx, 0, view, sbHover === 'lsb');
 					if (showLabels) drawGuideLabel('Left side', 0, false);
 				}
-				if (editor.systemGuides.rightSide && advanceWidth) {
-					setSystemGuideColor('dark', alpha);
-					drawEmVerticalLine(ctx, advanceWidth, view);
+
+				if (editor.systemGuides.rightSide && advanceWidth && currentItem.objType !== 'Component') {
+					if (sbHover === 'rsb') {
+						setSystemGuideColor('dark', 0.8);
+						drawGuideLabel(
+							`Right side bearing: ${currentItem.rightSideBearing}`,
+							advanceWidth,
+							false
+						);
+					} else {
+						setSystemGuideColor('dark', alpha);
+					}
+					drawEmVerticalLine(ctx, advanceWidth, view, sbHover === 'rsb');
 					if (showLabels) drawGuideLabel('Right side', advanceWidth, false);
 				}
 			}
@@ -470,10 +492,10 @@ function drawEmHorizontalLine(ctx, emY = 0, emLineWidth, view) {
  * @param {Number} emX - x value, in Em space units (not pixels)
  * @param {Object} view - view object (dx, dy, dz)
  */
-export function drawEmVerticalLine(ctx, emX = 0, view) {
+export function drawEmVerticalLine(ctx, emX = 0, view, tall = false) {
 	// log(`drawEmVerticalLine`, 'start');
 	const project = getCurrentProject();
-	let pad = 50 * view.dz;
+	let pad = (tall ? 200 : 50) * view.dz;
 	const lineTopY = sYcY(project.settings.font.ascent, view) - pad;
 	let lineX = sXcX(emX);
 	lineX = Math.floor(lineX);

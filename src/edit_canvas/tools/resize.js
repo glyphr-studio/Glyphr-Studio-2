@@ -13,7 +13,7 @@ import {
 	selectItemsInArea,
 } from '../events_mouse.js';
 import { isAngleMoreHorizontal } from './path_edit.js';
-import { getShapeAtLocation } from './tools.js';
+import { getShapeAtLocation, isSideBearingHere } from './tools.js';
 
 /**
 	// ----------------------------------------------------------------
@@ -25,6 +25,10 @@ export class Tool_Resize {
 		this.dragging = false;
 		this.resizing = false;
 		this.rotating = false;
+		/** @type {String | false} */
+		this.sideBearingEdit = false;
+		/** @type {String | false} */
+		this.sideBearingHover = false;
 		eventHandlerData.selecting = false;
 		this.monitorForDeselect = false;
 		this.didStuff = false;
@@ -49,6 +53,12 @@ export class Tool_Resize {
 
 		this.didStuff = false;
 		this.clickedShape = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+		this.sideBearingEdit = isSideBearingHere(
+			ehd.mousePosition.x,
+			ehd.mousePosition.y,
+			editor.selectedItem
+		);
+		this.sideBearingHover = this.sideBearingEdit;
 		this.resizing = false;
 		this.dragging = false;
 		this.rotating = false;
@@ -99,7 +109,7 @@ export class Tool_Resize {
 			// log('clicked on nothing');
 			if (!ehd.isCtrlDown) clickEmptySpace();
 			const clickedHotspot = findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
-			if (!clickedHotspot) ehd.selecting = true;
+			if (!clickedHotspot && !this.sideBearingEdit) ehd.selecting = true;
 		}
 		// log(`Tool_Resize.mousedown`, 'end');
 	}
@@ -116,6 +126,7 @@ export class Tool_Resize {
 			ehd.handle || msShapes.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y);
 		const singlePath = msShapes.singleton;
 
+		// log(`this.sideBearingEdit: ${this.sideBearingEdit}`);
 		if (this.dragging) {
 			// log('detected DRAGGING');
 			this.monitorForDeselect = false;
@@ -176,13 +187,38 @@ export class Tool_Resize {
 				this.historyTitle = `Rotated ${msShapes.members.length} shapes`;
 			}
 			this.didStuff = true;
+		} else if (this.sideBearingEdit) {
+			// log(`detected SIDEBEARING ${this.sideBearingEdit}`);
+			const dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
+			const item = editor.selectedItem;
+			if (this.sideBearingEdit === 'lsb') {
+				const oldLSB = item.leftSideBearing;
+				item.leftSideBearing = Math.round(item.leftSideBearing - dx);
+				const deltaLSB = oldLSB - item.leftSideBearing;
+				let view = editor.view;
+				editor.view.dx += deltaLSB * view.dz;
+				editor.publish('editCanvasView', item);
+				this.historyTitle = `Updated left side bearing.`;
+				this.didStuff = true;
+			}
+			if (this.sideBearingEdit === 'rsb') {
+				item.rightSideBearing = Math.round(item.rightSideBearing + dx);
+				this.historyTitle = `Updated right side bearing.`;
+				this.didStuff = true;
+			}
 		} else if (ehd.selecting) {
 			selectItemsInArea(ehd.lastX, ehd.lastY, ehd.mousePosition.x, ehd.mousePosition.y, 'shapes');
 			editor.editCanvas.redraw();
 		}
 
 		// Figure out cursor
-		let hoveredPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+		const hoveredPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+		const oldSBH = this.sideBearingHover;
+		this.sideBearingHover = isSideBearingHere(
+			ehd.mousePosition.x,
+			ehd.mousePosition.y,
+			editor.selectedItem
+		);
 
 		if (corner) {
 			setCursor(corner);
@@ -200,6 +236,9 @@ export class Tool_Resize {
 			} else {
 				setCursor('arrowPlus');
 			}
+		} else if (this.sideBearingEdit || this.sideBearingHover) {
+			setCursor('col-resize');
+			editor.publish('editCanvasView', editor.selectedItem);
 		} else {
 			if (hoveredPath) {
 				setCursor('arrowSquare');
@@ -207,6 +246,8 @@ export class Tool_Resize {
 				setCursor('arrow');
 			}
 		}
+
+		if(oldSBH !== this.sideBearingHover) editor.publish('editCanvasView', editor.selectedItem);
 
 		checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 
@@ -250,6 +291,8 @@ export class Tool_Resize {
 		this.didStuff = false;
 		this.dragging = false;
 		this.resizing = false;
+		this.sideBearingEdit = false;
+		this.sideBearingHover = false;
 		this.rotating = false;
 		ehd.selecting = false;
 		this.monitorForDeselect = false;
