@@ -798,7 +798,7 @@ export function drawAllHighlightedPoints(ctx) {
 	if (currentItem.shapes) {
 		currentItem.shapes.forEach((shape) => {
 			if (shape.objType === 'Path') {
-				// log(`\n⮟shape.cache⮟`);
+				// log(`\n⮟shape.cache ${shape.name}⮟`);
 				// log(shape.cache);
 				drawHighlightedPointsForPath(shape, ctx);
 			}
@@ -816,7 +816,7 @@ function drawHighlightedPointsForPath(path, ctx) {
 			path?.cache?.pointsNearPoints &&
 			path?.cache?.pointsNearPoints[p]
 		) {
-			// log(path?.cache?.pointsNearPoints);
+			// log(path?.cache?.pointsNearPoints[p]);
 			drawPointHighlight(point.p, ctx);
 			// break;
 		}

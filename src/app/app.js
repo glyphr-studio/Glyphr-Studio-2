@@ -2,8 +2,10 @@ import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { parseSemVer } from '../formats_io/validate_file_input.js';
+import settings_data from '../pages/settings_data.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
+import { enabledQualityChecks } from '../project_editor/quality_checks.js';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
@@ -33,7 +35,7 @@ export class GlyphrStudioApp {
 				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
 				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
-				currentGlyphID: 'glyph-0x25', // {glyph id} select a glyph
+				currentGlyphID: 'glyph-0x6F', // {glyph id} select a glyph
 				currentPanel: false, // {Sentence case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
@@ -41,7 +43,9 @@ export class GlyphrStudioApp {
 				selectFirstShape: false, // {bool} select the first shape
 				selectFirstPoint: false, // {bool} select the first path point
 				testActions: [], // {name: '', onClick: ()=>{}} adds test actions to the Glyph card
-				testOnLoad: function () {}, // code to run on load
+				testOnLoad: function () {
+					enabledQualityChecks.highlightPointsNearPoints = true;
+				}, // code to run on load
 				testOnRedraw: function () {}, // code to run on Edit Canvas redraw
 			},
 			telemetry: true, // Load google analytics
