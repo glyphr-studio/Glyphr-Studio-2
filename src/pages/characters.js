@@ -39,7 +39,7 @@ export function makePage_Characters() {
 					${makeNavButton({
 						level: 'l2',
 						superTitle: 'EDITING',
-						title: editor.project.getItemName(editor.selectedGlyphID, true),
+						title: getItemNameWithFallback(editor.selectedGlyphID),
 					})}
 					${makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel })}
 				</div>
@@ -72,7 +72,7 @@ export function makePage_Characters() {
 		topic: 'whichGlyphIsSelected',
 		subscriberID: 'nav.glyphChooserButton',
 		callback: (newGlyphID) => {
-			l2.innerHTML = makeNavButtonContent(editor.project.getItemName(newGlyphID, true), 'EDITING');
+			l2.innerHTML = makeNavButtonContent(getItemNameWithFallback(newGlyphID), 'EDITING');
 		},
 	});
 
@@ -138,4 +138,20 @@ export function makePage_Characters() {
 
 	// log(`makePage_Characters`, 'end');
 	return content;
+}
+
+/**
+ *
+ * @param {String | false} itemID - ID of the item
+ * @returns {String} - name of the item
+ */
+export function getItemNameWithFallback(itemID) {
+	if(!itemID) return '[no id]';
+	const editor = getCurrentProjectEditor();
+	let charName = editor.project.getItemName(itemID, true);
+	if (!charName || charName === '[name not found]') {
+		charName = `U+${itemID.substring(8).toUpperCase()}`;
+	}
+
+	return charName;
 }

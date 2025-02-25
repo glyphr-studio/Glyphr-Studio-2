@@ -795,7 +795,7 @@ export function drawAllHighlightedPoints(ctx) {
 	let editor = getCurrentProjectEditor();
 	let currentItem = editor.selectedItem;
 
-	if (currentItem.shapes) {
+	if (currentItem?.shapes) {
 		currentItem.shapes.forEach((shape) => {
 			if (shape.objType === 'Path') {
 				// log(`\n⮟shape.cache ${shape.name}⮟`);

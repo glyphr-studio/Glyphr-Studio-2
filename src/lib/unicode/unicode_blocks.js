@@ -69,3 +69,20 @@ export function getParentRange(id = -1) {
 	}
 	return false;
 }
+
+/**
+ * Checks a range to tell if it's a default or a custom range
+ * @param {Object | CharacterRange} range - range to check
+ * @returns {Boolean}
+ */
+export function isStandardUnicodeRange(range) {
+	for (let i = 0; i < allBlocks.length; i++) {
+		const currentBlock = allBlocks[i];
+		for (let b = 0; b < currentBlock.length; b++) {
+			if (range.begin === currentBlock[b].begin && range.end === currentBlock[b].end) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
