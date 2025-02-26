@@ -1,5 +1,5 @@
 import { getCurrentProject } from '../app/main';
-import { calculateLength } from '../common/functions';
+import { calculateLength, clone } from '../common/functions';
 
 export const enabledQualityChecks = {
 	highlightPointsNearPoints: false,
@@ -33,29 +33,33 @@ export function runQualityChecksForItem(item) {
 
 	if (item.shapes) {
 		item.shapes.forEach((shape) => {
+			// log(`shape.name: ${shape.name}`);
 			if (shape.objType === 'Path') {
 				// Reset the cache
 				shape.chache = {};
 
 				// Run the checks
-				shape.pathPoints.forEach((point, index) => {
+				for (let index = 0; index < shape.pathPoints.length; index++) {
+					const point = shape.pathPoints[index];
+
 					// near other points
 					if (enabledQualityChecks.highlightPointsNearPoints) {
-						// log(`Doing quality check: highlightPointsNearPoints`);
+						// log(`\n Doing quality check: highlightPointsNearPoints`);
 						pointsNearPoints[index] = false;
-						const nextPoint = shape.pathPoints[shape.getNextPointNumber(index)];
+						const nextPointNumber = shape.getNextPointNumber(index);
+						const nextPoint = shape.pathPoints[nextPointNumber];
 						const distance = calculateLength(point.p, nextPoint.p);
-						// log(`this point: ${point.p.x}, ${point.p.y}`);
-						// log(`next point: ${nextPoint.p.x}, ${nextPoint.p.y}`);
-						// log(`distance is ${distance} for point ${index}`);
+						// log(`this point (${index}): ${point.p.x}, ${point.p.y}`);
+						// log(`next point (${nextPointNumber}): ${nextPoint.p.x}, ${nextPoint.p.y}`);
 						if (distance <= psa.highlightPointsNearPoints) {
 							pointsNearPoints[index] = true;
 						}
+						// log(`distance is ${distance} results in ${pointsNearPoints[index]}`);
 					}
 
 					// near its own handles
 					if (enabledQualityChecks.highlightPointsNearHandles) {
-						// log(`Doing quality check: highlightPointsNearHandles`);
+						// log(`\n Doing quality check: highlightPointsNearHandles`);
 						pointsNearHandles[index] = false;
 						const distanceH1 = calculateLength(point.p, point.h1);
 						const distanceH2 = calculateLength(point.p, point.h2);
@@ -69,7 +73,7 @@ export function runQualityChecksForItem(item) {
 
 					// near x = 0
 					if (enabledQualityChecks.highlightPointsNearXZero) {
-						// log(`Doing quality check: highlightPointsNearXZero`);
+						// log(`\n Doing quality check: highlightPointsNearXZero`);
 						nearXZero[index] = false;
 						if (Math.abs(point.p.x) <= psa.highlightPointsNearXZero) {
 							nearXZero[index] = true;
@@ -78,21 +82,19 @@ export function runQualityChecksForItem(item) {
 
 					// near y = 0
 					if (enabledQualityChecks.highlightPointsNearYZero) {
-						// log(`Doing quality check: highlightPointsNearYZero`);
+						// log(`\n Doing quality check: highlightPointsNearYZero`);
 						nearYZero[index] = false;
 						if (Math.abs(point.p.y) <= psa.highlightPointsNearYZero) {
 							nearYZero[index] = true;
 						}
 					}
-				});
+				}
 
 				// Save the results
-				if (pointsNearPoints.length) shape.cache.pointsNearPoints = pointsNearPoints;
-				if (pointsNearHandles.length) shape.cache.pointsNearHandles = pointsNearHandles;
-				if (nearXZero.length) shape.cache.nearXZero = nearXZero;
-				if (nearYZero.length) shape.cache.nearYZero = nearYZero;
-				// log(`\n⮟shape.cache⮟`);
-				// log(shape.cache);
+				if (pointsNearPoints.length) shape.cache.pointsNearPoints = clone(pointsNearPoints);
+				if (pointsNearHandles.length) shape.cache.pointsNearHandles = clone(pointsNearHandles);
+				if (nearXZero.length) shape.cache.nearXZero = clone(nearXZero);
+				if (nearYZero.length) shape.cache.nearYZero = clone(nearYZero);
 			}
 		});
 	}

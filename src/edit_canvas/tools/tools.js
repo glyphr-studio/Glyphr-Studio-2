@@ -4,6 +4,7 @@ import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';
 import { ComponentInstance } from '../../project_data/component_instance.js';
+import { Glyph } from '../../project_data/glyph.js';
 import { Path } from '../../project_data/path.js';
 import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
 import { updateCursor } from '../cursors.js';
@@ -497,6 +498,31 @@ export function isPointNearShapeEdge(shape, cx, cy, thickness = 10) {
 
 	// log(`isPointNearShapeEdge`, 'end');
 	return imageData.data[0] < 255;
+}
+
+/**
+ * Detects if the mosue is over a side bearing
+ * @param {Number} cx - canvas X value
+ * @param {Number} cy - canvas Y value
+ * @param {Glyph | Object} item - thing to get the side bearing from
+ * @returns	{String | false} - 'lsb' or 'rsb'
+ */
+export function isSideBearingHere(cx, cy, item) {
+	// log(`isSideBearingHere`, 'start');
+	let sx = cXsX(cx);
+	// let sy = cYsY(cy);
+	const target = 7;
+	/** @type {String | false} */
+	let result = false;
+
+	if (Math.abs(sx) < target) result = 'lsb';
+	if (item.objType !== 'Component') {
+		if (sx < item.advanceWidth + target && sx > item.advanceWidth - target) result = 'rsb';
+	}
+
+	// log(`result: ${result}`);
+	// log(`isSideBearingHere`, 'end');
+	return result;
 }
 
 // --------------------------------------------------------------

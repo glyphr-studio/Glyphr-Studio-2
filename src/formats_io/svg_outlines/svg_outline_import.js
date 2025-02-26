@@ -17,8 +17,8 @@ let importUPM;
 export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true, projectUPM = 2048) {
 	// log('ioSVG_convertSVGTagsToGlyph', 'start');
 
-	// log(`Passed svgData`);
-	// log(svgData);
+	log(`Passed svgData`);
+	log(svgData);
 	importUPM = projectUPM;
 	const bezierData = SVGtoBezier(svgData);
 	// log(`Resulting Bezier Data`);
@@ -26,8 +26,7 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true, projectU
 
 	if (showErrors && bezierData.length === 0) {
 		showError(`
-			Could not find any SVG tags to import.
-			Supported tags are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.`);
+			Text on the operating system clipboard does not appear to be SVG, or there was an error parsing the SVG code.`);
 		// log('ioSVG_convertSVGTagsToGlyph', 'end');
 		return new Glyph();
 	}
@@ -55,7 +54,7 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true, projectU
 			let newPoint;
 
 			if (!isPathClosed) {
-				newPoint = new PathPoint({projectUPM: importUPM});
+				newPoint = new PathPoint({ projectUPM: importUPM });
 				newPoint.p = new ControlPoint({ coord: new Coord({ x: path[0][0].x, y: path[0][0].y }) });
 				if (path[0][1]) {
 					newPoint.h2 = new ControlPoint({
@@ -75,7 +74,7 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true, projectU
 				// log(`>>>>Bezier path: at(-1) and 0`);
 				thisPath.addPathPoint(makePathPointFromBeziers(path.at(-1), path[0]));
 			} else {
-				newPoint = new PathPoint({projectUPM: importUPM});
+				newPoint = new PathPoint({ projectUPM: importUPM });
 				newPoint.p = new ControlPoint({
 					coord: new Coord({ x: path.at(-1)[3].x, y: path.at(-1)[3].y }),
 				});
@@ -122,7 +121,7 @@ function makePathPointFromBeziers(seg1, seg2) {
 		// console.warn(`Segments do not share endpoints`);
 	}
 
-	let newPoint = new PathPoint({projectUPM: importUPM});
+	let newPoint = new PathPoint({ projectUPM: importUPM });
 	newPoint.p = new ControlPoint({ coord: { x: seg2[0].x, y: seg2[0].y } });
 
 	if (seg1[2]) {

@@ -46,7 +46,7 @@ export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 		editor.publish('currentItem', editor.selectedItem);
 		showToast(`Imported ${tempGlyph.shapes.length} shapes from ${sourceText}`);
 	} else {
-		showToast('Could not import pasted SVG code.');
+		// showToast('Could not import pasted SVG code.');
 	}
 	// log(`importSVGtoCurrentItem`, 'end');
 }
@@ -74,20 +74,19 @@ export async function handlePasteSVGonEditCanvas(event) {
 	if (clipboardData) {
 		// log(clipboardData);
 		let text = clipboardData.getData('Text');
-		importSVGtoCurrentItem(text, '<br>the operating system clipboard');
+		// log(`clipboardData text: |${text}|`);
+		if (text) {
+			importSVGtoCurrentItem(text, '<br>the operating system clipboard');
+		}
 	} else if (navigator?.clipboard?.readText) {
 		navigator.clipboard.readText().then((text) => {
+			// log(`navigator text: |${text}|`);
 			if (text) {
-				// log(`text: ${text}`);
 				importSVGtoCurrentItem(text, '<br>the operating system clipboard');
-			} else {
-				showToast('Could not import SVG from the operating system clipboard');
 			}
 		});
 	} else {
-		showToast('Could not import SVG from the operating system clipboard');
-		// log(`handlePasteSVGonEditCanvas`, 'end');
-		return;
+		// log(`fallthrough`);
 	}
 
 	// log(`handlePasteSVGonEditCanvas`, 'end');

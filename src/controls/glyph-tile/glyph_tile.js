@@ -3,6 +3,7 @@ import { hexesToChars } from '../../common/character_ids.js';
 import { makeElement } from '../../common/dom.js';
 import { remove } from '../../common/functions.js';
 import { isWhitespace } from '../../lib/unicode/unicode_names.js';
+import { getItemNameWithFallback } from '../../pages/characters.js';
 import style from './glyph-tile.css?inline';
 
 /**
@@ -32,7 +33,7 @@ export class GlyphTile extends HTMLElement {
 		this.glyph = this.project.getItem(displayedItemID);
 		const chars = this.glyph?.chars || hexesToChars(remove(displayedItemID, 'glyph-'));
 
-		const name = this.glyph?.name || this.project.getItemName(displayedItemID, true);
+		const name = this.glyph?.name || getItemNameWithFallback(displayedItemID);
 		this.view = {};
 
 		// log(this.project);

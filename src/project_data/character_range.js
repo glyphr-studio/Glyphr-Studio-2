@@ -47,6 +47,14 @@ export class CharacterRange {
 		this.cachedArray = false;
 	}
 
+	get name() {
+		return this._name || '';
+	}
+
+	set name(val) {
+		this._name = val;
+	}
+
 	get count() {
 		return this._count || 0;
 	}

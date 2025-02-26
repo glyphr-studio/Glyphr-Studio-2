@@ -292,6 +292,7 @@ export function clipboardPaste() {
 	const editor = getCurrentProjectEditor();
 	let clipboard = editor.clipboard;
 	let offsetPaths = clipboard.sourceID === editor.selectedItemID;
+	let circularReferenceNote = '';
 
 	if (clipboard && offsetPaths) {
 		clipboard.dx += 20;
@@ -304,67 +305,83 @@ export function clipboardPaste() {
 		let newShape, newName, newSuffix, caret, suffix;
 		clipboard.shapes.forEach((shape) => {
 			if (shape.objType === 'ComponentInstance') {
-				newShape = new ComponentInstance(shape);
+				if (canAddComponentInstance(editor.selectedItem, shape.link)) {
+					newShape = new ComponentInstance(shape);
+				} else {
+					circularReferenceNote += shape.link + ' ';
+				}
 			} else {
 				newShape = new Path(shape);
 			}
 
-			if (offsetPaths) {
-				newShape.updateShapePosition(clipboard.dx, clipboard.dy);
-			}
-
-			newName = newShape.name;
-			newSuffix = ' (copy)';
-			caret = newShape.name.lastIndexOf('(copy');
-
-			if (caret > 0) {
-				suffix = newName.substring(caret + 5);
-				newName = newName.substring(0, caret);
-				if (suffix === ')') {
-					newSuffix = '(copy 2)';
-				} else {
-					// log("\t - suffix " + suffix);
-					suffix = suffix.substring(1);
-					// log("\t - suffix " + suffix);
-					suffix = suffix.substring(0, suffix.length - 1);
-					// log("\t - suffix " + suffix);
-					newSuffix = '(copy ' + (parseInt(suffix) + 1) + ')';
-					// log("\t - newSuffix " + newSuffix);
+			if (newShape) {
+				if (offsetPaths) {
+					newShape.updateShapePosition(clipboard.dx, clipboard.dy);
 				}
-			}
-			newShape.name = newName + newSuffix;
 
-			if (newShape.objType === 'ComponentInstance' && newShape?.link && editor.selectedItemID) {
-				let newShapeLink = '' + newShape.link;
-				addLinkToUsedIn(editor.project.getItem(newShapeLink), editor.selectedItemID);
-			}
+				newName = newShape.name;
+				newSuffix = ' (copy)';
+				caret = newShape.name.lastIndexOf('(copy');
 
-			newShapes.push(newShape);
+				if (caret > 0) {
+					suffix = newName.substring(caret + 5);
+					newName = newName.substring(0, caret);
+					if (suffix === ')') {
+						newSuffix = '(copy 2)';
+					} else {
+						// log("\t - suffix " + suffix);
+						suffix = suffix.substring(1);
+						// log("\t - suffix " + suffix);
+						suffix = suffix.substring(0, suffix.length - 1);
+						// log("\t - suffix " + suffix);
+						newSuffix = '(copy ' + (parseInt(suffix) + 1) + ')';
+						// log("\t - newSuffix " + newSuffix);
+					}
+				}
+				newShape.name = newName + newSuffix;
+
+				if (newShape.objType === 'ComponentInstance' && newShape?.link && editor.selectedItemID) {
+					let newShapeLink = '' + newShape.link;
+					addLinkToUsedIn(editor.project.getItem(newShapeLink), editor.selectedItemID);
+				}
+
+				newShapes.push(newShape);
+			}
 		});
 
 		// log(`New paths that have been copied`);
 		// log(newShapes);
+		if (newShapes.length) {
+			editor.multiSelect.shapes.clear();
+			editor.multiSelect.points.clear();
 
-		editor.multiSelect.shapes.clear();
-		editor.multiSelect.points.clear();
+			const addedShapes = [];
+			newShapes.forEach((shape) => {
+				addedShapes.push(editor.selectedItem.addOneShape(shape));
+			});
 
-		const addedShapes = [];
-		newShapes.forEach((shape) => {
-			addedShapes.push(editor.selectedItem.addOneShape(shape));
-		});
+			addedShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
 
-		addedShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+			clipboard.sourceID = editor.selectedItemID;
 
-		clipboard.sourceID = editor.selectedItemID;
+			let len = newShapes.length;
+			editor.history.addState(len === 1 ? 'Pasted shape' : `Pasted ${len} shapes`);
 
-		let len = newShapes.length;
-		editor.history.addState(len === 1 ? 'Pasted Path' : `Pasted ${len} Paths`);
-		showToast(
-			len === 1
-				? 'Pasted Path<br>from the Glyphr Studio clipboard'
-				: `Pasted ${len} Paths<br>from the Glyphr Studio clipboard`
-		);
-		editor.publish('currentItem', editor.selectedItem);
+			let toastMessage =
+				len === 1
+					? 'Pasted from the Glyphr Studio clipboard'
+					: `Pasted ${len} shapes<br>from the Glyphr Studio clipboard`;
+
+			if (circularReferenceNote.length) {
+				circularReferenceNote = circularReferenceNote.replaceAll(' ', ', ');
+				toastMessage = toastMessage.replace('<br>', ' ');
+				toastMessage += '.<br><br>Some component instances were not pasted as they would cause a circular reference:<br>' + circularReferenceNote;
+			}
+			showToast(toastMessage, circularReferenceNote.length ? 5000 : undefined);
+			editor.publish('currentItem', editor.selectedItem);
+		} else {
+			showError(`No shapes from the Glyphr Studio clipboard could be pasted to this item. Pasting component instances that would cause circular references is not allowed.`);
+		}
 		return true;
 	}
 	return false;

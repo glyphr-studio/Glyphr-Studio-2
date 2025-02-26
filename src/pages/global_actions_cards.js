@@ -1,6 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
-import { makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import { remove } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks.js';
@@ -18,8 +18,10 @@ import {
 	getComponentInstancesFromRoot,
 	insertComponentInstance,
 	removeLinkFromUsedIn,
+	resolveItemLinks,
 } from '../project_editor/cross_item_actions.js';
 import { addRangeToSelectedFilterInputs, glyphIterator } from './global_actions.js';
+import { makeOneSettingsRow } from './settings.js';
 import { addCharacterRangeToCurrentProject } from './settings_project.js';
 
 // --------------------------------------------------------------
@@ -512,6 +514,64 @@ export function makeCard_Round() {
 					workingItem.advanceWidth = Math.round(workingItem.advanceWidth);
 				workingItem.changed();
 				// log(`Global Action: Flatten`, 'end');
+			},
+		});
+	});
+	card.appendChild(button);
+
+	return card;
+}
+
+// --------------------------------------------------------------
+// Remove Glyphs, Components, and Ligatures
+// --------------------------------------------------------------
+/**
+ * Makes the content for the Remove Items global action card.
+ * @returns {Element}
+ */
+export function makeCard_RemoveItems() {
+	const card = makeElement({ className: 'global-actions__card' });
+
+	card.appendChild(makeElement({ tag: 'h2', content: 'Remove items from your project' }));
+	let description = makeElement({
+		className: 'global-actions__description',
+		content: `Need to downsize? This global action will remove Glyphs, Components, and Ligatures in selected ranges. This is the same as the 'Delete Glyph' action on individual items.`,
+	});
+	card.appendChild(description);
+
+	let effect = makeElement({
+		className: 'global-actions__effect-description',
+		content: `Project data will be deleted for the selected items.`,
+	});
+	card.appendChild(effect);
+
+	const options = makeElement({ className: 'settings-table' });
+	addAsChildren(options, makeOneSettingsRow('app', 'unlinkComponentInstances', undefined, true));
+	options.style.marginTop = '10px';
+	card.appendChild(options);
+
+	let button = makeElement({
+		tag: 'fancy-button',
+		content: 'Remove items',
+	});
+	button.style.marginTop = '0';
+
+	button.addEventListener('click', () => {
+		glyphIterator({
+			title: 'Removing items',
+			action: (workingItem) => {
+				const project = workingItem.parent;
+				if (project) {
+					const unlinkComponentInstances = project.settings.app.unlinkComponentInstances;
+					resolveItemLinks(workingItem, unlinkComponentInstances);
+					if (workingItem.objType === 'Component') {
+						delete project.components[workingItem.id];
+					} else if (workingItem.objType === 'Ligature') {
+						delete project.ligatures[workingItem.id];
+					} else if (workingItem.objType === 'Glyph') {
+						delete project.glyphs[workingItem.id];
+					}
+				}
 			},
 		});
 	});

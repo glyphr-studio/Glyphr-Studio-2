@@ -22,6 +22,8 @@ export let eventHandlerData = {
 	newBasicPath: {},
 	selecting: false,
 	mousePosition: {},
+	/** @type {Object | Boolean} */
+	initialPoint: false,
 	handle: '',
 	rotationStartCenter: {},
 	rotationStartMaxesTopY: -100,

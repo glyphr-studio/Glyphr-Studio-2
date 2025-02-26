@@ -137,14 +137,21 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 		// delete shape.parent;
 		if (shape.objType === 'Path') {
 			if (shape.pathPoints.length) newPaths.push(new Path(shape));
-			else console.warn(
-				'Path was found with empty PathPoints array. [cross_item_actions.js makeGlyphWithResolvedLinks]'
-			);
+			else
+				console.warn(
+					'Path was found with empty PathPoints array. [cross_item_actions.js makeGlyphWithResolvedLinks]'
+				);
 		} else if (shape.objType === 'ComponentInstance') {
-			const transformedGlyph = shape.transformedGlyph;
-			if (transformedGlyph && transformedGlyph.shapes) {
-				const resolvedGlyph = makeGlyphWithResolvedLinks(transformedGlyph);
-				newPaths = newPaths.concat(resolvedGlyph.shapes);
+			if (sourceGlyph.id !== shape.link) {
+				const transformedGlyph = shape.transformedGlyph;
+				if (transformedGlyph && transformedGlyph.shapes) {
+					const resolvedGlyph = makeGlyphWithResolvedLinks(transformedGlyph);
+					newPaths = newPaths.concat(resolvedGlyph.shapes);
+				}
+			} else {
+				console.warn(
+					`Circular link found in Glyph. Source Glyph: ${sourceGlyph.id} ${sourceGlyph.name}. [cross_item_actions.js makeGlyphWithResolvedLinks]`
+				);
 			}
 		}
 	});
@@ -244,7 +251,7 @@ function collectAllUpstreamLinks(item, result = []) {
  * 		if false, component instances will simply be removed
  */
 export function resolveItemLinks(item, unlinkComponentInstances = false) {
-	// log('Glyph.resolveItemLinks', 'start');
+	// log(`resolveItemLinks`, 'start');
 	// log('passed this as id: ' + item.id);
 	// Delete upstream Component Instances
 	if (item.objType === 'KernGroup') return;
@@ -276,6 +283,7 @@ export function resolveItemLinks(item, unlinkComponentInstances = false) {
 			removeLinkFromUsedIn(project.getItem(item.shapes[s].link), item.id);
 		}
 	}
+	// log(`resolveItemLinks`, 'end');
 }
 
 /**
