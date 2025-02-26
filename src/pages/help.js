@@ -393,6 +393,7 @@ function makeOneMarkdownHeader(text, first = false) {
 
 const toolNames = {
 	resize: 'Resize (Arrow) Tool',
+	arrow: 'Resize (Arrow) Tool',
 	arrowSquare: 'Resize (Arrow) Tool - hovering over a shape',
 	pathEdit: 'Path Edit (Pen) Tool',
 	penCircle: 'Path Edit (Pen) Tool - hovering over a handle',
