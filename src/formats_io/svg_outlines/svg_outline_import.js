@@ -17,8 +17,8 @@ let importUPM;
 export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true, projectUPM = 2048) {
 	// log('ioSVG_convertSVGTagsToGlyph', 'start');
 
-	log(`Passed svgData`);
-	log(svgData);
+	// log(`Passed svgData`);
+	// log(svgData);
 	importUPM = projectUPM;
 	const bezierData = SVGtoBezier(svgData);
 	// log(`Resulting Bezier Data`);
