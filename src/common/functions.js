@@ -521,13 +521,17 @@ export function calculateDeltasFromTransform(
  * @returns {Number} - Angle (in radians)
  */
 export function calculateAngle(handle, point = { x: 0, y: 0 }) {
+	// log(`calculateAngle`, 'start');
+	// log(`handle: ${handle.x}, ${handle.y}`);
+	// log(`point: ${point.x}, ${point.y}`);
 	let result = Math.atan2(handle.y - point.y, handle.x - point.x);
 
 	if (isNaN(result)) {
 		console.warn('calculateAngle returned NaN\n' + json(handle) + '\n' + json(point));
 		result = 0;
 	}
-
+	// log(`result: ${result}`);
+	// log(`calculateAngle`, 'end');
 	return result;
 }
 

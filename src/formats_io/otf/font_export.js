@@ -50,9 +50,6 @@ export async function ioFont_exportFont() {
 	}
 	showToast('Finalizing...');
 
-	options.glyphs.sort(function (a, b) {
-		return a.unicode - b.unicode;
-	});
 	// log(`\n⮟options.glyphs⮟`);
 	// log(options.glyphs);
 
@@ -64,6 +61,8 @@ export async function ioFont_exportFont() {
 	// log(`\n⮟font⮟`);
 	// log(font);
 
+	// log(`\n⮟ligatureSubstitutions⮟`);
+	// log(ligatureSubstitutions);
 	if (exportLigatures) {
 		ligatureSubstitutions.forEach((sub) => {
 			// log(`Adding ligature to font`);

@@ -1,7 +1,8 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { makeElement } from '../common/dom.js';
-import { getParentRange } from '../lib/unicode/unicode_blocks.js';
+import { isStandardUnicodeRange } from '../lib/unicode/unicode_blocks.js';
+import { getItemNameWithFallback } from '../pages/characters.js';
 import { makeCard_itemNavigation } from './card_glyph.js';
 
 // --------------------------------------------------------------
@@ -16,10 +17,12 @@ export function makePanel_CharacterInfo() {
 
 	const dec = selected.char.codePointAt(0);
 	const hex = dec.toString(16).toUpperCase();
-	const range = getParentRange(dec);
+	const range = editor.selectedCharacterRange;
 	let base = ('' + decToHex(range.begin)).substring(2);
 	while (base.length < 4) base = '0' + base;
 	if (base === '0020') base = '0000';
+
+	let charName = getItemNameWithFallback(selected.id);
 
 	let charInfo = makeElement({
 		className: 'panel__card char-info',
@@ -27,7 +30,7 @@ export function makePanel_CharacterInfo() {
 			<h2>Character info</h2>
 
 			<label>Character name</label>
-			<code title="${selected.name}">${selected.name}</code>
+			<code title="${charName}">${charName}</code>
 
 			<label>Character</label>
 			<input type="text" value="${selected.char}" readonly>
@@ -58,23 +61,31 @@ export function makePanel_CharacterInfo() {
 				<code>${decToHex(range.end)}</code>
 			</p>
 
-			<span class="spanAll" style="margin-top: 10px;">
-				<a
-					href="https://www.wikipedia.org/wiki/${range.name.replace(/ /gi, '_')}_(Unicode_block)"
-					target="_new"
-					title="Wikipedia Link\nwikipedia.org/wiki/${range.name.replace(/ /gi, '_')}_(Unicode_block)"
-					style="display: inline-block; width: 420px; overflow: hidden; text-overflow: ellipsis;">
-					wikipedia.org/wiki/${range.name.replace(/ /gi, '_')}_(Unicode_block)
-				</a>
-			</span>
+			${
+				isStandardUnicodeRange(range)
+					? `
+				<span class="spanAll" style="margin-top: 10px;">
+					<a
+						href="https://www.wikipedia.org/wiki/${range.name.replace(/ /gi, '_')}_(Unicode_block)"
+						target="_new"
+						title="Wikipedia Link\nwikipedia.org/wiki/${range.name.replace(/ /gi, '_')}_(Unicode_block)"
+						style="display: inline-block; width: 420px; overflow: hidden; text-overflow: ellipsis;">
+						wikipedia.org/wiki/${range.name.replace(/ /gi, '_')}_(Unicode_block)
+					</a>
+				</span>
 
-			<span class="spanAll">
-				<a href="https://www.unicode.org/charts/PDF/U${base}.pdf"
-					target="_new"
-					title="Unicode Link\nunicode.org/charts/PDF/U${base}.pdf">
-					unicode.org/charts/PDF/U${base}.pdf
-				</a>
-			</span>
+				<span class="spanAll">
+					<a href="https://www.unicode.org/charts/PDF/U${base}.pdf"
+						target="_new"
+						title="Unicode Link\nunicode.org/charts/PDF/U${base}.pdf">
+						unicode.org/charts/PDF/U${base}.pdf
+					</a>
+				</span>
+			`
+					: `
+				<label>This is a custom range.</label>
+				`
+			}
 			`,
 	});
 

@@ -12,7 +12,8 @@ import {
 	resizePath,
 	selectItemsInArea,
 } from '../events_mouse.js';
-import { getShapeAtLocation } from './tools.js';
+import { isAngleMoreHorizontal } from './path_edit.js';
+import { getShapeAtLocation, isSideBearingHere } from './tools.js';
 
 /**
 	// ----------------------------------------------------------------
@@ -24,10 +25,15 @@ export class Tool_Resize {
 		this.dragging = false;
 		this.resizing = false;
 		this.rotating = false;
+		/** @type {String | false} */
+		this.sideBearingEdit = false;
+		/** @type {String | false} */
+		this.sideBearingHover = false;
 		eventHandlerData.selecting = false;
 		this.monitorForDeselect = false;
 		this.didStuff = false;
-		this.clickedPath = false;
+		/** @type {Object | Boolean} */
+		this.clickedShape = false;
 		this.historyTitle = 'Path resize tool';
 		eventHandlerData.handle = '';
 	}
@@ -46,13 +52,19 @@ export class Tool_Resize {
 		ehd.handle = msShapes.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y) || '';
 
 		this.didStuff = false;
-		this.clickedPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+		this.clickedShape = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+		this.sideBearingEdit = isSideBearingHere(
+			ehd.mousePosition.x,
+			ehd.mousePosition.y,
+			editor.selectedItem
+		);
+		this.sideBearingHover = this.sideBearingEdit;
 		this.resizing = false;
 		this.dragging = false;
 		this.rotating = false;
 		ehd.selecting = false;
 
-		// log('clickedPath: ' + this.clickedPath);
+		// log('clickedShape: ' + this.clickedShape);
 		// log('corner: ' + ehd.handle);
 
 		if (ehd.handle) {
@@ -70,24 +82,25 @@ export class Tool_Resize {
 				this.resizing = true;
 			}
 			setCursor(ehd.handle);
-		} else if (this.clickedPath) {
+		} else if (this.clickedShape) {
+			if (ehd.isShiftDown) this.setInitialPoint();
 			if (ehd.isCtrlDown) {
-				if (msShapes.isSelected(this.clickedPath)) {
+				if (msShapes.isSelected(this.clickedShape)) {
 					// If we don't drag this shape, then deselect it on mouseup
 					this.monitorForDeselect = true;
 				} else {
-					msShapes.add(this.clickedPath);
+					msShapes.add(this.clickedShape);
 				}
 			} else {
-				if (msShapes.isSelected(this.clickedPath)) {
+				if (msShapes.isSelected(this.clickedShape)) {
 					// If we don't drag this shape, then deselect it on mouseup
 					this.monitorForDeselect = true;
 				} else {
-					msShapes.select(this.clickedPath);
+					msShapes.select(this.clickedShape);
 				}
 			}
 
-			// 	if (this.clickedPath.objType === 'ComponentInstance') selectTool('pathEdit');
+			// 	if (this.clickedShape.objType === 'ComponentInstance') selectTool('pathEdit');
 			// 	editor.nav.panel = 'Attributes';
 			// }
 
@@ -96,7 +109,7 @@ export class Tool_Resize {
 			// log('clicked on nothing');
 			if (!ehd.isCtrlDown) clickEmptySpace();
 			const clickedHotspot = findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
-			if (!clickedHotspot) ehd.selecting = true;
+			if (!clickedHotspot && !this.sideBearingEdit) ehd.selecting = true;
 		}
 		// log(`Tool_Resize.mousedown`, 'end');
 	}
@@ -113,11 +126,13 @@ export class Tool_Resize {
 			ehd.handle || msShapes.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y);
 		const singlePath = msShapes.singleton;
 
+		// log(`this.sideBearingEdit: ${this.sideBearingEdit}`);
 		if (this.dragging) {
 			// log('detected DRAGGING');
 			this.monitorForDeselect = false;
 			let dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
 			let dy = (ehd.lastY - ehd.mousePosition.y) / view.dz;
+			if (ehd.isShiftDown) this.setInitialPoint();
 
 			if (singlePath) {
 				if (singlePath.xLock) dx = 0;
@@ -125,6 +140,24 @@ export class Tool_Resize {
 				this.historyTitle = `Moved shape: ${singlePath.name}`;
 			} else {
 				this.historyTitle = `Moved ${msShapes.members.length} shapes`;
+			}
+
+			// Snapping
+			if (ehd.isShiftDown) {
+				const mouseSX = cXsX(ehd.mousePosition.x);
+				const mouseSY = cYsY(ehd.mousePosition.y);
+				const mouse = { x: mouseSX, y: mouseSY };
+				const firstClick = { x: ehd.initialPoint.mouseSX, y: ehd.initialPoint.mouseSY };
+				const ang = calculateAngle(mouse, firstClick);
+				if (isAngleMoreHorizontal(ang)) {
+					// Point is moving more horizontal, snap to mouse y
+					dx = mouse.x - this.clickedShape.x - (firstClick.x - ehd.initialPoint.shapeX);
+					dy = ehd.initialPoint.shapeY - this.clickedShape.y;
+				} else {
+					// Point is moving more vertical, snap to mouse x
+					dx = ehd.initialPoint.shapeX - this.clickedShape.x;
+					dy = mouse.y - this.clickedShape.y - (firstClick.y - ehd.initialPoint.shapeY);
+				}
 			}
 
 			msShapes.updateShapePosition(dx, dy);
@@ -154,13 +187,38 @@ export class Tool_Resize {
 				this.historyTitle = `Rotated ${msShapes.members.length} shapes`;
 			}
 			this.didStuff = true;
+		} else if (this.sideBearingEdit) {
+			// log(`detected SIDEBEARING ${this.sideBearingEdit}`);
+			const dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
+			const item = editor.selectedItem;
+			if (this.sideBearingEdit === 'lsb') {
+				const oldLSB = item.leftSideBearing;
+				item.leftSideBearing = Math.round(item.leftSideBearing - dx);
+				const deltaLSB = oldLSB - item.leftSideBearing;
+				let view = editor.view;
+				editor.view.dx += deltaLSB * view.dz;
+				editor.publish('editCanvasView', item);
+				this.historyTitle = `Updated left side bearing.`;
+				this.didStuff = true;
+			}
+			if (this.sideBearingEdit === 'rsb') {
+				item.rightSideBearing = Math.round(item.rightSideBearing + dx);
+				this.historyTitle = `Updated right side bearing.`;
+				this.didStuff = true;
+			}
 		} else if (ehd.selecting) {
 			selectItemsInArea(ehd.lastX, ehd.lastY, ehd.mousePosition.x, ehd.mousePosition.y, 'shapes');
 			editor.editCanvas.redraw();
 		}
 
 		// Figure out cursor
-		let hoveredPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+		const hoveredPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+		const oldSBH = this.sideBearingHover;
+		this.sideBearingHover = isSideBearingHere(
+			ehd.mousePosition.x,
+			ehd.mousePosition.y,
+			editor.selectedItem
+		);
 
 		if (corner) {
 			setCursor(corner);
@@ -178,6 +236,9 @@ export class Tool_Resize {
 			} else {
 				setCursor('arrowPlus');
 			}
+		} else if (this.sideBearingEdit || this.sideBearingHover) {
+			setCursor('col-resize');
+			editor.publish('editCanvasView', editor.selectedItem);
 		} else {
 			if (hoveredPath) {
 				setCursor('arrowSquare');
@@ -185,6 +246,8 @@ export class Tool_Resize {
 				setCursor('arrow');
 			}
 		}
+
+		if(oldSBH !== this.sideBearingHover) editor.publish('editCanvasView', editor.selectedItem);
 
 		checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 
@@ -215,7 +278,7 @@ export class Tool_Resize {
 		}
 
 		if (this.monitorForDeselect) {
-			editor.multiSelect.shapes.remove(this.clickedPath);
+			editor.multiSelect.shapes.remove(this.clickedShape);
 		}
 
 		if (ehd.selecting) {
@@ -224,13 +287,16 @@ export class Tool_Resize {
 		}
 
 		// Finish Up
-		this.clickedPath = false;
+		this.clickedShape = false;
 		this.didStuff = false;
 		this.dragging = false;
 		this.resizing = false;
+		this.sideBearingEdit = false;
+		this.sideBearingHover = false;
 		this.rotating = false;
 		ehd.selecting = false;
 		this.monitorForDeselect = false;
+		ehd.initialPoint = false;
 		ehd.handle = '';
 		ehd.lastX = -100;
 		ehd.lastY = -100;
@@ -242,5 +308,22 @@ export class Tool_Resize {
 		ehd.undoQueueHasChanged = false;
 		editor.publish('currentItem', editor.selectedItem);
 		// log(`Tool_Resize.mouseup`, 'end');
+	}
+
+	setInitialPoint() {
+		const ehd = eventHandlerData;
+		if (ehd.initialPoint !== false) return;
+		// log(`Tool_Resize.setInitialPoint`, 'start');
+		ehd.initialPoint = {};
+		if (this.clickedShape && typeof this.clickedShape === 'object') {
+			ehd.initialPoint.shapeX = this.clickedShape.x;
+			ehd.initialPoint.shapeY = this.clickedShape.y;
+			ehd.initialPoint.mouseSX = cXsX(ehd.mousePosition.x);
+			ehd.initialPoint.mouseSY = cYsY(ehd.mousePosition.y);
+		}
+
+		// log(`shape: ${ehd.initialPoint.shapeX}, ${ehd.initialPoint.shapeY}`);
+		// log(`mouse: ${ehd.initialPoint.mouseSX}, ${ehd.initialPoint.mouseSY}`);
+		// log(`Tool_Resize.setInitialPoint`, 'end');
 	}
 }

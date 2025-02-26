@@ -118,7 +118,7 @@ export function setCursor(name) {
 		document.body.style.cursor = 'auto';
 		// log('DEFAULT TO auto');
 	}
-
+	// log(`name: ${name}`);
 	// log('setCursor', 'end');
 }
 

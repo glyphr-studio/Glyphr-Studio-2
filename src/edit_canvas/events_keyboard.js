@@ -6,7 +6,16 @@ import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import { getAdjacentItem } from '../panels/card_glyph.js';
-import { clipboardCopy, clipboardPaste, currentItemFindSelectableShapeAt, deleteSelectedPaths, deleteSelectedPoints, moveLayer, selectNextPathPoint, selectPreviousPathPoint } from '../project_editor/actions.js';
+import {
+	clipboardCopy,
+	clipboardPaste,
+	currentItemFindSelectableShapeAt,
+	deleteSelectedPaths,
+	deleteSelectedPoints,
+	moveLayer,
+	selectNextPathPoint,
+	selectPreviousPathPoint,
+} from '../project_editor/actions.js';
 
 import { getItemStringAdvanceWidth } from './context_characters.js';
 import {
@@ -129,7 +138,7 @@ export function handleKeyPress(event) {
 	// LeftArrow - Nudge left
 	if (key === 'ArrowLeft') {
 		cancelDefaultEventActions(event);
-		if(ehd.isCtrlDown) selectPreviousPathPoint();
+		if (ehd.isCtrlDown) selectPreviousPathPoint();
 		else nudge(-1, 0);
 	}
 
@@ -260,7 +269,7 @@ export function handleKeyPress(event) {
 			editor.multiSelect.points.clear();
 			if (msShapes.length === 0) {
 				const selShape = currentItemFindSelectableShapeAt(0, false);
-				if(selShape) {
+				if (selShape) {
 					editor.multiSelect.shapes.select(selShape);
 				}
 			} else {
@@ -298,7 +307,7 @@ export function handleKeyPress(event) {
 			editor.multiSelect.points.clear();
 			if (msShapes.length === 0) {
 				const selShape = currentItemFindSelectableShapeAt(-1, false);
-				if(selShape) {
+				if (selShape) {
 					editor.multiSelect.shapes.select(selShape);
 				}
 			} else {
@@ -593,6 +602,7 @@ function handleSpecialKeys(key, keyDirection) {
 		}
 		if (key === 'Shift') {
 			ehd.isShiftDown = false;
+			eventHandlerData.initialPoint = false;
 			// log(`setting isShiftDown to false`);
 		}
 		if (key === 'Alt') {
