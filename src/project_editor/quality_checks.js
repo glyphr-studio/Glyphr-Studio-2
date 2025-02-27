@@ -75,7 +75,7 @@ export function runQualityChecksForItem(item) {
 					if (enabledQualityChecks.highlightPointsNearXZero) {
 						// log(`\n Doing quality check: highlightPointsNearXZero`);
 						nearXZero[index] = false;
-						if (Math.abs(point.p.x) <= psa.highlightPointsNearXZero) {
+						if (Math.abs(point.p.x) <= psa.highlightPointsNearXZero && point.p.x !== 0) {
 							nearXZero[index] = true;
 						}
 					}
@@ -84,7 +84,7 @@ export function runQualityChecksForItem(item) {
 					if (enabledQualityChecks.highlightPointsNearYZero) {
 						// log(`\n Doing quality check: highlightPointsNearYZero`);
 						nearYZero[index] = false;
-						if (Math.abs(point.p.y) <= psa.highlightPointsNearYZero) {
+						if (Math.abs(point.p.y) <= psa.highlightPointsNearYZero && point.p.y !== 0) {
 							nearYZero[index] = true;
 						}
 					}
