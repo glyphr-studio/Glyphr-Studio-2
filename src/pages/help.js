@@ -184,7 +184,7 @@ function makeHelpOverview() {
  * @returns {Element}
  */
 export function makeKeyboardShortcutReference() {
-	const outputMarkdownToConsole = false;
+	const outputMarkdownToConsole = true;
 	let table = makeElement({ className: 'keyboardShortcutTable' });
 
 	function makeOneRow(combo, description, options = {}) {
@@ -371,8 +371,8 @@ function makeOneMarkdownRow(combo, description, options = {}) {
 	let row = `| `;
 	combo.forEach((key, i) => {
 		if (options.spacer && i > 0) row += ` ${options.spacer} `;
-		if (i === 1 && options.toolIconAction) {
-			row += `*\`${key}\`* `;
+		if (i === combo.length - 1 && options.toolIconAction) {
+			row += `_\`${key}\`_ `;
 		} else {
 			row += `\` ${key} \` `;
 		}
