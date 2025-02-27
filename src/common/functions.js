@@ -49,6 +49,21 @@ export function countItems(object) {
 // --------------------------------------------------------------
 
 /**
+ * Counts the number of times a search term is found in an array
+ * @param {Array} arr - array to search through
+ * @param {*} term - any value to search for
+ * @returns {Number} - count of matches
+ */
+export function count(arr = [], term = '') {
+	let count = 0;
+	if (!arr || !Array.isArray(arr)) return 0;
+	arr.forEach((item) => {
+		if (item === term) count += 1;
+	});
+	return count;
+}
+
+/**
  * Returns a full new copy of any object
  * 'parent' is a pointer up to parent object, they
  * cause infinite loops when cloning objects.  Kind of a hack.
