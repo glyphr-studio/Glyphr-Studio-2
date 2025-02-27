@@ -1162,11 +1162,11 @@ export class Path extends GlyphElement {
 	 * H1 and H2 will be moved according to the delta between their previous P
 	 * coordinates and the new resulting P cooridinate.
 	 * @param {Array} points - points in this path to merge
-	 * @returns - nothing
+	 * @returns {PathPoint} - resulting single point
 	 */
 	mergePathPoints(points = []) {
+		// log(`Path.mergePathPoints`, 'start');
 		if (points.length < 2) return;
-		points = points.sort((a, b) => a.pointNumber - b.pointNumber);
 
 		// find new x and y
 		let newX = 0;
@@ -1178,31 +1178,49 @@ export class Path extends GlyphElement {
 		newX /= points.length;
 		newY /= points.length;
 
-		// find new h1 and h2
-		let h1 = new ControlPoint(points.at(0).h1);
-		h1.coord.x += points.at(0).p.x - newX;
-		h1.coord.y += points.at(0).p.y - newY;
-		let h2 = new ControlPoint(points.at(-1).h2);
-		h2.coord.x += points.at(-1).p.x - newX;
-		h2.coord.y += points.at(-1).p.y - newY;
+		// Find new h1 and h2
+		/*
+			!Important! Assumes points are contiguous
+			and are in order, even across point zero.
+			So, for a path of length 10, a valid set
+			could be [8, 9, 0, 1, 2] but not [0, 1, 2, 8, 9].
+			msPoints.sortPathPointsByContiguous() will ensure this.
+		*/
+		let lowPoint = points.at(0);
+		let highPoint = points.at(-1);
+
+		// log(`\n⮟Point ${highPoint.pointNumber} is highPoint.h2⮟`);
+		// log(highPoint.h2);
+		// log(`\n⮟Point ${lowPoint.pointNumber} is lowPoint.h1⮟`);
+		// log(lowPoint.h1);
+
+		const newH1 = new ControlPoint(lowPoint.h1);
+		// log(`\n⮟newH1⮟`);
+		// log(newH1);
+		const newH2 = new ControlPoint(highPoint.h2);
+		// log(`\n⮟newH2⮟`);
+		// log(newH2);
 
 		// Assemble new point
 		const newPoint = new PathPoint({
 			p: new ControlPoint({ coord: { x: newX, y: newY } }),
-			h1: h1,
-			h2: h2,
+			h1: newH1,
+			h2: newH2,
 		});
 		newPoint.parent = this;
 
 		// Remove old points
 		const insertPosition = points[0].pointNumber;
 		for (let i = 0; i < points.length; i++) {
+			// log(`Loop ${i} Removing point ${points[i].pointNumber}`);
 			this.pathPoints.splice(points[i].pointNumber, 1);
 		}
 
 		// Add new point
 		this.pathPoints.splice(insertPosition, 0, newPoint);
 		this.changed();
+		// log(`Path.mergePathPoints`, 'end');
+		return newPoint;
 	}
 
 	/**

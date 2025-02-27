@@ -1,9 +1,9 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { count } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
-import { ControlPoint } from '../project_data/control_point.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 // import { combinePaths } from './boolean_combine.js';
@@ -307,58 +307,79 @@ export class MultiSelectPoints extends MultiSelect {
 	}
 
 	canMergeSelectedPathPoints() {
-		// Only merge two points at a time
-		if (this.members.length !== 2) return false;
+		if (this.members.length < 2) return false;
+		return this.sortPathPointsByContiguous();
+	}
 
+	mergePathPoints() {
+		const path = this.members[0].parent;
+		const resultPoint = path.mergePathPoints(this.members);
+		this.clear();
+		this.select(resultPoint);
+	}
+
+	/**
+	 * Checks if selected points are contiguous, and if so,
+	 * if they can be sorted by point number (accounting for
+	 * selections across point zero).
+	 * @returns {Boolean} - successful sorting
+	 */
+	sortPathPointsByContiguous() {
+		// log(`msPoints.sortPathPointsByContiguous`, 'start');
 		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
-		let lowPoint = this.members[0];
-		let highPoint = this.members[1];
+		const path = this.members[0].parent;
 
-		// Make sure points are from the same path
-		if (lowPoint.parent !== highPoint.parent) return false;
+		// Check to make sure all the points have the same parent path
+		for (let m = 1; m < this.members.length; m++) {
+			if (this.members[m].parent !== path) {
+				// log(`FALSE - members have different parents`);
+				// log(`msPoints.sortPathPointsByContiguous`, 'end');
+				return false;
+			}
+		}
 
-		const lowPointNext = lowPoint.parent.getNextPointNumber(lowPoint.pointNumber);
-		const lowPointPrev = lowPoint.parent.getPreviousPointNumber(lowPoint.pointNumber);
+		// Look through for adjacent points or a break
+		const breakpoints = [];
+		for (let p = 0; p < this.members.length; p++) {
+			if (p < this.members.length - 1) {
+				const point = this.members[p];
+				const nextPoint = this.members[p + 1];
+				breakpoints[p] = point.pointNumber + 1 === nextPoint.pointNumber;
+			}
+		}
+		// log(`\n⮟breakpoints⮟`);
+		// log(breakpoints);
 
-		// Make sure points are adjacent
-		if (lowPointNext === highPoint.pointNumber || lowPointPrev === highPoint.pointNumber) {
+		const breakpointCount = count(breakpoints, false);
+		if (breakpointCount > 1) {
+			// log(`FALSE - more than one breakpoint, not contiguous`);
+			// log(`msPoints.sortPathPointsByContiguous`, 'end');
+			return false;
+		}
+
+		if (breakpointCount === 0) {
+			// log(`TRUE - members are contiguous`);
+			// log(`msPoints.sortPathPointsByContiguous`, 'end');
 			return true;
 		}
 
-		return false;
-	}
-
-	mergeTwoPathPoints() {
-		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
-		let lowPoint = this.members[0];
-		let highPoint = this.members[1];
-
-		// Fencepost for if point zero and point -1 are selected
-		if (
-			lowPoint.pointNumber === 0 &&
-			highPoint.pointNumber === highPoint.parent.pathPoints.length - 1
-		) {
-			lowPoint = this.members[1];
-			highPoint = this.members[0];
+		if (this.members.at(-1).pointNumber !== path.pathPoints.length - 1) {
+			// log(`FALSE - not possible for the last point to loop back to point zero`);
+			// log(`msPoints.sortPathPointsByContiguous`, 'end');
+			return false;
 		}
 
-		// Save the original handle positions
-		const highPointH2 = new ControlPoint(highPoint.h2);
-		const lowPointH1 = new ControlPoint(lowPoint.h1);
+		// Only one breakpoint, and the two sections should loop
+		// Assemble the sorted array
+		const breakpoint = breakpoints.indexOf(false);
+		const tail = this.members.splice(breakpoint + 1);
+		this.members = tail.concat(this.members);
 
-		// Use lowPoint as the final result, update the Point position
-		lowPoint.p.x = (lowPoint.p.x + highPoint.p.x) / 2;
-		lowPoint.p.y = (lowPoint.p.y + highPoint.p.y) / 2;
+		// log(`TRUE - successfully sorted`);
+		// log(this.members.map((m) => m.pointNumber));
 
-		// Updating the base point also moves the handles
-		// But we want to preseve the original handle positions
-		lowPoint.h1 = new ControlPoint(lowPointH1);
-		lowPoint.h2 = new ControlPoint(highPointH2);
-
-		// Remove the highPoint
-		this.clear();
-		this.select(highPoint);
-		this.deleteShapesPoints();
+		// log(`msPoints.sortPathPointsByContiguous`, 'end');
+		return true;
 	}
 
 	setPointType(t) {
