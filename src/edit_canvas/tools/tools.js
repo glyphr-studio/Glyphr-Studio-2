@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
-import { round } from '../../common/functions.js';
+import { round, valuesAreClose } from '../../common/functions.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';
 import { ComponentInstance } from '../../project_data/component_instance.js';
 import { Glyph } from '../../project_data/glyph.js';
@@ -517,7 +517,7 @@ export function isSideBearingHere(cx, cy, item) {
 
 	if (Math.abs(sx) < target) result = 'lsb';
 	if (item.objType !== 'Component') {
-		if (sx < item.advanceWidth + target && sx > item.advanceWidth - target) result = 'rsb';
+		if(valuesAreClose(sx, item.advanceWidth, target)) result = 'rsb';
 	}
 
 	// log(`result: ${result}`);
