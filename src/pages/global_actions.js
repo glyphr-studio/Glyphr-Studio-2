@@ -25,6 +25,7 @@ import {
 	makeCard_ScaleVertical,
 	makeCard_SideBearings,
 } from './global_actions_cards.js';
+import { updateAllCharacterRangeCounts } from './settings_project.js';
 /**
  * Page > Global Actions
  * Various actions that can be applied to all glyphs.
@@ -345,6 +346,7 @@ function showFilterDialog() {
 		textToNode('<span class="list__column-header">Characters</span>'),
 	]);
 
+	updateAllCharacterRangeCounts();
 	const project = getCurrentProject();
 	const projectRanges = project.settings.project.characterRanges;
 	if (projectRanges.length === 0) {
