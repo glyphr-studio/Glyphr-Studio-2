@@ -23,6 +23,8 @@ import { makeOneSettingsRow } from './settings.js';
  * @returns {Element}
  */
 export function makeSettingsTabContentProject() {
+	updateAllCharacterRangeCounts();
+
 	const tabContent = makeElement({
 		tag: 'div',
 		className: 'settings-page__tab-content',
@@ -858,6 +860,12 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 		if (showNotification) showToast(`Glyph range is already enabled for your project.`);
 	}
 	// log(`addCharacterRangeToCurrentProject`, 'end');
+}
+
+export function updateAllCharacterRangeCounts() {
+	const project = getCurrentProject();
+	const ranges = project.settings.project.characterRanges;
+	ranges.forEach((range) => project.updateCharacterRangeCount(range));
 }
 
 export function findCharacterRange(range, ranges) {
