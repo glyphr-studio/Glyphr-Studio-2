@@ -368,10 +368,12 @@ export function addPathToCurrentItem(newPath) {
  */
 export function checkForFirstShapeAutoRSB() {
 	const editor = getCurrentProjectEditor();
-	const autoRSB = editor.project.settings.app.autoRightBearingOnFirstShape;
 	const selectedItem = editor.selectedItem;
-	if (selectedItem.shapes.length === 1 && selectedItem.advanceWidth === 0 && autoRSB > -1) {
-		selectedItem.rightSideBearing = autoRSB;
+	if (selectedItem.objType === 'Glyph' || selectedItem.objType === 'Ligature') {
+		const autoRSB = editor.project.settings.app.autoRightBearingOnFirstShape;
+		if (selectedItem.shapes.length === 1 && selectedItem.advanceWidth === 0 && autoRSB > -1) {
+			selectedItem.rightSideBearing = autoRSB;
+		}
 	}
 }
 

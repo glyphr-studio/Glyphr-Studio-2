@@ -227,7 +227,7 @@ export class Tool_PathEdit {
 				ehd.mousePosition.y,
 				'pathPoints'
 			);
-			editor.editCanvas.redraw();
+			editor.editCanvas.redraw('pathEdit:mousemove');
 		} else if (this.draggingCurve) {
 			// Get the current path and path points
 			const parent = editor.multiSelect.shapes.singleton;
@@ -372,7 +372,7 @@ export class Tool_PathEdit {
 		if (ehd.selecting) {
 			ehd.selecting = false;
 			refreshPanel();
-			editor.editCanvas.redraw();
+			editor.editCanvas.redraw('pathEdit:mouseup');
 		}
 
 		// set to defaults

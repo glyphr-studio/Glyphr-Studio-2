@@ -118,7 +118,7 @@ export class EditCanvas extends HTMLElement {
 			topic: '*',
 			subscriberID: `editCanvas-all`,
 			callback: () => {
-				this.redraw();
+				this.redraw('subscription:editCanvas-all');
 			},
 		});
 		// log(`EditCanvas.constructor`, 'end');
@@ -147,7 +147,7 @@ export class EditCanvas extends HTMLElement {
 			case 'editing-item-id':
 				this.editingItemID = newValue;
 				// getCurrentProjectEditor().autoFitIfViewIsDefault();
-				this.redraw();
+				this.redraw('attributeChangedCallback:editing-item-id');
 				break;
 		}
 		// log(`EditCanvas.attributeChangeCallback`, 'end');
@@ -156,11 +156,16 @@ export class EditCanvas extends HTMLElement {
 	// --------------------------------------------------------------
 	// Redraw the canvas
 	// --------------------------------------------------------------
-	redraw() {
-		// log('EditCanvas.redraw', 'start');
+	/**
+	 * Redraw the canvas
+	 * @param {String | undefined} caller - who is calling redraw
+	 */
+	redraw(caller = 'unkown') {
+		// log(`EditCanvas.redraw \\ ${caller}`, 'start');
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();
 		const view = editor.view;
+		// log(`view: ${view.dx}, ${view.dy}, ${view.dz}`);
 		const ctx = this.ctx;
 		const width = Number(this.width);
 		const height = Number(this.height);
@@ -179,7 +184,7 @@ export class EditCanvas extends HTMLElement {
 			else redrawGlyphEdit();
 		}
 
-		// log('EditCanvas.redraw', 'end');
+		// log(`EditCanvas.redraw \\ ${caller}`, 'end');
 
 		function redrawGlyphEdit() {
 			// log(`EditCanvas.redrawGlyphEdit`, 'start');

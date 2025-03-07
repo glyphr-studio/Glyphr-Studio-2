@@ -94,7 +94,7 @@ export function handleKeyPress(event) {
 	// Ctrl
 	if (ehd.isCtrlDown) {
 		// Show multi-selectable stuff on the canvas
-		editor.editCanvas.redraw();
+		editor.editCanvas.redraw('keyboard:ctrlDown');
 	}
 
 	// Space
@@ -431,13 +431,13 @@ function nudge(dx, dy) {
 		editor.selectedKernGroup.value += delta;
 		editor.history.addState(`Nudged kern group ${editor.selectedKernGroupID} by ${delta}`);
 		editor.publish('currentKernGroup', editor.selectedKernGroup);
-		editor.editCanvas.redraw();
+		editor.editCanvas.redraw('keyboard:nudge');
 	} else if (editMode === 'arrow') {
 		const msShapes = editor.multiSelect.shapes;
 		msShapes.updateShapePosition(mx, my);
 		editor.history.addState(`Nudged shape(s) by ${mx}, ${my}`);
 		editor.publish('currentItem', editor.selectedItem);
-		editor.editCanvas.redraw();
+		editor.editCanvas.redraw('keyboard:nudge');
 	} else if (editMode === 'pen') {
 		const msPoints = editor.multiSelect.points;
 		msPoints.members.forEach((point) => point.updatePathPointPosition('p', mx, my));
@@ -448,7 +448,7 @@ function nudge(dx, dy) {
 			editor.history.addState(`Nudged path point by ${mx}, ${my}`);
 			editor.publish('currentPathPoint', msPoints.singleton);
 		}
-		editor.editCanvas.redraw();
+		editor.editCanvas.redraw('keyboard:nudge');
 	}
 	// log(`events_keyboard Nudge`, 'end');
 }
@@ -540,7 +540,7 @@ export function handleKeyUp(event) {
 	// Ctrl
 	if (key === 'Control' && !ehd.isCtrlDown) {
 		// updateCursor();
-		editor.editCanvas.redraw();
+		editor.editCanvas.redraw('keyboard:CtrlUp');
 		if (hideUI) document.body.removeChild(hideUI);
 	}
 

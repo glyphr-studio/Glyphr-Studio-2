@@ -208,7 +208,7 @@ export class Tool_Resize {
 			}
 		} else if (ehd.selecting) {
 			selectItemsInArea(ehd.lastX, ehd.lastY, ehd.mousePosition.x, ehd.mousePosition.y, 'shapes');
-			editor.editCanvas.redraw();
+			editor.editCanvas.redraw('resize:mousemove');
 		}
 
 		// Figure out cursor

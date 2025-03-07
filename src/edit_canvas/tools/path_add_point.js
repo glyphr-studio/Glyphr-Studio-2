@@ -98,7 +98,7 @@ export class Tool_PathAddPoint {
 			closeAllNotations();
 		}
 
-		editor.editCanvas.redraw();
+		editor.editCanvas.redraw('pathAddPoint:mousemove');
 	}
 
 	mouseup() {}

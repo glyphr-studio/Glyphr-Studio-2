@@ -131,7 +131,7 @@ export function makePage_Characters() {
 			callback: () => {
 				/** @type {EditCanvas} */
 				const canvas = editor.editCanvas;
-				if (canvas.redraw) canvas.redraw();
+				if (canvas.redraw) canvas.redraw('subscription:simpleRedraws');
 			},
 		});
 	});
