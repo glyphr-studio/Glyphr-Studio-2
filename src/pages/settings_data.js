@@ -253,6 +253,13 @@ export default {
 			This setting overrides the 'Move shapes when importing an SVG file' setting.`,
 			type: `Em`,
 		},
+		autoRightBearingOnFirstShape: {
+			label: `Add default Right Side Bearing when the first shape is added`,
+			description: `When you add the first shape to a new Character or Ligature, automatically update the Advance Width such that the Right Side Bearing is the value specified here. This automatic Advance Width update will only happen one time per item, and won't apply to shapes imported from an SVG file.
+			<br><br>
+			Set this value to -1 to disable it.`,
+			type: `Em`,
+		},
 		highlightPointsNearPoints: {
 			label: `Highlight points that are near other points`,
 			description: `This option will highlight points that are very close to other points. Sometimes this happens when exporting SVG code from another app. It is best practice to reduce the number of points in a path as much as possible.

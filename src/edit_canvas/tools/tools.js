@@ -352,13 +352,27 @@ export function addPathToCurrentItem(newPath) {
 		newPath.name = 'Rectangle ' + (editor.selectedItem.shapes.length * 1 + 1);
 	}
 
-	let sg = editor.selectedItem;
+	const result = editor.selectedItem.addOneShape(newPath);
 
-	newPath = sg.addOneShape(newPath);
+	checkForFirstShapeAutoRSB();
 
-	// log(`returns: ${ewPath.name}`);
+	// log(`returns: ${result.name}`);
 	// log(`addPathToCurrentItem`, 'end');
-	return newPath;
+	return result;
+}
+
+/**
+ * For projects that have 'autoRightBearingOnFirstShape' set,
+ * check if the current item has one shape, and if so, set the
+ * right side bearing to that value.
+ */
+export function checkForFirstShapeAutoRSB() {
+	const editor = getCurrentProjectEditor();
+	const autoRSB = editor.project.settings.app.autoRightBearingOnFirstShape;
+	const selectedItem = editor.selectedItem;
+	if (selectedItem.shapes.length === 1 && selectedItem.advanceWidth === 0 && autoRSB > -1) {
+		selectedItem.rightSideBearing = autoRSB;
+	}
 }
 
 /**
@@ -517,7 +531,7 @@ export function isSideBearingHere(cx, cy, item) {
 
 	if (Math.abs(sx) < target) result = 'lsb';
 	if (item.objType !== 'Component') {
-		if(valuesAreClose(sx, item.advanceWidth, target)) result = 'rsb';
+		if (valuesAreClose(sx, item.advanceWidth, target)) result = 'rsb';
 	}
 
 	// log(`result: ${result}`);

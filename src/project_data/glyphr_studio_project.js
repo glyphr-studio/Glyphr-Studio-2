@@ -54,6 +54,7 @@ export class GlyphrStudioProject {
 				exportUneditedItems: true,
 				moveShapesOnSVGDragDrop: false,
 				autoSideBearingsOnSVGDragDrop: 50,
+				autoRightBearingOnFirstShape: 50,
 				highlightPointsNearPoints: 2,
 				highlightPointsNearHandles: 2,
 				highlightPointsNearXZero: 2,

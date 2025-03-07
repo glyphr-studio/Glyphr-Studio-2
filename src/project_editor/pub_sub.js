@@ -1,4 +1,5 @@
 import { closeAllNotations } from '../controls/dialogs/dialogs.js';
+import { checkForFirstShapeAutoRSB } from '../edit_canvas/tools/tools.js';
 import { glyphChanged } from './cross_item_actions.js';
 
 // --------------------------------------------------------------
@@ -77,6 +78,7 @@ export function publish(topic, data) {
 		if (topic === 'whichToolIsSelected') {
 			// log(`PubSub publish whichToolIsSelected: ${data}`);
 			if (data !== 'pathAddPoint') closeAllNotations();
+			checkForFirstShapeAutoRSB();
 		}
 
 		if (topic === 'editCanvasView') {

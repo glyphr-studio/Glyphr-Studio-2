@@ -7,7 +7,7 @@ import { isOverFirstPoint } from '../detect_edit_affordances.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { selectTool } from './tools.js';
+import { checkForFirstShapeAutoRSB, selectTool } from './tools.js';
 
 /**
 	// ----------------------------------------------------------------
@@ -183,6 +183,7 @@ export class Tool_NewPath {
  * the path creation ends, but not because of this button.
  */
 export function removeStopCreatingNewPathButton() {
+	checkForFirstShapeAutoRSB();
 	if (document.querySelector('#done-creating-path-button')) {
 		stopCreatingNewPath();
 		selectTool('pathEdit');
