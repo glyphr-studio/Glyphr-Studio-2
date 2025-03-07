@@ -165,7 +165,7 @@ export function makePage_Components() {
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
 			removeStopCreatingNewPathButton();
-			editor.editCanvas.redraw();
+			editor.editCanvas.redraw('subscription:whichShapeIsSelected');
 		},
 	});
 
@@ -173,7 +173,7 @@ export function makePage_Components() {
 		topic: 'whichPathPointIsSelected',
 		subscriberID: 'editCanvas.selectedPathPoint',
 		callback: () => {
-			editor.editCanvas.redraw();
+			editor.editCanvas.redraw('subscription:whichPathPointIsSelected');
 		},
 	});
 

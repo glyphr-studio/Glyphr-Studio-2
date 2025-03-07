@@ -45,7 +45,7 @@ export function makePanel_ContextCharacters() {
 	let transparencyLabel = makeSingleLabel('Transparency');
 	let transparencyInput = makeFancySlider(ccOptions.characterTransparency, (newValue) => {
 		ccOptions.characterTransparency = newValue;
-		getCurrentProjectEditor().editCanvas.redraw();
+		getCurrentProjectEditor().editCanvas.redraw('context characters transparency slider');
 	});
 	charsInput.classList.add('spanAll');
 	addAsChildren(charsCard, [
@@ -72,7 +72,7 @@ export function makePanel_ContextCharacters() {
 	let guidesLabel = makeSingleLabel('Transparency');
 	let guidesInput = makeFancySlider(ccOptions.guidesTransparency, (newValue) => {
 		ccOptions.guidesTransparency = newValue;
-		getCurrentProjectEditor().editCanvas.redraw();
+		getCurrentProjectEditor().editCanvas.redraw('guides transparency slider');
 	});
 
 	addAsChildren(optionsCard, [guidesCheckboxLabel, guidesCheckbox, guidesLabel, guidesInput]);
@@ -83,5 +83,5 @@ export function makePanel_ContextCharacters() {
 
 function refresh() {
 	const editor = getCurrentProjectEditor();
-	editor.editCanvas.redraw();
+	editor.editCanvas.redraw('context characters refresh');
 }

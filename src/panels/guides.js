@@ -48,7 +48,7 @@ export function makePanel_Guides() {
 			makeSingleLabel('Transparency'),
 			makeFancySlider(guides.systemTransparency, (newValue) => {
 				guides.systemTransparency = newValue;
-				getCurrentProjectEditor().editCanvas.redraw();
+				getCurrentProjectEditor().editCanvas.redraw('guides system transparency');
 			}),
 			makeElement(),
 			makeSingleLabel('Show labels'),
@@ -71,7 +71,7 @@ export function makePanel_Guides() {
 			makeSingleLabel('Transparency'),
 			makeFancySlider(guides.customTransparency, (newValue) => {
 				guides.customTransparency = newValue;
-				getCurrentProjectEditor().editCanvas.redraw();
+				getCurrentProjectEditor().editCanvas.redraw('guides custom transparency');
 			}),
 			makeElement(),
 			makeSingleLabel('Show labels'),
@@ -87,7 +87,7 @@ export function makePanel_Guides() {
 
 function refreshGuideChange() {
 	refreshPanel();
-	getCurrentProjectEditor().editCanvas.redraw();
+	getCurrentProjectEditor().editCanvas.redraw('guides refresh');
 }
 
 export function makeSystemGuidesCard() {
@@ -126,7 +126,7 @@ function makeSystemGuideRow(property, title, value = '0000', color) {
 				shownGuides = shownGuides.filter((g) => g !== property);
 			}
 		}
-		editor.editCanvas.redraw();
+		editor.editCanvas.redraw('guides system view toggle');
 	});
 	viewCheckbox.setAttribute('title', 'Show / hide guide');
 	viewCheckbox.setAttribute('style', `accent-color: ${color};`);
@@ -194,7 +194,7 @@ function makeCustomGuideRow(guide, number) {
 	// Checkbox
 	const viewCheckbox = makeDirectCheckbox(guide, 'visible', () => {
 		const editor = getCurrentProjectEditor();
-		editor.editCanvas.redraw();
+		editor.editCanvas.redraw('guides custom view toggle');
 	});
 	viewCheckbox.setAttribute('style', `accent-color: ${guide.color}`);
 	viewCheckbox.setAttribute('title', 'Show / hide guide');
@@ -236,7 +236,7 @@ function makeCustomGuideRow(guide, number) {
 		// Update guide
 		const guide = getCurrentProject().settings.app.guides.custom[number];
 		guide.color = rgbString;
-		getCurrentProjectEditor().editCanvas.redraw();
+		getCurrentProjectEditor().editCanvas.redraw('guides custom color change');
 	});
 
 	// Angle button

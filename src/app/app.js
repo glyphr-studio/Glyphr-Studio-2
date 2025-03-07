@@ -123,7 +123,7 @@ export class GlyphrStudioApp {
 
 		// Final dev mode stuff
 		// @ts-ignore
-		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw();
+		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw('dev mode select first shape');
 		console.log(this);
 		// log(`GlyphrStudioApp.setUp`, 'end');
 	}

@@ -103,7 +103,7 @@ export function publish(topic, data) {
 		}
 
 		// ----------------------------------------------------------------------------
-		// Call topics based on generic / specific topics, and  Glyph Element hierarchy
+		// Call topics based on generic / specific topics, and Glyph Element hierarchy
 		// ----------------------------------------------------------------------------
 		/*
 			PubSub allows for topics to be either a generic 'selectedItem' topic,

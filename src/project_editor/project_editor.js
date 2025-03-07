@@ -1,5 +1,5 @@
 import { decToHex } from '../common/character_ids.js';
-import { clone, generateNewID, getFirstID, json, round } from '../common/functions.js';
+import { clone, getFirstID, json, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
@@ -94,8 +94,7 @@ export class ProjectEditor {
 
 		// Views
 		this._views = {};
-		this.defaultView = { dx: 200, dy: 500, dz: 0.5, default: true };
-		this.defaultKernView = { dx: 500, dy: 500, dz: 0.5, default: true };
+		this.defaultView = { dx: -1000, dy: -1000, dz: 0.5, default: true };
 
 		// Guides
 		this.systemGuides = {
@@ -811,8 +810,6 @@ export class ProjectEditor {
 
 		if (this._views[id]) {
 			re = this._views[id];
-		} else if (this.nav.page === 'Kerning') {
-			re = clone(this.defaultKernView);
 		} else {
 			re = clone(this.defaultView);
 		}
