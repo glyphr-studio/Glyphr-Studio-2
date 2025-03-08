@@ -375,12 +375,16 @@ export function clipboardPaste() {
 			if (circularReferenceNote.length) {
 				circularReferenceNote = circularReferenceNote.replaceAll(' ', ', ');
 				toastMessage = toastMessage.replace('<br>', ' ');
-				toastMessage += '.<br><br>Some component instances were not pasted as they would cause a circular reference:<br>' + circularReferenceNote;
+				toastMessage +=
+					'.<br><br>Some component instances were not pasted as they would cause a circular reference:<br>' +
+					circularReferenceNote;
 			}
 			showToast(toastMessage, circularReferenceNote.length ? 5000 : undefined);
 			editor.publish('currentItem', editor.selectedItem);
 		} else {
-			showError(`No shapes from the Glyphr Studio clipboard could be pasted to this item. Pasting component instances that would cause circular references is not allowed.`);
+			showError(
+				`No shapes from the Glyphr Studio clipboard could be pasted to this item. Pasting component instances that would cause circular references is not allowed.`
+			);
 		}
 		return true;
 	}

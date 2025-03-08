@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { closeAllNotations } from '../controls/dialogs/dialogs.js';
+import { closeAllNotations, closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
 import { Maxes, maxesOverlap } from '../project_data/maxes.js';
 import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
@@ -25,6 +25,9 @@ export function handleMouseEvents(event) {
 	// log(`handleMouseEvents`, 'start');
 	// log(`Raw mouse event x/y = ${event.layerX} / ${event.layerY}`);
 	// log(event);
+
+	if (event.type === 'mousedown' && typeof event.button === 'number') closeEveryTypeOfDialog();
+
 	const ehd = eventHandlerData;
 	const editor = getCurrentProjectEditor();
 
@@ -157,9 +160,9 @@ export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
 
 	if (type === 'pathPoints') {
 		msPoints.allowPublishing = false;
-		if(!isCtrlDown) msPoints.clear();
+		if (!isCtrlDown) msPoints.clear();
 		msShapes.allowPublishing = false;
-		if(!isCtrlDown) msShapes.clear();
+		if (!isCtrlDown) msShapes.clear();
 		editor.selectedItem.shapes.forEach((shape) => {
 			if (maxesOverlap(shape.maxes, area) && shape.pathPoints) {
 				shape.pathPoints.forEach((point) => {
@@ -173,9 +176,9 @@ export function selectItemsInArea(x1, y1, x2, y2, type = 'pathPoints') {
 		});
 	} else if (type === 'shapes') {
 		msPoints.allowPublishing = false;
-		if(!isCtrlDown) msPoints.clear();
+		if (!isCtrlDown) msPoints.clear();
 		msShapes.allowPublishing = false;
-		if(!isCtrlDown) msShapes.clear();
+		if (!isCtrlDown) msShapes.clear();
 		editor.selectedItem.shapes.forEach((shape) => {
 			if (area.isMaxesInside(shape.maxes)) {
 				msShapes.add(shape);

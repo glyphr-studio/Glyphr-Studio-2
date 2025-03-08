@@ -298,7 +298,6 @@ export function makeContextMenu(rows = [], x, y, width, height, isDropdown = fal
 			if (isDropdown) element.style.maxHeight = `${height}px`;
 			else element.style.height = `${height}px`;
 		}
-		element.addEventListener('mouseleave', closeAllOptionChoosers);
 		element.focus();
 	} else {
 		console.warn(`Context menu not supplied with a screen position.`);

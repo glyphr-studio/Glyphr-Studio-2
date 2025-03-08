@@ -366,7 +366,7 @@
 .item-chooser__wrapper {
 	background-color: var(--offWhite);
 	padding: 10px 0px 0px 10px;
-	border-radius: 8px;
+	border-radius: 0px;
 }
 
 nav .item-chooser__wrapper {
