@@ -212,13 +212,8 @@ export function makeNavButtonContent(title, superTitle) {
 }
 
 export function toggleNavDropdown(parentElement) {
-	let dropdown = document.querySelector('nav');
-
-	if (dropdown) {
-		closeAllNavMenus();
-	} else {
-		showNavDropdown(parentElement);
-	}
+	closeAllNavMenus();
+	showNavDropdown(parentElement);
 }
 
 /**
@@ -239,12 +234,6 @@ export function closeAllNavMenus(isChooserMenu = false) {
 		}
 	});
 	// log(`closeAllNavMenus`, 'end');
-}
-
-export function setNavMenuHideListeners(element) {
-	element.addEventListener('mouseleave', () => {
-		closeAllNavMenus();
-	});
 }
 
 export function showNavDropdown(parentElement) {
@@ -306,8 +295,6 @@ export function showNavDropdown(parentElement) {
 			border-color: ${parentStyle.backgroundColor};
 		`,
 	});
-
-	setNavMenuHideListeners(dropDown);
 
 	addAsChildren(dropDown, dropdownContent);
 	// log(`dropDown:`);
@@ -386,7 +373,15 @@ function makePanelChooserContent() {
 	let content = makeElement();
 	let pageButton;
 	let panels = listOfPanels();
-	let shownPanels = ['Attributes', 'Layers', 'ContextCharacters', 'History', 'Guides', 'CharacterInfo', 'QualityChecks'];
+	let shownPanels = [
+		'Attributes',
+		'Layers',
+		'ContextCharacters',
+		'History',
+		'Guides',
+		'CharacterInfo',
+		'QualityChecks',
+	];
 	let page = getCurrentProjectEditor().nav.page;
 	if (page === 'Kerning') {
 		shownPanels = ['Attributes', 'History'];

@@ -79,7 +79,6 @@ function makeMenu(menuName) {
 		innerHTML: menuName,
 		className: 'menu-entry-point',
 	});
-	entryPoint.addEventListener('mouseover', closeEveryTypeOfDialog);
 	const editor = getCurrentProjectEditor();
 	if (menuName === 'File') {
 		/** @type {Array} */
