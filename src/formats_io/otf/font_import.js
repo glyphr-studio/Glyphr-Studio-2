@@ -116,10 +116,14 @@ export function makeGlyphrStudioGlyphObject(otfGlyph) {
 	const advance = otfGlyph.advanceWidth;
 	// log(`advance: ${advance}`);
 
-	// const newPaths = [];
-	// let pathCounter = 0;
 	// Import Path Data
-	let data = otfGlyph.path.toSVG();
+	const svgImportOptions = {
+		decimalPlaces: 9,
+		optimize: false,
+		flipY: false,
+		flipYBase: 0,
+	};
+	let data = otfGlyph.path.toSVG(svgImportOptions);
 	// log('Glyph has .toSVG data');
 	// log(data);
 
@@ -135,7 +139,7 @@ export function makeGlyphrStudioGlyphObject(otfGlyph) {
 
 	if (importedGlyph) {
 		importedGlyph.advanceWidth = advance;
-		importedGlyph.flipNS();
+		// importedGlyph.flipNS();
 	}
 
 	// log(`makeGlyphrStudioGlyphObject`, 'end');
