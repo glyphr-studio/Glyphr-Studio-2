@@ -5,6 +5,7 @@ import {
 } from '../../app/main.js';
 import { countItems } from '../../common/functions.js';
 import { updateProgressIndicator } from '../../controls/progress-indicator/progress_indicator.js';
+import { sortCharacterRanges } from '../../pages/settings_project.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { ProjectEditor } from '../../project_editor/project_editor.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outlines/svg_outline_import.js';
@@ -96,7 +97,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	} else {
 		setCurrentProjectEditor(editor);
 		editor.project.resetSessionStateForAllItems();
-
+		sortCharacterRanges();
 		editor.nav.page = 'Overview';
 		const app = getGlyphrStudioApp();
 		app.selectedProjectEditor = editor;
