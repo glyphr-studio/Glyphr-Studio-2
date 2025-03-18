@@ -9,6 +9,7 @@ import { generateNewID } from '../../common/functions.js';
 import { updateProgressIndicator } from '../../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeName } from '../../lib/unicode/unicode_names.js';
 import { makeLigatureID } from '../../pages/ligatures.js';
+import { sortCharacterRanges } from '../../pages/settings_project.js';
 import { KernGroup } from '../../project_data/kern_group.js';
 import { ProjectEditor } from '../../project_editor/project_editor.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outlines/svg_outline_import.js';
@@ -256,6 +257,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 	} else {
 		setCurrentProjectEditor(editor);
 		editor.project.resetSessionStateForAllItems();
+		sortCharacterRanges();
 		editor.nav.page = 'Overview';
 		editor.navigate();
 	}

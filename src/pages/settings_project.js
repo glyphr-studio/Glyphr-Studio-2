@@ -733,7 +733,7 @@ function sanitizeUnicodeInput(inputString) {
 	else return inputString;
 }
 
-function sortCharacterRanges() {
+export function sortCharacterRanges() {
 	const ranges = getCurrentProject().settings.project.characterRanges;
 	ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
 }
