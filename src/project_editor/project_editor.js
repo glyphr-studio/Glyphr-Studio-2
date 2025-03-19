@@ -53,7 +53,7 @@ export class ProjectEditor {
 		this.loadedFileHandle = false;
 
 		// Project
-		this.project;
+		this.project = undefined;
 		// if (newProjectEditor.project) this.project = newProjectEditor.project;
 		// log(`this.project`);
 		// log(this.project);
@@ -90,7 +90,7 @@ export class ProjectEditor {
 
 		// Canvas
 		/** @type {EditCanvas} */
-		this.editCanvas;
+		this.editCanvas = undefined;
 
 		// Views
 		this._views = {};
@@ -108,6 +108,7 @@ export class ProjectEditor {
 		};
 
 		// Pop Out Window
+		/** @type {HTMLElement | false} */
 		this.popOutWindow = false;
 
 		// Live previews - livePreviews[0] is for the Live Preview Page

@@ -1,4 +1,4 @@
-import { getCurrentProject, log } from '../../app/main.js';
+import { getCurrentProject } from '../../app/main.js';
 import { hexesToChars } from '../../common/character_ids.js';
 import { makeElement } from '../../common/dom.js';
 import { remove } from '../../common/functions.js';
@@ -72,9 +72,9 @@ export class GlyphTile extends HTMLElement {
 				tag: 'span',
 				className: 'thumbnail',
 			});
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			this.thumbnail.width = overallSize;
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			this.thumbnail.height = overallSize;
 		} else {
 			this.setAttribute('title', `${name}\n${displayedItemID}${sessionMessage}`);

@@ -182,7 +182,7 @@ function flipProjects() {
 		welcomeFlipper.innerHTML = '';
 		welcomeFlipper.appendChild(makeProjectFlipper());
 	} else {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		updateCrossProjectActionsPage(document);
 	}
 }

@@ -58,7 +58,7 @@ export function XMLtoJSON(inputXML) {
 		let tagAttributes;
 
 		for (const node of kids) {
-			tagResult = { name: '', attributes: {} , content: ''};
+			tagResult = { name: '', attributes: {}, content: '' };
 			if (node.nodeName === '#comment') continue;
 
 			tagContent = tag_getContent(node);
@@ -100,7 +100,7 @@ export function XMLtoJSON(inputXML) {
 		try {
 			text = text.replace(/^\s+|\s+$/g, '');
 			return text.replace(/(\r\n|\n|\r|\t)/gm, '');
-		} catch (e) {
+		} catch {
 			return '';
 		}
 	}

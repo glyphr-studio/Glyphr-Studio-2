@@ -27,7 +27,7 @@ export class OptionChooser extends HTMLElement {
 			className: 'wrapper',
 			tabIndex: !this.disabled,
 		});
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.wrapper.elementRoot = this;
 
 		// this.options = makeElement({ tag: 'slot', className: 'options' });
@@ -38,7 +38,7 @@ export class OptionChooser extends HTMLElement {
 			attributes: { tabIndex: -1 },
 			innerHTML: this.getDisplayName(),
 		});
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.selectionDisplay.elementRoot = this;
 
 		this.downArrow = makeElement({
@@ -46,7 +46,7 @@ export class OptionChooser extends HTMLElement {
 			content: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><polygon points="14.5 8.5 5.5 8.5 10 13 14.5 8.5"/></svg>`,
 			attributes: { tabIndex: -1 },
 		});
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.downArrow.elementRoot = this;
 
 		// Put it all together
@@ -189,7 +189,10 @@ export class OptionChooser extends HTMLElement {
 		closeAllOptionChoosers();
 		closeAllNavMenus(true);
 		this.setAttribute('deployed', '');
-		insertAfter(this, makeContextMenu(optionRows, left, top - 1, entryPointRect.width, maxHeight, true));
+		insertAfter(
+			this,
+			makeContextMenu(optionRows, left, top - 1, entryPointRect.width, maxHeight, true)
+		);
 
 		// log(`OptionsChooser.showOptions`, 'end');
 	}

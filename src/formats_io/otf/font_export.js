@@ -112,9 +112,9 @@ function saveOTFFile(font) {
 		const blob = new Blob([dataView], { type: 'font/opentype' });
 
 		saveFile(blob, fileName);
-	} catch (error) {
-		console.error(error);
-		result = error;
+	} catch (e) {
+		console.error(e);
+		result = e;
 	}
 
 	return result;

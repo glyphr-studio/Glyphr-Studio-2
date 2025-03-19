@@ -223,7 +223,7 @@ function makeCustomGuideRow(guide, number) {
 	});
 	colorButton.addEventListener('input', (event) => {
 		// Get new color
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		let rgb = parseColorString(event.target.value);
 		let rgbString = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
 

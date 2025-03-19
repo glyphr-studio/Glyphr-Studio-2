@@ -9,7 +9,7 @@ export class GlyphElement {
 		/**
 		 * @type {Object} this.parent
 		 */
-		this.parent;
+		this.parent = undefined;
 		this.id = '';
 	}
 
@@ -147,13 +147,13 @@ export class GlyphElement {
 
 		for (const key of Object.keys(safeObj)) {
 			elem = this[key];
-			if (elem.print) {
+			if (elem?.print) {
 				re += `${ind}${key}: ${elem.print(level + 1)}\n`;
 			} else {
 				if (typeof elem !== 'function') {
 					if (typeof elem === 'object') {
 						re += `${ind}${key}: ${JSON.stringify(elem)}\n`;
-					} else {
+					} else if (elem){
 						re += `${ind}${key}: ${elem}\n`;
 					}
 				}

@@ -1,7 +1,7 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import { closeEveryTypeOfDialog, showError, showToast } from '../controls/dialogs/dialogs.js';
-import { makeProgressIndicator, updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
+import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { ioFont_importFont } from '../formats_io/otf/font_import.js';
 import { ioSVG_importSVGfont } from '../formats_io/svg_font/svg_font_import.js';
@@ -327,9 +327,9 @@ export function makeOpenProjectTabs() {
  * @param {Object} pickerOptions - OS File Picker Options Object
  */
 export async function getFilesFromFilePicker(callback, pickerOptions = {}) {
-	/** @ts-ignore */
+	// @ts-expect-error 'property does exist'
 	if (window.showOpenFilePicker) {
-		/** @ts-ignore */
+		// @ts-expect-error 'property does exist'
 		const files = await window.showOpenFilePicker(pickerOptions);
 		callback(files);
 	} else {
@@ -548,4 +548,3 @@ function handleLoadSample(name) {
 		importProjectDataAndNavigate(project);
 	}, 100);
 }
-

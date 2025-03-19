@@ -44,7 +44,7 @@ export function closeAllOptionChoosers() {
 	elements.forEach((elem) => elem.removeAttribute('deployed'));
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		elements = editor.popOutWindow.document.querySelectorAll('option-chooser');
 		elements.forEach((elem) => elem.removeAttribute('deployed'));
 	}
@@ -90,7 +90,7 @@ export function closeAllInfoBubbles() {
 	});
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		bubbles = editor.popOutWindow.document.querySelectorAll('#bubble');
 		bubbles.forEach((/** @type {HTMLElement} */ elem) => {
 			elem.querySelector('.content').dispatchEvent(new Event('mouseleave'));
@@ -118,7 +118,7 @@ export function animateRemoveAll(query = '') {
 	elements.forEach((elem) => animateRemove(elem));
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		elements = editor.popOutWindow.document.querySelectorAll(query);
 		elements.forEach((elem) => animateRemove(elem));
 	}
@@ -459,7 +459,7 @@ export function makeModalDialog(contentNode, maxWidth, openProjectDialog = false
 		.addEventListener('click', closeEveryTypeOfDialog);
 	modal.addEventListener('click', (event) => {
 		const clickTarget = event.target;
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		if (clickTarget.getAttribute('id') === 'modal-dialog') closeEveryTypeOfDialog();
 	});
 

@@ -871,7 +871,7 @@ export function makeActionsArea_ComponentInstance(test = false) {
 	// Path align actions
 	if (selectedPaths.length > 1 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		alignShapeActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
 		addChildActions(alignShapeActions, getActionData('alignShapeActions'));
 	}
@@ -894,7 +894,7 @@ export function makeActionsArea_PathPoint(test = false) {
 	}
 
 	if (selectedPoints.length > 1 || test) {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		alignPointActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
 		addChildActions(alignPointActions, getActionData('alignPointActions'));
 	}

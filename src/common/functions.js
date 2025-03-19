@@ -74,7 +74,7 @@ export function count(arr = [], term = '') {
 export function clone(source) {
 	try {
 		return structuredClone(source);
-	} catch (error) {
+	} catch {
 		// console.warn('No structuredClone, falling back to manual clone');
 
 		const newObj = Array.isArray(source) ? [] : {};
@@ -200,12 +200,14 @@ export function makeCrisp(num, dir = false) {
 
 /**
  * Better rounding than Math.round
- * @param {Number} num - number to round
- * @param {Number} dec - number of decimal places
+ * @param {Number | String} num - number to round
+ * @param {Number | String} dec - number of decimal places
  * @returns {Number}
  */
 export function round(num, dec = 0) {
 	if (!num) return 0;
+	if (typeof num === 'string') num = parseFloat(num);
+	if (typeof dec === 'string') dec = parseFloat(dec);
 	return Number(Math.round(+`${num}e${dec}`) + `e-${dec}`) || 0;
 }
 
@@ -274,7 +276,7 @@ export function trim(text = '') {
 	try {
 		text = text.replace(/^\s+|\s+$/g, '');
 		return text.replace(/(\r\n|\n|\r|\t)/gm, '');
-	} catch (e) {
+	} catch {
 		return '';
 	}
 }

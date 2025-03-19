@@ -16,7 +16,7 @@ import { getShapeAtLocation, selectTool } from './tools.js';
  */
 export class Tool_PathAddPoint {
 	constructor() {
-		this.previewPoint;
+		this.previewPoint = undefined;
 	}
 	mousedown(ev) {
 		const editor = getCurrentProjectEditor();

@@ -520,7 +520,7 @@ function showEditCharacterRangeDialog(range = false) {
 		attributes: { type: 'text' },
 	});
 	inputName.addEventListener('change', (event) => {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		event.target.value = sanitizeUnicodeInput(event.target.value);
 	});
 
@@ -530,7 +530,7 @@ function showEditCharacterRangeDialog(range = false) {
 		attributes: { type: 'text' },
 	});
 	inputBegin.addEventListener('change', (event) => {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		event.target.value = sanitizeUnicodeInput(event.target.value);
 	});
 
@@ -540,16 +540,16 @@ function showEditCharacterRangeDialog(range = false) {
 		attributes: { type: 'text' },
 	});
 	inputEnd.addEventListener('change', (event) => {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		event.target.value = sanitizeUnicodeInput(event.target.value);
 	});
 
 	if (range) {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		inputName.value = range.name;
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		inputBegin.value = '' + decToHex(range.begin);
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		inputEnd.value = '' + decToHex(range.end);
 	}
 

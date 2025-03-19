@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { makeElement } from '../common/dom.js';
 import { isStandardUnicodeRange } from '../lib/unicode/unicode_blocks.js';
@@ -12,7 +12,7 @@ import { makeCard_itemNavigation } from './card_glyph.js';
 export function makePanel_CharacterInfo() {
 	// log(`makePanel_CharacterInfo`, 'start');
 	const editor = getCurrentProjectEditor();
-	const project = getCurrentProject();
+	// const project = getCurrentProject();
 	let selected = editor.selectedItem;
 
 	const dec = selected.char.codePointAt(0);

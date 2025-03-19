@@ -79,7 +79,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 	let displayLabel = thisSetting.label;
 	displayLabel = displayLabel.replaceAll(' ', '&nbsp;');
 	displayLabel = displayLabel.replaceAll('-', '&#8209;');
-	displayLabel = `${displayLabel}${inputFirst? '' : ':&emsp;'}`;
+	displayLabel = `${displayLabel}${inputFirst ? '' : ':&emsp;'}`;
 
 	const label = makeElement({
 		tag: 'label',
@@ -97,7 +97,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 		});
 
 		input.addEventListener('change', (event) => {
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			let newValue = parseInt(event.target.value);
 			if (isNaN(newValue)) {
 				showToast(`Could not save value - needs to be a number.`);
@@ -115,7 +115,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 		});
 
 		input.addEventListener('change', (event) => {
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			let newValue = sanitizeValueWithJSON(event.target.value);
 			settings[groupName][propertyName] = newValue;
 			if (callback) callback();
@@ -125,7 +125,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 	if (settingType === 'Boolean') {
 		input = makeDirectCheckbox(settings[groupName], propertyName, callback);
 		if (propertyName === 'showNonCharPoints') {
-			input.addEventListener('change', (event) => {
+			input.addEventListener('change', () => {
 				const project = getCurrentProject();
 				// log(`Clearing all Character Range Caches`);
 				// log(`\n⮟project.settings.project.characterRanges⮟`);

@@ -170,11 +170,11 @@ export function glyphIterator(oa) {
 		try {
 			oa.action(currentItem, listOfItemIDs);
 			glyphChanged(currentItem);
-		} catch (error) {
+		} catch (e) {
 			failures.push({
 				itemID: currentItemID,
 				item: currentItem,
-				error: error.message,
+				error: e.message,
 			});
 		}
 
@@ -372,7 +372,7 @@ function showFilterDialog() {
 
 		rangeCheckbox.addEventListener('change', () => {
 			const index = itemFilterInputs.characterRanges.indexOf(range.id);
-			/**@ts-ignore */
+			// @ts-expect-error	'property does exist'
 			if (index === -1 && rangeCheckbox.checked) {
 				itemFilterInputs.characterRanges.push(range.id);
 			} else {

@@ -112,9 +112,9 @@ export class Navigator {
 				wrapper.innerHTML = '';
 				wrapper.appendChild(makeAppTopBar());
 				wrapper.appendChild(pageContent);
-			} catch (error) {
-				console.warn(`Navigation failed:`, error);
-				showAppErrorPage(`Oops, navigation failed!`, error);
+			} catch (e) {
+				console.warn(`Navigation failed:`, e);
+				showAppErrorPage(`Oops, navigation failed!`, e);
 				// log(getCurrentProject());
 			}
 		} else {
