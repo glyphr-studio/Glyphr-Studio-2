@@ -26,6 +26,7 @@
     "@storybook/web-components": "^8.1.11",
     "@storybook/web-components-vite": "^8.1.11",
     "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@vitest/browser": "^3.0.7",
     "buffer": "^6.0.3",
     "eslint-config-prettier": "^8.5.0",
