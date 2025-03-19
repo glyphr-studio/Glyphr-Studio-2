@@ -407,17 +407,17 @@ export function canResize(handle) {
 	const msShapes = editor.multiSelect.shapes;
 	let selected = msShapes;
 	if (msShapes.length > 1) {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		selected = msShapes.virtualGlyph;
 	}
 	let rl = selected.ratioLock;
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	let xl = selected.xLock;
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	let yl = selected.yLock;
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	let wl = selected.wLock;
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	let hl = selected.hLock;
 	let yMax = selected.maxes.yMax;
 	let yMin = selected.maxes.yMin;

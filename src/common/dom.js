@@ -69,7 +69,7 @@ export function makeElement({
 	}
 
 	if (onClick && typeof onClick === 'function') {
-		/** @ts-ignore */
+		// @ts-expect-error 'property does exist'
 		newElement.addEventListener('click', onClick);
 	}
 

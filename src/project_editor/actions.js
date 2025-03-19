@@ -462,7 +462,7 @@ export function showDialogChooseOtherItem(actionName = '') {
 			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
 			editor.multiSelect.shapes.clear();
 			newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
-			/** @ts-ignore */
+			// @ts-expect-error 'property does exist'
 			if (document.querySelector('#checkbox-maintain-rsb').checked) {
 				thisItem.rightSideBearing = oldRSB;
 			}
@@ -499,7 +499,7 @@ export function showDialogChooseOtherItem(actionName = '') {
 			if (newInstance) {
 				editor.publish('currentItem', thisItem);
 				editor.multiSelect.shapes.add(newInstance);
-				/** @ts-ignore */
+				// @ts-expect-error 'property does exist'
 				if (document.querySelector('#checkbox-maintain-rsb').checked) {
 					thisItem.rightSideBearing = oldRSB;
 				}

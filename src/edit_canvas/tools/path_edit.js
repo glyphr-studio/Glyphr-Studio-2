@@ -134,6 +134,14 @@ export class Tool_PathEdit {
 		const msPoints = editor.multiSelect.points;
 		const view = editor.view;
 
+		// An easing function based on quint 'ease-in-out'
+		function calculateWeight(x) {
+			let weight = 1;
+			if (x < 0.5) weight = 16 * x * x * x * x * x;
+			else weight = 1 - Math.pow(-2 * x + 2, 5) / 2;
+			return weight;
+		}
+
 		if (ehd.toolHandoff) {
 			ehd.toolHandoff = false;
 			this.controlPoint = msPoints.singleton.h2;
@@ -239,14 +247,6 @@ export class Tool_PathEdit {
 			editor.multiSelect.points.clear();
 			editor.multiSelect.points.add(p1);
 			editor.multiSelect.points.add(p2);
-
-			// An easing function based on quint 'ease-in-out'
-			function calculateWeight(x) {
-				let weight = 1;
-				if (x < 0.5) weight = 16 * x * x * x * x * x;
-				else weight = 1 - Math.pow(-2 * x + 2, 5) / 2;
-				return weight;
-			}
 
 			// Make the updates
 			let t = this.overCurve.split || 0.5;
@@ -358,7 +358,7 @@ export class Tool_PathEdit {
 		const ehd = eventHandlerData;
 		const editor = getCurrentProjectEditor();
 		const msPoints = editor.multiSelect.points;
-		const msShapes = editor.multiSelect.shapes;
+		// const msShapes = editor.multiSelect.shapes;
 
 		if (this.monitorForDeselect) {
 			msPoints.remove(this.pathPoint);

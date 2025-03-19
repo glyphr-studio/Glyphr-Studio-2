@@ -47,9 +47,9 @@ export function glyphrStudioOnLoad() {
 			// log('did NOT pass pre-checks');
 		}
 		// log(`glyphrStudioOnLoad`, 'end');
-	} catch (error) {
-		showAppErrorPage('Glyphr Studio failed to load!', error);
-		console.error(error);
+	} catch (e) {
+		showAppErrorPage('Glyphr Studio failed to load!', e);
+		console.error(e);
 	}
 }
 
@@ -96,7 +96,7 @@ function addGlobalEventListeners() {
 	window.addEventListener('mouseup', (event) => {
 		let navElement = document.querySelector('nav');
 
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		if (!(navElement && navElement.contains(event.target))) {
 			closeAllNavMenus();
 			closeAllOptionChoosers();
@@ -108,7 +108,7 @@ function addGlobalEventListeners() {
 		closeAllOptionChoosers();
 		closeAllInfoBubbles();
 	});
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	window.getShipDate = getShipDate;
 	// }
 }

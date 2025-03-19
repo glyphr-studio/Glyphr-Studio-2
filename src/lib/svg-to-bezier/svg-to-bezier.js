@@ -144,12 +144,12 @@ export function chunkAndValidateParameters(data = '') {
 	}
 
 	if (data.length > 0) {
-		data = data.split(',');
+		const splitData = data.split(',');
 
 		// Handle sequence of decimal numbers without spaces or leading zeros
 		// like: 123.45.67.89 should be 123.45, 0.67, 0.89
-		data.forEach((param) => {
-			param = param.split('.');
+		splitData.forEach((entry) => {
+			let param = entry.split('.');
 
 			if (param.length === 1) validatedParameters.push(Number(param[0]));
 			else if (param.length === 2) validatedParameters.push(Number(param.join('.')));
@@ -180,15 +180,16 @@ export function roundAndSanitize(num) {
 
 /**
  * Better rounding than Math.round
- * @param {Number} num - number to round
- * @param {Number} dec - number of decimal places
+ * @param {Number | String} num - number to round
+ * @param {Number | Boolean | String} dec - number of decimal places
  * @returns {Number}
  */
 export function round(num, dec = false) {
 	if (!num) return 0;
-	if (dec === false) return parseFloat(num);
-	num = parseFloat(num);
-	return Number(Math.round(`${num}e${dec}`) + `e-${dec}`) || 0;
+	if (typeof num === 'string') num = parseFloat(num);
+	if (dec === false) return num;
+	if (typeof dec === 'string') dec = parseFloat(dec);
+	return Number(Math.round(+`${num}e${dec}`) + `e-${dec}`) || 0;
 }
 
 /**
@@ -208,7 +209,7 @@ export function floatSanitize(num) {
 
 /**
  * Global switch for console logging
- * @param {String} message - text to log
+ * @param {String | Object} message - text to log
  */
 export function log(message) {
 	if (enableConsoleLogging) console.log(message);

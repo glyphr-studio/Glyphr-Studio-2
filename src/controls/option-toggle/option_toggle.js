@@ -22,7 +22,7 @@ export class OptionToggle extends HTMLElement {
 			className: 'wrapper',
 			tabIndex: !this.disabled,
 		});
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.wrapper.elementRoot = this;
 
 		this.selectionDisplay = makeElement({
@@ -30,7 +30,7 @@ export class OptionToggle extends HTMLElement {
 			attributes: { tabIndex: -1 },
 			innerHTML: this.getDisplayName(),
 		});
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.selectionDisplay.elementRoot = this;
 
 		this.toggleIcon = makeElement({
@@ -38,7 +38,7 @@ export class OptionToggle extends HTMLElement {
 			content: this.makeIcon(),
 			attributes: { tabIndex: -1 },
 		});
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.toggleIcon.elementRoot = this;
 
 		// Put it all together
@@ -74,7 +74,7 @@ export class OptionToggle extends HTMLElement {
 		[...this.children].forEach((child) => {
 			let tag = child.tagName.toLowerCase();
 			if (tag === 'option') {
-				// @ts-ignore
+				// @ts-expect-error 'property does exist'
 				let name = child.innerText;
 				let value = child.getAttribute('value');
 				if (!value) value = name;

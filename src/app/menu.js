@@ -86,9 +86,9 @@ function makeMenu(menuName) {
 		if (typeof editor.loadedFileHandle === 'object') {
 			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
 
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			if (typeof editor?.loadedFileHandle?.name === 'string') {
-				// @ts-ignore
+				// @ts-expect-error 'property does exist'
 				projectDisplayName = editor.loadedFileHandle.name;
 			}
 
@@ -164,7 +164,7 @@ function makeMenu(menuName) {
 			},
 		]);
 		entryPoint.addEventListener('click', (event) => {
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
 			insertAfter(entryPoint, makeContextMenu(fileMenuData, rect.x, rect.y + rect.height));
@@ -173,7 +173,7 @@ function makeMenu(menuName) {
 
 	if (menuName === 'Projects') {
 		entryPoint.addEventListener('click', (event) => {
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
 			let menuRows = makeContextMenu(
@@ -226,7 +226,7 @@ function makeMenu(menuName) {
 
 	if (menuName === 'Help') {
 		entryPoint.addEventListener('click', (event) => {
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
 			insertAfter(

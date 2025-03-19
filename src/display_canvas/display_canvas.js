@@ -109,7 +109,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(this.canvas);
 
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.ctx = this.canvas.getContext('2d');
 		this.drawCrisp = false;
 
@@ -181,9 +181,9 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`newWidth: ${newWidth}`);
 		this.height = newHeight;
 		this.width = newWidth;
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.canvas.height = newHeight;
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.canvas.width = newWidth;
 
 		// log(this);
@@ -263,7 +263,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		return this.observedAttrs;
 	}
 
@@ -339,7 +339,7 @@ export class DisplayCanvas extends HTMLElement {
 		}
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		// log('this.textBlock');

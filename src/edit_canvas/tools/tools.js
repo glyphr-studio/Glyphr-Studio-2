@@ -206,7 +206,7 @@ export function makeViewToolsButtons() {
 			let zoomReadoutNumber = round(newView.dz * 100, 2);
 			zoomReadout.setAttribute('value', '' + zoomReadoutNumber);
 			zoomReadout.innerHTML = `${zoomReadoutNumber}%`;
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			zoomReadout.value = `${zoomReadoutNumber}%`;
 		},
 	});

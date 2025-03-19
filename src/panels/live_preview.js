@@ -184,9 +184,9 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 		innerHTML: textBlockOptions.text,
 	});
 	textInput.addEventListener('keyup', (event) => {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		textBlockOptions.text = event.target.value;
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		event.target.innerHTML = event.target.value;
 		redrawAllLivePreviews();
 	});
@@ -198,7 +198,7 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 		attributes: { value: textBlockOptions.fontSize },
 	});
 	fontSizeInput.addEventListener('change', (event) => {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		textBlockOptions.fontSize = event.target.value;
 		redrawAllLivePreviews();
 	});
@@ -210,7 +210,7 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 		attributes: { value: textBlockOptions.lineGap },
 	});
 	lineGapInput.addEventListener('change', (event) => {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		textBlockOptions.lineGap = event.target.value;
 		redrawAllLivePreviews();
 	});

@@ -158,9 +158,9 @@ export class EditCanvas extends HTMLElement {
 	// --------------------------------------------------------------
 	/**
 	 * Redraw the canvas
-	 * @param {String | undefined} caller - who is calling redraw
+	 * @param {String =} caller - who is calling redraw
 	 */
-	redraw(caller = 'unkown') {
+	redraw(caller = 'unknown') {
 		// log(`EditCanvas.redraw \\ ${caller}`, 'start');
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();

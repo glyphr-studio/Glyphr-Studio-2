@@ -12,7 +12,7 @@ export function getTransformData(tag) {
 	log(tag);
 	if (!tag || !tag?.attributes) return [];
 
-	/* 
+	/*
 		transform attribute (toLowerCase is called to identify these)
 		matrix(a,b,c,d,e,f)	// default (1, 0, 0, 1, 0, 0) identity matrix
 		translate(x, y) 		// default (0, 0)
@@ -97,6 +97,7 @@ export function applyTransformData(bezierPaths = [], transformData = []) {
 	for (let t = 0; t < orderedTransforms.length; t++) {
 		if (orderedTransforms[t].name === 'origin') {
 			originData = orderedTransforms.splice(t, 1);
+			// @ts-expect-error 'property does exist'
 			originData = originData[0].args;
 			break;
 		}
@@ -145,7 +146,7 @@ const transformCurve = {
 	skewy: skewyTransformCurve,
 };
 
-function matrixTransformCurve(curve = [], args = [], origin = []) {
+function matrixTransformCurve(curve = [], args = [] /*, origin = []*/) {
 	log(`:: TRANSFORM CURVE :: matrix`);
 	const resultCurve = [];
 	while (args.length < 6) args.push(0);
@@ -170,7 +171,7 @@ function matrixTransformCurve(curve = [], args = [], origin = []) {
 	return resultCurve;
 }
 
-function translateTransformCurve(curve = [], args = [], origin = []) {
+function translateTransformCurve(curve = [], args = [] /*, origin = []*/) {
 	log(`:: TRANSFORM CURVE :: translate`);
 	const resultCurve = [];
 	const dx = args[0] || 0;
@@ -195,7 +196,7 @@ function translateTransformCurve(curve = [], args = [], origin = []) {
 	return resultCurve;
 }
 
-function scaleTransformCurve(curve = [], args = [], origin = []) {
+function scaleTransformCurve(curve = [], args = [] /*, origin = []*/) {
 	log(`:: TRANSFORM CURVE :: scale`);
 	const scaleX = args[0];
 	let scaleY = args[1];
@@ -261,7 +262,7 @@ function rotateTransformCurve(curve = [], args = [], origin = []) {
 	return resultCurve;
 }
 
-function skewxTransformCurve(curve = [], args = [], origin = []) {
+function skewxTransformCurve(curve = [], args = [] /*, origin = []*/) {
 	log(`:: TRANSFORM CURVE :: skewx`);
 	const resultCurve = [];
 	log(`\t\tskewx: ${args.toString()}`);
@@ -288,7 +289,7 @@ function skewxTransformCurve(curve = [], args = [], origin = []) {
 	return resultCurve;
 }
 
-function skewyTransformCurve(curve = [], args = [], origin = []) {
+function skewyTransformCurve(curve = [], args = [] /*, origin = []*/) {
 	log(`:: TRANSFORM CURVE :: skewy`);
 	const resultCurve = [];
 	log(`\t\tskewy: ${args.toString()}`);
@@ -323,10 +324,10 @@ function angleToRadians(angle) {
 	return result;
 }
 
-function logCurve(curve) {
-	// console.log(JSON.stringify(curve));
-	console.table({
-		x: [curve[0].x, curve[1]?.x, curve[2]?.x, curve[3].x],
-		y: [curve[0].y, curve[1]?.y, curve[2]?.y, curve[3].y],
-	});
-}
+// function logCurve(curve) {
+// 	// console.log(JSON.stringify(curve));
+// 	console.table({
+// 		x: [curve[0].x, curve[1]?.x, curve[2]?.x, curve[3].x],
+// 		y: [curve[0].y, curve[1]?.y, curve[2]?.y, curve[3].y],
+// 	});
+// }

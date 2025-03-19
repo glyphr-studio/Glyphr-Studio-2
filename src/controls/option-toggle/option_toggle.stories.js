@@ -1,5 +1,4 @@
 import { makeElement } from '../../common/dom.js';
-import { makeEditToolsButtons } from '../../edit_canvas/tools/tools.js';
 import { OptionToggle } from './option_toggle.js';
 
 customElements.define('option-toggle', OptionToggle);
@@ -31,7 +30,7 @@ export const Primary = {
 	args: {
 		selectedValue: 'first',
 		selectedName: 'First thing',
-	}
+	},
 };
 
 export const Disabled = {

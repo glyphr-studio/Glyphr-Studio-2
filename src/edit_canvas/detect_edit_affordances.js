@@ -1,6 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main';
 import { xyPointsAreClose } from '../common/functions';
-import { ComponentInstance } from '../project_data/component_instance';
 import { Glyph } from '../project_data/glyph';
 import { Path } from '../project_data/path';
 import { PathPoint } from '../project_data/path_point';

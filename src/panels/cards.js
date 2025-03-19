@@ -151,7 +151,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 		newInput.addEventListener('lock', (event) => {
 			// log(`makeSingleInput LOCK event`, 'start');
 			// log(event);
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			if (event.detail.isLocked) {
 				item.lock(property);
 			} else {
@@ -194,10 +194,13 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			let options = { width: false, height: false };
 			options.ratioLock = item.ratioLock;
 			options.transformOrigin = item.transformOrigin;
-			property === 'width' ? (options.width = newValue) : (options.height = newValue);
+			if (property === 'width') options.width = newValue;
+			if (property === 'height') options.height = newValue;
+
 			// log(`\n⮟options⮟`);
 			// log(options);
-			item.objType === 'Path' ? item.setShapeSize(options) : item.setGlyphSize(options);
+			if (item.objType === 'Path') item.setShapeSize(options);
+			else item.setGlyphSize(options);
 		} else {
 			item[property] = newValue;
 			// log(`MAKE SINGLE INPUT EVENT ${property} set to ${newValue}`);
@@ -240,7 +243,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 					if (tagName === 'input') newValue = changedItem[property];
 					else newValue = round(changedItem[property], 3);
 					// log(`newValue: ${newValue}`);
-					// @ts-ignore
+					// @ts-expect-error 'property does exist'
 					newInput.value = newValue;
 					newInput.setAttribute('value', newValue);
 					// log(`value NEW: ${newInput.value}`);
@@ -284,12 +287,12 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 			type: 'checkbox',
 		},
 	});
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	if (item[property]) newCheckbox.checked = true;
 
 	newCheckbox.addEventListener('change', (event) => {
 		// log(`makeSingleCheckbox CHANGE event listener`, 'start');
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		let newValue = event.target.checked;
 		item[property] = !!newValue;
 		if (thisTopic) {
@@ -309,11 +312,11 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 			callback: (changedItem) => {
 				// log(`makeSingleCheckbox SUBSCRIBER callback`, 'start');
 				if (changedItem[property]) {
-					// @ts-ignore
+					// @ts-expect-error 'property does exist'
 					newCheckbox.checked = true;
 					if (property === 'use') toggleHandleInputs(item.type, true);
 				} else {
-					// @ts-ignore
+					// @ts-expect-error 'property does exist'
 					newCheckbox.checked = false;
 					if (property === 'use') toggleHandleInputs(item.type, false);
 				}
@@ -387,12 +390,12 @@ export function makeDirectCheckbox(item, property, callback, id = false) {
 		tag: 'input',
 		attributes: { type: 'checkbox' },
 	});
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	if (item[property]) newCheckbox.checked = true;
 	if (typeof id === 'string') newCheckbox.setAttribute('id', id);
 
 	newCheckbox.addEventListener('change', (event) => {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		let newValue = event.target.checked;
 		item[property] = !!newValue;
 		if (callback) callback(newValue);

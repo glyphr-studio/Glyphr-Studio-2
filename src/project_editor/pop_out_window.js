@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { getCurrentProjectEditor } from '../app/main';
 import colorStyle from '../common/colors.css?inline';
 import { addAsChildren, makeElement } from '../common/dom';
@@ -16,12 +15,15 @@ import popOutWindowStyle from './pop-out-window.css?inline';
 export function openPopOutWindow() {
 	// log(`openPopOutWindow`, 'start');
 	const editor = getCurrentProjectEditor();
+	// @ts-expect-error 'property does exist'
 	editor.popOutWindow = window.open('', 'glyphr-studio-pop-out-live-preview');
 
 	// Define custom elements for the Pop Out Window
+	// @ts-expect-error 'property does exist'
 	editor.popOutWindow.customElements.define('display-canvas', DisplayCanvas);
 
 	// Init window properties
+	// @ts-expect-error 'property does exist'
 	let popDoc = editor.popOutWindow.document;
 
 	popDoc.head.appendChild(makeElement({ tag: 'title', content: 'Live Preview - Glyphr Studio' }));
@@ -44,8 +46,10 @@ export function openPopOutWindow() {
 		})
 	);
 
+	// @ts-expect-error 'property does exist'
 	editor.popOutWindow.addEventListener('beforeunload', closePopOutWindow);
 	window.addEventListener('beforeunload', closePopOutWindow);
+	// @ts-expect-error 'property does exist'
 	editor.popOutWindow.addEventListener('resize', livePreviewPopOutWindowResize);
 
 	editor.subscribe({
@@ -68,6 +72,7 @@ export function openPopOutWindow() {
 export function updatePopOutWindowContent() {
 	// log(`updatePopOutWindowContent`, 'start');
 	const editor = getCurrentProjectEditor();
+	// @ts-expect-error 'property does exist'
 	let popDoc = editor.popOutWindow.document;
 	const popWrapper = popDoc.querySelector('#pop-out__wrapper');
 	popWrapper.innerHTML = '';
@@ -136,8 +141,9 @@ export function closePopOutWindow(event) {
 	const editor = getCurrentProjectEditor();
 
 	try {
+		// @ts-expect-error 'property does exist'
 		editor.popOutWindow.close();
-	} catch (e) {
+	} catch {
 		console.warn('Could not close pop-out window');
 	}
 
@@ -160,6 +166,7 @@ export function closePopOutWindow(event) {
 
 function redrawPopOutWindow() {
 	const editor = getCurrentProjectEditor();
+	// @ts-expect-error 'property does exist'
 	const canvases = editor.popOutWindow.document.body.querySelectorAll('display-canvas');
 	canvases.forEach((can) => can.redraw());
 }
@@ -190,10 +197,11 @@ export function makeLivePreviewPopOutCard(showBlurb = false) {
 export function livePreviewPopOutWindowResize() {
 	// log(`livePreviewPopOutWindowResize`, 'start');
 	const editor = getCurrentProjectEditor();
+	// @ts-expect-error 'property does exist'
 	let popDoc = editor.popOutWindow.document;
 	const allDisplayCanvases = popDoc.querySelectorAll('display-canvas');
 	// log(allDisplayCanvases);
-	allDisplayCanvases.forEach((displayCanvas, index) => {
+	allDisplayCanvases.forEach((displayCanvas) => {
 		// log(`\n⮟displayCanvas #${index}⮟`);
 		// log(displayCanvas);
 		// log(`displayCanvas.constructor.name: ${displayCanvas.constructor.name}`);
@@ -210,6 +218,7 @@ let selectedLivePreview = 1;
 function showEditLivePreviewDialog() {
 	// log(`showEditLivePreviewDialog`, 'start');
 	const editor = getCurrentProjectEditor();
+	// @ts-expect-error 'property does exist'
 	const popDoc = editor.popOutWindow.document;
 	let panelArea = makeElement({ tag: 'div', id: 'content-page__panel' });
 	let header = makeElement({ tag: 'h1', content: 'Live Preview options' });

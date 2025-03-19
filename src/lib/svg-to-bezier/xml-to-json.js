@@ -46,6 +46,7 @@ function tag_getContent(parent) {
 	if (kids.length === 0) return trim(parent.nodeValue);
 
 	const result = [];
+	/** @type {Object | String} */
 	let tagResult;
 	let tagContent;
 	let tagAttributes;
@@ -87,7 +88,7 @@ function trim(text) {
 	try {
 		text = text.replace(/^\s+|\s+$/g, '');
 		return text.replace(/(\r\n|\n|\r|\t)/gm, '');
-	} catch (e) {
+	} catch {
 		return '';
 	}
 }

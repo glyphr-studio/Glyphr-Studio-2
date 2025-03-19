@@ -41,9 +41,9 @@ function saveTextFileAsDownload(fileSuffix, fileContent) {
 export function saveFile(fileBlob, fileName) {
 	try {
 		// IE
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		window.navigator.msSaveBlob(fileBlob, fileName);
-	} catch (err) {
+	} catch {
 		// Others
 		const link = document.createElement('a');
 		window.URL = window.URL || window.webkitURL;
@@ -87,7 +87,7 @@ async function saveTextFileDirectly(fileSuffix, fileContent, fileHandle = false)
 		],
 	};
 
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	if (!fileHandle) fileHandle = await window.showSaveFilePicker(pickerOptions);
 	// log(`\n⮟fileHandle⮟`);
 	// log(fileHandle);

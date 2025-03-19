@@ -69,7 +69,7 @@ export async function handlePasteSVGonEditCanvas(event) {
 	// log(`\n⮟navigator.clipboard⮟`);
 	// log(navigator.clipboard);
 
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	const clipboardData = event.clipboardData || window.clipboardData;
 	if (clipboardData) {
 		// log(clipboardData);

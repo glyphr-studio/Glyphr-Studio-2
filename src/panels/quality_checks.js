@@ -48,7 +48,7 @@ function makeCard_PointsAndHandles() {
 		});
 
 		checkbox.addEventListener('change', (e) => {
-			/** @ts-ignore */
+			// @ts-expect-error 'property does exist'
 			enabledQualityChecks[checkName] = e.target.checked;
 			editor.publish('qualityChecks', 'update');
 		});
@@ -69,7 +69,7 @@ function makeCard_PointsAndHandles() {
 		});
 
 		input.addEventListener('change', (event) => {
-			/** @ts-ignore */
+			// @ts-expect-error 'property does exist'
 			editor.project.settings.app[checkName] = parseInt(event.target.value);
 			runQualityChecksForItem(editor.selectedItem);
 			editor.publish('qualityChecks', 'update');

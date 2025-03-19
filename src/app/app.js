@@ -55,10 +55,10 @@ export class GlyphrStudioApp {
 
 		// Project Editors
 		this.projectEditors = [];
-		this._selectedProjectEditor;
+		this._selectedProjectEditor = undefined;
 
 		// Current import target
-		this._editorImportTarget;
+		this._editorImportTarget = undefined;
 		this.temp = {};
 	}
 
@@ -73,7 +73,7 @@ export class GlyphrStudioApp {
 		const dev = this.settings.dev;
 		if (dev.mode) {
 			if (dev.overwriteTitle) document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
-			// @ts-ignore
+			// @ts-expect-error 'property does exist'
 			window._DEV = _DEV;
 
 			// Test Function
@@ -122,8 +122,8 @@ export class GlyphrStudioApp {
 		this.fadeOutLandingPage();
 
 		// Final dev mode stuff
-		// @ts-ignore
-		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw('dev mode select first shape');
+		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint))
+			editor.editCanvas.redraw('dev mode select first shape');
 		console.log(this);
 		// log(`GlyphrStudioApp.setUp`, 'end');
 	}
@@ -263,7 +263,7 @@ export class GlyphrStudioApp {
 		data[key] = newData;
 		try {
 			window.localStorage.setItem('GlyphrStudio', JSON.stringify(data));
-		} catch (error) {
+		} catch {
 			showToast(
 				`There is not enough space for this project to be auto-saved. The auto-save option has been turned off in Settings > App.`
 			);
@@ -318,10 +318,10 @@ function addTelemetry() {
 	gScript.setAttribute('async', '');
 	document.head.appendChild(gScript);
 
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	window.dataLayer = window.dataLayer || [];
 	function gtag() {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		window.dataLayer.push(arguments);
 	}
 	gtag('js', new Date());

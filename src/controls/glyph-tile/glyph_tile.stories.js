@@ -36,21 +36,21 @@ export const Selected = {
 		selected: true,
 	},
 }
-export const notCreated = {
+export const NotCreated = {
 	args: {
 		displayedItemID: 'glyph-0x42',
 		sessionState: 'notCreated',
 	},
 };
 
-export const newGlyph = {
+export const NewGlyph = {
 	args: {
 		displayedItemID: 'glyph-0x43',
 		sessionState: 'new',
 	},
 };
 
-export const changedGlyph = {
+export const ChangedGlyph = {
 	args: {
 		displayedItemID: 'glyph-0x44',
 		sessionState: 'changed',

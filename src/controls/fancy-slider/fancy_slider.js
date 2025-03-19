@@ -33,7 +33,7 @@ export function makeFancySlider(initialValue = 50, callback, min = 0, max = 100,
 		className: 'fancy-slider__bar',
 	});
 	bar.addEventListener('input', (event) => {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		const value = parseInt(event.target.value);
 		sliderReadout.innerHTML = '' + value;
 

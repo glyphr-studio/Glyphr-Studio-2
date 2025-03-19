@@ -1,5 +1,3 @@
-import { Description } from "@storybook/blocks";
-
 /**
  * Data that describes all the settings
  */

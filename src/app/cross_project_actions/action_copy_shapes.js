@@ -1,7 +1,7 @@
 import { makeElement, textToNode } from '../../common/dom.js';
 import { showToast } from '../../controls/dialogs/dialogs.js';
-import { copyShapesFromTo } from '../../project_editor/actions.js';
 import { makeSingleLabel } from '../../panels/cards.js';
+import { copyShapesFromTo } from '../../project_editor/actions.js';
 import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
 import { ProjectEditor } from '../../project_editor/project_editor.js';
 import {
@@ -307,9 +307,9 @@ function copyShapes() {
 	// log(`updateAdvanceWidth: ${updateAdvanceWidth}`);
 
 	/** @type {HTMLInputElement} */
-		const scaleItemsBox = document.querySelector('#checkbox-scale');
-		let scaleItems = false;
-		if (scaleItemsBox) scaleItems = scaleItemsBox?.checked;
+	const scaleItemsBox = document.querySelector('#checkbox-scale');
+	let scaleItems = false;
+	if (scaleItemsBox) scaleItems = scaleItemsBox?.checked;
 	// log(`scaleItems: ${scaleItems}`);
 
 	/** @type {HTMLInputElement} */

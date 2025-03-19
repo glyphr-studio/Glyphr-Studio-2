@@ -36,7 +36,7 @@ export async function validateSingleFileInput(fileInput, callback) {
 	postValidationCallback = callback;
 
 	let file;
-	// @ts-ignore
+	// @ts-expect-error 'property does exist'
 	if (window.showOpenFilePicker && window.showSaveFilePicker) {
 		validationResult.fileHandle = fileInput;
 		file = await fileInput.getFile();
@@ -102,19 +102,19 @@ function readerValidateFont() {
 	let font = false;
 
 	try {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		font = openTypeJS.parse(file);
 		// log(font);
-	} catch (err) {
+	} catch (e) {
 		return failWithError(`
 			Font file could not be read. [FF0]
 			<hr>
-			${err.message}
+			${e.message}
 		`);
 	}
 
 	if (font) {
-		// @ts-ignore
+		// @ts-expect-error 'property does exist'
 		if (!font?.glyphs?.length) {
 			return failWithError('Font file does not have any glyph data. [FF1]');
 		} else {
@@ -141,11 +141,11 @@ function readerValidateSVG() {
 		// Kern groups containing '&#x' will get fuck'd
 		svgData = svgData.replace(/&#x/g, '0x');
 		jsonData = XMLtoJSON(svgData);
-	} catch (err) {
+	} catch (e) {
 		return failWithError(`
 			SVG file could not be read. [SVG0]
 			<hr>
-			${err.message}
+			${e.message}
 		`);
 	}
 
@@ -175,12 +175,12 @@ function readerValidateTXTandGS2() {
 	// Can't read JSON file
 	try {
 		projectData = JSON.parse(file);
-	} catch (error) {
+	} catch (e) {
 		return failWithError(`
 			The file could not be read. Expecting a Glyphr Studio Project file
 			in JSON format. [PF0]
 			<hr>
-			${error.message}
+			${e.message}
 		`);
 	}
 
