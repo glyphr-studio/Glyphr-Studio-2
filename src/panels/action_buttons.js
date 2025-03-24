@@ -274,6 +274,24 @@ makeActionButtonIcon.flipHorizontal = () => {
 	return svgWrap(re);
 };
 
+makeActionButtonIcon.transforms = () => {
+	const re = `
+			<g>
+				<rect x="3.429" y="3.429" width="13.142" height="13.142" transform="translate(-4.142 10) rotate(-45)" fill="${icon.actionLightBlue}"/>
+				<path d="M10,1.414l8.586,8.586-8.586,8.586L1.414,10,10,1.414M10,0L0,10l10,10,10-10L10,0h0Z" fill="${icon.actionDarkBlue}"/>
+			</g>
+			<g>
+				<polygon points="1.032 15.5 9.716 4.5 18.968 4.5 10.284 15.5 1.032 15.5" fill="${icon.actionLightBlue}"/>
+				<path d="M17.936,5l-7.895,10H2.064l7.895-10h7.978M20,4h-10.526L0,16h10.526l9.474-12h0Z" fill="${icon.actionDarkBlue}"/>
+			</g>
+			<g>
+				<rect x="6.625" y="6.625" width="6.75" height="6.75" fill="${icon.lightGray}"/>
+				<path d="M12.75,7.25v5.5h-5.5v-5.5h5.5M14,6H6v8h8V6h0Z" fill="${icon.mediumGray}"/>
+			</g>
+	`;
+	return svgWrap(re);
+};
+
 // Glyph actions
 makeActionButtonIcon.exportGlyphSVG = () => {
 	let re = `
