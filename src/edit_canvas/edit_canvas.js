@@ -1,7 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, getColorFromRGBA, transparencyToAlpha } from '../common/colors.js';
 import { makeElement } from '../common/dom.js';
-import { clone } from '../common/functions.js';
+import { clone, round } from '../common/functions.js';
 import { drawGlyph } from '../display_canvas/draw_paths.js';
 import { kernGroupSideMaxWidth } from '../project_editor/cross_item_actions.js';
 import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
@@ -381,7 +381,7 @@ export class EditCanvas extends HTMLElement {
 				if (editor.systemGuides.leftSide) {
 					if (sbHover === 'lsb') {
 						setSystemGuideColor('dark', 0.8);
-						drawGuideLabel(`Left side bearing: ${currentItem.leftSideBearing}`, 0, false);
+						drawGuideLabel(`Left side bearing: ${round(currentItem.leftSideBearing, 3)}`, 0, false);
 					} else {
 						setSystemGuideColor('dark', alpha);
 					}
@@ -393,7 +393,7 @@ export class EditCanvas extends HTMLElement {
 					if (sbHover === 'rsb') {
 						setSystemGuideColor('dark', 0.8);
 						drawGuideLabel(
-							`Right side bearing: ${currentItem.rightSideBearing}`,
+							`Right side bearing: ${round(currentItem.rightSideBearing, 3)}`,
 							advanceWidth,
 							false
 						);
