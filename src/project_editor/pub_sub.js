@@ -235,6 +235,7 @@ export function subscribe({ topic, subscriberID = '', callback = false }) {
 		this.subscribers[thisTopic][subscriberID] = callback;
 	});
 
+	// log(this.subscribers);
 	// log(`ProjectEditor.subscribe`, 'end');
 }
 

@@ -197,7 +197,7 @@ export class Tool_Resize {
 				const deltaLSB = oldLSB - item.leftSideBearing;
 				let view = editor.view;
 				editor.view.dx += deltaLSB * view.dz;
-				editor.publish('editCanvasView', item);
+				editor.publish('currentItem', item);
 				this.historyTitle = `Updated left side bearing.`;
 				this.didStuff = true;
 			}
