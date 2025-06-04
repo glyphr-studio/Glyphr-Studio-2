@@ -165,10 +165,16 @@ export function closePopOutWindow(event) {
 }
 
 function redrawPopOutWindow() {
+	// log(`redrawPopOutWindow`, 'start');
 	const editor = getCurrentProjectEditor();
 	// @ts-expect-error 'property does exist'
 	const canvases = editor.popOutWindow.document.body.querySelectorAll('display-canvas');
-	canvases.forEach((can) => can.redraw());
+	// log(`canvases.length: ${canvases.length}`);
+	canvases.forEach((can) => {
+		can.updateTextBlock();
+		can.redraw();
+	});
+	// log(`redrawPopOutWindow`, 'end');
 }
 
 export function makeLivePreviewPopOutCard(showBlurb = false) {
