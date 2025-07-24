@@ -195,6 +195,15 @@ export class Segment extends GlyphElement {
 		return re;
 	}
 
+	/**
+	 * Returns true if this segment is a line, and not a curve.
+	 */
+	get isLine() {
+		if (xyPointsAreClose(this.p1x, this.p4x, 1) && xyPointsAreClose(this.p1y, this.p4y, 1)) return true;
+		if(isNaN(this.p2x) && isNaN(this.p2y) && isNaN(this.p3x) && isNaN(this.p3y)) return true;
+		if (this.lineType === 'horizontal' || this.lineType === 'vertical') return true;
+		return false;
+	}
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------
@@ -832,6 +841,110 @@ export class Segment extends GlyphElement {
 		this.p4y = round(this.p4y, precision);
 
 		return this;
+	}
+
+	// --------------------------------------------------------------
+	// Curve Offsetting
+	// --------------------------------------------------------------
+
+	/**
+	 * Returns a new Segment offset by a given distance.
+	 * This uses a simple approximation: for several t values, offset the curve by the normal,
+	 * then fit a new cubic Bezier through those points.
+	 * @param {Number} offsetDistance - distance to offset (positive = left, negative = right)
+	 * @param {Number} samples - how many points to sample
+	 * @returns {Segment}
+	 */
+	makeSegmentOffset(offsetDistance = 100, samples = 10) {
+		function getTangent(seg, t) {
+			const mt = 1 - t;
+			const dx =
+				-3 * mt * mt * seg.p1x +
+				3 * mt * mt * seg.p2x -
+				6 * mt * t * seg.p2x +
+				6 * mt * t * seg.p3x -
+				3 * t * t * seg.p3x +
+				3 * t * t * seg.p4x;
+			const dy =
+				-3 * mt * mt * seg.p1y +
+				3 * mt * mt * seg.p2y -
+				6 * mt * t * seg.p2y +
+				6 * mt * t * seg.p3y -
+				3 * t * t * seg.p3y +
+				3 * t * t * seg.p4y;
+			return { x: dx, y: dy };
+		}
+		function normalize(v) {
+			const len = Math.sqrt(v.x * v.x + v.y * v.y);
+			return len === 0 ? { x: 0, y: 0 } : { x: v.x / len, y: v.y / len };
+		}
+		function getNormal(tangent) {
+			const n = { x: -tangent.y, y: tangent.x };
+			return normalize(n);
+		}
+
+		// Sample points and offset them
+		const ts = [];
+		for (let i = 0; i < samples; i++) ts.push(i / (samples - 1));
+		const offsetPoints = ts.map((t) => {
+			const pt = this.findXYPointFromSplit(t);
+			const tangent = getTangent(this, t);
+			const normal = getNormal(tangent);
+			return {
+				x: pt.x + offsetDistance * normal.x,
+				y: pt.y + offsetDistance * normal.y,
+				t,
+			};
+		});
+
+		// p1 and p4 are the offset endpoints
+		const p1 = offsetPoints[0];
+		const p4 = offsetPoints[offsetPoints.length - 1];
+
+		// Least-squares fit for p2 and p3
+		// See https://pomax.github.io/bezierinfo/#offsetting for details
+		// We'll use the standard cubic Bezier basis for t=1/3 and t=2/3
+		const t1 = 1 / 3;
+		const t2 = 2 / 3;
+		const b0 = (t) => Math.pow(1 - t, 3);
+		const b1 = (t) => 3 * Math.pow(1 - t, 2) * t;
+		const b2 = (t) => 3 * (1 - t) * Math.pow(t, 2);
+		const b3 = (t) => Math.pow(t, 3);
+
+		const pt1 = offsetPoints[Math.round((samples - 1) * t1)];
+		const pt2 = offsetPoints[Math.round((samples - 1) * t2)];
+
+		// Solve for p2 and p3 using the Bezier basis
+		// pt = b0*p1 + b1*p2 + b2*p3 + b3*p4
+		// => system of two equations for two unknowns (p2, p3)
+		const A = [
+			[b1(t1), b2(t1)],
+			[b1(t2), b2(t2)],
+		];
+		const bx = [pt1.x - b0(t1) * p1.x - b3(t1) * p4.x, pt2.x - b0(t2) * p1.x - b3(t2) * p4.x];
+		const by = [pt1.y - b0(t1) * p1.y - b3(t1) * p4.y, pt2.y - b0(t2) * p1.y - b3(t2) * p4.y];
+
+		// Solve 2x2 linear system
+		function solve2x2(A, b) {
+			const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
+			if (Math.abs(det) < 1e-8) return [p1, p4]; // fallback
+			return [(A[1][1] * b[0] - A[0][1] * b[1]) / det, (-A[1][0] * b[0] + A[0][0] * b[1]) / det];
+		}
+
+
+		const [p2x, p3x] = solve2x2(A, bx);
+		const [p2y, p3y] = solve2x2(A, by);
+
+		return new Segment({
+			p1x: p1.x,
+			p1y: p1.y,
+			p2x,
+			p2y,
+			p3x,
+			p3y,
+			p4x: p4.x,
+			p4y: p4.y,
+		});
 	}
 }
 

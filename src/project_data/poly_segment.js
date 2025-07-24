@@ -539,6 +539,59 @@ export class PolySegment extends GlyphElement {
 		// log(`Removed segments: ${this.segments.length - startLength}`);
 		// log(`PolySegment.combineInlineSegments`, 'end');
 	}
+
+	// --------------------------------------------------------------
+	// Curve Offsetting
+	// --------------------------------------------------------------
+
+	makeOffsetPolySegment(offsetDistance = 10) {
+		const offsetSegments = [];
+		for (let s = 0; s < this.segments.length; s++) {
+			if (!this.segments[s].isLine) {
+				offsetSegments.push(this.segments[s].makeSegmentOffset(offsetDistance));
+			}
+		}
+		return new PolySegment({ segments: offsetSegments }).attachGaps();
+	}
+
+	attachGaps() {
+		const finalSegments = [];
+		let lastSegment = null;
+		let currentSegment = null;
+		for (let s = 1; s < this.segments.length; s++) {
+			lastSegment = this.segments[s - 1];
+			currentSegment = this.segments[s];
+			if(!xyPointsAreClose(lastSegment.getXYPoint(4), currentSegment.getXYPoint(1))) {
+				// log(`lastSegment: ${lastSegment.getXYPoint(4)}`);
+				// log(`currentSegment: ${currentSegment.getXYPoint(1)}`);
+				const gap = new Segment({
+					p1x: lastSegment.getXYPoint(4).x,
+					p1y: lastSegment.getXYPoint(4).y,
+					p4x: currentSegment.getXYPoint(1).x,
+					p4y: currentSegment.getXYPoint(1).y,
+				});
+				finalSegments.push(gap);
+			}
+			finalSegments.push(currentSegment);
+		}
+
+		// Fencepost
+		if (this.segments.length > 0) {
+			lastSegment = this.segments[this.segments.length - 1];
+			currentSegment = this.segments[0];
+			if (!xyPointsAreClose(lastSegment.getXYPoint(4), currentSegment.getXYPoint(1))) {
+				const gap = new Segment({
+					p1x: lastSegment.getXYPoint(4).x,
+					p1y: lastSegment.getXYPoint(4).y,
+					p4x: currentSegment.getXYPoint(1).x,
+					p4y: currentSegment.getXYPoint(1).y,
+				});
+				finalSegments.push(gap);
+			}
+		}
+
+		return new PolySegment({ segments: finalSegments });
+	}
 }
 
 // --------------------------------------------------------------

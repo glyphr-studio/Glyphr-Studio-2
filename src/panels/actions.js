@@ -184,11 +184,11 @@ export function getActionData(name) {
 				iconName: 'transforms',
 				title: 'Transform\nScale, rotate, or skew the currently selected shape(s).',
 				onClick: () => {
-					// const editor = getCurrentProjectEditor();
-					// let shape = editor.multiSelect.shapes.virtualGlyph;
-					// shape.flipNS();
-					// editor.history.addState(`Flipped shape ${shape.name} vertically`);
-					// editor.publish('currentItem', editor.selectedItem);
+					const editor = getCurrentProjectEditor();
+					const newPolySegment = editor.selectedItem.shapes[0].makePolySegment().makeOffsetPolySegment(-100);
+					editor.selectedItem.addOneShape(newPolySegment.path);
+					editor.history.addState(`Transformed the first shape in this glyph`);
+					editor.publish('currentItem', editor.selectedItem);
 				},
 			},
 			{
