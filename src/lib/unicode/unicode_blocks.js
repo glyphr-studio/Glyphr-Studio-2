@@ -1,11 +1,21 @@
 import { parseNumber } from '../../common/functions.js';
 import { CharacterRange } from '../../project_data/character_range.js';
 import { unicodeBlocksBMP } from './unicode_blocks_0_bmp.js';
-import { unicodeBlocksSMP } from './unicode_blocks_1_smp.js';
-import { unicodeBlocksSIP } from './unicode_blocks_2_sip.js';
-import { unicodeBlocksTIP } from './unicode_blocks_3_tip.js';
+import { unicodeBlocksSMP, unicodeBlocksSMPUnallocated } from './unicode_blocks_1_smp.js';
+import { unicodeBlocksSIP, unicodeBlocksSIPUnallocated } from './unicode_blocks_2_sip.js';
+import { unicodeBlocksTIP, unicodeBlocksTIPUnallocated } from './unicode_blocks_3_tip.js';
+import { unicodeBlocksOther } from './unicode_blocks_other.js';
 
-let allBlocks = [unicodeBlocksBMP, unicodeBlocksSMP, unicodeBlocksSIP, unicodeBlocksTIP];
+let allBlocks = [
+	unicodeBlocksBMP,
+	unicodeBlocksSMP,
+	unicodeBlocksSMPUnallocated,
+	unicodeBlocksSIP,
+	unicodeBlocksSIPUnallocated,
+	unicodeBlocksTIP,
+	unicodeBlocksTIPUnallocated,
+	unicodeBlocksOther
+];
 
 export function getUnicodeBlockByName(name) {
 	// log(`getUnicodeBlockByName`, 'start');
@@ -67,6 +77,7 @@ export function getParentRange(id = -1) {
 			}
 		}
 	}
+	console.warn(`getParentRange: No parent range found for ID ${id}`);
 	return false;
 }
 
