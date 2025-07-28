@@ -418,6 +418,7 @@ export class GlyphrStudioProject {
 		}
 
 		if (!hasParent) {
+			// log(`No parent, creating range for ${id}`);
 			this.createRangeForHex(id, id === 0);
 		}
 
