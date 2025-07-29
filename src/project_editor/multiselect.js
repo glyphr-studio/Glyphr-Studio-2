@@ -445,13 +445,28 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	/**
+	 * Creates a "Virtual" glyph object comprised of only the shapes
+	 * that are currently selected.
+	 *
+	 * NOTES:
+	 *
+	 * Needs to work with _shapes, otherwise Glyph.shapes setter
+	 * imports copies of the new array values.
+	 *
+	 * Also, shapes were selected / pushed in a random order,
+	 * so we need to sort them based on their layer order.
+	 *
 	 * @returns {Glyph}
 	 */
 	get virtualGlyph() {
 		// log(`MultiSelectShapes GET virtualGlyph`, 'start');
-		// needs to be _shapes, otherwise Glyph.shapes setter
-		// imports copies of the new array values.
 		this._virtualGlyph._shapes = this.members;
+		if (this.members.length > 1) {
+			this._virtualGlyph._shapes.sort((a, b) => {
+				return a.parent.shapes.indexOf(a) - b.parent.shapes.indexOf(b);
+			});
+		}
+
 		this._virtualGlyph.changed();
 
 		// log(`MultiSelectShapes GET virtualGlyph`, 'end');
