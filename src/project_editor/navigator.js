@@ -345,8 +345,11 @@ function makeNavButton_Page(pageName, iconName) {
 			editor.multiSelect.shapes.clear();
 			editor.multiSelect.points.clear();
 		}
+
+		// Ensure the selected Panel is availabe for the new page, otherwise default to Attributes
 		editor.nav.page = pageName;
-		if (pageName === 'Kerning') editor.nav.panel = 'Attributes';
+		if(!panelsPerPage[pageName].includes(editor.nav.panel)) editor.nav.panel = 'Attributes';
+
 		editor.navigate();
 		if (editor.selectedItemID) {
 			let lastChange = editor.history.queue[0] || false;
@@ -367,29 +370,20 @@ function makeNavButton_Page(pageName, iconName) {
 	return button;
 }
 
+const panelsPerPage = {
+	Characters: ['Attributes', 'Layers', 'ContextCharacters', 'History', 'Guides', 'CharacterInfo'],
+	Ligatures: ['Attributes', 'Layers', 'History', 'Guides', 'QualityChecks'],
+	Components: ['Attributes', 'Layers', 'History', 'Guides', 'QualityChecks'],
+	Kerning: ['Attributes', 'History'],
+};
+
 function makePanelChooserContent() {
 	// log(`makePanelChooserContent`, 'start');
-
 	let content = makeElement();
 	let pageButton;
 	let panels = listOfPanels();
-	let shownPanels = [
-		'Attributes',
-		'Layers',
-		'ContextCharacters',
-		'History',
-		'Guides',
-		'CharacterInfo',
-		'QualityChecks',
-	];
 	let page = getCurrentProjectEditor().nav.page;
-	if (page === 'Kerning') {
-		shownPanels = ['Attributes', 'History'];
-	} else if (page === 'Components') {
-		shownPanels = ['Attributes', 'Layers', 'History', 'Guides', 'QualityChecks'];
-	}
-
-	shownPanels.forEach((panelName) => {
+	panelsPerPage[page].forEach((panelName) => {
 		pageButton = makeNavButton_Panel(panels[panelName].name, panels[panelName].iconName);
 		content.appendChild(pageButton);
 	});
