@@ -215,3 +215,11 @@
 	grid-template-columns: 1fr;
 	row-gap: 10px;
 }
+
+code.warning {
+	color: var(--red);
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	/* background-color: var(--lightRed); */
+	/* border-color: var(--darkRed); */
+}

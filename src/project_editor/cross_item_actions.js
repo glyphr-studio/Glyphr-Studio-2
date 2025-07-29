@@ -364,7 +364,7 @@ export function kernGroupSideMaxWidth(sideGroup = []) {
 	let width = 0;
 	const project = getCurrentProject();
 	sideGroup.forEach((id) => {
-		let item = project.getItem(`glyph-${id}`);
+		let item = project.getItem(`glyph-${id}`, false);
 		if (item && item.advanceWidth) width = Math.max(width, item.advanceWidth);
 	});
 	return width;

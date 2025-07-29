@@ -290,7 +290,7 @@ export function showAddEditKernGroupDialog(kernGroup) {
 		<br><br>
 		<h3>Value</h3>
 		<input id="kerning__add-new-kern-group__value" type="text"
-			value="${kernGroup ? kernGroup.value : ''}"
+			value="${kernGroup ? kernGroup.value : '0'}"
 			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 		/>
 		<br><br>
@@ -700,6 +700,7 @@ export function makeCharChip(charID) {
 	let char = hexesToChars(charID) || '';
 	let name = getUnicodeName(charID);
 	let title = charID;
+	const exists = !!getCurrentProject().getItem(`glyph-${charID}`, false);
 	if (name) title = `${name}\n${charID}`;
 	// log(`char: ${char}`);
 	// log(`name: ${name}`);
@@ -710,6 +711,12 @@ export function makeCharChip(charID) {
 		innerHTML: char,
 		attributes: { title: title },
 	});
+
+	if(!exists) {
+		chip.classList.add('warning');
+		chip.setAttribute('title', `${title}\nWarning: This character does not exist in the project.`);
+	}
+
 	// log(`makeCharChip`, 'end');
 	return chip;
 }
