@@ -296,24 +296,28 @@ export class EditCanvas extends HTMLElement {
 				// log(`Drawing right-hand group`);
 				let rightAlpha = Math.max(0.25, 1 / kernGroup.rightGroup.length);
 				kernGroup.rightGroup.forEach((id) => {
-					drawItem = project.getItem(`glyph-${id}`, true);
+					drawItem = project.getItem(`glyph-${id}`, false);
 					// log(drawItem);
-					let thisView = clone(view);
-					thisView.dx += kernGroup.value * thisView.dz;
-					// log(thisView);
-					drawGlyph(drawItem, ctx, thisView, rightAlpha);
+					if(drawItem) {
+						let thisView = clone(view);
+						thisView.dx += kernGroup.value * thisView.dz;
+						// log(thisView);
+						drawGlyph(drawItem, ctx, thisView, rightAlpha);
+					}
 				});
 
 				// Draw left hand group
 				// log(`Drawing left-hand group`);
 				let leftAlpha = Math.max(0.25, 1 / kernGroup.leftGroup.length);
 				kernGroup.leftGroup.forEach((id) => {
-					drawItem = project.getItem(`glyph-${id}`, true);
+					drawItem = project.getItem(`glyph-${id}`, false);
 					// log(drawItem);
-					let thisView = clone(view);
-					thisView.dx -= drawItem.advanceWidth * thisView.dz;
-					// log(thisView);
-					drawGlyph(drawItem, ctx, thisView, leftAlpha);
+					if(drawItem) {
+						let thisView = clone(view);
+						thisView.dx -= drawItem.advanceWidth * thisView.dz;
+						// log(thisView);
+						drawGlyph(drawItem, ctx, thisView, leftAlpha);
+					}
 				});
 			}
 
