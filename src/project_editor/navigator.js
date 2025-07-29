@@ -348,7 +348,9 @@ function makeNavButton_Page(pageName, iconName) {
 
 		// Ensure the selected Panel is availabe for the new page, otherwise default to Attributes
 		editor.nav.page = pageName;
-		if(!panelsPerPage[pageName].includes(editor.nav.panel)) editor.nav.panel = 'Attributes';
+		if (panelsPerPage?.[pageName]) {
+			if(!panelsPerPage[pageName].includes(editor.nav.panel)) editor.nav.panel = 'Attributes';
+		}
 
 		editor.navigate();
 		if (editor.selectedItemID) {
