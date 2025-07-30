@@ -138,14 +138,17 @@ export function makeCard_glyphLinks(item) {
 		topic: 'currentItem',
 		subscriberID: 'ItemLinkRow',
 		callback: () => {
+			// log(`ItemLinkRow SUBSCRIBER CALLBACK`, 'start');
 			const editor = getCurrentProjectEditor();
 			const project = getCurrentProject();
 			const thumbs = document.querySelectorAll('.item-link__thumbnail');
 			thumbs.forEach((thumb) => {
 				const targetID = thumb.getAttribute('target-item-id');
+				// log(`targetID: ${targetID}`);
 				const targetItem = editor.project.getItem(targetID);
 				thumb.innerHTML = project.makeItemThumbnail(targetItem);
 			});
+			// log(`ItemLinkRow SUBSCRIBER CALLBACK`, 'end');
 		},
 	});
 
