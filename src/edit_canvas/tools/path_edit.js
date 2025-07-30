@@ -227,6 +227,7 @@ export class Tool_PathEdit {
 			ehd.lastY = ehd.mousePosition.y;
 			ehd.undoQueueHasChanged = true;
 			editor.publish(`currentPathPoint`, this.controlPoint.parent);
+			editor.publish('currentItem', editor.selectedItem);
 		} else if (ehd.selecting) {
 			selectItemsInArea(
 				ehd.lastX,
@@ -249,32 +250,40 @@ export class Tool_PathEdit {
 			editor.multiSelect.points.add(p2);
 
 			// Make the updates
-			let t = this.overCurve.split || 0.5;
-			let weight = calculateWeight(t);
-			// log(`weight: ${weight}`);
-
 			let dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
 			let dy = (ehd.lastY - ehd.mousePosition.y) / view.dz;
 
-			let offsetP1 = (1 - weight) / (3 * t * (1 - t) * (1 - t));
-			let offsetP2 = weight / (3 * t * t * (1 - t));
+			if (!p1.h2.use && !p2.h1.use) {
+				// It's a line segment
+				p1.updatePathPointPosition('p', dx, dy);
+				p2.updatePathPointPosition('p', dx, dy);
+			} else {
+				// It's a curve
+				let t = this.overCurve.split || 0.5;
+				let weight = calculateWeight(t);
+				// log(`weight: ${weight}`);
 
-			p1.updatePathPointPosition(
-				'h2',
-				p1.h2.xLock ? 0 : offsetP1 * dx,
-				p1.h2.yLock ? 0 : offsetP1 * dy
-			);
-			p2.updatePathPointPosition(
-				'h1',
-				p2.h1.xLock ? 0 : offsetP2 * dx,
-				p2.h1.yLock ? 0 : offsetP2 * dy
-			);
+				let offsetP1 = (1 - weight) / (3 * t * (1 - t) * (1 - t));
+				let offsetP2 = weight / (3 * t * t * (1 - t));
+
+				p1.updatePathPointPosition(
+					'h2',
+					p1.h2.xLock ? 0 : offsetP1 * dx,
+					p1.h2.yLock ? 0 : offsetP1 * dy
+				);
+				p2.updatePathPointPosition(
+					'h1',
+					p2.h1.xLock ? 0 : offsetP2 * dx,
+					p2.h1.yLock ? 0 : offsetP2 * dy
+				);
+			}
 
 			// Finish up
 			ehd.lastX = ehd.mousePosition.x;
 			ehd.lastY = ehd.mousePosition.y;
 			ehd.undoQueueHasChanged = true;
 			editor.publish(`currentPath`, parent);
+			editor.publish('currentItem', editor.selectedItem);
 		} else {
 			const editor = getCurrentProjectEditor();
 			if (editor.project.settings.app.directlyDragCurves) {
@@ -391,6 +400,7 @@ export class Tool_PathEdit {
 		ehd.firstX = -100;
 		ehd.firstY = -100;
 
+		editor.publish('currentItem', editor.selectedItem);
 		// log('Tool_PathEdit.mouseup', 'end');
 	}
 

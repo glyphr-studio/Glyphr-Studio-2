@@ -133,6 +133,7 @@ export function publish(topic, data) {
 			topic === 'currentComponent' ||
 			topic === 'currentKernGroup'
 		) {
+			// log(`Calling callbacks for ${topic}`);
 			callCallbacksByTopic('currentItem', data);
 			callCallbacksByTopic('currentVirtualGlyph', data);
 			callCallbacksByTopic(specificItem, data);
@@ -152,6 +153,7 @@ export function publish(topic, data) {
 
 		if (topic === 'currentPath') {
 			// if a path changes, then so must the Item also
+			// log(`>>>> Calling callbacks for ${topic}`);
 			callCallbacksByTopic('currentItem', data.parent);
 			callCallbacksByTopic(specificItem, data.parent);
 		}
@@ -163,10 +165,11 @@ export function publish(topic, data) {
 		}
 
 		if (topic.includes('currentPathPoint')) {
-			// if a PathPoint changes, then so must the Path and Item also
+			// if a PathPoint changes, then so must the Path
 			callCallbacksByTopic('currentPath', data.parent);
 			callCallbacksByTopic('currentItem', data.parent.parent);
 			callCallbacksByTopic(specificItem, data.parent.parent);
+
 			if (topic === 'currentPathPoint') {
 				callCallbacksByTopic('currentPathPoint.p', data.p);
 				callCallbacksByTopic('currentPathPoint.h1', data.h1);
@@ -184,9 +187,10 @@ export function publish(topic, data) {
 	}
 
 	function callCallbacksByTopic(callTopic, data) {
-		// log(`== calling callbacks ${topic} to ${callTopic}`);
+		// log(`== calling callbacks for ${callTopic}`);
 		if (subscribers[callTopic]) {
 			Object.keys(subscribers[callTopic]).forEach((subscriberID) => {
+				// log(`Calling subscriber: ${subscriberID}`);
 				subscribers[callTopic][subscriberID](data);
 			});
 		}
