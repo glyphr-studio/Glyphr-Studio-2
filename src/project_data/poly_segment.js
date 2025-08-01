@@ -548,20 +548,23 @@ export class PolySegment extends GlyphElement {
 		const offsetSegments = [];
 		for (let s = 0; s < this.segments.length; s++) {
 			if (!this.segments[s].isLine) {
-				offsetSegments.push(this.segments[s].makeSegmentOffset(offsetDistance));
+				const result = this.segments[s].makeSegmentOffset(offsetDistance);
+				offsetSegments.push(result);
 			}
 		}
-		return new PolySegment({ segments: offsetSegments }).attachGaps();
+		let resultPolySegment = new PolySegment({ segments: offsetSegments });
+		resultPolySegment = resultPolySegment.attachGaps();
+		return resultPolySegment;
 	}
 
 	attachGaps() {
 		const finalSegments = [];
 		let lastSegment = null;
 		let currentSegment = null;
-		for (let s = 1; s < this.segments.length; s++) {
-			lastSegment = this.segments[s - 1];
+		for (let s = 0; s < this.segments.length; s++) {
+			lastSegment = this.segments.at(s - 1);
 			currentSegment = this.segments[s];
-			if(!xyPointsAreClose(lastSegment.getXYPoint(4), currentSegment.getXYPoint(1))) {
+			if (!xyPointsAreClose(lastSegment.getXYPoint(4), currentSegment.getXYPoint(1))) {
 				// log(`lastSegment: ${lastSegment.getXYPoint(4)}`);
 				// log(`currentSegment: ${currentSegment.getXYPoint(1)}`);
 				const gap = new Segment({

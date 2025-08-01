@@ -199,8 +199,9 @@ export class Segment extends GlyphElement {
 	 * Returns true if this segment is a line, and not a curve.
 	 */
 	get isLine() {
-		if (xyPointsAreClose(this.p1x, this.p4x, 1) && xyPointsAreClose(this.p1y, this.p4y, 1)) return true;
-		if(isNaN(this.p2x) && isNaN(this.p2y) && isNaN(this.p3x) && isNaN(this.p3y)) return true;
+		if (xyPointsAreClose(this.p1x, this.p4x, 1) && xyPointsAreClose(this.p1y, this.p4y, 1))
+			return true;
+		if (isNaN(this.p2x) && isNaN(this.p2y) && isNaN(this.p3x) && isNaN(this.p3y)) return true;
 		if (this.lineType === 'horizontal' || this.lineType === 'vertical') return true;
 		return false;
 	}
@@ -843,6 +844,19 @@ export class Segment extends GlyphElement {
 		return this;
 	}
 
+	/**
+	 * Adds handles to a line segment, effectively making it a
+	 * flat curve. Useful for Curve Offsetting math.
+	 */
+	addHandlesToLineSegment() {
+		if (this.lineType) {
+			this.p2x = this.p4x - this.p1x * (1 / 3);
+			this.p2y = this.p4y - this.p1y * (1 / 3);
+			this.p3x = this.p4x - this.p1x * (1 / 6);
+			this.p3y = this.p4y - this.p1y * (1 / 6);
+		}
+	}
+
 	// --------------------------------------------------------------
 	// Curve Offsetting
 	// --------------------------------------------------------------
@@ -855,7 +869,8 @@ export class Segment extends GlyphElement {
 	 * @param {Number} samples - how many points to sample
 	 * @returns {Segment}
 	 */
-	makeSegmentOffset(offsetDistance = 100, samples = 10) {
+	makeSegmentOffset(offsetDistance = 100, samples = 100) {
+
 		function getTangent(seg, t) {
 			const mt = 1 - t;
 			const dx =
@@ -874,14 +889,15 @@ export class Segment extends GlyphElement {
 				3 * t * t * seg.p4y;
 			return { x: dx, y: dy };
 		}
-		function normalize(v) {
-			const len = Math.sqrt(v.x * v.x + v.y * v.y);
-			return len === 0 ? { x: 0, y: 0 } : { x: v.x / len, y: v.y / len };
-		}
+		
 		function getNormal(tangent) {
 			const n = { x: -tangent.y, y: tangent.x };
-			return normalize(n);
+			const len = Math.sqrt(n.x * n.x + n.y * n.y);
+			return len === 0 ? { x: 0, y: 0 } : { x: n.x / len, y: n.y / len };
 		}
+
+		// Add handles to make ofsetting math better
+		this.addHandlesToLineSegment();
 
 		// Sample points and offset them
 		const ts = [];
@@ -924,16 +940,25 @@ export class Segment extends GlyphElement {
 		const bx = [pt1.x - b0(t1) * p1.x - b3(t1) * p4.x, pt2.x - b0(t2) * p1.x - b3(t2) * p4.x];
 		const by = [pt1.y - b0(t1) * p1.y - b3(t1) * p4.y, pt2.y - b0(t2) * p1.y - b3(t2) * p4.y];
 
-		// Solve 2x2 linear system
-		function solve2x2(A, b) {
+		/**
+		 * Solve 2x2 linear system
+		 * @param {Array} A
+		 * @param {Array} b
+		 * @param {String} dimension - 'x' or 'y'
+		 * @returns {[Number, Number]}
+		 */
+		function solve2x2(A, b, dimension = 'x') {
 			const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
-			if (Math.abs(det) < 1e-8) return [p1, p4]; // fallback
+			if (Math.abs(det) < 1e-8) {
+				// fallback
+				if (dimension === 'x') return [p1.x, p4.x];
+				else return [p1.y, p4.y];
+			}
 			return [(A[1][1] * b[0] - A[0][1] * b[1]) / det, (-A[1][0] * b[0] + A[0][0] * b[1]) / det];
 		}
 
-
-		const [p2x, p3x] = solve2x2(A, bx);
-		const [p2y, p3y] = solve2x2(A, by);
+		const [p2x, p3x] = solve2x2(A, bx, 'x');
+		const [p2y, p3y] = solve2x2(A, by, 'y');
 
 		return new Segment({
 			p1x: p1.x,
