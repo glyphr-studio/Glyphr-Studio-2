@@ -340,7 +340,7 @@ function showFilterDialog() {
 
 	addAsChildren(rangeTable, [
 		textToNode('<span class="list__column-header">&emsp;</span>'),
-		textToNode('<span class="list__column-header">&emsp;Range name</span>'),
+		textToNode('<span class="list__column-header" style="padding-left: 10px;">Range name</span>'),
 		textToNode('<span class="list__column-header">Start</span>'),
 		textToNode('<span class="list__column-header">End</span>'),
 		textToNode('<span class="list__column-header">Characters</span>'),
@@ -386,7 +386,7 @@ function showFilterDialog() {
 
 		addAsChildren(rangeTable, [
 			rangeCheckbox,
-			textToNode(`<span>&emsp;${range.name}</span>`),
+			textToNode(`<span style="padding-left: 10px;">${range.name}</span>`),
 			textToNode(`<code>${decToHex(range.begin)}</code>`),
 			textToNode(`<code>${decToHex(range.end)}</code>`),
 			textToNode(`<span>${range.count}</span>`),
