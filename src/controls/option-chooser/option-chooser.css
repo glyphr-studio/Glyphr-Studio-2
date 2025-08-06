@@ -55,6 +55,7 @@
 	padding: 1px 8px 0px 8px;
 	text-align: left;
 	font-family: monospace;
+	overflow: hidden;
 }
 
 .selection-display .prefix {
