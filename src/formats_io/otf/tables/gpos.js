@@ -177,14 +177,13 @@ ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
  */
 export function writeGposKernDataToFont(exportingFont, project) {
 	const kernPairs = project.makeCollectionOfKernPairs();
-	// @ts-expect-error 'property does exist'
+
 	exportingFont.kerningPairs = {};
 	let notExported = '';
 	kernPairs.forEach((pair) => {
 		const leftID = exportingFont.charToGlyphIndex(String.fromCodePoint(pair.left));
 		const rightID = exportingFont.charToGlyphIndex(String.fromCodePoint(pair.right));
 		if (!(leftID === null) && !(rightID === null)) {
-			// @ts-expect-error 'property does exist'
 			exportingFont.kerningPairs[`${leftID},${rightID}`] = pair.value;
 		} else {
 			notExported += `${pair.left} (${leftID}) | ${pair.right} (${rightID})\n`;

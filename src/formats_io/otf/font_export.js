@@ -17,8 +17,8 @@ import { writeGposKernDataToFont } from './tables/gpos.js';
 	Project into OpenType.js format for saving.
 **/
 
-const ligatureSubstitutions = [];
-const codePointGlyphIndexTable = {};
+let ligatureSubstitutions = [];
+let codePointGlyphIndexTable = {};
 
 /**
  * Exports the current project to an .otf file
@@ -28,6 +28,8 @@ export async function ioFont_exportFont() {
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
 	const project = getCurrentProject();
+	ligatureSubstitutions = [];
+	codePointGlyphIndexTable = {};
 	// Add .notdef
 	addNotdefToExport(options);
 
@@ -42,6 +44,7 @@ export async function ioFont_exportFont() {
 
 	// Add Ligatures
 	let exportLigatures = project.settings.app.exportLigatures;
+	// log(`exportLigatures: ${exportLigatures}`);
 	if (exportLigatures) {
 		for (let l = 0; l < exportLists.ligatures.length; l++) {
 			exportedItem = await generateOneLigature(exportLists.ligatures[l]);
