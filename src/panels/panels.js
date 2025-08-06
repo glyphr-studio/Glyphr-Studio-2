@@ -10,6 +10,7 @@ import { makePanel_History } from './history.js';
 import { makePanel_Layers } from './layers.js';
 import { handlePanelsKeyPress, handlePanelsKeyUp } from './panel_events.js';
 import { makePanel_QualityChecks } from './quality_checks.js';
+import { makePanel_Transforms } from './transforms.js';
 
 /**
  * Assembles the correct panel based on the current
@@ -45,6 +46,9 @@ export function makePanel() {
 		unsubscribeExcept('attributesPanel');
 		if (editor.nav.page === 'Kerning') addAsChildren(content, makePanel_KernGroupAttributes());
 		else addAsChildren(content, makePanel_GlyphAttributes());
+	} else if (panel === 'Transforms') {
+		unsubscribeExcept('transformsPanel');
+		addAsChildren(content, makePanel_Transforms());
 	} else if (panel === 'Layers') {
 		unsubscribeExcept('layersPanel');
 		addAsChildren(content, makePanel_Layers());
