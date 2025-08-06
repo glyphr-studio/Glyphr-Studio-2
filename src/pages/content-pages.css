@@ -394,23 +394,26 @@ span.spacer {
 	margin-bottom: 5px;
 }
 
-.list__row-wrapper {
+.list__row-wrapper__static,
+.list__row-wrapper__selectable {
 	display: contents !important;
 	height: 24px;
 	line-height: 20px;
 }
 
-.list__row-wrapper span {
+.list__row-wrapper__static span,
+.list__row-wrapper__selectable span {
 	padding-left: 6px;
 	border-radius: 4px;
+	display: inline-block;
 }
 
-.list__row-wrapper:hover {
+.list__row-wrapper__selectable:hover {
 	color: var(--blue-l50);
 	cursor: pointer;
 }
 
-.list__row-wrapper:hover span {
+.list__row-wrapper__selectable:hover span {
 	background-color: var(--blue-l95);
 }
 
@@ -440,7 +443,8 @@ span.spacer {
 
 .range-table__list-area a,
 .range-table__list-area span {
-	height: 24px;
+	height: auto;
+	min-height: 24px;
 	line-height: 20px;
 	padding-top: 4px;
 	padding-left: 2px;
@@ -486,7 +490,7 @@ span.spacer {
 	display: grid;
 	grid-template-columns: 5fr 1fr 1fr;
 	column-gap: 0px;
-	row-gap: 5px;
+	row-gap: 8px;
 	height: calc(100vh - 220px);
 	overflow-y: auto;
 	padding-right: 20px;
@@ -498,8 +502,8 @@ span.spacer {
 }
 
 .glyph-range-chooser__list-area span {
-	line-height: 28px;
-	padding-right: 10px;
+	line-height: 20px;
+	padding: 6px 10px 2px 4px;
 }
 
 .glyph-range-chooser__preview-tile {

@@ -140,7 +140,7 @@ dialog {
 .context-menu-row {
 	display: contents;
 	padding: 5px 10px 5px 5px;
-	height: 24px;
+	height: fit-content;
 	border-radius: 4px;
 }
 
@@ -151,6 +151,10 @@ dialog {
 	background-color: var(--enabled-focus-background);
 	color: var(--blue-l45);
 	cursor: pointer;
+}
+
+.context-menu-row:hover > .row-icon {
+	background-color: transparent;
 }
 
 .context-menu-row:focus {
@@ -204,8 +208,8 @@ dialog {
 }
 
 .context-menu-row .row-name {
-	line-height: 22px;
-	height: 24px;
+	line-height: 20px;
+	height: clamp(24px, 24px, auto);
 	padding: 2px 20px 0px 10px;
 	display: flex;
 }

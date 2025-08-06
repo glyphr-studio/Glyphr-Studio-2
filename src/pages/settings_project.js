@@ -64,6 +64,7 @@ export function makeSettingsTabContentProject() {
 
 	const addStandardRangeButton = makeElement({
 		tag: 'fancy-button',
+		style: 'margin-bottom: 10px;',
 		innerHTML: 'Add standard character ranges from Unicode',
 		onClick: showUnicodeCharacterRangeDialog,
 	});
@@ -72,6 +73,7 @@ export function makeSettingsTabContentProject() {
 
 	const addCustomRangeButton = makeElement({
 		tag: 'fancy-button',
+		style: 'margin-bottom: 10px;',
 		innerHTML: 'Add a custom character range',
 		onClick: () => showEditCharacterRangeDialog(),
 	});
@@ -197,13 +199,21 @@ function makeEnabledRangesTable() {
 				})
 			);
 		}
-		addAsChildren(rangeTable, [
+
+		// Assemble row
+		const rowWrapper = makeElement({
+			className: 'list__row-wrapper__static',
+		});
+
+		addAsChildren(rowWrapper, [
 			textToNode(`<span>${range.name}</span>`),
 			textToNode(`<code>${decToHex(range.begin)}</code>`),
 			textToNode(`<code>${decToHex(range.end)}</code>`),
 			textToNode(`<span>${range.count}</span>`),
 			actions,
 		]);
+
+		addAsChildren(rangeTable, rowWrapper);
 	});
 
 	return rangeTable;
@@ -265,13 +275,20 @@ function makeHiddenRangesTable() {
 				);
 			}
 
-			addAsChildren(rangeTable, [
+			// Assemble row
+			const rowWrapper = makeElement({
+				className: 'list__row-wrapper__static',
+			});
+
+			addAsChildren(rowWrapper, [
 				textToNode(`<span>${range.name}</span>`),
 				textToNode(`<code>${decToHex(range.begin)}</code>`),
 				textToNode(`<code>${decToHex(range.end)}</code></span>`),
 				textToNode(`<span>${range.count}</span>`),
 				actions,
 			]);
+
+			addAsChildren(rangeTable, rowWrapper);
 		});
 	} else {
 		addAsChildren(
@@ -778,7 +795,7 @@ function showUnicodeCharacterRangeDialog() {
 
 	function processOneBlock(block) {
 		rowWrapper = makeElement({
-			className: 'list__row-wrapper',
+			className: 'list__row-wrapper__selectable',
 			onClick: () => {
 				previewCharacterRange(block);
 			},
