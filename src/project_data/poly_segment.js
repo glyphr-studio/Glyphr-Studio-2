@@ -876,7 +876,7 @@ function cubicSharedNormalAtJoin(curveA, curveB, { side = 'left', epsilon = 1e-1
 		return L > epsilon ? { x: v.x / L, y: v.y / L } : null;
 	};
 	const add = (a, b) => ({ x: a.x + b.x, y: a.y + b.y });
-	const dot = (a, b) => a.x * b.x + a.y * b.y;
+	// const dot = (a, b) => a.x * b.x + a.y * b.y;
 
 	// If either curve is a line, use the direction from p1 to p4 for tangent
 	const isLineA =
@@ -937,6 +937,10 @@ function offsetBezierLoop(loop, offset, { epsilon = 1e-12 } = {}) {
 	const sub = (a, b) => ({ x: a.x - b.x, y: a.y - b.y });
 	const mul = (v, s) => ({ x: v.x * s, y: v.y * s });
 	const len = (v) => Math.hypot(v.x, v.y);
+	const norm = (v) => {
+		const L = Math.hypot(v.x, v.y);
+		return L > 1e-12 ? { x: v.x / L, y: v.y / L } : { x: 0, y: 0 };
+	};
 
 	// Collect anchor points in order (on-curve points)
 	const anchors = [];
@@ -1016,16 +1020,24 @@ function offsetBezierLoop(loop, offset, { epsilon = 1e-12 } = {}) {
 		const startAnchorNew = offsetAnchors[startJoinIdx];
 		const endAnchorNew = offsetAnchors[endJoinIdx];
 
-		const deltaStart = sub(startAnchorNew, startAnchorOld);
-		const deltaEnd = sub(endAnchorNew, endAnchorOld);
+		// Compute scaling factors for handles
+		const origLenStart = len(sub({ x: seg.p2x, y: seg.p2y }, startAnchorOld));
+		const origLenEnd = len(sub({ x: seg.p3x, y: seg.p3y }, endAnchorOld));
 
+		// Direction vectors (unit)
+		const dirStart = norm(sub({ x: seg.p2x, y: seg.p2y }, startAnchorOld));
+		const dirEnd = norm(sub({ x: seg.p3x, y: seg.p3y }, endAnchorOld));
+
+		// Optionally, scale handle length by the ratio of new anchor distance to old
+		const chordOld = len(sub(endAnchorOld, startAnchorOld));
+		const chordNew = len(sub(endAnchorNew, startAnchorNew));
+		const scale = chordOld > 1e-8 ? chordNew / chordOld : 1;
+
+		// New handles
 		const p1 = startAnchorNew;
 		const p4 = endAnchorNew;
-
-		// Translate handles with their associated anchors.
-		// This preserves handle vectors relative to their anchors.
-		const p2 = add({ x: seg.p2x, y: seg.p2y }, deltaStart);
-		const p3 = add({ x: seg.p3x, y: seg.p3y }, deltaEnd);
+		const p2 = add(p1, mul(dirStart, origLenStart * scale));
+		const p3 = add(p4, mul(dirEnd, origLenEnd * scale));
 
 		newLoop[i] = {
 			p1x: p1.x,
