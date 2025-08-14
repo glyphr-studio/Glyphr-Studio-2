@@ -545,6 +545,11 @@ export class PolySegment extends GlyphElement {
 	// --------------------------------------------------------------
 
 	makeOffsetPolySegment(offsetDistance = 10) {
+		const newPolySegment = offsetBezierLoop(this.segments, offsetDistance);
+		return new PolySegment({ segments: newPolySegment });
+	}
+	/*
+	makeOffsetPolySegment(offsetDistance = 10) {
 		const offsetSegments = [];
 		for (let s = 0; s < this.segments.length; s++) {
 			if (!this.segments[s].isLine) {
@@ -595,6 +600,7 @@ export class PolySegment extends GlyphElement {
 
 		return new PolySegment({ segments: finalSegments });
 	}
+	*/
 }
 
 // --------------------------------------------------------------
@@ -840,3 +846,210 @@ export function findEndPointSegmentIntersections(s1, s2) {
 	// log('findEndPointSegmentIntersections', 'end');
 	return re;
 }
+
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+/**
+ * A cubic Bezier segment shaped as:
+ * { p1x,p1y, p2x,p2y, p3x,p3y, p4x,p4y }
+ * BezierLoop: Array<CubicBezier>
+ */
+
+/** Compute the unit normal at the shared point of two connected cubic Bézier curves. */
+function cubicSharedNormalAtJoin(curveA, curveB, { side = 'left', epsilon = 1e-12 } = {}) {
+	const len = (v) => Math.hypot(v.x, v.y);
+	const norm = (v) => {
+		const L = len(v);
+		return L > epsilon ? { x: v.x / L, y: v.y / L } : null;
+	};
+	const add = (a, b) => ({ x: a.x + b.x, y: a.y + b.y });
+	const dot = (a, b) => a.x * b.x + a.y * b.y;
+
+	// If either curve is a line, use the direction from p1 to p4 for tangent
+	const isLineA =
+		curveA.p1x === curveA.p2x &&
+		curveA.p1y === curveA.p2y &&
+		curveA.p3x === curveA.p4x &&
+		curveA.p3y === curveA.p4y;
+	const isLineB =
+		curveB.p1x === curveB.p2x &&
+		curveB.p1y === curveB.p2y &&
+		curveB.p3x === curveB.p4x &&
+		curveB.p3y === curveB.p4y;
+
+	let T1, T2;
+	if (isLineA) {
+		T1 = { x: curveA.p4x - curveA.p1x, y: curveA.p4y - curveA.p1y };
+	} else {
+		T1 = { x: 3 * (curveA.p4x - curveA.p3x), y: 3 * (curveA.p4y - curveA.p3y) };
+	}
+	if (isLineB) {
+		T2 = { x: curveB.p4x - curveB.p1x, y: curveB.p4y - curveB.p1y };
+	} else {
+		T2 = { x: 3 * (curveB.p2x - curveB.p1x), y: 3 * (curveB.p2y - curveB.p1y) };
+	}
+
+	const L1 = len(T1),
+		L2 = len(T2);
+
+	let dir = null;
+	if (L1 > epsilon && L2 > epsilon) {
+		// Angle bisector of the two tangents
+		const T1n = norm(T1);
+		const T2n = norm(T2);
+		const bisector = norm(add(T1n, T2n));
+		dir = bisector || T1n || T2n;
+	} else if (L1 > epsilon) {
+		dir = norm(T1);
+	} else if (L2 > epsilon) {
+		dir = norm(T2);
+	} else {
+		return null; // degenerate
+	}
+
+	// Rotate to get left-/right-hand unit normal
+	const left = { x: -dir.y, y: dir.x };
+	const right = { x: dir.y, y: -dir.x };
+	return side === 'right' ? right : left;
+}
+
+/** Offset a closed BezierLoop outward (positive) or inward (negative). */
+function offsetBezierLoop(loop, offset, { epsilon = 1e-12 } = {}) {
+	if (!Array.isArray(loop) || loop.length < 1) throw new Error('Loop must be a non-empty array');
+
+	const n = loop.length;
+
+	// Helpers
+	const add = (a, b) => ({ x: a.x + b.x, y: a.y + b.y });
+	const sub = (a, b) => ({ x: a.x - b.x, y: a.y - b.y });
+	const mul = (v, s) => ({ x: v.x * s, y: v.y * s });
+	const len = (v) => Math.hypot(v.x, v.y);
+
+	// Collect anchor points in order (on-curve points)
+	const anchors = [];
+	for (let i = 0; i < n; i++) {
+		const seg = loop[i];
+		anchors.push({ x: seg.p1x, y: seg.p1y }); // start of each seg
+	}
+	// Note: seg[n-1].p4 equals seg[0].p1 for a closed loop.
+
+	// Determine winding via signed area (shoelace on anchors)
+	let area2 = 0; // 2*area (signed)
+	for (let i = 0; i < n; i++) {
+		const a = anchors[i];
+		const b = anchors[(i + 1) % n];
+		area2 += a.x * b.y - b.x * a.y;
+	}
+	const isCCW = area2 > 0;
+	const outwardSide = isCCW ? 'left' : 'right';
+	const desiredSide = offset >= 0 ? outwardSide : outwardSide === 'left' ? 'right' : 'left';
+	const d = Math.abs(offset);
+
+	// Compute unit normal at each join i (shared point between seg[i] and seg[i+1])
+	const normals = new Array(n);
+	for (let i = 0; i < n; i++) {
+		const A = loop[i];
+		const B = loop[(i + 1) % n];
+		let ni = cubicSharedNormalAtJoin(A, B, { side: desiredSide, epsilon });
+		log(`${ni?.x}/${ni?.y}`);
+
+		// Fallbacks for degenerate joins
+		if (!ni) {
+			// Try a tangent from A end or B start
+			const T1 = { x: 3 * (A.p4x - A.p3x), y: 3 * (A.p4y - A.p3y) };
+			const T2 = { x: 3 * (B.p2x - B.p1x), y: 3 * (B.p2y - B.p1y) };
+			const choose = len(T1) > len(T2) ? T1 : T2;
+			const L = len(choose);
+			if (L > epsilon) {
+				const nx = -(choose.y / L);
+				const ny = choose.x / L;
+				ni = desiredSide === 'right' ? { x: -nx, y: -ny } : { x: nx, y: ny };
+			} else {
+				// Last resort: look at chord between prev and next anchors
+				const prev = anchors[i];
+				const next = anchors[(i + 1) % n];
+				const chord = sub(next, prev);
+				const Lc = len(chord);
+				if (Lc > epsilon) {
+					const nx = -(chord.y / Lc);
+					const ny = chord.x / Lc;
+					ni = desiredSide === 'right' ? { x: -nx, y: -ny } : { x: nx, y: ny };
+				} else {
+					ni = { x: 1, y: 0 }; // arbitrary stable normal
+				}
+			}
+		}
+		normals[i] = ni;
+	}
+
+	// Offset all anchors by their join normal
+	const offsetAnchors = normals.map((nrm, i) =>
+		add({ x: loop[i].p4x, y: loop[i].p4y }, mul(nrm, d))
+	);
+	// Note: join i is at end of seg i (p4) and start of seg i+1 (p1).
+	// For segment i: start anchor is join (i-1), end anchor is join i.
+
+	// Build new loop with translated handles alongside their associated anchors
+	const newLoop = new Array(n);
+	for (let i = 0; i < n; i++) {
+		const seg = loop[i];
+
+		const startJoinIdx = (i - 1 + n) % n; // join before segment i
+		const endJoinIdx = i; // join at end of segment i
+
+		const startAnchorOld = { x: seg.p1x, y: seg.p1y };
+		const endAnchorOld = { x: seg.p4x, y: seg.p4y };
+
+		const startAnchorNew = offsetAnchors[startJoinIdx];
+		const endAnchorNew = offsetAnchors[endJoinIdx];
+
+		const deltaStart = sub(startAnchorNew, startAnchorOld);
+		const deltaEnd = sub(endAnchorNew, endAnchorOld);
+
+		const p1 = startAnchorNew;
+		const p4 = endAnchorNew;
+
+		// Translate handles with their associated anchors.
+		// This preserves handle vectors relative to their anchors.
+		const p2 = add({ x: seg.p2x, y: seg.p2y }, deltaStart);
+		const p3 = add({ x: seg.p3x, y: seg.p3y }, deltaEnd);
+
+		newLoop[i] = {
+			p1x: p1.x,
+			p1y: p1.y,
+			p2x: p2.x,
+			p2y: p2.y,
+			p3x: p3.x,
+			p3y: p3.y,
+			p4x: p4.x,
+			p4y: p4.y,
+		};
+	}
+
+	return newLoop;
+}
+
+// -------------------------
+// Example usage
+// -------------------------
+// const loop = [
+// 	{ p1x: 0, p1y: 0, p2x: 40, p2y: 0, p3x: 60, p3y: 50, p4x: 100, p4y: 50 },
+// 	{ p1x: 100, p1y: 50, p2x: 140, p2y: 50, p3x: 160, p3y: 0, p4x: 200, p4y: 0 },
+// 	{ p1x: 200, p1y: 0, p2x: 160, p2y: -50, p3x: 40, p3y: -50, p4x: 0, p4y: 0 },
+// ];
+
+// const grown = offsetBezierLoop(loop, +10); // outward by 10 units
+// const shrunk = offsetBezierLoop(loop, -10); // inward by 10 units
