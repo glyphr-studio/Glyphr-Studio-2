@@ -968,7 +968,6 @@ function offsetBezierLoop(loop, offset, { epsilon = 1e-12 } = {}) {
 		const A = loop[i];
 		const B = loop[(i + 1) % n];
 		let ni = cubicSharedNormalAtJoin(A, B, { side: desiredSide, epsilon });
-		log(`${ni?.x}/${ni?.y}`);
 
 		// Fallbacks for degenerate joins
 		if (!ni) {

@@ -1,3 +1,4 @@
+import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 
 // --------------------------------------------------------------
@@ -23,7 +24,19 @@ export function makePanel_Transforms() {
 		className: 'panel__card',
 		innerHTML: `
 				<h3>Offset path</h3>
+				<fancy-button secondary id="addOffsetPath">Add offset path</fancy-button>
 				`,
+	});
+
+	let addOffsetPathButton = offsetPathCard.querySelector('#addOffsetPath');
+	addOffsetPathButton.addEventListener('click', () => {
+		const editor = getCurrentProjectEditor();
+		const newPolySegment = editor.selectedItem.shapes[0]
+			.makePolySegment()
+			.makeOffsetPolySegment(-100);
+		editor.selectedItem.addOneShape(newPolySegment.path);
+		editor.history.addState(`Transformed the first shape in this glyph`);
+		editor.publish('currentItem', editor.selectedItem);
 	});
 
 	// Width and height
