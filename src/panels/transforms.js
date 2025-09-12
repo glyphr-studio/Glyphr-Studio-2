@@ -7,8 +7,7 @@ import { makeElement } from '../common/dom.js';
 
 export function makePanel_Transforms() {
 	// log(`makePanel_Transforms`, 'start');
-	// const editor = getCurrentProjectEditor();
-	// const project = getCurrentProject();
+	const editor = getCurrentProjectEditor();
 	// let selected = editor.selectedItem;
 
 	// Skew
@@ -24,12 +23,25 @@ export function makePanel_Transforms() {
 		className: 'panel__card',
 		innerHTML: `
 				<h3>Offset path</h3>
-				<fancy-button secondary id="addOffsetPath">Add offset path</fancy-button>
+				<number-input id="offsetPath_input" />
+				<fancy-button secondary id="offsetPath_applyButton">Apply</fancy-button>
 				`,
 	});
 
-	let addOffsetPathButton = offsetPathCard.querySelector('#addOffsetPath');
-	addOffsetPathButton.addEventListener('click', () => {
+	let offsetPathApplyButton = offsetPathCard.querySelector('#offsetPath_applyButton');
+	editor.subscribe({
+		topic: 'currentItem',
+		subscriberID: `transformsPanel.offsetPathApplyButton`,
+		callback: () => {
+			if (editor.multiSelect.shapes.count() > 0) {
+				offsetPathApplyButton.removeAttribute('disabled');
+			} else {
+				offsetPathApplyButton.setAttribute('disabled', 'disabled');
+			}
+		}
+	})
+		;
+	offsetPathApplyButton.addEventListener('click', () => {
 		const editor = getCurrentProjectEditor();
 		const newPolySegment = editor.selectedItem.shapes[0]
 			.makePolySegment()
@@ -38,6 +50,12 @@ export function makePanel_Transforms() {
 		editor.history.addState(`Transformed the first shape in this glyph`);
 		editor.publish('currentItem', editor.selectedItem);
 	});
+
+	// Add numeric input control (not hooked up yet)
+	let offsetValueInput = makeElement({
+		tag: 'input-number',
+	});
+	offsetPathCard.appendChild(offsetValueInput);
 
 	// Width and height
 	let dimensionCard = makeElement({
