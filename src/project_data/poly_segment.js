@@ -926,7 +926,7 @@ function cubicSharedNormalAtJoin(curveA, curveB, { side = 'left', epsilon = 1e-1
 	return side === 'right' ? right : left;
 }
 
-/** Offset a closed BezierLoop outward (positive) or inward (negative). */
+/** Offset a closed BezierLoop: clockwise outward (positive) or inward (negative). */
 function offsetBezierLoop(loop, offset, { epsilon = 1e-12 } = {}) {
 	if (!Array.isArray(loop) || loop.length < 1) throw new Error('Loop must be a non-empty array');
 
@@ -959,7 +959,7 @@ function offsetBezierLoop(loop, offset, { epsilon = 1e-12 } = {}) {
 	}
 	const isCCW = area2 > 0;
 	const outwardSide = isCCW ? 'left' : 'right';
-	const desiredSide = offset >= 0 ? outwardSide : outwardSide === 'left' ? 'right' : 'left';
+	const desiredSide = offset < 0 ? outwardSide : outwardSide === 'left' ? 'right' : 'left';
 	const d = Math.abs(offset);
 
 	// Compute unit normal at each join i (shared point between seg[i] and seg[i+1])

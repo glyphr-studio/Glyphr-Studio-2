@@ -23,39 +23,60 @@ export function makePanel_Transforms() {
 		className: 'panel__card',
 		innerHTML: `
 				<h3>Offset path</h3>
-				<number-input id="offsetPath_input" />
-				<fancy-button secondary id="offsetPath_applyButton">Apply</fancy-button>
+				<label class="info">
+					<span>Offset distance:</span>
+					<info-bubble>
+						Select shapes, then provide an offset distance to apply. <br><br>
+						A positive value will expand the path, and a negative value will
+						contract the path. 
+					</info-bubble>
+				</label>
+				<div class="doubleInput">
+					<input-number id="offsetPath_input"></input-number>
+					<span></span>
+					<fancy-button
+						secondary
+						${editor.multiSelect.shapes.length > 0 ? '' : 'disabled'}
+						id="offsetPath_applyButton"
+						style="margin-top: -2px;"
+					>
+					Apply</fancy-button>
+				</div>
 				`,
 	});
 
-	let offsetPathApplyButton = offsetPathCard.querySelector('#offsetPath_applyButton');
+	const offsetPathApplyButton = offsetPathCard.querySelector('#offsetPath_applyButton');
 	editor.subscribe({
-		topic: 'currentItem',
+		topic: 'whichShapeIsSelected',
 		subscriberID: `transformsPanel.offsetPathApplyButton`,
-		callback: () => {
-			if (editor.multiSelect.shapes.count() > 0) {
-				offsetPathApplyButton.removeAttribute('disabled');
-			} else {
-				offsetPathApplyButton.setAttribute('disabled', 'disabled');
-			}
-		}
-	})
-		;
-	offsetPathApplyButton.addEventListener('click', () => {
-		const editor = getCurrentProjectEditor();
-		const newPolySegment = editor.selectedItem.shapes[0]
-			.makePolySegment()
-			.makeOffsetPolySegment(-100);
-		editor.selectedItem.addOneShape(newPolySegment.path);
-		editor.history.addState(`Transformed the first shape in this glyph`);
-		editor.publish('currentItem', editor.selectedItem);
+		callback: updateApplyOffsetButton,
 	});
 
-	// Add numeric input control (not hooked up yet)
-	let offsetValueInput = makeElement({
-		tag: 'input-number',
+	const offsetPathInput = offsetPathCard.querySelector('#offsetPath_input');
+	offsetPathInput.addEventListener('change', updateApplyOffsetButton);
+
+	offsetPathApplyButton.addEventListener('click', () => {
+		const editor = getCurrentProjectEditor();
+		const offsetDistance = offsetPathInput.getAttribute('value');
+		let selShapes = editor.multiSelect.shapes.members;
+		let newShapes = [];
+		selShapes.forEach((shape) => {
+			const newPolySegment = shape.makePolySegment().makeOffsetPolySegment(offsetDistance);
+			newShapes.push(newPolySegment.path);
+		});
+
+		editor.multiSelect.shapes.deleteShapes();
+
+		editor.multiSelect.shapes.clear();
+
+		newShapes.forEach((shape) => {
+			editor.selectedItem.addOneShape(shape);
+			editor.multiSelect.shapes.add(shape);
+		});
+
+		editor.history.addState(`Offset path for ${selShapes.length} shape(s)`);
+		editor.publish('currentItem', editor.selectedItem);
 	});
-	offsetPathCard.appendChild(offsetValueInput);
 
 	// Width and height
 	let dimensionCard = makeElement({
@@ -75,4 +96,19 @@ export function makePanel_Transforms() {
 
 	// log(`makePanel_Transforms`, 'end');
 	return [skewCard, offsetPathCard, dimensionCard, rotationCard];
+}
+
+function updateApplyOffsetButton() {
+	const editor = getCurrentProjectEditor();
+	let selectedShapes = editor.multiSelect.shapes.length > 0;
+	let offsetValue = document.querySelector('#offsetPath_input').getAttribute('value');
+	let offsetNumber = parseFloat(offsetValue);
+	let hasValue = !isNaN(offsetNumber) && offsetNumber !== 0;
+
+	const offsetPathApplyButton = document.querySelector('#offsetPath_applyButton');
+	if (selectedShapes && hasValue) {
+		offsetPathApplyButton.removeAttribute('disabled');
+	} else {
+		offsetPathApplyButton.setAttribute('disabled', '');
+	}
 }
