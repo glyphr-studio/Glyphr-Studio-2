@@ -28,7 +28,7 @@ export function makePanel_Transforms() {
 					<info-bubble>
 						Select shapes, then provide an offset distance to apply. <br><br>
 						A positive value will expand the path, and a negative value will
-						contract the path. 
+						contract the path.
 					</info-bubble>
 				</label>
 				<div class="doubleInput">
@@ -99,13 +99,15 @@ export function makePanel_Transforms() {
 }
 
 function updateApplyOffsetButton() {
+	const offsetPathApplyButton = document.querySelector('#offsetPath_applyButton');
+	if (!offsetPathApplyButton) return;
+	
 	const editor = getCurrentProjectEditor();
 	let selectedShapes = editor.multiSelect.shapes.length > 0;
 	let offsetValue = document.querySelector('#offsetPath_input').getAttribute('value');
 	let offsetNumber = parseFloat(offsetValue);
 	let hasValue = !isNaN(offsetNumber) && offsetNumber !== 0;
 
-	const offsetPathApplyButton = document.querySelector('#offsetPath_applyButton');
 	if (selectedShapes && hasValue) {
 		offsetPathApplyButton.removeAttribute('disabled');
 	} else {
