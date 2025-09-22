@@ -349,7 +349,7 @@ function makeNavButton_Page(pageName, iconName) {
 		// Ensure the selected Panel is availabe for the new page, otherwise default to Attributes
 		editor.nav.page = pageName;
 		if (panelsPerPage?.[pageName]) {
-			if(!panelsPerPage[pageName].includes(editor.nav.panel)) editor.nav.panel = 'Attributes';
+			if (!panelsPerPage[pageName].includes(editor.nav.panel)) editor.nav.panel = 'Attributes';
 		}
 
 		editor.navigate();
@@ -373,7 +373,15 @@ function makeNavButton_Page(pageName, iconName) {
 }
 
 const panelsPerPage = {
-	Characters: ['Attributes', 'Layers', 'ContextCharacters', 'History', 'Guides', 'CharacterInfo'],
+	Characters: [
+		'Attributes',
+		'Layers',
+		'ContextCharacters',
+		'History',
+		'Guides',
+		'CharacterInfo',
+		'QualityChecks',
+	],
 	Ligatures: ['Attributes', 'Layers', 'History', 'Guides', 'QualityChecks'],
 	Components: ['Attributes', 'Layers', 'History', 'Guides', 'QualityChecks'],
 	Kerning: ['Attributes', 'History'],
