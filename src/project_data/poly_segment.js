@@ -546,7 +546,7 @@ export class PolySegment extends GlyphElement {
 	// --------------------------------------------------------------
 
 	makeOffsetPolySegment(offsetDistance = 10) {
-		const newSegments = offsetPolySegment(this, offsetDistance);
+		const newSegments = offsetPolySegment(this.segments, offsetDistance);
 		return new PolySegment({ segments: newSegments });
 	}
 }
