@@ -6,23 +6,13 @@ import { Segment } from './segment.js';
 
 /**
  * Main entry point: Offset a sequence of segments (polygon or general curve).
- * Accepts either an array of Segment objects or an object with a `segments` array (backward compatible with former PolySegment).
  * Automatically detects winding direction and ensures positive offsets always expand the shape.
- * @param {Segment[] | {segments: Segment[]}} inputSegments Segments or object containing them
+ * @param {Segment[]} inputSegments Array of segments
  * @param {number} distance Offset distance (positive = expand)
  * @returns {Segment[]} Array of offset segments
  */
 export function offsetPolySegment(inputSegments, distance) {
-	let segments;
-	if (Array.isArray(inputSegments)) {
-		segments = inputSegments;
-	} else if (inputSegments && Array.isArray(inputSegments.segments)) {
-		segments = inputSegments.segments;
-	} else {
-		throw new Error(
-			'offsetPolySegment expects Segment[] or {segments: Segment[]}'
-		);
-	}
+	const segments = inputSegments;
 
 	// Detect winding direction
 	const signedArea = calculateWindingSignedArea(segments);
@@ -47,20 +37,48 @@ export function offsetPolySegment(inputSegments, distance) {
 		result = offsetGeneralCurve(segments, adjustedDistance);
 	}
 
-	// Backward compatibility: provide .segments accessor on returned array
-	if (
-		Array.isArray(result) &&
-		!Object.prototype.hasOwnProperty.call(result, 'segments')
-	) {
-		Object.defineProperty(result, 'segments', {
-			value: result,
-			writable: false,
-			enumerable: false,
-			configurable: false,
-		});
+	return result;
+}
+
+/**
+ * Debug version that returns both segments and movement directions for visualization.
+ * Similar to the main function but also calculates directional information for each anchor point.
+ * @param {Segment[]} inputSegments Array of segments
+ * @param {number} distance Offset distance (positive = expand)
+ * @returns {{segments: Segment[], directions: Array<{anchor: {x, y}, direction: {x, y}, angle: number}>}} Offset segments and movement directions
+ */
+export function offsetPolySegmentWithDirections(inputSegments, distance) {
+	const segments = inputSegments;
+
+	if (segments.length === 0) {
+		return { segments: [], directions: [] };
 	}
 
-	return result;
+	// Detect winding direction
+	const signedArea = calculateWindingSignedArea(segments);
+	const isCounterClockwise = signedArea > 0;
+
+	// Adjust distance for consistent expansion behavior
+	let adjustedDistance = distance;
+	if (isCounterClockwise) {
+		adjustedDistance = -distance;
+	}
+
+	let result;
+	let directions = [];
+
+	if (isPolygon(segments)) {
+		result = offsetPolygon(segments, adjustedDistance);
+		// Calculate directions for polygon vertices
+		directions = calculatePolygonDirections(segments, adjustedDistance, isCounterClockwise);
+	} else {
+		const offsetResult = offsetGeneralCurve(segments, adjustedDistance);
+		result = offsetResult;
+		// For curves or mixed geometry, calculate proper bisector directions
+		directions = calculateMixedGeometryDirections(segments, adjustedDistance, isCounterClockwise);
+	}
+
+	return { segments: result, directions };
 }
 
 /**
@@ -107,9 +125,7 @@ function offsetPolygon(segments, distance) {
 	const offsetSegments = [];
 
 	// Offset each segment as a straight line
-	const offsetLines = segments.map((segment) =>
-		offsetStraightLineSegment(segment, distance)
-	);
+	const offsetLines = segments.map((segment) => offsetStraightLineSegment(segment, distance));
 
 	// Calculate intersection points between consecutive offset lines
 	const intersectionPoints = [];
@@ -128,12 +144,7 @@ function offsetPolygon(segments, distance) {
 		const endPoint = intersectionPoints[(i + 1) % intersectionPoints.length];
 
 		// Create a new segment from intersection to intersection
-		const newSegment = createStraightSegment(
-			startPoint.x,
-			startPoint.y,
-			endPoint.x,
-			endPoint.y
-		);
+		const newSegment = createStraightSegment(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
 
 		offsetSegments.push(newSegment);
 	}
@@ -158,8 +169,7 @@ function offsetGeneralCurve(originalSegments, distance) {
 
 		// Record zero-length handle information
 		zeroLengthHandles[i] = {
-			startZeroLength:
-				segment.p1x === segment.p2x && segment.p1y === segment.p2y,
+			startZeroLength: segment.p1x === segment.p2x && segment.p1y === segment.p2y,
 			endZeroLength: segment.p3x === segment.p4x && segment.p3y === segment.p4y,
 		};
 
@@ -167,22 +177,29 @@ function offsetGeneralCurve(originalSegments, distance) {
 		offsetSegments.push(offsetSeg);
 	}
 
-	// Apply intelligent join handling that preserves curve geometry
-	offsetSegments = handleJoins(offsetSegments, zeroLengthHandles);
+	// First, restore geometric parallelism for straight line segments
+	// This ensures they are positioned correctly before junction handling
+	offsetSegments = restoreParallelism(offsetSegments, originalSegments, distance);
 
-	// Apply special handling for zero-length handle junctions
-	offsetSegments = improveZeroLengthHandleJunctions(
+	// Apply intelligent join handling that preserves curve geometry
+	// Detect winding direction for proper normal calculation
+	const signedArea = calculateWindingSignedArea(originalSegments);
+	const isCounterClockwise = signedArea > 0;
+	// Recover original positive distance from adjusted distance
+	const originalDistance = isCounterClockwise ? -distance : distance;
+	offsetSegments = handleJoins(
 		offsetSegments,
 		zeroLengthHandles,
-		distance
+		originalSegments,
+		originalDistance,
+		isCounterClockwise
 	);
 
+	// Apply special handling for zero-length handle junctions
+	offsetSegments = improveZeroLengthHandleJunctions(offsetSegments, zeroLengthHandles, distance);
+
 	// Apply proper handle preservation based on geometric rules
-	offsetSegments = preserveHandleGeometry(
-		offsetSegments,
-		originalSegments,
-		distance
-	);
+	offsetSegments = preserveHandleGeometry(offsetSegments, originalSegments, distance);
 
 	return offsetSegments;
 }
@@ -195,9 +212,19 @@ function offsetGeneralCurve(originalSegments, distance) {
  * Handle joins between offset segments (miter, round, bevel).
  * Intelligently handles both straight lines and curves.
  * @param {Segment[]} segments - Array of segments to join
+ * @param {Array} zeroLengthHandles - Array tracking which handles were originally zero-length
+ * @param {Segment[]} originalSegments - Original segments before offset (needed for zero-length handle calculation)
+ * @param {number} offsetDistance - The offset distance being applied (already adjusted for winding)
+ * @param {boolean} isCounterClockwise - Whether the original shape is counter-clockwise
  * @returns {Segment[]} Array of joined segments
  */
-function handleJoins(segments, zeroLengthHandles = null) {
+function handleJoins(
+	segments,
+	zeroLengthHandles = null,
+	originalSegments = null,
+	offsetDistance = 0,
+	isCounterClockwise = false
+) {
 	if (segments.length < 2) return segments;
 
 	for (let i = 0; i < segments.length; i++) {
@@ -206,25 +233,20 @@ function handleJoins(segments, zeroLengthHandles = null) {
 		const nextIndex = (i + 1) % segments.length;
 
 		// Calculate the gap between current end and next start
-		const gap = Math.sqrt(
-			(curr.p4x - next.p1x) ** 2 + (curr.p4y - next.p1y) ** 2
-		);
+		const gap = Math.sqrt((curr.p4x - next.p1x) ** 2 + (curr.p4y - next.p1y) ** 2);
 
 		// Check for zero-length handles at the junction using original segment information
 		let currHasZeroLengthEnd = false;
 		let nextHasZeroLengthStart = false;
 
 		if (zeroLengthHandles && i >= 0 && nextIndex >= 0) {
-			currHasZeroLengthEnd =
-				zeroLengthHandles[i] && zeroLengthHandles[i].endZeroLength;
+			currHasZeroLengthEnd = zeroLengthHandles[i] && zeroLengthHandles[i].endZeroLength;
 			nextHasZeroLengthStart =
-				zeroLengthHandles[nextIndex] &&
-				zeroLengthHandles[nextIndex].startZeroLength;
+				zeroLengthHandles[nextIndex] && zeroLengthHandles[nextIndex].startZeroLength;
 		}
 
 		// For zero-length handles, force proper junction calculation instead of snapping
-		const shouldForceJunctionCalculation =
-			currHasZeroLengthEnd && nextHasZeroLengthStart;
+		const shouldForceJunctionCalculation = currHasZeroLengthEnd && nextHasZeroLengthStart;
 
 		// If segments are already close enough (within 0.1 units) AND not zero-length, just snap
 		if (gap < 0.1 && !shouldForceJunctionCalculation) {
@@ -232,13 +254,7 @@ function handleJoins(segments, zeroLengthHandles = null) {
 			next.p1y = curr.p4y;
 
 			// Handle zero-length handles - move them along with their points
-			adjustZeroLengthHandlesAtJunction(
-				curr,
-				next,
-				i,
-				nextIndex,
-				zeroLengthHandles
-			);
+			adjustZeroLengthHandlesAtJunction(curr, next, i, nextIndex, zeroLengthHandles);
 			continue;
 		}
 
@@ -270,23 +286,36 @@ function handleJoins(segments, zeroLengthHandles = null) {
 			JUNCTION_BEHAVIOR,
 			i,
 			nextIndex,
-			zeroLengthHandles
+			zeroLengthHandles,
+			originalSegments,
+			offsetDistance,
+			isCounterClockwise
 		);
 
-		// Update endpoints to the join point
-		curr.p4x = joinPoint.x;
-		curr.p4y = joinPoint.y;
-		next.p1x = joinPoint.x;
-		next.p1y = joinPoint.y;
+		// Update endpoints to the calculated junction point
+		// All junctions should use the proper normal-based junction point
+		if (curr.isLine && !next.isLine) {
+			// Straight to curve: use junction point for both, preserving anchor normal positioning
+			curr.p4x = joinPoint.x;
+			curr.p4y = joinPoint.y;
+			next.p1x = joinPoint.x;
+			next.p1y = joinPoint.y;
+		} else if (!curr.isLine && next.isLine) {
+			// Curve to straight: use junction point for both, preserving anchor normal positioning
+			curr.p4x = joinPoint.x;
+			curr.p4y = joinPoint.y;
+			next.p1x = joinPoint.x;
+			next.p1y = joinPoint.y;
+		} else {
+			// Both same type: use junction point for both
+			curr.p4x = joinPoint.x;
+			curr.p4y = joinPoint.y;
+			next.p1x = joinPoint.x;
+			next.p1y = joinPoint.y;
+		}
 
 		// Handle zero-length handles - move them along with their points
-		adjustZeroLengthHandlesAtJunction(
-			curr,
-			next,
-			i,
-			nextIndex,
-			zeroLengthHandles
-		);
+		adjustZeroLengthHandlesAtJunction(curr, next, i, nextIndex, zeroLengthHandles);
 
 		// Adjust control points to maintain shape quality
 		if (curr.isLine) {
@@ -307,6 +336,9 @@ function handleJoins(segments, zeroLengthHandles = null) {
  * @param {number} currIndex - Index of current segment
  * @param {number} nextIndex - Index of next segment
  * @param {Array} zeroLengthHandles - Array tracking which handles were originally zero-length
+ * @param {Segment[]} originalSegments - Original segments before offset (needed for zero-length handle calculation)
+ * @param {number} offsetDistance - The offset distance being applied (already adjusted for winding)
+ * @param {boolean} isCounterClockwise - Whether the original shape is counter-clockwise
  * @returns {{x: number, y: number}} The calculated junction point
  */
 function calculateJunctionPoint(
@@ -315,7 +347,10 @@ function calculateJunctionPoint(
 	behavior,
 	currIndex = -1,
 	nextIndex = -1,
-	zeroLengthHandles = null
+	zeroLengthHandles = null,
+	originalSegments = null,
+	offsetDistance = 0,
+	isCounterClockwise = false
 ) {
 	// Check for zero-length handles at the junction using original segment information
 	let currHasZeroLengthEnd = false;
@@ -323,11 +358,9 @@ function calculateJunctionPoint(
 
 	if (zeroLengthHandles && currIndex >= 0 && nextIndex >= 0) {
 		currHasZeroLengthEnd =
-			zeroLengthHandles[currIndex] &&
-			zeroLengthHandles[currIndex].endZeroLength;
+			zeroLengthHandles[currIndex] && zeroLengthHandles[currIndex].endZeroLength;
 		nextHasZeroLengthStart =
-			zeroLengthHandles[nextIndex] &&
-			zeroLengthHandles[nextIndex].startZeroLength;
+			zeroLengthHandles[nextIndex] && zeroLengthHandles[nextIndex].startZeroLength;
 	} else {
 		// Fallback to current state detection
 		currHasZeroLengthEnd = curr.p3x === curr.p4x && curr.p3y === curr.p4y;
@@ -336,8 +369,74 @@ function calculateJunctionPoint(
 
 	// If both segments have zero-length handles at the junction, treat as sharp corner
 	if (currHasZeroLengthEnd && nextHasZeroLengthStart) {
-		// For zero-length handles, use linear behavior which forces normal movement
-		// This treats the junction as a sharp corner that moves linearly with offset
+		// For any junction between segments (especially straight lines),
+		// use normal-based positioning from the original anchor point
+		if (originalSegments && currIndex >= 0 && nextIndex >= 0) {
+			const currentSeg = originalSegments[currIndex];
+			const nextSeg = originalSegments[nextIndex];
+
+			// Get the original junction point (anchor point)
+			const originalAnchorX = currentSeg.p4x; // Should equal nextSeg.p1x
+			const originalAnchorY = currentSeg.p4y; // Should equal nextSeg.p1y
+
+			// Get direction vectors at this anchor point
+			const anchorDirections = getDirectionsAtAnchor(currentSeg, nextSeg);
+
+			if (anchorDirections.length === 2) {
+				const dir1 = anchorDirections[0];
+				const dir2 = anchorDirections[1];
+
+				// Normalize direction vectors
+				const norm1 = normalize(dir1);
+				const norm2 = normalize(dir2);
+
+				// Calculate perpendicular (normal) vectors to each direction
+				// Apply sign-aware normal calculation for negative offsets
+				const offsetSign = offsetDistance < 0 ? -1 : 1;
+				let normal1, normal2;
+				if (isCounterClockwise) {
+					// For CCW shapes, use right-hand normal (dy, -dx)
+					normal1 = { x: norm1.y * offsetSign, y: -norm1.x * offsetSign };
+					normal2 = { x: norm2.y * offsetSign, y: -norm2.x * offsetSign };
+				} else {
+					// For CW shapes, use left-hand normal (-dy, dx)
+					normal1 = { x: -norm1.y * offsetSign, y: norm1.x * offsetSign };
+					normal2 = { x: -norm2.y * offsetSign, y: norm2.x * offsetSign };
+				}
+
+				// Calculate the bisector normal (average of the two normals)
+				let bisectorNormal = {
+					x: normal1.x + normal2.x,
+					y: normal1.y + normal2.y,
+				};
+
+				const bisectorLength = Math.sqrt(
+					bisectorNormal.x * bisectorNormal.x + bisectorNormal.y * bisectorNormal.y
+				);
+
+				if (bisectorLength > 0) {
+					bisectorNormal.x /= bisectorLength;
+					bisectorNormal.y /= bisectorLength;
+				} else {
+					// Handle opposite normals - use one of the normals
+					bisectorNormal = normal1;
+				}
+
+				// Calculate the distance to move along the bisector
+				// For a miter joint, we need to account for the angle between segments
+				const dotProduct = normal1.x * normal2.x + normal1.y * normal2.y;
+				const cosHalfAngle = Math.sqrt((1 + dotProduct) / 2);
+				const miterDistance = Math.abs(offsetDistance) / Math.max(cosHalfAngle, 0.1); // Prevent division by very small numbers
+
+				// Move the original anchor point along the bisector normal
+				return {
+					x: originalAnchorX + bisectorNormal.x * miterDistance,
+					y: originalAnchorY + bisectorNormal.y * miterDistance,
+				};
+			}
+		}
+
+		// Fallback to midpoint averaging if we can't calculate proper direction
 		return {
 			x: (curr.p4x + next.p1x) / 2,
 			y: (curr.p4y + next.p1y) / 2,
@@ -353,12 +452,31 @@ function calculateJunctionPoint(
 		case 'midpoint':
 			return midpoint;
 
-		case 'miter':
+		case 'miter': {
 			// True geometric miter - find intersection of extended lines
 			if (curr.isLine && next.isLine) {
-				return calculateStraightStraightJoint(curr, next);
+				const intersection = calculateStraightStraightJoint(curr, next);
+				return intersection;
 			}
-			return midpoint; // Fallback for curves
+			// For mixed geometry (straight line meeting curve), preserve straight line endpoints
+			// by using a more conservative approach that maintains parallelism
+			if (curr.isLine || next.isLine) {
+				// If one segment is straight, calculate a junction that better preserves
+				// the straight segment's parallel relationship with its original
+				const mixedJunction = calculateMixedGeometryJunction(
+					curr,
+					next,
+					originalSegments,
+					currIndex,
+					nextIndex,
+					offsetDistance,
+					isCounterClockwise
+				);
+				return mixedJunction;
+			}
+			const curveJunction = midpoint;
+			return curveJunction; // Fallback for curve-to-curve
+		}
 
 		case 'linear': {
 			// Force linear movement - move junction point more substantially
@@ -405,12 +523,8 @@ function calculateDampedJunction(curr, next, midpoint) {
 
 	// Apply damping by moving toward the original endpoints
 	return {
-		x:
-			midpoint.x * dampingFactor +
-			((curr.p4x + next.p1x) * (1 - dampingFactor)) / 2,
-		y:
-			midpoint.y * dampingFactor +
-			((curr.p4y + next.p1y) * (1 - dampingFactor)) / 2,
+		x: midpoint.x * dampingFactor + ((curr.p4x + next.p1x) * (1 - dampingFactor)) / 2,
+		y: midpoint.y * dampingFactor + ((curr.p4y + next.p1y) * (1 - dampingFactor)) / 2,
 	};
 }
 
@@ -427,10 +541,7 @@ function calculateEnhancedJunction(curr, next, midpoint) {
 
 	// Enhancement factor: increase movement for acute angles
 	// Factor ranges from 1.5 (most enhancement at 0°) to 1.0 (no enhancement at 90°+)
-	const enhancementFactor = Math.max(
-		1.0,
-		Math.min(1.5, 1.5 - angle / (Math.PI / 2))
-	);
+	const enhancementFactor = Math.max(1.0, Math.min(1.5, 1.5 - angle / (Math.PI / 2)));
 
 	// Apply enhancement by moving away from original endpoints
 	const dx = midpoint.x - (curr.p4x + next.p1x) / 2;
@@ -476,6 +587,139 @@ function calculateSegmentAngle(curr, next) {
 }
 
 /**
+ * Calculate junction point for mixed geometry (straight line meeting curve).
+ * Uses proper normal-based positioning from original anchor points.
+ * @param {Segment} curr - Current segment
+ * @param {Segment} next - Next segment
+ * @param {Array} originalSegments - Original segments for anchor reference
+ * @param {number} currIndex - Current segment index
+ * @param {number} nextIndex - Next segment index
+ * @param {number} offsetDistance - Offset distance
+ * @param {boolean} isCounterClockwise - Winding direction
+ * @returns {{x: number, y: number}} Junction point
+ */
+function calculateMixedGeometryJunction(
+	curr,
+	next,
+	originalSegments,
+	currIndex,
+	nextIndex,
+	offsetDistance,
+	isCounterClockwise
+) {
+	// For any mixed geometry junction, we need to position the anchor point
+	// based on the normal vector from the original anchor point
+
+	if (originalSegments && currIndex >= 0 && nextIndex >= 0) {
+		const currentSeg = originalSegments[currIndex];
+		const nextSeg = originalSegments[nextIndex];
+
+		// Get the original junction point (anchor point)
+		const originalAnchorX = currentSeg.p4x; // Should equal nextSeg.p1x
+		const originalAnchorY = currentSeg.p4y; // Should equal nextSeg.p1y
+
+		// Get direction vectors at this anchor point
+		const anchorDirections = getDirectionsAtAnchor(currentSeg, nextSeg);
+
+		if (anchorDirections.length === 2) {
+			const dir1 = anchorDirections[0];
+			const dir2 = anchorDirections[1];
+
+			// Normalize direction vectors
+			const norm1 = normalize(dir1);
+			const norm2 = normalize(dir2);
+
+			// Determine offset direction
+			const offsetSign = offsetDistance > 0 ? 1 : -1;
+
+			// Calculate perpendicular (normal) vectors to each direction
+			// The normal direction depends on both winding and offset direction
+			let normal1, normal2;
+
+			if (isCounterClockwise) {
+				// For CCW shapes with positive offset (outward), use right-hand normal (dy, -dx)
+				// For CCW shapes with negative offset (inward), use left-hand normal (-dy, dx)
+				if (offsetSign > 0) {
+					normal1 = { x: norm1.y, y: -norm1.x };
+					normal2 = { x: norm2.y, y: -norm2.x };
+				} else {
+					normal1 = { x: -norm1.y, y: norm1.x };
+					normal2 = { x: -norm2.y, y: norm2.x };
+				}
+			} else {
+				// For CW shapes with positive offset (outward), use left-hand normal (-dy, dx)
+				// For CW shapes with negative offset (inward), use right-hand normal (dy, -dx)
+				if (offsetSign > 0) {
+					normal1 = { x: -norm1.y, y: norm1.x };
+					normal2 = { x: -norm2.y, y: norm2.x };
+				} else {
+					normal1 = { x: norm1.y, y: -norm1.x };
+					normal2 = { x: norm2.y, y: -norm2.x };
+				}
+			}
+
+			// Calculate the bisector normal (average of the two normals)
+			let bisectorNormal = {
+				x: normal1.x + normal2.x,
+				y: normal1.y + normal2.y,
+			};
+
+			const bisectorLength = Math.sqrt(
+				bisectorNormal.x * bisectorNormal.x + bisectorNormal.y * bisectorNormal.y
+			);
+
+			if (bisectorLength > 0) {
+				bisectorNormal.x /= bisectorLength;
+				bisectorNormal.y /= bisectorLength;
+			} else {
+				// Handle opposite normals - use one of the normals
+				bisectorNormal = normal1;
+			}
+
+			// Calculate the distance to move along the bisector
+			// For a miter joint, we need to account for the angle between segments
+			const dotProduct = normal1.x * normal2.x + normal1.y * normal2.y;
+			const cosHalfAngle = Math.sqrt((1 + dotProduct) / 2);
+			const miterDistance = Math.abs(offsetDistance) / Math.max(cosHalfAngle, 0.1);
+
+			// Move the original anchor point along the bisector normal
+			return {
+				x: originalAnchorX + bisectorNormal.x * miterDistance,
+				y: originalAnchorY + bisectorNormal.y * miterDistance,
+			};
+		}
+	}
+
+	// Fallback to original logic if we can't calculate proper normal
+	// For straight-to-curve junctions, use straight line endpoint
+	if (curr.isLine && !next.isLine) {
+		return {
+			x: curr.p4x,
+			y: curr.p4y,
+		};
+	}
+
+	// For curve-to-straight junctions, use straight line start point
+	if (!curr.isLine && next.isLine) {
+		return {
+			x: next.p1x,
+			y: next.p1y,
+		};
+	}
+
+	// Both are lines - use proper geometric intersection
+	if (curr.isLine && next.isLine) {
+		return calculateStraightStraightJoint(curr, next);
+	}
+
+	// Both are curves - use midpoint as fallback
+	return {
+		x: (curr.p4x + next.p1x) / 2,
+		y: (curr.p4y + next.p1y) / 2,
+	};
+}
+
+/**
  * Adjust zero-length handles at a junction to move along with their points.
  * This treats zero-length handles (where handle equals point) as sharp corners.
  * @param {Segment} curr - Current segment
@@ -484,30 +728,18 @@ function calculateSegmentAngle(curr, next) {
  * @param {number} nextIndex - Index of next segment
  * @param {Array} zeroLengthHandles - Array tracking which handles were originally zero-length
  */
-function adjustZeroLengthHandlesAtJunction(
-	curr,
-	next,
-	currIndex,
-	nextIndex,
-	zeroLengthHandles
-) {
+function adjustZeroLengthHandlesAtJunction(curr, next, currIndex, nextIndex, zeroLengthHandles) {
 	if (!zeroLengthHandles) return;
 
 	// Check if current segment originally had zero-length end handle (p3 == p4)
-	if (
-		zeroLengthHandles[currIndex] &&
-		zeroLengthHandles[currIndex].endZeroLength
-	) {
+	if (zeroLengthHandles[currIndex] && zeroLengthHandles[currIndex].endZeroLength) {
 		// Keep p3 at the same position as p4
 		curr.p3x = curr.p4x;
 		curr.p3y = curr.p4y;
 	}
 
 	// Check if next segment originally had zero-length start handle (p1 == p2)
-	if (
-		zeroLengthHandles[nextIndex] &&
-		zeroLengthHandles[nextIndex].startZeroLength
-	) {
+	if (zeroLengthHandles[nextIndex] && zeroLengthHandles[nextIndex].startZeroLength) {
 		// Keep p2 at the same position as p1
 		next.p2x = next.p1x;
 		next.p2y = next.p1y;
@@ -523,11 +755,7 @@ function adjustZeroLengthHandlesAtJunction(
  * @param {number} offsetDistance - The offset distance used
  * @returns {Segment[]} Segments with improved zero-length handle junctions
  */
-function improveZeroLengthHandleJunctions(
-	segments,
-	zeroLengthHandles,
-	offsetDistance
-) {
+function improveZeroLengthHandleJunctions(segments, zeroLengthHandles, offsetDistance) {
 	if (!zeroLengthHandles || segments.length < 2) return segments;
 
 	for (let i = 0; i < segments.length; i++) {
@@ -536,11 +764,9 @@ function improveZeroLengthHandleJunctions(
 		const nextIndex = (i + 1) % segments.length;
 
 		// Check if this junction has zero-length handles
-		const currHasZeroLengthEnd =
-			zeroLengthHandles[i] && zeroLengthHandles[i].endZeroLength;
+		const currHasZeroLengthEnd = zeroLengthHandles[i] && zeroLengthHandles[i].endZeroLength;
 		const nextHasZeroLengthStart =
-			zeroLengthHandles[nextIndex] &&
-			zeroLengthHandles[nextIndex].startZeroLength;
+			zeroLengthHandles[nextIndex] && zeroLengthHandles[nextIndex].startZeroLength;
 
 		if (currHasZeroLengthEnd && nextHasZeroLengthStart) {
 			// Calculate a new junction position that moves more proportionally with offset
@@ -590,10 +816,8 @@ function improveZeroLengthHandleJunctions(
 					const currentJunctionX = curr.p4x; // Should be same as next.p1x
 					const currentJunctionY = curr.p4y; // Should be same as next.p1y
 
-					const newJunctionX =
-						currentJunctionX + perpendicular.x * moveDistance;
-					const newJunctionY =
-						currentJunctionY + perpendicular.y * moveDistance;
+					const newJunctionX = currentJunctionX + perpendicular.x * moveDistance;
+					const newJunctionY = currentJunctionY + perpendicular.y * moveDistance;
 
 					// Update both segments to use the new junction point
 					curr.p4x = newJunctionX;
@@ -616,6 +840,78 @@ function improveZeroLengthHandleJunctions(
 	}
 
 	return segments;
+}
+
+/**
+ * Post-process offset segments to restore proper geometric parallelism for straight line segments.
+ * Uses the fundamental principle: move each anchor point along its normal by the offset distance.
+ * @param {Segment[]} offsetSegments - Array of offset segments after junction handling
+ * @param {Segment[]} originalSegments - Array of original segments before offset
+ * @param {number} distance - The offset distance used
+ * @returns {Segment[]} Array of segments with geometrically correct straight line offsets
+ */
+function restoreParallelism(offsetSegments, originalSegments, distance) {
+	if (offsetSegments.length !== originalSegments.length) {
+		return offsetSegments; // Can't restore if array lengths don't match
+	}
+
+	for (let i = 0; i < offsetSegments.length; i++) {
+		const offsetSeg = offsetSegments[i];
+		const originalSeg = originalSegments[i];
+
+		// Only process straight line segments
+		if (!originalSeg.isLine) continue;
+
+		// Calculate the line's normal vector (perpendicular direction)
+		const lineDirection = {
+			x: originalSeg.p4x - originalSeg.p1x,
+			y: originalSeg.p4y - originalSeg.p1y,
+		};
+
+		// Calculate the left-hand normal (-dy, dx) for consistent offset direction
+		const normal = { x: -lineDirection.y, y: lineDirection.x };
+		const normalLength = Math.sqrt(normal.x * normal.x + normal.y * normal.y);
+
+		if (normalLength === 0) continue; // Skip zero-length segments
+
+		const normalUnit = {
+			x: normal.x / normalLength,
+			y: normal.y / normalLength,
+		};
+
+		// Move each anchor point along the normal by the offset distance
+		// This is the fundamental geometric principle for parallel line offset
+		const newP1x = originalSeg.p1x + normalUnit.x * distance;
+		const newP1y = originalSeg.p1y + normalUnit.y * distance;
+		const newP4x = originalSeg.p4x + normalUnit.x * distance;
+		const newP4y = originalSeg.p4y + normalUnit.y * distance;
+
+		// Update the segment endpoints to the geometrically correct positions
+		offsetSeg.p1x = newP1x;
+		offsetSeg.p1y = newP1y;
+		offsetSeg.p4x = newP4x;
+		offsetSeg.p4y = newP4y;
+
+		// Handle control points properly for straight line segments
+		const originalHandlesCollapseToLine =
+			originalSeg.p2x === originalSeg.p1x &&
+			originalSeg.p2y === originalSeg.p1y &&
+			originalSeg.p3x === originalSeg.p4x &&
+			originalSeg.p3y === originalSeg.p4y;
+
+		if (originalHandlesCollapseToLine) {
+			// Original had no explicit handles - make offset handles collapse to endpoints too
+			offsetSeg.p2x = offsetSeg.p1x;
+			offsetSeg.p2y = offsetSeg.p1y;
+			offsetSeg.p3x = offsetSeg.p4x;
+			offsetSeg.p3y = offsetSeg.p4y;
+		} else {
+			// Original had explicit handles - adjust them to maintain straightness
+			adjustStraightLineControlPoints(offsetSeg);
+		}
+	}
+
+	return offsetSegments;
 }
 
 /**
@@ -837,11 +1133,7 @@ function adjustStraightLineControlPoints(segment) {
  * @param {number} offsetDistance
  * @returns {Segment[]}
  */
-function preserveHandleGeometry(
-	offsetSegments,
-	originalSegments,
-	offsetDistance
-) {
+function preserveHandleGeometry(offsetSegments, originalSegments, offsetDistance) {
 	for (let i = 0; i < offsetSegments.length; i++) {
 		const offsetSeg = offsetSegments[i];
 		const originalSeg = originalSegments[i];
@@ -871,11 +1163,7 @@ function preserveSegmentHandleGeometry(offsetSeg, originalSeg, offsetDistance) {
 	// Calculate scaling factor based on offset distance
 	// For now, use a simple approach: handle distance should scale proportionally
 	// We'll determine the exact scaling by comparing curve radius changes
-	const scalingFactor = calculateHandleScalingFactor(
-		originalSeg,
-		offsetSeg,
-		offsetDistance
-	);
+	const scalingFactor = calculateHandleScalingFactor(originalSeg, offsetSeg, offsetDistance);
 
 	// Preserve p2 handle (incoming handle to p1)
 	preserveHandle(
@@ -916,8 +1204,7 @@ function calculateHandleScalingFactor(originalSeg, offsetSeg, offsetDistance) {
 	// Use the distance between start and end points as a proxy for curve size
 
 	const originalSpan = Math.sqrt(
-		(originalSeg.p4x - originalSeg.p1x) ** 2 +
-			(originalSeg.p4y - originalSeg.p1y) ** 2
+		(originalSeg.p4x - originalSeg.p1x) ** 2 + (originalSeg.p4y - originalSeg.p1y) ** 2
 	);
 
 	const offsetSpan = Math.sqrt(
@@ -959,13 +1246,9 @@ function preserveHandle(
 	scalingFactor
 ) {
 	// Calculate original handle vector and angle
-	const originalHandleX =
-		originalSeg[originalHandleProp + 'x'] - originalPointX;
-	const originalHandleY =
-		originalSeg[originalHandleProp + 'y'] - originalPointY;
-	const originalHandleDistance = Math.sqrt(
-		originalHandleX ** 2 + originalHandleY ** 2
-	);
+	const originalHandleX = originalSeg[originalHandleProp + 'x'] - originalPointX;
+	const originalHandleY = originalSeg[originalHandleProp + 'y'] - originalPointY;
+	const originalHandleDistance = Math.sqrt(originalHandleX ** 2 + originalHandleY ** 2);
 	const originalHandleAngle = Math.atan2(originalHandleY, originalHandleX);
 
 	// Rule 1: Preserve the angle (OP-OH angle = NP-NH angle)
@@ -973,10 +1256,8 @@ function preserveHandle(
 	const newHandleDistance = originalHandleDistance * scalingFactor;
 
 	// Calculate new handle position
-	const newHandleX =
-		offsetPointX + Math.cos(originalHandleAngle) * newHandleDistance;
-	const newHandleY =
-		offsetPointY + Math.sin(originalHandleAngle) * newHandleDistance;
+	const newHandleX = offsetPointX + Math.cos(originalHandleAngle) * newHandleDistance;
+	const newHandleY = offsetPointY + Math.sin(originalHandleAngle) * newHandleDistance;
 
 	// Apply the new handle position
 	offsetSeg[handleProp + 'x'] = newHandleX;
@@ -1014,16 +1295,8 @@ function evaluateSegmentAt(segment, t) {
 	const mt3 = mt2 * mt;
 
 	return {
-		x:
-			mt3 * segment.p1x +
-			3 * mt2 * t * segment.p2x +
-			3 * mt * t2 * segment.p3x +
-			t3 * segment.p4x,
-		y:
-			mt3 * segment.p1y +
-			3 * mt2 * t * segment.p2y +
-			3 * mt * t2 * segment.p3y +
-			t3 * segment.p4y,
+		x: mt3 * segment.p1x + 3 * mt2 * t * segment.p2x + 3 * mt * t2 * segment.p3x + t3 * segment.p4x,
+		y: mt3 * segment.p1y + 3 * mt2 * t * segment.p2y + 3 * mt * t2 * segment.p3y + t3 * segment.p4y,
 	};
 }
 
@@ -1057,4 +1330,289 @@ function lineIntersection(p1, p2, p3, p4) {
 		x: x1 + t * (x2 - x1),
 		y: y1 + t * (y2 - y1),
 	};
+}
+
+// =======================================
+// DIRECTION CALCULATION FUNCTIONS
+// =======================================
+
+/**
+ * Calculate movement directions for polygon vertices.
+ * @param {Segment[]} segments Original polygon segments
+ * @param {number} distance Offset distance (already adjusted for winding)
+ * @param {boolean} isCounterClockwise Whether the shape is counter-clockwise
+ * @returns {Array<{anchor: {x, y}, direction: {x, y}, angle: number}>} Direction information for each vertex
+ */
+function calculatePolygonDirections(segments, distance, isCounterClockwise) {
+	const directions = [];
+
+	for (let i = 0; i < segments.length; i++) {
+		const currentSeg = segments[i];
+		const nextSeg = segments[(i + 1) % segments.length];
+
+		// Get the two edges meeting at this vertex
+		const prevSeg = segments[i === 0 ? segments.length - 1 : i - 1];
+
+		// Calculate edge vectors
+		const edge1 = {
+			x: currentSeg.p1x - prevSeg.p1x,
+			y: currentSeg.p1y - prevSeg.p1y,
+		};
+		const edge2 = {
+			x: nextSeg.p1x - currentSeg.p1x,
+			y: nextSeg.p1y - currentSeg.p1y,
+		};
+
+		// Normalize edge vectors
+		const edge1Length = Math.sqrt(edge1.x * edge1.x + edge1.y * edge1.y);
+		const edge2Length = Math.sqrt(edge2.x * edge2.x + edge2.y * edge2.y);
+
+		if (edge1Length > 0) {
+			edge1.x /= edge1Length;
+			edge1.y /= edge1Length;
+		}
+		if (edge2Length > 0) {
+			edge2.x /= edge2Length;
+			edge2.y /= edge2Length;
+		}
+
+		// Calculate normals based on winding direction for correct outward direction
+		let normal1, normal2;
+		if (isCounterClockwise) {
+			// For CCW shapes, use right-hand normal (dy, -dx)
+			normal1 = { x: edge1.y, y: -edge1.x };
+			normal2 = { x: edge2.y, y: -edge2.x };
+		} else {
+			// For CW shapes, use left-hand normal (-dy, dx)
+			normal1 = { x: -edge1.y, y: edge1.x };
+			normal2 = { x: -edge2.y, y: edge2.x };
+		}
+
+		// Average the normals to get offset direction
+		let offsetDirection = {
+			x: normal1.x + normal2.x,
+			y: normal1.y + normal2.y,
+		};
+
+		const offsetLength = Math.sqrt(
+			offsetDirection.x * offsetDirection.x + offsetDirection.y * offsetDirection.y
+		);
+
+		if (offsetLength > 0) {
+			offsetDirection.x /= offsetLength;
+			offsetDirection.y /= offsetLength;
+		} else {
+			// Use normal1 if offset is zero (opposite edges)
+			offsetDirection = normal1;
+		}
+
+		// Note: Direction vectors should always point outward for positive offsets
+		// The winding direction adjustment is already handled in the distance parameter
+
+		// Calculate angle
+		const angle = Math.atan2(offsetDirection.y, offsetDirection.x);
+
+		directions.push({
+			anchor: { x: currentSeg.p1x, y: currentSeg.p1y },
+			direction: offsetDirection,
+			angle: angle,
+		});
+	}
+
+	return directions;
+}
+
+/**
+ * Calculate movement directions for mixed geometry (curves and lines).
+ * This properly handles the bisector calculation for each anchor point by looking at
+ * the direction vectors from adjacent segments, regardless of whether they're curves or lines.
+ * @param {Segment[]} segments Original segments (mixed curves and lines)
+ * @param {number} adjustedDistance Offset distance (already adjusted for winding)
+ * @param {boolean} isCounterClockwise Whether the shape is counter-clockwise
+ * @returns {Array<{anchor: {x, y}, direction: {x, y}, angle: number}>} Direction information for each anchor
+ */
+function calculateMixedGeometryDirections(segments, adjustedDistance, isCounterClockwise) {
+	const directions = [];
+
+	for (let i = 0; i < segments.length; i++) {
+		const currentSeg = segments[i];
+		const prevSeg = segments[i === 0 ? segments.length - 1 : i - 1];
+
+		// Get direction vectors at this anchor point
+		const anchorDirections = getDirectionsAtAnchor(prevSeg, currentSeg);
+
+		if (anchorDirections.length === 2) {
+			// Calculate proper offset direction from the two direction vectors
+			const dir1 = anchorDirections[0];
+			const dir2 = anchorDirections[1];
+
+			// Normalize direction vectors
+			const norm1 = normalize(dir1);
+			const norm2 = normalize(dir2);
+
+			// Calculate perpendicular (normal) vectors to each direction
+			// Use different normal direction based on winding direction
+			let normal1, normal2;
+			if (isCounterClockwise) {
+				// For CCW shapes, use right-hand normal (dy, -dx)
+				normal1 = { x: norm1.y, y: -norm1.x };
+				normal2 = { x: norm2.y, y: -norm2.x };
+			} else {
+				// For CW shapes, use left-hand normal (-dy, dx)
+				normal1 = { x: -norm1.y, y: norm1.x };
+				normal2 = { x: -norm2.y, y: norm2.x };
+			}
+
+			// Average the normals to get the offset direction
+			let offsetDirection = {
+				x: normal1.x + normal2.x,
+				y: normal1.y + normal2.y,
+			};
+
+			const offsetLength = Math.sqrt(
+				offsetDirection.x * offsetDirection.x + offsetDirection.y * offsetDirection.y
+			);
+
+			if (offsetLength > 0) {
+				offsetDirection.x /= offsetLength;
+				offsetDirection.y /= offsetLength;
+			} else {
+				// Handle opposite normals - use one of the normals
+				offsetDirection = normal1;
+			}
+
+			// Note: Direction vectors should always point outward for positive offsets
+			// The winding direction adjustment is already handled in the distance parameter
+
+			const angle = Math.atan2(offsetDirection.y, offsetDirection.x);
+
+			directions.push({
+				anchor: { x: currentSeg.p1x, y: currentSeg.p1y },
+				direction: offsetDirection,
+				angle: angle,
+			});
+		} else {
+			// Fallback to simple perpendicular direction if we can't get two directions
+			const nextSeg = segments[(i + 1) % segments.length];
+			const edge = {
+				x: nextSeg.p1x - currentSeg.p1x,
+				y: nextSeg.p1y - currentSeg.p1y,
+			};
+			const edgeLength = Math.sqrt(edge.x * edge.x + edge.y * edge.y);
+
+			let perpendicular = { x: 0, y: 0 };
+			if (edgeLength > 0) {
+				if (isCounterClockwise) {
+					// For CCW shapes, use right-hand normal (dy, -dx)
+					perpendicular = { x: edge.y / edgeLength, y: -edge.x / edgeLength };
+				} else {
+					// For CW shapes, use left-hand normal (-dy, dx)
+					perpendicular = { x: -edge.y / edgeLength, y: edge.x / edgeLength };
+				}
+			}
+
+			// Note: Direction vectors should always point outward for positive offsets
+			// The winding direction adjustment is already handled in the distance parameter
+
+			const angle = Math.atan2(perpendicular.y, perpendicular.x);
+
+			directions.push({
+				anchor: { x: currentSeg.p1x, y: currentSeg.p1y },
+				direction: perpendicular,
+				angle: angle,
+			});
+		}
+	}
+
+	return directions;
+}
+
+/**
+ * Get the direction vectors at a specific anchor point from the adjacent segments.
+ * For curves, this uses the handle direction. For lines, this uses the line direction.
+ * @param {Segment} previousSegment Segment ending at this anchor
+ * @param {Segment} currentSegment Segment starting at this anchor
+ * @returns {Array<{x: number, y: number}>} Array of direction vectors (should be 2)
+ */
+function getDirectionsAtAnchor(previousSegment, currentSegment) {
+	const directions = [];
+
+	// Direction FROM the previous segment (incoming direction)
+	// This is the direction from the previous segment's end handle to the anchor
+	if (previousSegment.isLine) {
+		// For straight lines, use the line direction
+		const lineDir = {
+			x: previousSegment.p4x - previousSegment.p1x,
+			y: previousSegment.p4y - previousSegment.p1y,
+		};
+		directions.push(lineDir);
+	} else {
+		// For curves, use the handle direction
+		// Check if p3 handle exists and is not coincident with p4
+		const hasP3Handle =
+			previousSegment.p3x !== previousSegment.p4x || previousSegment.p3y !== previousSegment.p4y;
+
+		if (hasP3Handle) {
+			// Use direction from p3 handle to p4 (anchor)
+			const handleDir = {
+				x: previousSegment.p4x - previousSegment.p3x,
+				y: previousSegment.p4y - previousSegment.p3y,
+			};
+			directions.push(handleDir);
+		} else {
+			// No p3 handle - check if there's a p2 handle to determine curve tangent
+			const hasP2Handle =
+				previousSegment.p2x !== previousSegment.p1x || previousSegment.p2y !== previousSegment.p1y;
+
+			if (hasP2Handle) {
+				// For quadratic curve ending flat, use direction from p2 to p4
+				const tangentDir = {
+					x: previousSegment.p4x - previousSegment.p2x,
+					y: previousSegment.p4y - previousSegment.p2y,
+				};
+				directions.push(tangentDir);
+			} else {
+				// No handles at all, treat as straight line from p1 to p4
+				const lineDir = {
+					x: previousSegment.p4x - previousSegment.p1x,
+					y: previousSegment.p4y - previousSegment.p1y,
+				};
+				directions.push(lineDir);
+			}
+		}
+	}
+
+	// Direction TO the current segment (outgoing direction)
+	// This is the direction from the anchor to the current segment's start handle
+	if (currentSegment.isLine) {
+		// For straight lines, use the line direction
+		const lineDir = {
+			x: currentSegment.p4x - currentSegment.p1x,
+			y: currentSegment.p4y - currentSegment.p1y,
+		};
+		directions.push(lineDir);
+	} else {
+		// For curves, use the handle direction
+		// Check if p2 handle exists and is not coincident with p1
+		const hasP2Handle =
+			currentSegment.p2x !== currentSegment.p1x || currentSegment.p2y !== currentSegment.p1y;
+
+		if (hasP2Handle) {
+			// Use direction from p1 (anchor) to p2 handle
+			const handleDir = {
+				x: currentSegment.p2x - currentSegment.p1x,
+				y: currentSegment.p2y - currentSegment.p1y,
+			};
+			directions.push(handleDir);
+		} else {
+			// No handle, treat as straight line from p1 to p4
+			const lineDir = {
+				x: currentSegment.p4x - currentSegment.p1x,
+				y: currentSegment.p4y - currentSegment.p1y,
+			};
+			directions.push(lineDir);
+		}
+	}
+
+	return directions;
 }
