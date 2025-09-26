@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
+import { Path } from '../project_data/path.js';
 
 // --------------------------------------------------------------
 // Transforms panel
@@ -62,11 +63,26 @@ function makeSkewCard() {
 
 	skewApplyButton.addEventListener('click', () => {
 		const editor = getCurrentProjectEditor();
-		const skewAngle = skewInput.getAttribute('value');
+		const skewAngle = Number(skewInput.getAttribute('value'));
 		let selShapes = editor.multiSelect.shapes.members;
+		let newShapes = [];
+		selShapes.forEach((shape) => {
+			if (shape.objType === 'Path') {
+				let newPath = new Path(shape);
+				// newPath.skew(skewAngle);
+				newPath.updateShapePosition(skewAngle, 0)
+				newShapes.push(newPath);
+			}
+		});
 
-		// TODO: Implement actual skew transformation
-		console.log(`Skewing ${selShapes.length} shape(s) by ${skewAngle} degrees`);
+		editor.multiSelect.shapes.deleteShapes();
+
+		editor.multiSelect.shapes.clear();
+
+		newShapes.forEach((shape) => {
+			editor.selectedItem.addOneShape(shape);
+			editor.multiSelect.shapes.add(shape);
+		});
 
 		// Placeholder for now - just log the action
 		editor.history.addState(`Skew ${selShapes.length} shape(s) by ${skewAngle}°`);
