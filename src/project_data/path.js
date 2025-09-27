@@ -3,7 +3,9 @@ import {
 	calculateDeltasFromTransform,
 	clone,
 	hasNonValues,
+	niceAngleToRadians,
 	parseNumber,
+	radiansToNiceAngle,
 	round,
 	strSan,
 	transformOrigins,
@@ -639,6 +641,27 @@ export class Path extends GlyphElement {
 		}
 
 		// log('Path.rotate', 'end');
+	}
+
+	skew(angle, about = { x: 0, y: 0 }) {
+		log('Path.skew', 'start');
+		const angleRadians = niceAngleToRadians(angle);
+		log(`angle: ${angle}`);
+		log(`angleRadians: ${angleRadians}`);
+		log(`back again: ${radiansToNiceAngle(angleRadians)}`);
+
+		for (let d = 0; d < this.pathPoints.length; d++) {
+			const pp = this.pathPoints[d];
+			const h1dx = (pp.h1.y - about.y) * Math.tan(angleRadians);
+			pp.h1.coord.x += h1dx;
+			const h2dx = (pp.h2.y - about.y) * Math.tan(angleRadians);
+			pp.h2.coord.x += h2dx;
+			const pdx = (pp.p.y - about.y) * Math.tan(angleRadians);
+			log(`point ${d} pdx: ${pdx}`);
+			pp.p.coord.x += pdx;
+		}
+
+		log('Path.skew', 'end');
 	}
 
 	// --------------------------------------------------------------

@@ -69,8 +69,7 @@ function makeSkewCard() {
 		selShapes.forEach((shape) => {
 			if (shape.objType === 'Path') {
 				let newPath = new Path(shape);
-				// newPath.skew(skewAngle);
-				newPath.updateShapePosition(skewAngle, 0)
+				newPath.skew(skewAngle);
 				newShapes.push(newPath);
 			}
 		});
