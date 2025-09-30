@@ -565,7 +565,7 @@ export class MultiSelectShapes extends MultiSelect {
 		return success;
 	}
 
-	deleteShapes() {
+	deleteShapes(deleteComponentInstances = true) {
 		// log('deleteShapes', 'start');
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();
@@ -575,11 +575,14 @@ export class MultiSelectShapes extends MultiSelect {
 		if (this.members.length === 0) this.clear();
 		else {
 			this.members.forEach((item) => {
-				if (item.objType === 'ComponentInstance') {
+				if (item.objType === 'ComponentInstance' && deleteComponentInstances) {
 					removeLinkFromUsedIn(project.getItem(item.link), item.parent.id);
+					index = itemShapes.indexOf(item);
+					if (index > -1) itemShapes.splice(index, 1);
+				} else if (item.objType === 'Path') {
+					index = itemShapes.indexOf(item);
+					if (index > -1) itemShapes.splice(index, 1);
 				}
-				index = itemShapes.indexOf(item);
-				if (index > -1) itemShapes.splice(index, 1);
 			});
 		}
 

@@ -113,7 +113,7 @@ function makeSkewCard() {
 			}
 		});
 
-		editor.multiSelect.shapes.deleteShapes();
+		editor.multiSelect.shapes.deleteShapes(false);
 
 		editor.multiSelect.shapes.clear();
 
@@ -142,7 +142,7 @@ function makeSkewCard() {
 			}
 		});
 
-		editor.multiSelect.shapes.deleteShapes();
+		editor.multiSelect.shapes.deleteShapes(false);
 
 		editor.multiSelect.shapes.clear();
 
@@ -215,11 +215,13 @@ function makeOffsetCard() {
 		let selShapes = editor.multiSelect.shapes.members;
 		let newShapes = [];
 		selShapes.forEach((shape) => {
-			const newPolySegment = shape.makePolySegment().makeOffsetPolySegment(offsetDistance);
-			newShapes.push(newPolySegment.path);
+			if (shape.objType === 'Path') {
+				const newPolySegment = shape.makePolySegment().makeOffsetPolySegment(offsetDistance);
+				newShapes.push(newPolySegment.path);
+			}
 		});
 
-		editor.multiSelect.shapes.deleteShapes();
+		editor.multiSelect.shapes.deleteShapes(false);
 
 		editor.multiSelect.shapes.clear();
 
@@ -295,7 +297,6 @@ function makeRotationCard() {
 
 		msShapes.rotate(rotationAngle, rotationCenter);
 
-		// Placeholder for now - just log the action
 		editor.history.addState(
 			`Rotated ${msShapes.length} ${
 				msShapes.length === 1 ? 'shape' : 'shapes'
