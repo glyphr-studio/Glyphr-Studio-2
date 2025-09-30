@@ -90,6 +90,10 @@ function unsubscribeExcept(panelName = '') {
  */
 export function refreshPanel() {
 	// log(`refreshPanel`, 'start');
+	if (getCurrentProjectEditor().nav.panel === 'Transforms') {
+		// log(`refreshPanel`, 'end');
+		return;
+	}
 	let panelArea = document.querySelector('#editor-page__panel');
 	if (panelArea) {
 		let newContent = makePanel();
