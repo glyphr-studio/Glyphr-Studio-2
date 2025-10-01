@@ -70,4 +70,34 @@ describe('KernGroup', () => {
 	it('name', () => {
 		expect(sampleKernGroup().name).toBe('Aa | Vv');
 	});
+
+	it('leftGroupSorted getter - defaults to leftGroup when not set', () => {
+		const kern = sampleKernGroup();
+		expect(kern.leftGroupSorted).toEqual(['0x41', '0x61']);
+		expect(kern.leftGroupSorted).toEqual(kern.leftGroup);
+	});
+
+	it('leftGroupSorted setter and getter', () => {
+		const kern = sampleKernGroup();
+		const sortedGroup = ['0x61', '0x41'];
+		kern.leftGroupSorted = sortedGroup;
+		expect(kern.leftGroupSorted).toEqual(sortedGroup);
+		// Original leftGroup should remain unchanged
+		expect(kern.leftGroup).toEqual(['0x41', '0x61']);
+	});
+
+	it('rightGroupSorted getter - defaults to rightGroup when not set', () => {
+		const kern = sampleKernGroup();
+		expect(kern.rightGroupSorted).toEqual(['0x56', '0x76']);
+		expect(kern.rightGroupSorted).toEqual(kern.rightGroup);
+	});
+
+	it('rightGroupSorted setter and getter', () => {
+		const kern = sampleKernGroup();
+		const sortedGroup = ['0x76', '0x56'];
+		kern.rightGroupSorted = sortedGroup;
+		expect(kern.rightGroupSorted).toEqual(sortedGroup);
+		// Original rightGroup should remain unchanged
+		expect(kern.rightGroup).toEqual(['0x56', '0x76']);
+	});
 });

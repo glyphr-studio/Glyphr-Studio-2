@@ -132,6 +132,26 @@ export class KernGroup extends GlyphElement {
 		return right || '';
 	}
 
+	/**
+	 * Returns a sorted version of the left group for display purposes
+	 * Defaults to the unsorted version if no sorted version has been set
+	 * @returns {Array}
+	 */
+	get leftGroupSorted() {
+		if (!this._leftGroupSorted) return this.leftGroup;
+		return this._leftGroupSorted;
+	}
+
+	/**
+	 * Returns a sorted version of the right group for display purposes
+	 * Defaults to the unsorted version if no sorted version has been set
+	 * @returns {Array}
+	 */
+	get rightGroupSorted() {
+		if (!this._rightGroupSorted) return this.rightGroup;
+		return this._rightGroupSorted;
+	}
+
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------
@@ -140,9 +160,8 @@ export class KernGroup extends GlyphElement {
 	 * Validates and sets the members of the left group
 	 * @param {Array} newGroup
 	 */
-	set leftGroup(newGroup)  {
-		newGroup = newGroup.map((value) => validateAsHex(value));
-		newGroup = newGroup.filter(duplicates);
+	set leftGroup(newGroup) {
+		newGroup = validateGroupSetter(newGroup);
 		this.changed();
 		this._leftGroup = newGroup;
 	}
@@ -151,10 +170,27 @@ export class KernGroup extends GlyphElement {
 	 * @param {Array} newGroup
 	 */
 	set rightGroup(newGroup) {
-		newGroup = newGroup.map((value) => validateAsHex(value));
-		newGroup = newGroup.filter(duplicates);
+		newGroup = validateGroupSetter(newGroup);
 		this.changed();
 		this._rightGroup = newGroup;
+	}
+
+	/**
+	 * Sets a sorted version of the left group for display purposes
+	 * @param {Array} newGroup
+	 */
+	set leftGroupSorted(newGroup) {
+		newGroup = validateGroupSetter(newGroup);
+		this._leftGroupSorted = newGroup;
+	}
+
+	/**
+	 * Sets a sorted version of the right group for display purposes
+	 * @param {Array} newGroup
+	 */
+	set rightGroupSorted(newGroup) {
+		newGroup = validateGroupSetter(newGroup);
+		this._rightGroupSorted = newGroup;
 	}
 
 	/**
@@ -165,4 +201,17 @@ export class KernGroup extends GlyphElement {
 		this._value = parseNumber(val) || 0;
 		this.changed();
 	}
+}
+
+function validateGroupSetter(newGroup) {
+	// log(`validateGroupSetter`, 'start');
+	// log(`newGroup: ${newGroup}`);
+	if (!Array.isArray(newGroup)) {
+		newGroup = undefined;
+	} else {
+		newGroup = newGroup.map((value) => validateAsHex(value));
+		newGroup = newGroup.filter(duplicates);
+	}
+	// log(`validateGroupSetter`, 'end');
+	return newGroup;
 }

@@ -83,6 +83,7 @@ export class ProjectEditor {
 			ligatures: 0,
 			kerning: 0,
 		};
+		this.kernGroupListSortBy = 'ID';
 
 		// Navigation
 		this.nav = new Navigator();

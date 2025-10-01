@@ -11,7 +11,7 @@ import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Guide } from '../project_editor/guide.js';
-import { CharacterRange } from './character_range.js';
+import { basicLatinOrder, CharacterRange } from './character_range.js';
 import { ComponentInstance } from './component_instance.js';
 import { KernGroup } from './kern_group.js';
 import { Path } from './path.js';
@@ -620,20 +620,48 @@ export class GlyphrStudioProject {
 	/**
 	 * Returns an array that sorts kern groups by ID
 	 */
-	get sortedKernGroups() {
-		// log(`GlyphrStudioProject GET sortedKernGroups`, 'start');
-
+	getSortedKernGroups(sortBy = 'id') {
+		// log(`GlyphrStudioProject getSortedKernGroups`, 'start');
+		sortBy = sortBy.toLowerCase();
 		let result = [];
 
 		Object.keys(this.kerning).forEach((key) => {
-			this.kerning[key].suffix = parseInt(key.substring(5));
-			result.push(this.kerning[key]);
+			const kGroup = this.kerning[key];
+			// kGroup.suffix = parseInt(key.substring(5));
+			if (sortBy !== 'id') {
+				kGroup.leftGroupSorted = [...kGroup.leftGroup].sort(basicLatinAwareSort);
+				kGroup.rightGroupSorted = [...kGroup.rightGroup].sort(basicLatinAwareSort);
+			} else {
+				kGroup.leftGroupSorted = undefined;
+				kGroup.rightGroupSorted = undefined;
+			}
+
+			result.push(kGroup);
 		});
 
-		result.sort((a, b) => a.suffix - b.suffix);
+		function basicLatinAwareSort(a, b) {
+			const aIndex = basicLatinOrder.indexOf(a);
+			const bIndex = basicLatinOrder.indexOf(b);
+			if (aIndex >= 0 && bIndex >= 0) {
+				return aIndex - bIndex;
+			}
+			return a.localeCompare(b);
+		}
+
+		if (sortBy === 'id') {
+			result.sort((a, b) => a.id - b.id);
+		} else if (sortBy === 'left group') {
+			result.sort((a, b) => {
+				return a.leftGroupAsString.localeCompare(b.leftGroupAsString);
+			});
+		} else if (sortBy === 'right group') {
+			result.sort((a, b) => {
+				return a.rightGroupAsString.localeCompare(b.rightGroupAsString);
+			});
+		}
 
 		// log(result);
-		// log(`GlyphrStudioProject GET sortedKernGroups`, 'end');
+		// log(`GlyphrStudioProject getSortedKernGroups`, 'end');
 		return result;
 	}
 
