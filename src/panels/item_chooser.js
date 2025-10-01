@@ -10,10 +10,6 @@ import { showAddLigatureDialog } from '../pages/ligatures.js';
 // Chooser panels
 // --------------------------------------------------------------
 
-// --------------------------------------------------------------
-// Character chooser
-// --------------------------------------------------------------
-
 let savedClickHandler;
 let savedRegisterSubscriptions;
 
@@ -78,6 +74,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 		);
 	} else if (itemPageName === 'Kerning') {
 		// Component Chooser
+		wrapper.appendChild(makeKernSortControl());
 		wrapper.appendChild(makeKernGroupChooserList());
 		wrapper.appendChild(
 			makeElement({
@@ -375,11 +372,56 @@ function makeComponentChooserTileGrid(editor = getCurrentProjectEditor(), showSe
 	return tileGrid;
 }
 
+// --------------------------------------------------------------
+// Kern Group Sort Control
+// --------------------------------------------------------------
+
+function makeKernSortControl() {
+	const sortBy = getCurrentProjectEditor().kernGroupListSortBy || 'ID';
+	const sortControl = makeElement({
+		tag: 'div',
+		className: 'item-chooser__header',
+		innerHTML: `
+		<option-chooser id="kern-group-chooser__sort-control" selected-id="${sortBy}" selected-name="${sortBy}" selected-prefix="Sort by:">
+			<option>ID</option>
+			<option selected>Left Group</option>
+			<option>Right Group</option>
+		</option-chooser>`,
+	});
+
+	sortControl.addEventListener('click', () => {
+		log(`sortControl CLICK`, 'start');
+		const newSelection = document
+			.getElementById('kern-group-chooser__sort-control')
+			.getAttribute('selected-id');
+		log(`newSelection: ${newSelection}`);
+		getCurrentProjectEditor().kernGroupListSortBy = newSelection;
+		updateKernGroupChooserList();
+		log(`sortControl CLICK`, 'end');
+	});
+
+	return sortControl;
+}
+
+function updateKernGroupChooserList() {
+	log(`updateKernGroupChooserList`, 'start');
+	const list = document.querySelector('.kern-group-chooser__list');
+	list.innerHTML = '';
+	list.appendChild(makeKernGroupChooserList());
+	log(`updateKernGroupChooserList`, 'end');
+}
+
+// --------------------------------------------------------------
+// Kern Group Chooser List
+// --------------------------------------------------------------
+
 function makeKernGroupChooserList(editor = getCurrentProjectEditor()) {
 	// log(`makeKernGroupChooserList`, 'start');
 
 	let kernGroupRows = makeElement({ tag: 'div', className: 'kern-group-chooser__list' });
-	const sortedKernGroups = editor.project.sortedKernGroups;
+	const sortedKernGroups = editor.project.getSortedKernGroups(editor.kernGroupListSortBy);
+	// log(`\n⮟sortedKernGroups⮟`);
+	// log(sortedKernGroups);
 	const pagedComponents = getItemsFromPage(sortedKernGroups, editor.chooserPage.kerning, editor);
 
 	// log(`\n⮟pagedComponents⮟`);
@@ -423,15 +465,17 @@ export function makeOneKernGroupRow(kernID, project = getCurrentProject()) {
 	// log(`kernID: ${kernID}`);
 
 	const kernGroup = project.getItem(kernID);
+	// log(`\n⮟kernGroup⮟`);
+	// log(kernGroup);
 	const rowWrapper = makeElement({ className: 'kern-group-chooser__row' });
 	const leftMembers = makeElement({
 		className: 'kern-group-chooser__left-members',
 	});
-	leftMembers.appendChild(makeKernGroupCharChips(kernGroup.leftGroup));
+	leftMembers.appendChild(makeKernGroupCharChips(kernGroup.leftGroupSorted));
 	const rightMembers = makeElement({
 		className: 'kern-group-chooser__right-members',
 	});
-	rightMembers.appendChild(makeKernGroupCharChips(kernGroup.rightGroup));
+	rightMembers.appendChild(makeKernGroupCharChips(kernGroup.rightGroupSorted));
 
 	addAsChildren(rowWrapper, [
 		makeElement({ content: kernID }),
