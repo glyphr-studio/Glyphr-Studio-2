@@ -158,10 +158,11 @@ export class EditCanvas extends HTMLElement {
 	// --------------------------------------------------------------
 	/**
 	 * Redraw the canvas
-	 * @param {String =} caller - who is calling redraw
+	 * @param {String =} _caller - who is calling redraw
 	 */
-	redraw(caller = 'unknown') {
-		// log(`EditCanvas.redraw \\ ${caller}`, 'start');
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	redraw(_caller = 'unknown') {
+		// log(`EditCanvas.redraw \\ ${_caller}`, 'start');
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();
 		const view = editor.view;
@@ -184,7 +185,7 @@ export class EditCanvas extends HTMLElement {
 			else redrawGlyphEdit();
 		}
 
-		// log(`EditCanvas.redraw \\ ${caller}`, 'end');
+		// log(`EditCanvas.redraw \\ ${_caller}`, 'end');
 
 		function redrawGlyphEdit() {
 			// log(`EditCanvas.redrawGlyphEdit`, 'start');
@@ -298,7 +299,7 @@ export class EditCanvas extends HTMLElement {
 				kernGroup.rightGroup.forEach((id) => {
 					drawItem = project.getItem(`glyph-${id}`, false);
 					// log(drawItem);
-					if(drawItem) {
+					if (drawItem) {
 						let thisView = clone(view);
 						thisView.dx += kernGroup.value * thisView.dz;
 						// log(thisView);
@@ -312,7 +313,7 @@ export class EditCanvas extends HTMLElement {
 				kernGroup.leftGroup.forEach((id) => {
 					drawItem = project.getItem(`glyph-${id}`, false);
 					// log(drawItem);
-					if(drawItem) {
+					if (drawItem) {
 						let thisView = clone(view);
 						thisView.dx -= drawItem.advanceWidth * thisView.dz;
 						// log(thisView);
@@ -379,7 +380,9 @@ export class EditCanvas extends HTMLElement {
 				let sbHover = false;
 				if (editor.selectedTool === 'resize') {
 					const tool = editor.eventHandlers.tool_resize;
-					sbHover = tool.sideBearingHover || tool.sideBearingEdit;
+					if (!tool.dragging && !tool.resizing && !tool.rotating) {
+						sbHover = tool.sideBearingHover || tool.sideBearingEdit;
+					}
 				}
 
 				if (editor.systemGuides.leftSide) {
@@ -398,11 +401,7 @@ export class EditCanvas extends HTMLElement {
 					if (sbHover === 'rsb') {
 						const rsbDisplay = Math.round(currentItem.rightSideBearing * 100) / 100;
 						setSystemGuideColor('dark', 0.8);
-						drawGuideLabel(
-							`Right side bearing: ${rsbDisplay}`,
-							advanceWidth,
-							false
-						);
+						drawGuideLabel(`Right side bearing: ${rsbDisplay}`, advanceWidth, false);
 					} else {
 						setSystemGuideColor('dark', alpha);
 					}
