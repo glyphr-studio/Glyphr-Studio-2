@@ -384,8 +384,9 @@ export class EditCanvas extends HTMLElement {
 
 				if (editor.systemGuides.leftSide) {
 					if (sbHover === 'lsb') {
+						const lsbDisplay = Math.round(currentItem.leftSideBearing * 100) / 100;
 						setSystemGuideColor('dark', 0.8);
-						drawGuideLabel(`Left side bearing: ${currentItem.leftSideBearing}`, 0, false);
+						drawGuideLabel(`Left side bearing: ${lsbDisplay}`, 0, false);
 					} else {
 						setSystemGuideColor('dark', alpha);
 					}
@@ -395,9 +396,10 @@ export class EditCanvas extends HTMLElement {
 
 				if (editor.systemGuides.rightSide && advanceWidth && currentItem.objType !== 'Component') {
 					if (sbHover === 'rsb') {
+						const rsbDisplay = Math.round(currentItem.rightSideBearing * 100) / 100;
 						setSystemGuideColor('dark', 0.8);
 						drawGuideLabel(
-							`Right side bearing: ${currentItem.rightSideBearing}`,
+							`Right side bearing: ${rsbDisplay}`,
 							advanceWidth,
 							false
 						);
