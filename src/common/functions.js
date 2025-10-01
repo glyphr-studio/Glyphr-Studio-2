@@ -668,12 +668,16 @@ export function radiansToNiceAngle(rad) {
  * @returns {Number} - Angle in Radians
  */
 export function niceAngleToRadians(angle) {
+	// log(`niceAngleToRadians`, 'start');
+	// log(`angle: ${angle}`);
 	angle += 90;
 	angle = angle % 360;
 	if (angle < 180) angle = 360 - angle;
 	else angle *= -1;
+	// log(`angle: ${angle}`);
 
 	let radians = rad(angle);
-
+	// log(`radians: ${radians}`);
+	// log(`niceAngleToRadians`, 'end');
 	return radians;
 }

@@ -6,7 +6,7 @@ import { getItemNameWithFallback } from '../pages/characters.js';
 import { makeCard_itemNavigation } from './card_glyph.js';
 
 // --------------------------------------------------------------
-// Quality Checks panel
+// Character info panel
 // --------------------------------------------------------------
 
 export function makePanel_CharacterInfo() {
@@ -27,7 +27,7 @@ export function makePanel_CharacterInfo() {
 	let charInfo = makeElement({
 		className: 'panel__card char-info',
 		innerHTML: `
-			<h2>Character info</h2>
+			<h3>Character info</h3>
 
 			<label>Character name</label>
 			<code title="${charName}">${charName}</code>
@@ -49,7 +49,7 @@ export function makePanel_CharacterInfo() {
 	let rangeInfo = makeElement({
 		className: 'panel__card char-info',
 		innerHTML: `
-			<h2>Range info</h2>
+			<h3>Range info</h3>
 
 			<label>Range name</label>
 			<code>${range.name}</code>
