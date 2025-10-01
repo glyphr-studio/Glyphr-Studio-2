@@ -307,6 +307,58 @@ describe('Path', () => {
 		expect(path.pathPoints[0].p.x).toBe(-121.29587073579876);
 	});
 
+	it('skewAngle', () => {
+		const path = trianglePath();
+		// Initial state: triangle with points at y: 200, 600, 500
+		// Skew by 45 degrees from origin (0, 0)
+		path.skewAngle(45, { x: 0, y: 0 });
+		// At 45 degrees, tan(45°) = 1, so dx = y * 1
+		// Point at y=200 should shift x by 200
+		expect(path.pathPoints[0].p.x).toBeCloseTo(300, 1);
+		// Point at y=600 should shift x by 600
+		expect(path.pathPoints[1].p.x).toBeCloseTo(900, 1);
+		// Point at y=500 should shift x by 500
+		expect(path.pathPoints[2].p.x).toBeCloseTo(900, 1);
+	});
+
+	it('skewAngle with custom origin', () => {
+		const path = trianglePath();
+		const originalX = path.pathPoints[0].p.x;
+		// Skew around y=200 (the y coordinate of first point)
+		path.skewAngle(30, { x: 0, y: 200 });
+		// Point at y=200 should not move (it's at the origin)
+		expect(path.pathPoints[0].p.x).toBeCloseTo(originalX, 1);
+		// Points above y=200 should shift
+		expect(path.pathPoints[1].p.x).not.toBe(300);
+	});
+
+	it('skewDistance', () => {
+		const path = trianglePath();
+		// Initial maxes: yMax should be 600
+		const yMax = path.maxes.yMax;
+		expect(yMax).toBe(600);
+		// Skew by distance of 100 from origin (0, 0)
+		path.skewDistance(100, { x: 0, y: 0 });
+		// Point at y=200: dx = (200 - 0) / 600 * 100 = 33.33
+		expect(path.pathPoints[0].p.x).toBeCloseTo(133.33, 1);
+		// Point at y=600: dx = (600 - 0) / 600 * 100 = 100
+		expect(path.pathPoints[1].p.x).toBeCloseTo(400, 1);
+		// Point at y=500: dx = (500 - 0) / 600 * 100 = 83.33
+		expect(path.pathPoints[2].p.x).toBeCloseTo(483.33, 1);
+	});
+
+	it('skewDistance with custom origin', () => {
+		const path = trianglePath();
+		const yMax = path.maxes.yMax;
+		const originalX = path.pathPoints[0].p.x;
+		// Skew around y=200 (the y coordinate of first point)
+		path.skewDistance(100, { x: 0, y: 200 });
+		// Point at y=200: dx = (200 - 200) / yMax * 100 = 0
+		expect(path.pathPoints[0].p.x).toBeCloseTo(originalX, 1);
+		// Points above y=200 should shift proportionally
+		expect(path.pathPoints[1].p.x).not.toBe(300);
+	});
+
 	it('getCenter', () => {
 		expect(samplePath().maxes.center.x).toBe(327);
 	});

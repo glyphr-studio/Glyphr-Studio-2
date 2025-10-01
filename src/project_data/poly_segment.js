@@ -2,6 +2,7 @@ import { clone, duplicates, numSan, round, xyPointsAreClose } from '../common/fu
 import { GlyphElement } from './glyph_element.js';
 import { maxesOverlap } from './maxes.js';
 import { Path } from './path.js';
+import { offsetPolySegment } from './poly_segment_offset.js';
 import { Segment } from './segment.js';
 import { XYPoint } from './xy_point.js';
 
@@ -538,6 +539,15 @@ export class PolySegment extends GlyphElement {
 		}
 		// log(`Removed segments: ${this.segments.length - startLength}`);
 		// log(`PolySegment.combineInlineSegments`, 'end');
+	}
+
+	// --------------------------------------------------------------
+	// Curve Offsetting
+	// --------------------------------------------------------------
+
+	makeOffsetPolySegment(offsetDistance = 10) {
+		const newSegments = offsetPolySegment(this.segments, offsetDistance);
+		return new PolySegment({ segments: newSegments });
 	}
 }
 

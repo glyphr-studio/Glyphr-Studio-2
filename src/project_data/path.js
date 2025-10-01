@@ -4,6 +4,7 @@ import {
 	clone,
 	hasNonValues,
 	parseNumber,
+	rad,
 	round,
 	strSan,
 	transformOrigins,
@@ -627,7 +628,7 @@ export class Path extends GlyphElement {
 	/**
 	 * Rotate this path about a point
 	 * @param {Number} angle - how much to rotate (radians)
-	 * @param {XYPoint} about - x/y center of rotation
+	 * @param {XYPoint | Object} about - x/y center of rotation
 	 */
 	rotate(angle, about = this.maxes.center) {
 		// log('Path.rotate', 'start');
@@ -639,6 +640,59 @@ export class Path extends GlyphElement {
 		}
 
 		// log('Path.rotate', 'end');
+	}
+
+	/**
+	 * Skew the path by a certain angle
+	 * @param {Number} angle - angle in degrees
+	 * @param {XYPoint | Object} about - x/y center of skew (default is 0,0)
+	 */
+	skewAngle(angle, about = { x: 0, y: 0 }) {
+		// log('Path.skewAngle', 'start');
+		const angleRadians = rad(angle);
+		// log(`angle: ${angle}`);
+		// log(`angleRadians: ${angleRadians}`);
+
+		for (let d = 0; d < this.pathPoints.length; d++) {
+			const pp = this.pathPoints[d];
+			const h1dx = (pp.h1.y - about.y) * Math.tan(angleRadians);
+			// log(`h1: y: ${pp.h1.y} \t dx: ${h1dx}`);
+			pp.h1.coord.x += h1dx;
+			const h2dx = (pp.h2.y - about.y) * Math.tan(angleRadians);
+			pp.h2.coord.x += h2dx;
+			// log(`h2: y: ${pp.h2.y} \t dx: ${h2dx}`);
+			const pdx = (pp.p.y - about.y) * Math.tan(angleRadians);
+			// log(`p:  y: ${pp.p.y} \t dx: ${pdx}`);
+			pp.p.coord.x += pdx;
+		}
+
+		// log('Path.skewAngle', 'end');
+	}
+
+	/**
+	 * Skew the path by a certain distance, the distance indicating
+	 * the amount the top of the path will travel.
+	 * @param {Number} distance - distance to skew
+	 * @param {XYPoint | Object} about - x/y center of skew (default is 0,0)
+	 */
+	skewDistance(distance, about = { x: 0, y: 0 }) {
+		// log('Path.skewDistance', 'start');
+		const yMax = this.maxes.yMax;
+
+		for (let d = 0; d < this.pathPoints.length; d++) {
+			const pp = this.pathPoints[d];
+			const h1dx = ((pp.h1.y - about.y) / yMax) * distance;
+			// log(`h1: y: ${pp.h1.y} \t dx: ${h1dx}`);
+			pp.h1.coord.x += h1dx;
+			const h2dx = ((pp.h2.y - about.y) / yMax) * distance;
+			pp.h2.coord.x += h2dx;
+			// log(`h2: y: ${pp.h2.y} \t dx: ${h2dx}`);
+			const pdx = ((pp.p.y - about.y) / yMax) * distance;
+			// log(`p:  y: ${pp.p.y} \t dx: ${pdx}`);
+			pp.p.coord.x += pdx;
+		}
+
+		// log('Path.skewDistance', 'end');
 	}
 
 	// --------------------------------------------------------------

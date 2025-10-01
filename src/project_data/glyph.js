@@ -439,7 +439,8 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Adds a new path to this glyph, making sure linking is in place
-	 * @param {Path | ComponentInstance | Object} newShape - Path to add to this glyph
+	 * @param {Path | ComponentInstance | Object} newShape - Path to add to this
+	 * @returns {Path | ComponentInstance | undefined} the added shape
 	 */
 	addOneShape(newShape = {}) {
 		// log(`Glyph.addOneShape`, 'start');

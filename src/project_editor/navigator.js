@@ -377,13 +377,14 @@ const panelsPerPage = {
 		'Attributes',
 		'Layers',
 		'ContextCharacters',
+		'Transforms',
 		'History',
 		'Guides',
 		'CharacterInfo',
 		'QualityChecks',
 	],
-	Ligatures: ['Attributes', 'Layers', 'History', 'Guides', 'QualityChecks'],
-	Components: ['Attributes', 'Layers', 'History', 'Guides', 'QualityChecks'],
+	Ligatures: ['Attributes', 'Layers', 'Transforms', 'History', 'Guides', 'QualityChecks'],
+	Components: ['Attributes', 'Layers', 'Transforms', 'History', 'Guides', 'QualityChecks'],
 	Kerning: ['Attributes', 'History'],
 };
 
@@ -442,6 +443,11 @@ function listOfPanels() {
 			name: 'Context characters',
 			panelMaker: false,
 			iconName: 'panel_contextCharacters',
+		},
+		Transforms: {
+			name: 'Transforms',
+			panelMaker: false,
+			iconName: 'panel_transforms',
 		},
 		History: {
 			name: 'History',
