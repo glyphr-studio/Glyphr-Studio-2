@@ -24,6 +24,7 @@ import {
 	makeCard_ScaleHorizontal,
 	makeCard_ScaleVertical,
 	makeCard_SideBearings,
+	makeCard_Skew,
 } from './global_actions_cards.js';
 import { updateAllCharacterRangeCounts } from './settings_project.js';
 /**
@@ -117,6 +118,7 @@ export function makePage_GlobalActions() {
 		makeCard_ScaleHorizontal(),
 		makeCard_ScaleVertical(),
 		makeCard_Resize(),
+		makeCard_Skew(),
 		makeCard_Flatten(),
 		makeCard_SideBearings(),
 		makeCard_Round(),

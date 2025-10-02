@@ -795,6 +795,20 @@ export class Glyph extends GlyphElement {
 	}
 
 	/**
+	 * Iterates over just the paths in this glyph and skews
+	 * them a given number of degrees.
+	 * @param {Number} angle - degrees to skew the paths
+	 * @param {Object} about - skew origin
+	 */
+	skewAngle(angle, about = { x: 0, y: 0 }) {
+		this.shapes.forEach((shape) => {
+			if (shape.objType !== 'ComponentInstance') {
+				shape.skewAngle(angle, about);
+			}
+		});
+	}
+
+	/**
 	 * Flips this glyph about a horizontal line
 	 * @param {Number} mid - y value about which to flip
 	 * @returns {Glyph} - reference to this glyph

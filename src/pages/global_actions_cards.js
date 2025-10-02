@@ -325,6 +325,69 @@ export function makeCard_Resize() {
 	return card;
 }
 
+export function makeCard_Skew() {
+	const card = makeElement({ className: 'global-actions__card' });
+	card.appendChild(makeElement({ tag: 'h2', content: 'Skew all paths' }));
+
+	let description = makeElement({
+		className: 'global-actions__description',
+		content: `Skew all paths by a given angle, measured in degrees. The degrees system starts with the
+		twelve o'clock / up position as zero, and positive degrees will slant paths to the right, and
+		negative degrees will slant paths to the left.`,
+	});
+	card.appendChild(description);
+
+	let effect = makeElement({
+		className: 'global-actions__effect-description',
+		content: `Individual Glyphs, Ligatures, and Components will have have all of their paths skewed by the given angle.
+		<br>
+		<strong>Note:</strong> Component Instances will <strong>not</strong> be skewed.`,
+	});
+	card.appendChild(effect);
+
+	let table = makeElement({
+		className: 'settings-table',
+		innerHTML: `
+			<label for="skewAngle">Scale&nbsp;value:</label>
+			<input-number id="skewAngle" type="number" value="1"></input-number>
+			<pre title="Expected value type" class="value-type">Angle in degrees</pre>
+		`,
+	});
+	card.appendChild(table);
+	table = makeElement({
+		className: 'settings-table',
+		innerHTML: `
+			<span><input id="skewAngleUpdateAdvanceWidth" type="checkbox" checked></span>
+			<label for="skewAngleUpdateAdvanceWidth">Also update the item's advance width property</label>
+		`,
+	});
+	card.appendChild(table);
+
+	const button = makeElement({ tag: 'fancy-button', content: 'Skew all glyphs' });
+	button.addEventListener('click', () => {
+		/** @type {HTMLInputElement} */
+		const skewAngleInput = document.querySelector('#skewAngle');
+		const skewAngle = parseFloat(skewAngleInput.value) || 0;
+
+		/** @type {HTMLInputElement} */
+		const updateAdvanceWidthBox = document.querySelector('#skewAngleUpdateAdvanceWidth');
+		const updateAdvanceWidth = updateAdvanceWidthBox.checked;
+
+		glyphIterator({
+			title: 'Skewing glyphs',
+			action: (glyph) => {
+				if (!glyph.shapes || !glyph.shapes.length) return;
+				const oldRSB = glyph.rightSideBearing;
+				glyph.skewAngle(skewAngle);
+				if (updateAdvanceWidth) glyph.rightSideBearing = oldRSB;
+			},
+		});
+	});
+	card.appendChild(button);
+
+	return card;
+}
+
 // --------------------------------------------------------------
 // Flatten
 // --------------------------------------------------------------
