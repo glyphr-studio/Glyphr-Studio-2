@@ -297,7 +297,7 @@ span.spacer {
 	column-gap: 10px;
 	margin-bottom: 20px;
 	margin-right: 0px;
-
+	margin-top: 20px;
 	border: 1px solid var(--blue-l95);
 	padding: 10px 20px 10px 10px;
 	background-color: white;
@@ -313,9 +313,9 @@ span.spacer {
 .global-actions__effect-description {
 	line-height: 1.3em;
 	padding: 10px;
-	background-color: var(--orange-l95);
+	background-color: var(--orange-l97);
 	color: var(--orange-l20);
-	border-left: 5px solid var(--orange-l50);
+	border-left: 5px solid var(--orange-l85);
 }
 
 .global-actions__card .global-actions__effect-description,
