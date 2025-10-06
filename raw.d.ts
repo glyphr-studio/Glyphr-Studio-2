@@ -7,6 +7,7 @@ declare module '*.svg?raw';
 declare module '*.css';
 declare module '*.css?inline';
 declare module '*.png';
+declare module 'svg-to-bezier';
 
 declare global {
 	interface Window {
