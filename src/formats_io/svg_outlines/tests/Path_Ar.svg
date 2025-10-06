@@ -3,5 +3,5 @@
   <path d="
   M 50 100 
   a 100 100 0 1 1 150 150
-" />
+" stroke="blue" fill="lightgray"/>
 </svg>

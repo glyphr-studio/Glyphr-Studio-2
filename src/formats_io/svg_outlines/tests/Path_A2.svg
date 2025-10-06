@@ -4,5 +4,5 @@
   M 100 100
   A 30 60 10 1 1 120 120
   A 30 50 0 0 0 200 200
-" />
+" stroke="blue" fill="lightgray"/>
 </svg>
