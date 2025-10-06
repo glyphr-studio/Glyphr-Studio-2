@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
-  <polygon points="60,20 100,40 100,80 60,100 20,80 20,40"/>
-  <polygon points="160,120 200,140 200,180 160,200 120,180 120,140"/>
+  <polygon points="60,20 100,40 100,80 60,100 20,80 20,40" stroke="blue" fill="lightgray"/>
+  <polygon points="160,120 200,140 200,180 160,200 120,180 120,140" stroke="blue" fill="lightgray"/>
 </svg>

@@ -21,7 +21,7 @@ describe('combinePaths', () => {
 		const result = combinePaths(testPaths, 'unite');
 		expect(result).toHaveLength(1);
 		expect(result[0].svgPathData).toBe(
-			'M0,0 C0,0,10,0,10,0 C10,0,10,5,10,5 C10,5,15,5,15,5 C15,5,15,15,15,15 C15,15,5,15,5,15 C5,15,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0Z'
+			'M10,0 C10,0,10,5,10,5 C10,5,15,5,15,5 C15,5,15,15,15,15 C15,15,5,15,5,15 C5,15,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0 C0,0,10,0,10,0Z'
 		);
 	});
 
@@ -29,7 +29,7 @@ describe('combinePaths', () => {
 		const result = combinePaths(testPaths, 'subtract');
 		expect(result).toHaveLength(1);
 		expect(result[0].svgPathData).toBe(
-			'M0,0 C0,0,10,0,10,0 C10,0,10,5,10,5 C10,5,5,5,5,5 C5,5,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0Z'
+			'M10,0 C10,0,10,5,10,5 C10,5,5,5,5,5 C5,5,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0 C0,0,10,0,10,0Z'
 		);
 	});
 
@@ -37,13 +37,13 @@ describe('combinePaths', () => {
 		const result = combinePaths(testPaths, 'divide');
 		expect(result).toHaveLength(3);
 		expect(result[0].svgPathData).toBe(
-			'M0,0 C0,0,10,0,10,0 C10,0,10,5,10,5 C10,5,5,5,5,5 C5,5,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0Z'
+			'M10,0 C10,0,10,5,10,5 C10,5,5,5,5,5 C5,5,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0 C0,0,10,0,10,0Z'
 		);
 		expect(result[1].svgPathData).toBe(
-			'M10,10 C10,10,5,10,5,10 C5,10,5,5,5,5 C5,5,10,5,10,5 C10,5,10,10,10,10Z'
+			'M5,10 C5,10,5,5,5,5 C5,5,10,5,10,5 C10,5,10,10,10,10 C10,10,5,10,5,10Z'
 		);
 		expect(result[2].svgPathData).toBe(
-			'M15,5 C15,5,15,15,15,15 C15,15,5,15,5,15 C5,15,5,10,5,10 C5,10,10,10,10,10 C10,10,10,5,10,5 C10,5,15,5,15,5Z'
+			'M15,15 C15,15,5,15,5,15 C5,15,5,10,5,10 C5,10,10,10,10,10 C10,10,10,5,10,5 C10,5,15,5,15,5 C15,5,15,15,15,15Z'
 		);
 	});
 
@@ -51,7 +51,7 @@ describe('combinePaths', () => {
 		const result = combinePaths(testPaths, 'intersect');
 		expect(result).toHaveLength(1);
 		expect(result[0].svgPathData).toBe(
-			'M10,10 C10,10,5,10,5,10 C5,10,5,5,5,5 C5,5,10,5,10,5 C10,5,10,10,10,10Z'
+			'M5,10 C5,10,5,5,5,5 C5,5,10,5,10,5 C10,5,10,10,10,10 C10,10,5,10,5,10Z'
 		);
 	});
 
@@ -59,10 +59,10 @@ describe('combinePaths', () => {
 		const result = combinePaths(testPaths, 'exclude');
 		expect(result).toHaveLength(2);
 		expect(result[0].svgPathData).toBe(
-			'M0,0 C0,0,10,0,10,0 C10,0,10,5,10,5 C10,5,5,5,5,5 C5,5,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0Z'
+			'M10,0 C10,0,10,5,10,5 C10,5,5,5,5,5 C5,5,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0 C0,0,10,0,10,0Z'
 		);
 		expect(result[1].svgPathData).toBe(
-			'M10,10 C10,10,5,10,5,10 C5,10,5,15,5,15 C5,15,15,15,15,15 C15,15,15,5,15,5 C15,5,10,5,10,5 C10,5,10,10,10,10Z'
+			'M5,10 C5,10,5,15,5,15 C5,15,15,15,15,15 C15,15,15,5,15,5 C15,5,10,5,10,5 C10,5,10,10,10,10 C10,10,5,10,5,10Z'
 		);
 	});
 });

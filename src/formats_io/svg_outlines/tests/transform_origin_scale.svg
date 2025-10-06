@@ -1,6 +1,13 @@
-<svg  xmlns="http://www.w3.org/2000/svg">
-  <circle cx="37.5" cy="37.5" r="10" fill="red" transform="scale(4)" tranform-origin="20 200 123"/>
-  <circle cx="150" cy="37.5" r="10" fill="yellow" transform="scale(1, 4)" tranform-origin="20 200 123"/>
-  <circle cx="37.5" cy="150" r="10" fill="pink" transform="scale(4, 1)" tranform-origin="20 200 123"/>
-  <circle cx="150" cy="150" r="10" fill="black" tranform-origin="20 200 123"/>
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Red circle: starts at (100,100) r=10, scales 4x around origin (83.33, 83.33) to end at (150,150) r=40 -->
+  <circle cx="100" cy="100" r="10" fill="red" transform="scale(4)" transform-origin="83.33 83.33"/>
+
+  <!-- Yellow circle: starts at (150,100) r=10, scales (1,4) around origin (150, 83.33) to end at (150,150) as vertical oval r=(10,40) -->
+  <circle cx="150" cy="100" r="10" fill="yellow" transform="scale(1, 4)" transform-origin="150 83.33"/>
+  
+  <!-- Pink circle: starts at (100,150) r=10, scales (4,1) around origin (83.33, 150) to end at (150,150) as horizontal oval r=(40,10) -->
+  <circle cx="100" cy="150" r="10" fill="pink" transform="scale(4, 1)" transform-origin="83.33 150"/>
+
+  <!-- Black circle: centered reference point at (150,150) r=10 -->
+  <circle cx="150" cy="150" r="10" fill="black"/>
 </svg>

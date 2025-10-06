@@ -13,6 +13,8 @@ import multi_shape_2 from './multi_shape_2.svg?raw';
 import multi_shape_3 from './multi_shape_3.svg?raw';
 import multi_shape_4 from './multi_shape_4.svg?raw';
 import multi_shape_5 from './multi_shape_5.svg?raw';
+import multi_shape_6 from './multi_shape_6.svg?raw';
+import multi_shape_7 from './multi_shape_7.svg?raw';
 import path_A from './path_A.svg?raw';
 import path_A2 from './path_A2.svg?raw';
 import path_Ar from './path_Ar.svg?raw';
@@ -57,6 +59,12 @@ import transform_skewy from './transform_skewy.svg?raw';
 import transform_skewy_position from './transform_skewy_position.svg?raw';
 import transform_translate from './transform_translate.svg?raw';
 import transforms_attribute_order from './transforms_attribute_order.svg?raw';
+import use_href_attributes from './use_href_attributes.svg?raw';
+import use_href_cascade from './use_href_cascade.svg?raw';
+import use_href_transforms from './use_href_transforms.svg?raw';
+import use_xlink_attributes from './use_xlink_attributes.svg?raw';
+import use_xlink_cascade from './use_xlink_cascade.svg?raw';
+import use_xlink_transforms from './use_xlink_transforms.svg?raw';
 
 /**
  * Simulates importing SVG code and converting it to a
@@ -225,6 +233,14 @@ describe('Import multi SVG shapes', () => {
 		const test = importAndMakeSVGTestString(multi_shape_5);
 		expect(test).toEqual(expected.multi_shape_5);
 	});
+	it('Import multi_shape_6', () => {
+		const test = importAndMakeSVGTestString(multi_shape_6);
+		expect(test).toEqual(expected.multi_shape_6);
+	});
+	it('Import multi_shape_7', () => {
+		const test = importAndMakeSVGTestString(multi_shape_7);
+		expect(test).toEqual(expected.multi_shape_7);
+	});
 });
 
 describe('Import transformed SVG shapes', () => {
@@ -311,5 +327,31 @@ describe('Import transformed SVG shapes', () => {
 	it('Import transform_origin_translate', () => {
 		const test = importAndMakeSVGTestString(transform_origin_translate);
 		expect(test).toEqual(expected.transform_origin_translate);
+	});
+});
+describe('Import SVG shapes with use links', () => {
+	it('Import HREF attributes', () => {
+		const test = importAndMakeSVGTestString(use_href_attributes);
+		expect(test).toEqual(expected.use);
+	});
+	it('Import HREF cascade', () => {
+		const test = importAndMakeSVGTestString(use_href_cascade);
+		expect(test).toEqual(expected.use);
+	});
+	it('Import HREF with transforms', () => {
+		const test = importAndMakeSVGTestString(use_href_transforms);
+		expect(test).toEqual(expected.use);
+	});
+	it('Import XLINK attributes', () => {
+		const test = importAndMakeSVGTestString(use_xlink_attributes);
+		expect(test).toEqual(expected.use);
+	});
+	it('Import XLINK cascade', () => {
+		const test = importAndMakeSVGTestString(use_xlink_cascade);
+		expect(test).toEqual(expected.use);
+	});
+	it('Import XLINK with transforms', () => {
+		const test = importAndMakeSVGTestString(use_xlink_transforms);
+		expect(test).toEqual(expected.use);
 	});
 });

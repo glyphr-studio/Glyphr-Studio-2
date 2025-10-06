@@ -5,7 +5,7 @@
   <rect x="0" y="290" width="10" height="10" />
   <rect x="290" y="290" width="10" height="10" />
   <!-- End Crop Marks -->
-  <circle cx="100" cy="100" r="100" />
-  <circle cx="200" cy="200" r="80" />
-  <circle cx="300" cy="300" r="50" />
+  <circle cx="100" cy="100" r="100" stroke="blue" fill="lightgray"/>
+  <circle cx="200" cy="200" r="80" stroke="blue" fill="lightgray"/>
+  <circle cx="300" cy="300" r="50" stroke="blue" fill="lightgray"/>
 </svg>

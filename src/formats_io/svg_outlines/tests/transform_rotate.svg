@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
-  <rect x="120" y="-100" width="100" height="100" transform="rotate(45)"/>
+  <rect x="120" y="-100" width="100" height="100" transform="rotate(45)" stroke="blue" fill="lightgray"/>
 
-  <rect x="100" y="220" width="100" height="20" fill="blue"/>
-  <rect x="100" y="220" width="100" height="20" fill="blue" transform="rotate(45 150 230)"/>
-  <rect x="100" y="220" width="100" height="20" fill="blue" transform="rotate(-45 150 230)"/>
+  <rect x="100" y="220" width="100" height="20" stroke="blue" fill="lightgray"/>
+  <rect x="100" y="220" width="100" height="20" stroke="blue" fill="lightgray" transform="rotate(45 150 230)"/>
+  <rect x="100" y="220" width="100" height="20" stroke="blue" fill="lightgray" transform="rotate(-45 150 230)"/>
 </svg>

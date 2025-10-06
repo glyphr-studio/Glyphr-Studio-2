@@ -1,0 +1,9 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+	<!-- Z vs. no Z-->
+  <path d="M 10 10 C 40 50, 114 50, 140 10 z" stroke="blue" fill="lightgray"/>
+  <path d="M 160 10 C 188 50, 270 50, 290 10" stroke="blue" fill="lightgray"/>
+  
+	<!-- M is not implicit Z for compound paths -->
+	<path d="M 10 110 C 40 150, 114 150, 140 110 z M 160 110 C 188 150, 270 150, 290 110" stroke="blue" fill="lightgray"/>
+  <path d="M 10 210 C 40 250, 114 250, 140 210 M 160 210 C 188 250, 270 250, 290 210" stroke="blue" fill="lightgray"/>
+</svg>

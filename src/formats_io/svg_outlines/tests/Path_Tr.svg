@@ -6,5 +6,5 @@
   t-100,100
   -100,-100
   100,-100 
-" />
+"  stroke="blue" fill="lightgray"/>
 </svg>
