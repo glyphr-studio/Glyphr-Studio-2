@@ -1,5 +1,5 @@
+import { SVGtoBezier } from 'svg-to-bezier';
 import { showError } from '../../controls/dialogs/dialogs.js';
-import { SVGtoBezier } from '../../lib/svg-to-bezier/svg-to-bezier.js';
 import { ControlPoint } from '../../project_data/control_point.js';
 import { Coord } from '../../project_data/coord.js';
 import { Glyph } from '../../project_data/glyph.js';
@@ -48,11 +48,12 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true, projectU
 		if (path.length) {
 			pathCounter++;
 			// log(`START pathCounter: ${pathCounter}`);
-			const isPathClosed = path[0][0].x === path.at(-1)[3].x && path[0][0].y === path.at(-1)[3].y;
 			let thisPath = new Path({ name: `Path ${pathCounter}` });
 			// log(`just after creating empty path: ${thisPath.winding}`);
 			let newPoint;
 
+			// Check if path is closed
+			const isPathClosed = path[0][0].x === path.at(-1)[3].x && path[0][0].y === path.at(-1)[3].y;
 			if (!isPathClosed) {
 				newPoint = new PathPoint({ projectUPM: importUPM });
 				newPoint.p = new ControlPoint({ coord: new Coord({ x: path[0][0].x, y: path[0][0].y }) });
@@ -66,7 +67,24 @@ export function ioSVG_convertSVGTagsToGlyph(svgData, showErrors = true, projectU
 
 			for (let b = 0; b < path.length - 1; b++) {
 				// log(`>>>>Bezier path: ${b} and ${b + 1}`);
-				thisPath.addPathPoint(makePathPointFromBeziers(path[b], path[b + 1]));
+				const seg1 = path[b];
+				let seg2 = path[b + 1];
+
+				// Check for non-continuous paths
+				if (seg1[3].x !== seg2[0].x || seg1[3].y !== seg2[0].y) {
+					// console.warn(`Segments do not share endpoints`);
+					const newSeg = [
+						{ x: seg1[3].x, y: seg1[3].y },
+						false,
+						false,
+						{ x: seg2[0].x, y: seg2[0].y },
+					];
+					path.splice(b + 1, 0, newSeg);
+					seg2 = newSeg;
+				}
+
+				// log(`seg1: ${JSON.stringify(seg1)}`);
+				thisPath.addPathPoint(makePathPointFromBeziers(seg1, seg2));
 				// log(thisPath.print());
 			}
 
@@ -116,10 +134,6 @@ function makePathPointFromBeziers(seg1, seg2) {
 	// log(`makePathPointFromBeziers`, 'start');
 	// log(`seg1: ${JSON.stringify(seg1)}`);
 	// log(`seg2: ${JSON.stringify(seg2)}`);
-
-	if (seg1[3].x !== seg2[0].x || seg1[3].y !== seg2[0].y) {
-		// console.warn(`Segments do not share endpoints`);
-	}
 
 	let newPoint = new PathPoint({ projectUPM: importUPM });
 	newPoint.p = new ControlPoint({ coord: { x: seg2[0].x, y: seg2[0].y } });
