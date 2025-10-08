@@ -41,6 +41,7 @@
     "svg-to-bezier": "^2.2.0",
     "vi-canvas-mock": "^1.0.0",
     "vite": ">=6.3.6",
+    "vite-plugin-static-copy": "^3.1.3",
     "vitest": "^3.0.7"
   },
   "bugs": {
@@ -58,6 +59,7 @@
     "arrowParens": "always"
   },
   "dependencies": {
-    "eslint": "^8.33.0"
+    "eslint": "^8.33.0",
+    "ttx-wasm": "^2.0.0"
   }
 }

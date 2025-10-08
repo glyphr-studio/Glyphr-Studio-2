@@ -1,5 +1,6 @@
 import { getGlyphrStudioApp } from '../app/main.js';
-import openTypeJS from '../lib/opentype.js-september-2024-kern-write/opentype.mjs';
+// import openTypeJS from '../lib/opentype.js-september-2024-kern-write/opentype.mjs';
+import { TTX } from 'ttx-wasm';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { getFirstTagInstance } from './svg_font/svg_font_import.js';
 
@@ -63,8 +64,13 @@ export async function validateSingleFileInput(fileInput, callback) {
 		validationResult.fileSuffix === 'woff'
 	) {
 		validationResult.fileType = 'font';
-		reader.onload = readerValidateFont;
-		reader.readAsArrayBuffer(file);
+		// reader.onload = readerValidateFont;
+		// reader.readAsArrayBuffer(file);
+
+		await TTX.initialize();
+		const ttxContent = await TTX.dumpToTTX(new Uint8Array(await file.arrayBuffer()));
+		readerValidateTTX(ttxContent);
+		log(ttxContent);
 	} else if (validationResult.fileSuffix === 'svg') {
 		validationResult.fileType = 'svg';
 		reader.onload = readerValidateSVG;
@@ -92,6 +98,25 @@ export async function validateSingleFileInput(fileInput, callback) {
 // Validators for different file types
 // --------------------------------------------------------------
 
+function readerValidateTTX(ttxContent) {
+	// log(`readerValidateTTX`, 'start');
+	let font = false;
+	const ttxJSON = XMLtoJSON(ttxContent);
+	try {
+		font = getFirstTagInstance(ttxJSON, 'ttFont');
+		validationResult.content = font;
+	} catch (e) {
+		return failWithError(`
+			Font file could not be read. [FF0]
+			<hr>
+			${e.message}
+		`);
+	}
+
+	postValidationCallback(validationResult);
+	// log(`readerValidateTTX`, 'end');
+}
+
 /**
  * Validate the file as OTF, TTF, or WOFF
  * @returns {Object} - Validated data object
@@ -104,7 +129,7 @@ function readerValidateFont() {
 	try {
 		// @ts-expect-error 'property does exist'
 		font = openTypeJS.parse(file);
-		// log(font);
+		log(font);
 	} catch (e) {
 		return failWithError(`
 			Font file could not be read. [FF0]
