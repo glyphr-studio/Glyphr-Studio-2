@@ -181,17 +181,6 @@ export function getActionData(name) {
 				},
 			},
 			{
-				iconName: 'transforms',
-				title: 'Transform\nScale, rotate, or skew the currently selected shape(s).',
-				onClick: () => {
-					const editor = getCurrentProjectEditor();
-					const newPolySegment = editor.selectedItem.shapes[0].makePolySegment().makeOffsetPolySegment(-100);
-					editor.selectedItem.addOneShape(newPolySegment.path);
-					editor.history.addState(`Transformed the first shape in this glyph`);
-					editor.publish('currentItem', editor.selectedItem);
-				},
-			},
-			{
 				iconName: 'round',
 				title: `Round all path point and handle position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
 				onClick: () => {
@@ -364,17 +353,6 @@ export function getActionData(name) {
 					editor.publish('currentItem', editor.selectedItem);
 				},
 			},
-			// {
-			// 	iconName: 'transforms',
-			// 	title: 'Transform\nScale, rotate, or skew the currently selected shape(s).',
-			// 	onClick: () => {
-					// const editor = getCurrentProjectEditor();
-					// let shape = editor.multiSelect.shapes.virtualGlyph;
-					// shape.flipNS();
-					// editor.history.addState(`Flipped shape ${shape.name} vertically`);
-					// editor.publish('currentItem', editor.selectedItem);
-			// 	},
-			// },
 			{
 				iconName: 'round',
 				title: `Round all path point and handle position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
