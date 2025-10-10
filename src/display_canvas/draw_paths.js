@@ -1,4 +1,5 @@
-import { getCurrentProject } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { accentColors } from '../common/colors.js';
 import { round } from '../common/functions.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
@@ -53,6 +54,41 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 
 	// log(glyph.name);
 	// log('drawGlyph', 'end');
+
+	return glyph.advanceWidth * view.dz;
+}
+
+/**
+ * Draw a Glyph in outline mode to a canvas
+ * @param {Glyph} glyph - what glyph to draw
+ * @param {Object} ctx - canvas context
+ * @param {Object} view - x/y/z view object
+ */
+export function drawGlyphOutlineMode(glyph, ctx, view = { x: 0, y: 0, z: 1 }) {
+	// log('drawGlyphOutlineMode', 'start');
+	// log(glyph.name);
+	let drewShape;
+	ctx.fillStyle = 'transparent';
+	ctx.lineWidth = 1;
+	glyph.shapes.forEach((shape) => {
+		if (!getCurrentProjectEditor().multiSelect.shapes.isSelected(shape)) {
+			ctx.beginPath();
+			ctx.strokeStyle = accentColors.royal.l35;
+			if (shape.objType === 'ComponentInstance') {
+				ctx.strokeStyle = accentColors.green.l30;
+			} else if (shape.winding > 0) {
+				ctx.strokeStyle = accentColors.royal.l20;
+			}
+			drewShape = drawShape(shape, ctx, view);
+			if (drewShape) {
+				ctx.closePath();
+				ctx.stroke();
+			}
+		}
+	});
+
+	// log(glyph.name);
+	// log('drawGlyphOutlineMode', 'end');
 
 	return glyph.advanceWidth * view.dz;
 }

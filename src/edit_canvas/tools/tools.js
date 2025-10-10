@@ -138,6 +138,7 @@ export function makeViewToolsButtons() {
 
 	// Button data
 	let viewButtonTitles = {
+		displayMode: 'Toggle fill / outline display mode',
 		pan: 'Pan the edit canvas',
 		zoom1to1: 'Zoom so 1 pixel = 1 em',
 		zoomEm: 'Zoom to fit a full Em',
@@ -152,12 +153,17 @@ export function makeViewToolsButtons() {
 		// log(`buttonName: ${buttonName}`);
 
 		let isSelected = editor.selectedTool === buttonName;
+		let buttonNameSVG = buttonName;
+		if (buttonName === 'displayMode') {
+			if (editor.displayMode === 'filled') buttonNameSVG = 'displayModeFilled';
+			else buttonNameSVG = 'displayModeOutlined';
+		}
 		let newToolButton = makeElement({
 			tag: 'button',
 			className: 'editor-page__tool',
 			title: viewButtonTitles[buttonName],
 			innerHTML: makeToolButtonSVG({
-				name: buttonName,
+				name: buttonNameSVG,
 				selected: isSelected,
 			}),
 		});
@@ -173,6 +179,18 @@ export function makeViewToolsButtons() {
 					let isSelected = newSelectedTool === buttonName;
 					newToolButton.classList.toggle('editor-page__tool-selected', isSelected);
 					newToolButton.innerHTML = makeToolButtonSVG({ name: buttonName, selected: isSelected });
+				},
+			});
+		}
+
+		if (buttonName === 'displayMode') {
+			editor.subscribe({
+				topic: 'editCanvasView',
+				subscriberID: `tools.displayMode`,
+				callback: () => {
+					let buttonSVG = 'displayModeOutlined';
+					if (getCurrentProjectEditor().displayMode === 'filled') buttonSVG = 'displayModeFilled';
+					newToolButton.innerHTML = makeToolButtonSVG({ name: buttonSVG, selected: false });
 				},
 			});
 		}
@@ -240,6 +258,7 @@ export function makeViewToolsButtons() {
 		zoomReadout,
 		viewButtonElements.zoomIn,
 		makeElement({ tag: 'div', content: '&emsp;' }),
+		viewButtonElements.displayMode,
 		viewButtonElements.zoom1to1,
 	]);
 
@@ -254,13 +273,17 @@ export function makeViewToolsButtons() {
 export function selectTool(tool) {
 	// log('selectTool', 'start');
 	const editor = getCurrentProjectEditor();
-	let zoomTools = ['zoom1to1', 'zoomEm', 'zoomIn', 'zoomOut'];
+	let viewTools = ['zoom1to1', 'zoomEm', 'zoomIn', 'zoomOut', 'displayMode'];
 
-	if (zoomTools.includes(tool)) {
+	if (viewTools.includes(tool)) {
 		if (tool === 'zoom1to1') editor.view = { dz: 1 };
 		if (tool === 'zoomEm') editor.autoFitView();
 		if (tool === 'zoomIn') editor.view = { dz: (editor.view.dz *= 1.1) };
 		if (tool === 'zoomOut') editor.view = { dz: (editor.view.dz *= 0.9) };
+		if (tool === 'displayMode') {
+			editor.displayMode = editor.displayMode === 'filled' ? 'outline' : 'filled';
+			// log(`editor.displayMode: ${editor.displayMode}`);
+		}
 		editor.publish('editCanvasView', editor.view);
 	} else {
 		switchToolTo(tool);
@@ -868,6 +891,21 @@ icons.zoomEm = {
 		<rect x="1" y="18" width="18" height="1"></rect>
 		<rect x="1" y="1" width="18" height="1"></rect>
 		<rect x="1" y="1" width="1" height="18"></rect>
+	`,
+};
+
+icons.displayModeFilled = {
+	outline: `
+		<circle cx="9" cy="9" r="8"></circle>
+	`,
+};
+
+icons.displayModeOutlined = {
+	outline: `
+		<rect x="18" y="1" width="1" height="18"></rect>
+		<rect x="1" y="1" width="1" height="18"></rect>
+		<rect x="1" y="1" width="18" height="1"></rect>
+		<rect x="1" y="18" width="18" height="1"></rect>
 	`,
 };
 

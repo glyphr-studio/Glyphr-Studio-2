@@ -2,7 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, getColorFromRGBA, transparencyToAlpha } from '../common/colors.js';
 import { makeElement } from '../common/dom.js';
 import { clone } from '../common/functions.js';
-import { drawGlyph } from '../display_canvas/draw_paths.js';
+import { drawGlyph, drawGlyphOutlineMode } from '../display_canvas/draw_paths.js';
 import { kernGroupSideMaxWidth } from '../project_editor/cross_item_actions.js';
 import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
 import { runQualityChecksForItem } from '../project_editor/quality_checks.js';
@@ -202,7 +202,11 @@ export class EditCanvas extends HTMLElement {
 			}
 
 			// Draw glyphs
-			drawGlyph(currentItem, ctx, view);
+			if (editor.displayMode === 'outline') {
+				drawGlyphOutlineMode(currentItem, ctx, view);
+			} else {
+				drawGlyph(currentItem, ctx, view);
+			}
 
 			// Draw selected shape
 			const editMode = editor.selectedTool;

@@ -67,10 +67,10 @@
 	display: none;
 }
 
-@media (min-width: 844px) {
+@media (min-width: 885px) {
 	.editor-page__responsive-group {
 		display: grid;
-		grid-template-columns: repeat(6, min-content);
+		grid-template-columns: repeat(7, min-content);
 		column-gap: 5px;
 	}
 }
