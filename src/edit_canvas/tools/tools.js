@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round, valuesAreClose } from '../../common/functions.js';
@@ -148,6 +148,7 @@ export function makeViewToolsButtons() {
 
 	let viewButtonElements = {};
 	const editor = getCurrentProjectEditor();
+	const displayMode = getCurrentProject().settings.app.canvasDisplayModeFilled;
 
 	Object.keys(viewButtonTitles).forEach((buttonName) => {
 		// log(`buttonName: ${buttonName}`);
@@ -155,7 +156,7 @@ export function makeViewToolsButtons() {
 		let isSelected = editor.selectedTool === buttonName;
 		let buttonNameSVG = buttonName;
 		if (buttonName === 'displayMode') {
-			if (editor.displayMode === 'filled') buttonNameSVG = 'displayModeFilled';
+			if (displayMode) buttonNameSVG = 'displayModeFilled';
 			else buttonNameSVG = 'displayModeOutlined';
 		}
 		let newToolButton = makeElement({
@@ -189,7 +190,8 @@ export function makeViewToolsButtons() {
 				subscriberID: `tools.displayMode`,
 				callback: () => {
 					let buttonSVG = 'displayModeOutlined';
-					if (getCurrentProjectEditor().displayMode === 'filled') buttonSVG = 'displayModeFilled';
+					const displayMode = getCurrentProject().settings.app.canvasDisplayModeFilled;
+					if (displayMode) buttonSVG = 'displayModeFilled';
 					newToolButton.innerHTML = makeToolButtonSVG({ name: buttonSVG, selected: false });
 				},
 			});
@@ -281,8 +283,9 @@ export function selectTool(tool) {
 		if (tool === 'zoomIn') editor.view = { dz: (editor.view.dz *= 1.1) };
 		if (tool === 'zoomOut') editor.view = { dz: (editor.view.dz *= 0.9) };
 		if (tool === 'displayMode') {
-			editor.displayMode = editor.displayMode === 'filled' ? 'outline' : 'filled';
-			// log(`editor.displayMode: ${editor.displayMode}`);
+			const appSettings = getCurrentProject().settings.app;
+			appSettings.canvasDisplayModeFilled = !appSettings.canvasDisplayModeFilled;
+			// log(`canvasDisplayModeFilled: ${appSettings.canvasDisplayModeFilled}`);
 		}
 		editor.publish('editCanvasView', editor.view);
 	} else {
@@ -896,16 +899,38 @@ icons.zoomEm = {
 
 icons.displayModeFilled = {
 	outline: `
-		<circle cx="9" cy="9" r="8"></circle>
+		<path d="M18,4v-1h-1v-1h-1v-1h-5v1h-1v1h-4v1h-1v1h-1v1h-1v1h-1v1h-1v6h1v1h1v1h1v1h1v1h0s1,0,1,0v1h6v-1h1v-1h1v-1h1v-1h1v-1h1v-4h1v-1h1v-5h-1ZM16,11h-5v-1h-1v-1h0s-1-0-1-0v-5h4v1h1v1h1v1h1v4Z"/>
 	`,
 };
 
 icons.displayModeOutlined = {
 	outline: `
-		<rect x="18" y="1" width="1" height="18"></rect>
-		<rect x="1" y="1" width="1" height="18"></rect>
-		<rect x="1" y="1" width="18" height="1"></rect>
-		<rect x="1" y="18" width="18" height="1"></rect>
+		<rect x="1" y="8" width="1" height="6"/>
+		<rect x="2" y="7" width="1" height="1"/>
+		<rect x="5" y="4" width="1" height="1"/>
+		<rect x="12" y="4" width="1" height="1"/>
+		<rect x="15" y="7" width="1" height="1"/>
+		<polygon points="17 8 16 8 16 11 11 11 11 12 16 12 16 14 17 14 17 10 18 10 18 9 17 9 17 8"/>
+		<rect x="15" y="14" width="1" height="1"/>
+		<rect x="12" y="17" width="1" height="1"/>
+		<rect x="6" y="18" width="6" height="1"/>
+		<rect x="5" y="17" width="1" height="1"/>
+		<rect x="2" y="14" width="1" height="1"/>
+		<rect x="11" y="1" width="5" height="1"/>
+		<rect x="16" y="2" width="1" height="1"/>
+		<rect x="17" y="3" width="1" height="1"/>
+		<rect x="18" y="4" width="1" height="5"/>
+		<rect x="10" y="10" width="1" height="1"/>
+		<rect x="9" y="9" width="1" height="1"/>
+		<polygon points="8 9 9 9 9 4 12 4 12 3 11 3 11 2 10 2 10 3 6 3 6 4 8 4 8 9"/>
+		<rect x="14" y="15" width="1" height="1"/>
+		<rect x="13" y="16" width="1" height="1"/>
+		<rect x="3" y="15" width="1" height="1"/>
+		<rect x="4" y="16" width="1" height="1"/>
+		<rect x="3" y="6" width="1" height="1"/>
+		<rect x="4" y="5" width="1" height="1"/>
+		<rect x="14" y="6" width="1" height="1"/>
+		<rect x="13" y="5" width="1" height="1"/>
 	`,
 };
 

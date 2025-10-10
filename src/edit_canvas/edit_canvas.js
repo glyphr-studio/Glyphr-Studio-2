@@ -202,10 +202,10 @@ export class EditCanvas extends HTMLElement {
 			}
 
 			// Draw glyphs
-			if (editor.displayMode === 'outline') {
-				drawGlyphOutlineMode(currentItem, ctx, view);
-			} else {
+			if (project.settings.app.canvasDisplayModeFilled) {
 				drawGlyph(currentItem, ctx, view);
+			} else {
+				drawGlyphOutlineMode(currentItem, ctx, view);
 			}
 
 			// Draw selected shape

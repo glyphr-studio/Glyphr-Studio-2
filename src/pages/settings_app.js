@@ -46,6 +46,7 @@ export function makeSettingsTabContentApp() {
 		makeOneSettingsRow('app', 'directlyDragCurves'),
 		textToNode('<br>'),
 		textToNode('<h3>Visibility</h3>'),
+		makeOneSettingsRow('app', 'canvasDisplayModeFilled'),
 		makeOneSettingsRow('app', 'showNonCharPoints'),
 		makeOneSettingsRow('app', 'itemChooserPageSize'),
 		makeOneSettingsRow('app', 'previewText'),
