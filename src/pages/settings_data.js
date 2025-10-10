@@ -199,6 +199,11 @@ export default {
 			description: `When selected, this option will unlink component instances and turn them into normal paths if their component root is deleted (the glyph will look the same, but some component instances will end up as stand-alone path objects).<br>If this option is unselected, component instances will be deleted when their component root is deleted (the glyph will look different because it will have less shapes).`,
 			type: `Boolean`,
 		},
+		canvasDisplayModeFilled: {
+			label: 'Canvas display mode "Filled"',
+			description: `For shapes on the edit canvas, when the display mode is "Filled" the shapes will be shown as filled with black, similar to how they will appear in a text editor. When the display mode is "Outline" (or unselected), the shapes will be shown as outlines, which may help when editing complex shapes.<br><br>You can toggle this setting directly on the edit canvas, next to the lower-right view controls.<br><br>Clockwise paths will be shown as a slightly lighter blue outline than their counter-clockwise counterparts. Component Instances will be outlined in dark green.`,
+			type: 'Boolean',
+		},
 		directlyDragCurves: {
 			label: 'Directly click and drag curves to edit them',
 			description: `On the edit canvas, when in Path Edit mode (Pen tool) hover over a path's curve, then click and drag to move the curve directly. This will edit the handles of the two adjacent path points.`,

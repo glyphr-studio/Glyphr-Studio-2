@@ -46,6 +46,7 @@ export class GlyphrStudioProject {
 				savePreferences: false,
 				unlinkComponentInstances: true,
 				directlyDragCurves: true,
+				canvasDisplayModeFilled: true,
 				showNonCharPoints: false,
 				itemChooserPageSize: 256,
 				previewText: false,

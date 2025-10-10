@@ -96,7 +96,6 @@ export class ProjectEditor {
 		// Views
 		this._views = {};
 		this.defaultView = { dx: -1000, dy: -1000, dz: 0.5, default: true };
-		this.displayMode = 'filled'; // 'filled' or 'outline'
 
 		// Guides
 		this.systemGuides = {
