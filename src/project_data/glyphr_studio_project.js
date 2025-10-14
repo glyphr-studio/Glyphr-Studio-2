@@ -341,8 +341,8 @@ export class GlyphrStudioProject {
 	 * @returns {String | false} - item ID
 	 */
 	getItemID(chars) {
-		log(`PROJECT.getItemID`, 'start');
-		log(`chars: ${chars} (length ${chars.length})`);
+		// log(`PROJECT.getItemID`, 'start');
+		// log(`chars: ${chars} (length ${chars.length})`);
 		let result = '';
 		if ([...chars].length === 1) {
 			result = `glyph-${charsToHexArray(chars)[0]}`;
@@ -352,8 +352,8 @@ export class GlyphrStudioProject {
 				if (lig.gsub === chars) result = id;
 			}
 		}
-		log(`returning: ${result}`);
-		log(`PROJECT.getItemID`, 'end');
+		// log(`returning: ${result}`);
+		// log(`PROJECT.getItemID`, 'end');
 		return result || false;
 	}
 
