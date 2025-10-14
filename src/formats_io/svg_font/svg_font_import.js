@@ -106,7 +106,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 					newGlyph.id = `glyph-${single}`;
 					// log(newGlyph);
 					finalGlyphs[`glyph-${single}`] = newGlyph;
-					if (getUnicodeName(single) === '[name not found]') {
+					if (getUnicodeName(single).startsWith('U+')) {
 						project.settings.app.showNonCharPoints = true;
 					}
 				} else {

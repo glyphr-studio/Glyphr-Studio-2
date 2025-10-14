@@ -146,12 +146,13 @@ export function makePage_Characters() {
  * @returns {String} - name of the item
  */
 export function getItemNameWithFallback(itemID) {
+	// log(`getItemNameWithFallback`, 'start');
+	// log(`itemID: ${itemID}`);
 	if(!itemID) return '[no id]';
 	const editor = getCurrentProjectEditor();
 	let charName = editor.project.getItemName(itemID, true);
-	if (!charName || charName === '[name not found]') {
-		charName = `U+${itemID.substring(8).toUpperCase()}`;
-	}
 
+	// log(`charName: ${charName}`);
+	// log(`getItemNameWithFallback`, 'end');
 	return charName;
 }

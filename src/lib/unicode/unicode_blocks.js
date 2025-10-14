@@ -17,6 +17,11 @@ let allBlocks = [
 	unicodeBlocksOther
 ];
 
+/**
+ * For a given Unicode block name, return the block object
+ * @param {String} name - name of the block to find
+ * @returns {Object | false}
+ */
 export function getUnicodeBlockByName(name) {
 	// log(`getUnicodeBlockByName`, 'start');
 	// log(`name: ${name}`);
@@ -40,6 +45,11 @@ export const unicodeNonCharPoints = [
 	{ begin: 0x0080, end: 0x009f, name: 'Latin-1 Supplement Controls' },
 ];
 
+/**
+ * Checks to see if a given char ID is a control character
+ * @param {Number} id - id of the character
+ * @returns {Boolean} - true if it's a control character
+ */
 export function isControlChar(id) {
 	for (let r = 0; r < unicodeNonCharPoints.length; r++) {
 		if (isCharInRange(id, unicodeNonCharPoints[r])) {
@@ -52,7 +62,7 @@ export function isControlChar(id) {
 
 /**
  * Checks to see if a given char ID is in a range
- * @param {Number} id - Unicode ID
+ * @param {Number | String} id - Unicode ID
  * @param {Object} range - to check
  * @returns {Boolean}
  */

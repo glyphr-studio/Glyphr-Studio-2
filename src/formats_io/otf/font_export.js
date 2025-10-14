@@ -455,7 +455,7 @@ function generateLigatureExportName(lig) {
 		const hex = decToHex(char);
 		let shortName;
 		if (hex) shortName = getUnicodeShortName(hex);
-		if (!shortName || shortName === '[name not found]') shortName = '?';
+		if (!shortName) shortName = '?';
 		result += '.' + shortName;
 	});
 

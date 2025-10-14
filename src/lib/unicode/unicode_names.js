@@ -14,21 +14,25 @@ export function getUnicodeName(id) {
 	// log('getUnicodeName', 'start');
 	// log('passed ' + id);
 
-	let name;
+	let name = '';
 	let chn = 0;
 	let codePoint = validateAsHex('' + id);
-	let codePointSuffix = '0x0000';
+	let codePointSuffix = '[no id]';
 	if (codePoint) {
 		codePointSuffix = codePoint.substring(2);
 		chn = parseNumber(codePoint);
 	}
-	// log('normalized ' + codePoint);
 
+	if (!codePoint || codePointSuffix === '[no id]' || isNaN(chn)) {
+		console.warn(`Could not get Unicode name for invalid code point: ${id}`);
+		return '[name not found]';
+	}
+	// log('normalized ' + codePoint);
 
 	if ((chn >= 0x4e00 && chn < 0xa000) || (chn >= 0x20000 && chn < 0x323af)) {
 		name = `CJK Unified Ideograph ${codePointSuffix}`;
 	} else if (chn < 0xffff) {
-		name = unicodeNamesBMP[codePoint] || unicodeNonCharPointNames[codePoint] || '[name not found]';
+		name = unicodeNamesBMP[codePoint] || unicodeNonCharPointNames[codePoint] || '';
 	} else if (chn >= 0x18b00 && chn <= 0x18cd5) {
 		name = `Khitan Small Script Character ${codePointSuffix}`;
 	} else if (chn >= 0x18800 && chn <= 0x18aff) {
@@ -36,14 +40,14 @@ export function getUnicodeName(id) {
 	} else if (chn >= 0x1b170 && chn <= 0x1b2fb) {
 		name = `Nushu Character ${codePointSuffix}`;
 	} else if (chn < 0x1fbf9) {
-		name = unicodeNamesSMP[codePoint] || '[name not found]';
+		name = unicodeNamesSMP[codePoint] || '';
 	} else if (chn < 0x1ffff) {
 		let block = getParentRange(parseNumber(id));
 		if (block) name = `${block.name} ${codePointSuffix}`;
-		else name = '[name not found]';
-	} else {
-		name = '[name not found]';
 	}
+
+	// Default name is just the Unicode code point ID
+	if (name === '') name = `U+${codePointSuffix.toUpperCase()}`;
 
 	// log(`name: ${name}`);
 	// log('getUnicodeName', 'end');
@@ -53,13 +57,16 @@ export function getUnicodeName(id) {
 /**
  * Gets a short name for a Unicode character, and if not,
  * returns the regular long name
- * @param {String} codePoint - Hex String
+ * @param {String | Number} codePoint - Hex String
  * @returns {string} - name
  */
 export function getUnicodeShortName(codePoint) {
 	// log('getUnicodeShortName', 'start');
 	// log('passed ' + codePoint);
-	codePoint = '' + codePoint;
+	if (typeof codePoint === 'number') {
+		codePoint = '0x' + codePoint.toString(16);
+	}
+
 	let name = shortUnicodeNames[codePoint];
 	if (!name) {
 		name = getUnicodeName(codePoint);
@@ -68,7 +75,10 @@ export function getUnicodeShortName(codePoint) {
 				.replace(/latin /gi, '')
 				.replace(/ /g, '')
 				.substr(0, 20);
-		else name = '[name not found]';
+	}
+
+	if (!name) {
+		name = `U+${codePoint.toUpperCase()}`;
 	}
 
 	// log(`name: ${name}`);
@@ -77,13 +87,19 @@ export function getUnicodeShortName(codePoint) {
 	return name;
 }
 
+/**
+ * Checks if a character is a whitespace character
+ * @param {String} charID - hexadecimal character ID
+ * @returns {Boolean}
+ */
 export function isWhitespace(charID) {
 	// log(`isWhitespace`, 'start');
 	// log(`charID: ${charID}`);
 	// log(`whitespaceCharacters.indexOf(charID): ${whitespaceCharacters.indexOf(charID)}`);
-	charID = validateAsHex(charID);
+	const validatedID = validateAsHex(charID);
+	let result = validatedID ? whitespaceCharacters.indexOf(validatedID) > -1 : false;
 	// log(`isWhitespace`, 'end');
-	return whitespaceCharacters.indexOf(charID) > -1;
+	return result;
 }
 
 export const whitespaceCharacters = [
