@@ -21,7 +21,10 @@ import { isInteger, parseNumber } from './functions.js';
  */
 export function isChar(input) {
 	if (typeof input !== 'string') return false;
-	if (input.length > 1) return false;
+	// Use spread operator to count actual characters, not code units
+	// This correctly handles surrogate pairs (characters above U+FFFF)
+	const chars = [...input];
+	if (chars.length !== 1) return false;
 	return true;
 }
 
@@ -201,8 +204,13 @@ export function decToHex(input) {
  * @returns {String | false} - hexadecimal
  */
 export function charToHex(input) {
+	// log(`charToHex`, 'start');
 	if (!isChar(input)) return false;
-	return `0x${Number(input.charCodeAt(0)).toString(16).toUpperCase()}`;
+	// Use codePointAt instead of charCodeAt to correctly handle surrogate pairs
+	const result = `0x${Number(input.codePointAt(0)).toString(16).toUpperCase()}`;
+	// log(`result: ${result}`);
+	// log(`charToHex`, 'end');
+	return result;
 }
 
 /**
@@ -281,10 +289,13 @@ export function unicodesToUnicodeArray(input) {
  * @returns {Array} - hexadecimal
  */
 export function charsToHexArray(input) {
+	// log(`charsToHexArray`, 'start');
 	const result = [];
-	for (let i = 0; i < input.length; i++) {
-		result.push(charToHex(input.charAt(i)));
-	}
+	[...input].forEach((char) => {
+		result.push(charToHex(char));
+	});
+	// log(`result: ${result}`);
+	// log(`charsToHexArray`, 'end');
 	return result;
 }
 
@@ -330,7 +341,7 @@ export function hexesToChars(input = '') {
  * @returns {String} - String of XML char entities
  */
 export function hexesToXMLHexes(input) {
-	let hexArr = hexesToHexArray(''+input);
+	let hexArr = hexesToHexArray('' + input);
 	let result = hexArr.join(';');
 	result = result.replaceAll('0x', '&#x');
 	result += ';';

@@ -341,15 +341,20 @@ export class GlyphrStudioProject {
 	 * @returns {String | false} - item ID
 	 */
 	getItemID(chars) {
-		if (chars.length === 1) {
-			return `glyph-${charsToHexArray(chars)[0]}`;
+		log(`PROJECT.getItemID`, 'start');
+		log(`chars: ${chars} (length ${chars.length})`);
+		let result = '';
+		if ([...chars].length === 1) {
+			result = `glyph-${charsToHexArray(chars)[0]}`;
 		} else {
 			for (let id of Object.keys(this.ligatures)) {
 				let lig = this.ligatures[id];
-				if (lig.gsub === chars) return id;
+				if (lig.gsub === chars) result = id;
 			}
 		}
-		return false;
+		log(`returning: ${result}`);
+		log(`PROJECT.getItemID`, 'end');
+		return result || false;
 	}
 
 	/**
