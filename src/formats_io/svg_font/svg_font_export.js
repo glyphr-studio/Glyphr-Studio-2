@@ -254,11 +254,15 @@ function ioSVG_makeOneGlyph(gl, id, tag = 'glyph') {
 	let con = '\t\t\t<';
 	con += tag;
 
+	let exportName = gl.name;
+	exportName = exportName.replace(/ /g, '_');
+	log(`exportName: ${exportName}`);
+
 	if (tag === 'missing-glyph') {
 		con += ` horiz-adv-x="${gl.advanceWidth}" `;
 		con += `d="${pathData}" />\n`;
 	} else {
-		con += ` glyph-name="${gl.name.replace(/ /g, '_')}" `;
+		con += ` glyph-name="${exportName}" `;
 		con += `unicode="${unicodeAttribute}" `;
 		con += `horiz-adv-x="${gl.advanceWidth}" `;
 		con += `d="${pathData}" />\n`;

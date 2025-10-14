@@ -478,9 +478,9 @@ export class GlyphrStudioProject {
 
 	/**
 	 * Get a glyph's name based on it's ID
-	 * @param {String | false} id - Glyph ID
+	 * @param {String} id - Glyph ID
 	 * @param {Boolean} forceLongName - don't use the short Unicode name by default
-	 * @returns {String | false}
+	 * @returns {String}
 	 */
 	getItemName(id, forceLongName = false) {
 		id = '' + id;
@@ -491,7 +491,7 @@ export class GlyphrStudioProject {
 		if (!id) {
 			// log('not passed an ID, returning false');
 			// log('GlyphrStudioProject.getItemName', 'end');
-			return false;
+			return '[no id]';
 		}
 
 		if (id.startsWith('glyph-')) {
