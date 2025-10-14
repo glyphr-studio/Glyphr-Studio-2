@@ -221,7 +221,7 @@ export function getItemStringAdvanceWidth(textString) {
 	// log(`textString: ${textString}`);
 
 	let advanceWidth = 0;
-	textString = findAndMergeLigatures(textString.split(''));
+	textString = findAndMergeLigatures([...textString]);
 	// log(textString);
 	const project = getCurrentProject();
 	let item;

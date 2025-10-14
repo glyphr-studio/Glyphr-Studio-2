@@ -78,6 +78,15 @@ describe('Character IDs - Format Detection', () => {
 	it('isChar - bad length', () => {
 		expect(isChar('aa')).toBeFalsy();
 	});
+	it('isChar - emoji (surrogate pair)', () => {
+		expect(isChar('😀')).toBeTruthy();
+	});
+	it('isChar - emoji with skin tone (multiple code points)', () => {
+		expect(isChar('👋🏽')).toBeFalsy();
+	});
+	it('isChar - Chinese character above BMP', () => {
+		expect(isChar('𠮷')).toBeTruthy();
+	});
 
 	it('isUnicode', () => {
 		expect(isUnicode('U+123F')).toBeTruthy();
@@ -138,6 +147,18 @@ describe('Character IDs - Single to Single Conversion', () => {
 	it('charToHex', () => {
 		expect(charToHex('a')).toBe('0x61');
 	});
+	it('charToHex - emoji grinning face (surrogate pair)', () => {
+		expect(charToHex('😀')).toBe('0x1F600');
+	});
+	it('charToHex - emoji thumbs up (surrogate pair)', () => {
+		expect(charToHex('👍')).toBe('0x1F44D');
+	});
+	it('charToHex - Chinese character above BMP', () => {
+		expect(charToHex('𠮷')).toBe('0x20BB7');
+	});
+	it('charToHex - musical symbol (surrogate pair)', () => {
+		expect(charToHex('𝄞')).toBe('0x1D11E');
+	});
 
 	it('unicodeToHex', () => {
 		expect(unicodeToHex('U+3F')).toBe('0x3F');
@@ -166,9 +187,24 @@ describe('Character IDs - Many to many conversions', () => {
 	it('charsToHexArray', () => {
 		expect(charsToHexArray('abc')).toEqual(['0x61', '0x62', '0x63']);
 	});
+	it('charsToHexArray - mixed ASCII and emoji', () => {
+		expect(charsToHexArray('a😀b')).toEqual(['0x61', '0x1F600', '0x62']);
+	});
+	it('charsToHexArray - multiple emojis', () => {
+		expect(charsToHexArray('😀👍🎨')).toEqual(['0x1F600', '0x1F44D', '0x1F3A8']);
+	});
+	it('charsToHexArray - Chinese characters above BMP', () => {
+		expect(charsToHexArray('𠮷野')).toEqual(['0x20BB7', '0x91CE']);
+	});
 
 	it('hexesToChars', () => {
 		expect(hexesToChars('0x610x620x63')).toEqual('abc');
+	});
+	it('hexesToChars - emoji conversion', () => {
+		expect(hexesToChars('0x1F6000x1F44D0x1F3A8')).toEqual('😀👍🎨');
+	});
+	it('hexesToChars - mixed ASCII and surrogate pairs', () => {
+		expect(hexesToChars('0x610x1F6000x62')).toEqual('a😀b');
 	});
 
 	it('hexesToXMLHexes', () => {
@@ -195,6 +231,18 @@ describe('Character IDs - Accepting unknown inputs', () => {
 
 	it('parseCharsInputAsHex - char input', () => {
 		expect(parseCharsInputAsHex('abc')).toEqual(['0x61', '0x62', '0x63']);
+	});
+	it('parseCharsInputAsHex - emoji char input', () => {
+		expect(parseCharsInputAsHex('😀👍')).toEqual(['0x1F600', '0x1F44D']);
+	});
+	it('parseCharsInputAsHex - mixed ASCII and emoji', () => {
+		expect(parseCharsInputAsHex('a😀b')).toEqual(['0x61', '0x1F600', '0x62']);
+	});
+	it('parseCharsInputAsHex - surrogate pair unicode input', () => {
+		expect(parseCharsInputAsHex('U+1F600U+1F44D')).toEqual(['0x1F600', '0x1F44D']);
+	});
+	it('parseCharsInputAsHex - surrogate pair hex input', () => {
+		expect(parseCharsInputAsHex('0x1F6000x1F44D')).toEqual(['0x1F600', '0x1F44D']);
 	});
 
 	it('areHexValuesEqual', () => {

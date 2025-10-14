@@ -277,7 +277,8 @@ function addCommonLigaturesToProject() {
 function addLigature(sequence) {
 	// log(`addLigature`, 'start');
 
-	if (sequence.length < 2) {
+	// Use spread operator to count actual characters, not code units (for surrogate pairs)
+	if ([...sequence].length < 2) {
 		// log(`addLigature`, 'end');
 		return 'Ligature sequences need to be two or more characters.';
 	}
@@ -336,7 +337,8 @@ function addLigature(sequence) {
 			id: newID,
 			parent: project,
 			objType: 'Ligature',
-			gsub: sequence.split('').map((char) => char.codePointAt(0)),
+			// Use spread operator to correctly handle surrogate pairs
+			gsub: [...sequence].map((char) => char.codePointAt(0)),
 		}),
 		'Ligature',
 		newID
@@ -357,10 +359,12 @@ export function makeLigatureID(sequence = '') {
 	// log(`sequence: ${sequence}`);
 	if (sequence === '') return false;
 	let newID = 'liga';
-	let chars = sequence.split('');
+	// Use spread operator to correctly handle surrogate pairs
+	let chars = [...sequence];
 	chars.forEach((char) => {
 		// If basic latin letter, use the letter
-		let code = char.charCodeAt(0);
+		// Use codePointAt instead of charCodeAt to handle surrogate pairs
+		let code = char.codePointAt(0);
 		if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
 			newID += '-' + char;
 		} else {
@@ -418,7 +422,8 @@ export function showAddLigatureDialog() {
 	const title = content.querySelector('#ligatures__new-ligature-title');
 
 	newLigatureInput.addEventListener('keyup', () => {
-		if (newLigatureInput.value.length < 2) {
+		// Use spread operator to count actual characters, not code units (for surrogate pairs)
+		if ([...newLigatureInput.value].length < 2) {
 			submitButton.setAttribute('disabled', '');
 		} else {
 			submitButton.removeAttribute('disabled');
@@ -446,7 +451,8 @@ export function showAddLigatureDialog() {
 			inputList.forEach((input) => {
 				let oneResult = addLigature(input);
 				if (typeof oneResult === 'string') {
-					if (typeof result !== 'string') result = 'One or more ligature could not be created:<br><br>';
+					if (typeof result !== 'string')
+						result = 'One or more ligature could not be created:<br><br>';
 					result = '' + result + oneResult + '<br><br>';
 				} else {
 					oneResult.hasChangedThisSession = false;

@@ -130,7 +130,8 @@ function migrate__v1_13_2_to_v2_0_0(oldProject) {
 		const newID = migrate_ItemID(oldID);
 		const chars = hexesToChars(oldID);
 		if (chars !== false) {
-			const newGsub = chars.split('').map(charToHex);
+			// Use spread operator to correctly handle surrogate pairs
+			const newGsub = [...chars].map(charToHex);
 			const newLigature = migrate_Glyph(oldProject.ligatures[oldID], newID, defaultLSB, defaultRSB);
 
 			// log(`oldID: ${oldID}\t newID: ${newID}\t chars: ${chars}`);
@@ -410,15 +411,15 @@ function migrate_ItemID(oldID) {
 
 	const chars = hexesToChars(oldID);
 	// Ligature
-
-	if (chars !== false && chars.length > 1) {
+	// Use spread operator to count actual characters, not code units (for surrogate pairs)
+	if (chars !== false && [...chars].length > 1) {
 		// log(`Detected as Ligature`);
 		result = makeLigatureID(chars) || '';
 	}
 
 	// Glyph
 
-	if (chars !== false && chars.length === 1) {
+	if (chars !== false && [...chars].length === 1) {
 		// log(`Detected as Glyph`);
 		result = `glyph-${validateAsHex(oldID)}`;
 		// log(`oldID: ${oldID} \t result: ${result}`);
