@@ -84,13 +84,15 @@ const overlay = {
 // Universal actions
 makeActionButtonIcon.copy = () => {
 	const re = `
-		<g>
-			<polygon points=".5 15.516 .5 6.223 6.207 .516 11.5 .516 11.5 15.516 .5 15.516" fill="${icon.darkGray}"/>
-			<path d="M11,1v14H1V6.431L6.414,1h4.586M12,h-6L0,6v10h12Vh0Z" fill="${icon.lightGray}"/>
-		</g>
-		<g>
-			<polygon points="8.5 19.516 8.5 10.223 14.207 4.516 19.5 4.516 19.5 19.516 8.5 19.516" fill="${icon.actionLightBlue}"/>
-			<path d="M19,5v14h-10v-8.586l5.414-5.414h4.586M20,4h-6l-6,6v10h12V4h0Z" fill="${icon.actionDarkBlue}"/>
+		<g data-name="Copy">
+			<g>
+				<polygon points=".5 15.5 .5 6.207 6.207 .5 11.5 .5 11.5 15.5 .5 15.5" style="fill: ${icon.lightGray}"/>
+				<path d="M11,1v14H1V6.414L6.414,1h4.586M12,0h-6L0,6v10h12V0h0Z" style="fill: ${icon.mediumGray}"/>
+			</g>
+			<g>
+				<polygon points="8.5 19.5 8.5 10.207 14.207 4.5 19.5 4.5 19.5 19.5 8.5 19.5" style="fill: ${icon.actionLightBlue};"/>
+				<path d="M19,5v14h-10v-8.586l5.414-5.414h4.586M20,4h-6l-6,6v10h12V4h0Z" style="fill: ${icon.actionDarkBlue};"/>
+			</g>
 		</g>
 	`;
 
@@ -240,16 +242,17 @@ makeActionButtonIcon.round = () => {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.flipVertical = () => {
+// Horizontal if North/South
+makeActionButtonIcon.flipHorizontal = () => {
 	const re = `
-		<g data-name="Flip Vertical">
+		<g id="b" data-name="Flip Horizontal">
 			<g>
-				<polygon points="4.207 8.516 .5 4.809 .5 .516 9.861 .516 19.5 6.3 19.5 8.516 4.207 8.516" fill="${icon.darkGray}"/>
-				<path d="M9.723,1l9.277,5.566v1.434H4.414l-3.414-3.414V1h8.723M10,H0v5l4,4h16v-3L10,h0Z" fill="${icon.lightGray}"/>
+				<polygon points="4.207 8.5 .5 4.793 .5 .5 9.861 .5 19.5 6.283 19.5 8.5 4.207 8.5" style="fill:${icon.lightGray}"/>
+				<path d="M9.723,1l9.277,5.566v1.434H4.414l-3.414-3.414V1h8.723M10,0H0v5l4,4h16v-3L10,0h0Z" style="fill: ${icon.mediumGray};"/>
 			</g>
 			<g>
-				<polygon points=".5 19.516 .5 15.223 4.207 11.516 19.5 11.516 19.5 13.733 9.861 19.516 .5 19.516" fill="${icon.actionLightBlue}"/>
-				<path d="M19,12v1.434l-9.277,5.566H1v-3.586l3.414-3.414h14.586M20,11H4L0,15v5h10l10-6v-3h0Z" fill="${icon.actionDarkBlue}"/>
+				<polygon points=".5 19.5 .5 15.207 4.207 11.5 19.5 11.5 19.5 13.717 9.861 19.5 .5 19.5" style="fill: ${icon.actionLightBlue};"/>
+				<path d="M19,12v1.434l-9.277,5.566H1v-3.586l3.414-3.414h14.586M20,11H4L0,15v5h10l10-6v-3h0Z" style="fill: ${icon.actionDarkBlue};"/>
 			</g>
 		</g>
 	`;
@@ -257,9 +260,10 @@ makeActionButtonIcon.flipVertical = () => {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.flipHorizontal = () => {
+// Vertical if East/West
+makeActionButtonIcon.flipVertical = () => {
 	const re = `
-		<g data-name="Flip Horizontal">
+		<g data-name="Flip Vertical">
 			<g>
 				<polygon points=".5 19.5 .5 10.139 6.283 .5 8.5 .5 8.5 15.793 4.793 19.5 .5 19.5" fill="${icon.lightGray}"/>
 				<path d="M8,1v14.586l-3.414,3.414H1v-8.723L6.566,1h1.434M9,0h-3L0,10v10h5l4-4V0h0Z" fill="${icon.mediumGray}"/>
