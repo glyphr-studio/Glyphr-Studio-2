@@ -903,11 +903,11 @@ export class Path extends GlyphElement {
 		// log('validated as ' + num);
 		const pp1 = this.pathPoints[num];
 		let randomID = Math.round(Math.random() * 10000);
-		if (!pp1.pointID) pp1.pointID = `point-${num}-${randomID}`;
+		if (!pp1?.pointID) pp1.pointID = `point-${num}-${randomID}`;
 		// let pp2 = this.pathPoints[(num+1)%this.pathPoints.length];
 		const next = this.getNextPointNumber(num);
 		const pp2 = this.pathPoints[next];
-		if (!pp2.pointID) pp2.pointID = `point-${next}-${randomID}`;
+		if (!pp2?.pointID) pp2.pointID = `point-${next}-${randomID}`;
 		// log(pp1);
 		// log(pp2);
 		const re = new Segment({
