@@ -162,21 +162,21 @@ export function getActionData(name) {
 		actionData = [
 			{
 				iconName: 'flipHorizontal',
-				title: `Flip Vertical\nReflects the glyph vertically.`,
-				onClick: () => {
-					const editor = getCurrentProjectEditor();
-					editor.selectedItem.flipEW();
-					editor.history.addState(`Flipped all shapes in this glyph vertically`);
-					editor.publish('currentItem', editor.selectedItem);
-				},
-			},
-			{
-				iconName: 'flipVertical',
 				title: `Flip Horizontal\nReflects the glyph horizontally.`,
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					editor.selectedItem.flipNS();
 					editor.history.addState(`Flipped all shapes in this glyph horizontally`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
+			},
+			{
+				iconName: 'flipVertical',
+				title: `Flip Vertical\nReflects the glyph vertically.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					editor.selectedItem.flipEW();
+					editor.history.addState(`Flipped all shapes in this glyph vertically`);
 					editor.publish('currentItem', editor.selectedItem);
 				},
 			},
@@ -337,7 +337,7 @@ export function getActionData(name) {
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					let shape = editor.multiSelect.shapes.virtualGlyph;
-					shape.flipEW();
+					shape.flipNS();
 					editor.history.addState(`Flipped shape ${shape.name} horizontally`);
 					editor.publish('currentItem', editor.selectedItem);
 				},
@@ -348,7 +348,7 @@ export function getActionData(name) {
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					let shape = editor.multiSelect.shapes.virtualGlyph;
-					shape.flipNS();
+					shape.flipEW();
 					editor.history.addState(`Flipped shape ${shape.name} vertically`);
 					editor.publish('currentItem', editor.selectedItem);
 				},
