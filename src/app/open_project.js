@@ -385,7 +385,12 @@ async function handleOpenProjectPageFileInput(files) {
 	}
 
 	// log(fileResult);
-	validateSingleFileInput(fileResult, postValidationCallback);
+	if (!fileResult) {
+		showError(`The file could not be read.`);
+		resetOpenProjectTabs();
+	} else {
+		validateSingleFileInput(fileResult, postValidationCallback);
+	}
 
 	// log('handleOpenProjectPageFileInput', 'end');
 }

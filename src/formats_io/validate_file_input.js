@@ -33,8 +33,12 @@ let postValidationCallback;
  */
 export async function validateSingleFileInput(fileInput, callback) {
 	// log(`validateSingleFileInput`, 'start');
-	postValidationCallback = callback;
 
+	if(!fileInput) {
+		return failWithError('The file could not be read. [FR-NULL]');
+	}
+
+	postValidationCallback = callback;
 	let file;
 	// @ts-expect-error 'property does exist'
 	if (window.showOpenFilePicker && window.showSaveFilePicker) {
