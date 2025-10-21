@@ -362,11 +362,11 @@ export function makeKernToolButton() {
 export function addPathToCurrentItem(newPath) {
 	// log(`addPathToCurrentItem`, 'start');
 	// log(`name: ${ewPath.name}`);
-	// log(`objType: ${ewPath.objType}`);
+	// log(`objType: ${ewPath?.objType}`);
 
 	const editor = getCurrentProjectEditor();
 	if (newPath) {
-		if (newPath.objType === 'ComponentInstance') {
+		if (newPath?.objType === 'ComponentInstance') {
 			// log(`is a Component instance`);
 			editor.selectedTool = 'pathEdit';
 		} else if (newPath && editor.selectedTool === 'pathEdit') {
@@ -395,7 +395,7 @@ export function addPathToCurrentItem(newPath) {
 export function checkForFirstShapeAutoRSB() {
 	const editor = getCurrentProjectEditor();
 	const selectedItem = editor.selectedItem;
-	if (selectedItem.objType === 'Glyph' || selectedItem.objType === 'Ligature') {
+	if (selectedItem?.objType === 'Glyph' || selectedItem?.objType === 'Ligature') {
 		const autoRSB = editor.project.settings.app.autoRightBearingOnFirstShape;
 		if (selectedItem.shapes.length === 1 && selectedItem.advanceWidth === 0 && autoRSB > -1) {
 			selectedItem.rightSideBearing = autoRSB;
@@ -558,7 +558,7 @@ export function isSideBearingHere(cx, cy, item) {
 	let result = false;
 
 	if (Math.abs(sx) < target) result = 'lsb';
-	if (item.objType !== 'Component') {
+	if (item?.objType !== 'Component') {
 		if (valuesAreClose(sx, item.advanceWidth, target)) result = 'rsb';
 	}
 
