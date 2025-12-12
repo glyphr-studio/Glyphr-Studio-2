@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<!--
+	Copyright © 2010 - 2025 Matthew LaGrandeur
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+	<head>
+		<meta charset="utf-8" />
+		<title>Glyphr Studio v2</title>
+		<meta name="viewport" content="width=device-width" />
+		<link rel="shortcut icon" href="/app/assets/logo-icon-color-NDd_Ya-9.ico" />
+		<style>
+			:root {
+				--dark-gradient-background: linear-gradient(
+					135deg,
+					hsl(200, 100%, 12%),
+					hsl(285, 100%, 10%)
+				);
+			}
+
+			body,
+			#app__wrapper,
+			#app__landing-page {
+				height: 100%;
+				width: 100%;
+				min-height: 100%;
+				min-width: 100%;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				overflow: hidden;
+			}
+
+			body {
+				background: var(--dark-gradient-background);
+			}
+
+			#app__wrapper {
+				background-color: #161d20;
+			}
+
+			#app__landing-page {
+				font-family: sans-serif;
+				opacity: 1;
+				visibility: visible;
+				transition: opacity 500ms ease-out;
+				background-color: #0e1214;
+				padding: auto;
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding-bottom: 189px;
+				background: var(--dark-gradient-background);
+			}
+
+			#app__landing-page svg,
+			#app__landing-page #errorMessage {
+				margin: 90px 0px 0px 50px;
+			}
+
+			.mainLogo {
+				fill: url(#logoGradient);
+				width: 300px;
+			}
+
+			.mainLogo .logoWords {
+				fill: transparent;
+				stroke-width: 0.4px;
+				stroke: var(--blue-l50);
+			}
+
+			.error-page__wrapper {
+				margin: auto;
+				font-size: 16px;
+				text-align: center;
+				color: rgba(255, 255, 255, 0.8);
+			}
+
+			.error-page__table-flip {
+				font-size: 36px;
+				opacity: 0.8;
+				font-weight: bold;
+				padding-bottom: 20px;
+				text-align: center;
+				color: var(--purple-l60);
+				text-shadow: 0px 0px 2px var(--purple-l20);
+				letter-spacing: -2px;
+			}
+
+			.error-page__wrapper h1 {
+				text-align: center;
+				color: var(--purple-l80);
+			}
+
+			.error-page__wrapper a {
+				color: white;
+				text-decoration: underline;
+			}
+
+			.error-page__wrapper pre {
+				border: 1px solid hsla(0, 100%, 100%, 0.2);
+				background-color: hsla(0, 0%, 0%, 0.2);
+				border-radius: 4px;
+				text-align: left;
+				font-family: monospace;
+				padding: 10px;
+				width: 100%;
+				user-select: text;
+			}
+		</style>
+		<script type="module" crossorigin src="/app/assets/index-4IIV_VaP.js"></script>
+		<link rel="stylesheet" crossorigin href="/app/assets/index-CiI4VuCj.css">
+	</head>
+
+	<body
+		style="
+			background-color: var(--dark-gradient-background);
+			width: 100%;
+			height: 100%;
+			min-width: 100%;
+			min-height: 100%;
+			margin: 0;
+			padding: 0;
+		"
+	>
+		<div id="app__landing-page">
+			<svg
+				version="1.1"
+				xmlns="http://www.w3.org/2000/svg"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xml:space="preserve"
+				viewBox="0 0 200 128"
+				enable-background="new 0 0 200 128"
+				class="mainLogo"
+			></svg>
+			<script>
+				setTimeout(function () {
+					let errorDiv = document.querySelector('#errorMessage');
+					if (errorDiv) {
+						errorDiv.style.display = 'block';
+						document.querySelector('.mainLogo').style.display = 'none';
+					}
+				}, 5000);
+			</script>
+
+			<div id="errorMessage" style="display: none; width: 400px">
+				<div
+					style="font-size: 80px; padding-bottom: 20px; text-align: center; color: var(--blue-l60)"
+				>
+					¯\_(ツ)_/¯
+				</div>
+
+				<div
+					style="margin: auto; font-size: 16px; text-align: center; color: rgba(255, 255, 255, 0.8)"
+				>
+					It looks like Glyphr Studio failed to load. Bummer.
+					<br />
+					Try using the latest version of FireFox, Edge, or Chrome.
+					<br /><br />
+					Or, send us an email:
+					<a
+						style="color: white; text-decoration: underline"
+						href="mailto:mail@glyphrstudio.com&subject=Howdy"
+						>mail@glyphrstudio.com</a
+					>
+				</div>
+			</div>
+		</div>
+
+		<div id="app__wrapper"></div>
+	</body>
+</html>
