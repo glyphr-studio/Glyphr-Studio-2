@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { XMLtoJSON } from '../../../lib/xml_to_json.js';
 import { ioSVG_importSVGfont } from '../svg_font_import.js';
 import sampleFile from './ObleggExtendedTest.svg?raw';
+import kernSampleFile from './SimpleProject_KernTest.svg?raw';
 
 describe('SVG Font', () => {
 	it('Import: Oblegg Extended Test', async () => {
@@ -24,4 +25,17 @@ describe('SVG Font', () => {
 		// Metadata
 		expect(result.settings.font.style).toEqual('ObleggExtendedTest');
 	});
+
+	it('Import: Kern hkern value parsing', async () => {
+		const result = await ioSVG_importSVGfont(XMLtoJSON(kernSampleFile), true);
+		expect(result).toBeTruthy();
+
+		const kerns = Object.values(result.kerning);
+		expect(kerns).toHaveLength(9);
+
+		const kernValues = kerns.map((kern) => kern.value).sort((a, b) => a - b);
+		expect(kernValues).toEqual([100, 100, 100, 200, 200, 200, 300, 300, 300]);
+	});
+
+
 });
