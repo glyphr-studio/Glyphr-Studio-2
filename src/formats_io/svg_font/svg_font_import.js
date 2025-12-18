@@ -1,5 +1,6 @@
 import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../../app/main.js';
 import {
+	charToHex,
 	hexesToChars,
 	hexesToHexArray,
 	parseCharsInputAsHex,
@@ -160,6 +161,9 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 	// --------------------------------------------------------------
 
 	kernTags = getTagsByName(font, 'hkern');
+	// log(`\n⮟kernTags⮟`);
+	// log(kernTags);
+
 	const finalKerns = {};
 	let kernCount = 0;
 	await updateSVGImportProgressIndicator('kern pair', 1);
@@ -177,6 +181,9 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 		// log('Kern Attributes: ' + json(thisKern.attributes, true));
 
 		if (thisKern) {
+			// log(`\nStarting kern ${kernCount}`);
+			// log(`\n⮟thisKern⮟`);
+			// log(thisKern);
 			// Get members by name
 			leftGroup = getKernMembersByName(thisKern.attributes.g1, glyphTags, leftGroup);
 			rightGroup = getKernMembersByName(thisKern.attributes.g2, glyphTags, rightGroup);
@@ -350,8 +357,10 @@ export function getFirstTagInstance(obj, tagname) {
  * @returns {Array}
  */
 function getKernMembersByName(names, chars, arr, limit) {
+	// log(`getKernMembersByName`, 'start');
+	// log(`names: ${names}`);
+
 	limit = limit || 0xffff;
-	let uni;
 	if (names) {
 		const namesArr = names.split(',');
 
@@ -362,7 +371,7 @@ function getKernMembersByName(names, chars, arr, limit) {
 				if (chars[c].attributes.unicode) {
 					// Push the match
 					if (namesArr[n] === chars[c].attributes['glyph-name']) {
-						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
+						const uni = parseCharsInputAsHex(chars[c].attributes.unicode);
 						if (1 * uni[0] < limit) arr = arr.concat(uni);
 					}
 				}
@@ -370,6 +379,7 @@ function getKernMembersByName(names, chars, arr, limit) {
 		}
 	}
 
+	// log(`getKernMembersByName`, 'end');
 	return arr;
 }
 
@@ -383,25 +393,37 @@ function getKernMembersByName(names, chars, arr, limit) {
  * @returns {Array}
  */
 function getKernMembersByUnicodeID(ids, chars, arr, limit) {
+	// log(`getKernMembersByUnicodeID`, 'start');
+	// log(`ids: ${ids}`);
+
 	limit = limit || 0xffff;
-	let uni;
 	if (ids) {
 		const idArr = ids.split(',');
-
+		// log(`\n⮟idArr⮟`);
+		// log(idArr);
 		// Check all the IDs
 		for (let i = 0; i < idArr.length; i++) {
-			// Check all the chars
-			for (let c = 0; c < chars.length; c++) {
-				if (chars[c].attributes.unicode) {
-					// Push the match
-					if (idArr[i] === chars[c].attributes.unicode) {
-						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
-						if (1 * uni[0] < limit) arr = arr.concat(uni);
+			// Need to accept input in any char or hex format
+			const charArray = parseCharsInputAsHex(idArr[i]);
+			if (charArray.length === 1) {
+				const idHex = charArray[0];
+				// Check all the chars
+				for (let c = 0; c < chars.length; c++) {
+					if (chars[c].attributes.unicode) {
+						const charHex = charToHex(chars[c].attributes.unicode);
+						// Push the match
+						// log(`Comparing idHex: ${idHex} with charHex: ${charHex}`);
+						if (charHex !== false && idHex === charHex) {
+							if (Number(charHex) < limit) arr = arr.concat(charHex);
 					}
 				}
 			}
 		}
+		}
 	}
 
+	// log(`\n⮟returning⮟`);
+	// log(arr);
+	// log(`getKernMembersByUnicodeID`, 'end');
 	return arr;
 }

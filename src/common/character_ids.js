@@ -44,6 +44,7 @@ export function isUnicode(input) {
  */
 export function isHex(input) {
 	if (typeof input !== 'string') return false;
+	if(input.endsWith(';')) input = input.slice(0, -1);
 	input = normalizePrefixes(input);
 	return isNumberWithPrefix(input, '0x');
 }
@@ -146,6 +147,7 @@ export function isNumberWithPrefix(input, prefix) {
  */
 export function validateAsHex(input) {
 	if (!isHex(input)) return false;
+	if(input.endsWith(';')) input = input.slice(0, -1);
 	if (!isNumberWithPrefix(input, '0x')) return false;
 	let suffix = validateDecOrHexSuffix(input.substring(2));
 	return `0x${suffix}`;
