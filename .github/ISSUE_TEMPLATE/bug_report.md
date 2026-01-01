@@ -11,10 +11,9 @@ assignees: ''
 
 **Steps to reproduce the bug:**
 
-1. 
+1.
 
-2. 
+2.
 
 
 **Other notes & screenshots:**
-
