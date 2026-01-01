@@ -34,7 +34,6 @@ export function makePage_LivePreview() {
 					font-size="${livePreviewOptions.fontSize}"
 					line-gap="${livePreviewOptions.lineGap}"
 					page-padding="${livePreviewOptions.pagePadding}"
-					auto-height="true"
 				></display-canvas>
 			</div>
 		</div>

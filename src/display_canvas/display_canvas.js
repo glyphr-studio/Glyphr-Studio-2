@@ -64,9 +64,8 @@ export class DisplayCanvas extends HTMLElement {
 		displayCanvas.fontSize = parseInt(this.getAttribute('font-size')) || 48;
 		displayCanvas.pagePadding = parseInt(this.getAttribute('page-padding')) || 5;
 		displayCanvas.lineGap = parseInt(this.getAttribute('line-gap')) || 12;
-		displayCanvas.autoHeight = this.getAttribute('auto-height') === 'true';
-		// displayCanvas.verticalAlign = this.getAttribute('vertical-align') || 'middle';
-		// displayCanvas.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
+		displayCanvas.verticalAlign = this.getAttribute('vertical-align') || 'middle';
+		displayCanvas.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
 
 		displayCanvas.textBlock = false;
 
@@ -108,19 +107,11 @@ export class DisplayCanvas extends HTMLElement {
 			fontSize: displayCanvas.fontSize,
 			canvasMaxes: this.calculatePageMaxes(),
 			lineGap: displayCanvas.lineGap,
-			autoHeight: displayCanvas.autoHeight,
 			drawPageExtras: drawDisplayPageExtras,
 			drawLineExtras: drawDisplayLineExtras,
 			drawCharacterExtras: drawDisplayCharacterExtras,
 			drawCharacter: drawDisplayCharacter,
 		});
-
-		if (displayCanvas.autoHeight) {
-			let newHeight = displayCanvas.textBlock.canvasMaxes.yMax + displayCanvas.pagePadding;
-			displayCanvas.height = newHeight;
-			displayCanvas.canvas.height = newHeight;
-		}
-
 		log(`DisplayCanvas.updateTextBlock`, 'end');
 	}
 

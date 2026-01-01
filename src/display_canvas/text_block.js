@@ -22,10 +22,9 @@ export class TextBlock {
 
 		// External properties
 		this.characterString = oa.characterString;
-		this.canvasMaxes = oa.canvasMaxes;
 		this.fontSize = oa.fontSize;
 		this.lineGap = oa.lineGap;
-		this.autoHeight = oa.autoHeight;
+		this.canvasMaxes = oa.canvasMaxes;
 
 		// Drawing
 		this.drawPageExtras = oa.drawPageExtras || false;
@@ -77,14 +76,6 @@ export class TextBlock {
 		else this._lineGap = 0;
 	}
 
-	set autoHeight(newAutoHeight = false) {
-		this._autoHeight = !!newAutoHeight;
-	}
-
-	get autoHeight() {
-		return this._autoHeight;
-	}
-	
 	get characterString() {
 		return this._characterString;
 	}
