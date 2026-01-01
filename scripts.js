@@ -60,7 +60,7 @@ export function dev() {
 
 function readConfig() {
 	const data = readFileSync('./src/app/app_config.json');
-	return JSON.parse(data);
+	return JSON.parse('' +data);
 }
 
 function getShipDate(dayOffset = 0) {
