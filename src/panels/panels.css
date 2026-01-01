@@ -524,6 +524,7 @@ nav .item-chooser__wrapper {
 .item-link__title {
 	display: block;
 	height: min-content;
+	font-variant-ligatures: none;
 	grid-column: 2;
 	font-size: 1.2em;
 	margin-top: 10px;
@@ -533,6 +534,7 @@ nav .item-chooser__wrapper {
 	font-size: 0.8em;
 	margin-bottom: 4px;
 	color: var(--gray-l50);
+	font-variant-ligatures: none;
 }
 
 /*
