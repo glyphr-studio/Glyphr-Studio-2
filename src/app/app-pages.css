@@ -479,6 +479,7 @@
 	grid-column: 2;
 	font-size: 1.4em;
 	padding-left: 20px;
+	font-variant-ligatures: none;
 }
 
 .cross-project-actions__column-layout .connector {

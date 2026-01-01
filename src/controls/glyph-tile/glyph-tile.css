@@ -90,6 +90,7 @@
 .name {
 	display: block;
 	text-align: left;
+	font-variant-ligatures: none;
 	width: 300px;
 	height: 28px;
 	padding: 2px 0px 0px 4px;
