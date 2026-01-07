@@ -2,6 +2,7 @@ import { hexesToChars, isHex } from '../common/character_ids.js';
 import {
 	calculateDeltasFromTransform,
 	hasNonValues,
+	numSan,
 	parseNumber,
 	remove,
 	transformOrigins,
@@ -275,7 +276,7 @@ export class Glyph extends GlyphElement {
 	 * @returns {Number}
 	 */
 	get width() {
-		const w = this.maxes.xMax - this.maxes.xMin;
+		const w = numSan(this.maxes.xMax - this.maxes.xMin);
 		return Math.max(w, 0);
 	}
 
@@ -286,7 +287,7 @@ export class Glyph extends GlyphElement {
 	 * @returns {Number}
 	 */
 	get height() {
-		const h = this.maxes.yMax - this.maxes.yMin;
+		const h = numSan(this.maxes.yMax - this.maxes.yMin);
 		return Math.max(h, 0);
 	}
 

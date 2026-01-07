@@ -1,4 +1,4 @@
-import { isVal, parseNumber, round } from '../common/functions.js';
+import { isVal, numSan, parseNumber, round } from '../common/functions.js';
 import { GlyphElement } from './glyph_element.js';
 
 /**
@@ -128,8 +128,8 @@ export class Maxes extends GlyphElement {
 	 */
 	get center() {
 		return {
-			x: this.width / 2 + this.xMin,
-			y: this.height / 2 + this.yMin,
+			x: numSan(this.width / 2 + this.xMin),
+			y: numSan(this.height / 2 + this.yMin),
 		};
 	}
 
@@ -138,7 +138,7 @@ export class Maxes extends GlyphElement {
 	 * @returns {Number} value
 	 */
 	get width() {
-		return this.xMax - this.xMin;
+		return numSan(this.xMax - this.xMin);
 	}
 
 	/**
@@ -160,7 +160,7 @@ export class Maxes extends GlyphElement {
 	 */
 	set xMin(x) {
 		if (x === undefined || isNaN(+x)) delete this._xMin;
-		else this._xMin = parseNumber(x);
+		else this._xMin = numSan(x);
 	}
 
 	/**
@@ -170,7 +170,7 @@ export class Maxes extends GlyphElement {
 	 */
 	set xMax(x) {
 		if (x === undefined || isNaN(+x)) delete this._xMax;
-		else this._xMax = parseNumber(x);
+		else this._xMax = numSan(x);
 	}
 
 	/**
@@ -180,7 +180,7 @@ export class Maxes extends GlyphElement {
 	 */
 	set yMin(y) {
 		if (y === undefined || isNaN(+y)) delete this._yMin;
-		else this._yMin = parseNumber(y);
+		else this._yMin = numSan(y);
 	}
 
 	/**
@@ -190,7 +190,7 @@ export class Maxes extends GlyphElement {
 	 */
 	set yMax(y) {
 		if (y === undefined || isNaN(+y)) delete this._yMax;
-		else this._yMax = parseNumber(y);
+		else this._yMax = numSan(y);
 	}
 
 	// --------------------------------------------------------------
