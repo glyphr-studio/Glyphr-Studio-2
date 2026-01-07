@@ -1,0 +1,15 @@
+{
+  "name": "Glyphr Studio v2",
+  "icons": [
+    {
+      "src": "common/graphics/logo-icon-color.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#29b7ff",
+  "background_color": "white"
+}
