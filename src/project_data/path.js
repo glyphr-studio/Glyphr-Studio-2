@@ -3,6 +3,7 @@ import {
 	calculateDeltasFromTransform,
 	clone,
 	hasNonValues,
+	numSan,
 	parseNumber,
 	rad,
 	round,
@@ -196,7 +197,7 @@ export class Path extends GlyphElement {
 	 * @returns {Number}
 	 */
 	get height() {
-		const h = this.maxes.yMax - this.maxes.yMin;
+		const h = numSan(this.maxes.yMax - this.maxes.yMin);
 		return Math.max(h, 0);
 	}
 
@@ -205,7 +206,7 @@ export class Path extends GlyphElement {
 	 * @returns {Number}
 	 */
 	get width() {
-		const w = this.maxes.xMax - this.maxes.xMin;
+		const w = numSan(this.maxes.xMax - this.maxes.xMin);
 		return Math.max(w, 0);
 	}
 

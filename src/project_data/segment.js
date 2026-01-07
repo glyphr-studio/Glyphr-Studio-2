@@ -539,128 +539,73 @@ export class Segment extends GlyphElement {
 	}
 
 	/**
-	 * Calculate the bounding box for this Segment
+	 * Calculate a precise bounding box for this Segment by solving cubic derivatives
+	 * and evaluating extrema in both x and y.
 	 */
 	recalculateMaxes() {
-		// log('Segment.recalculateMaxes', 'start');
-		// log(this);
+		// Helper: cubic coefficients for one dimension
+		function getCubicCoefficients(p0, p1, p2, p3) {
+			return {
+				a: -p0 + 3 * p1 - 3 * p2 + p3,
+				b: 3 * p0 - 6 * p1 + 3 * p2,
+				c: 3 * (p1 - p0),
+				d: p0,
+			};
+		}
 
-		/**
-		 * Takes a value and updates a maxes object if that value falls outside the current maxes
-		 * @param {Object} maxes - maxes object to check against
-		 * @param {Number} value - new value that may fall outside the current maxes object
-		 */
-		function checkXBounds(maxes, value) {
-			if (maxes.xMin > value) {
-				maxes.xMin = value;
-			} else if (maxes.xMax < value) {
-				maxes.xMax = value;
+		// Helper: evaluate cubic at t with coefficients
+		function evalCubic(t, c) {
+			return ((c.a * t + c.b) * t + c.c) * t + c.d;
+		}
+
+		// Helper: derivative roots in (0,1)
+		function derivativeRoots(c) {
+			const roots = [];
+			const A = 3 * c.a;
+			const B = 2 * c.b;
+			const C = c.c;
+			const EPS = 1e-9;
+
+			if (Math.abs(A) < EPS) {
+				if (Math.abs(B) < EPS) return roots; // constant derivative
+				const t = -C / B;
+				if (t > 0 && t < 1) roots.push(t);
+				return roots;
 			}
+
+			const disc = B * B - 4 * A * C;
+			if (disc < 0) return roots;
+			const sqrtDisc = Math.sqrt(disc);
+			const t1 = (-B + sqrtDisc) / (2 * A);
+			const t2 = (-B - sqrtDisc) / (2 * A);
+			if (t1 > 0 && t1 < 1) roots.push(t1);
+			if (t2 > 0 && t2 < 1) roots.push(t2);
+			return roots;
 		}
 
-		/**
-		 * Takes a value and updates a maxes object if that value falls outside the current maxes
-		 * @param {Object} maxes - maxes object to check against
-		 * @param {Number} value - new value that may fall outside the current maxes object
-		 */
-		function checkYBounds(maxes, value) {
-			if (maxes.yMin > value) {
-				maxes.yMin = value;
-			} else if (maxes.yMax < value) {
-				maxes.yMax = value;
-			}
-		}
+		const cx = getCubicCoefficients(this.p1x, this.p2x, this.p3x, this.p4x);
+		const cy = getCubicCoefficients(this.p1y, this.p2y, this.p3y, this.p4y);
 
-		/**
-		 * Some crazy Bezier math sh*t going down in this helper function
-		 * @param {Number} t
-		 * @param {Number} p0
-		 * @param {Number} p1
-		 * @param {Number} p2
-		 * @param {Number} p3
-		 * @returns {Number}
-		 */
-		function getBezierValue(t, p0, p1, p2, p3) {
-			const mt = 1 - t;
-			return mt * mt * mt * p0 + 3 * mt * mt * t * p1 + 3 * mt * t * t * p2 + t * t * t * p3;
-		}
+		const candidates = new Set([0, 1]);
+		derivativeRoots(cx).forEach((t) => candidates.add(t));
+		derivativeRoots(cy).forEach((t) => candidates.add(t));
 
-		const bounds = {
-			xMin: Math.min(this.p1x, this.p4x),
-			yMin: Math.min(this.p1y, this.p4y),
-			xMax: Math.max(this.p1x, this.p4x),
-			yMax: Math.max(this.p1y, this.p4y),
+		let bounds = {
+			xMin: Infinity,
+			yMin: Infinity,
+			xMax: -Infinity,
+			yMax: -Infinity,
 		};
 
-		if (this.lineType) {
-			this.maxes = new Maxes(bounds);
-			// log(this.maxes.print());
-			// log('Segment.recalculateMaxes - returning fast maxes for line', 'end');
-			return;
-		}
+		candidates.forEach((t) => {
+			const x = evalCubic(t, cx);
+			const y = evalCubic(t, cy);
+			if (x < bounds.xMin) bounds.xMin = x;
+			if (x > bounds.xMax) bounds.xMax = x;
+			if (y < bounds.yMin) bounds.yMin = y;
+			if (y > bounds.yMax) bounds.yMax = y;
+		});
 
-		const d1x = this.p2x - this.p1x;
-		const d1y = this.p2y - this.p1y;
-		let d2x = this.p3x - this.p2x;
-		let d2y = this.p3y - this.p2y;
-		const d3x = this.p4x - this.p3x;
-		const d3y = this.p4y - this.p3y;
-		let numerator;
-		let denominator;
-		let quadRoot;
-		let root;
-		let t1;
-		let t2;
-
-		// X bounds
-		if (
-			this.p2x < bounds.xMin ||
-			this.p2x > bounds.xMax ||
-			this.p3x < bounds.xMin ||
-			this.p3x > bounds.xMax
-		) {
-			if (d1x + d3x !== 2 * d2x) {
-				d2x += 0.01;
-			}
-			numerator = 2 * (d1x - d2x);
-			denominator = 2 * (d1x - 2 * d2x + d3x);
-			quadRoot = (2 * d2x - 2 * d1x) * (2 * d2x - 2 * d1x) - 2 * d1x * denominator;
-			root = Math.sqrt(quadRoot);
-			t1 = (numerator + root) / denominator;
-			t2 = (numerator - root) / denominator;
-			if (0 < t1 && t1 < 1) {
-				checkXBounds(bounds, getBezierValue(t1, this.p1x, this.p2x, this.p3x, this.p4x));
-			}
-			if (0 < t2 && t2 < 1) {
-				checkXBounds(bounds, getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x));
-			}
-		}
-
-		// Y bounds
-		if (
-			this.p2y < bounds.yMin ||
-			this.p2y > bounds.yMax ||
-			this.p3y < bounds.yMin ||
-			this.p3y > bounds.yMax
-		) {
-			if (d1y + d3y !== 2 * d2y) {
-				d2y += 0.01;
-			}
-			numerator = 2 * (d1y - d2y);
-			denominator = 2 * (d1y - 2 * d2y + d3y);
-			quadRoot = (2 * d2y - 2 * d1y) * (2 * d2y - 2 * d1y) - 2 * d1y * denominator;
-			root = Math.sqrt(quadRoot);
-			t1 = (numerator + root) / denominator;
-			t2 = (numerator - root) / denominator;
-			if (0 < t1 && t1 < 1) {
-				checkYBounds(bounds, getBezierValue(t1, this.p1y, this.p2y, this.p3y, this.p4y));
-			}
-			if (0 < t2 && t2 < 1) {
-				checkYBounds(bounds, getBezierValue(t2, this.p1y, this.p2y, this.p3y, this.p4y));
-			}
-		}
-		// log([this.getFastMaxes(), bounds]);
-		// log('Segment.recalculateMaxes', 'end');
 		this.maxes = new Maxes(bounds);
 	}
 
@@ -889,7 +834,7 @@ export class Segment extends GlyphElement {
 				3 * t * t * seg.p4y;
 			return { x: dx, y: dy };
 		}
-		
+
 		function getNormal(tangent) {
 			const n = { x: -tangent.y, y: tangent.x };
 			const len = Math.sqrt(n.x * n.x + n.y * n.y);
