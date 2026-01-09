@@ -112,6 +112,20 @@ export class GlyphTile extends HTMLElement {
 		shadow.appendChild(this.wrapper);
 		this.redraw();
 
+    // Lazy load on scroll
+    if (this.glyph && this.glyph._isSkeleton) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.glyph._load();
+            this.redraw();
+            observer.unobserve(this);
+          }
+        });
+      }, { rootMargin: '100px' });
+      observer.observe(this);
+    }
+
 		// log(`GlyphTile.constructor`, 'end');
 	}
 

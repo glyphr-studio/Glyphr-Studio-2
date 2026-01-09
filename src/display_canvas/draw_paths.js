@@ -24,6 +24,11 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 	// log(glyph.name);
 	// log('view ' + json(view, true));
 	// log(ctx);
+
+  if (glyph._isSkeleton && glyph._load) {
+    glyph._load();
+  }
+
 	if (!glyph.shapes) {
 		console.warn(`Glyph ${glyph.id} has no shapes to draw`);
 		return 0;
@@ -67,6 +72,11 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 export function drawGlyphOutlineMode(glyph, ctx, view = { x: 0, y: 0, z: 1 }) {
 	// log('drawGlyphOutlineMode', 'start');
 	// log(glyph.name);
+
+  if (glyph._isSkeleton && glyph._load) {
+    glyph._load();
+  }
+
 	let drewShape;
 	ctx.fillStyle = 'transparent';
 	ctx.lineWidth = 1;

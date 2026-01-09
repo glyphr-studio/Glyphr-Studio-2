@@ -147,6 +147,24 @@ export function makeGlyphrStudioGlyphObject(otfGlyph) {
 	return importedGlyph;
 }
 
+/**
+ * Creates a "skeleton" Glyph object that holds
+ * the bare minimum info plus the raw OTF glyph data.
+ * Used for faster imports when we don't need full SVG data yet.
+ */
+
+export function makeSkeletonGlyphObject(otfGlyph) {
+  const importedGlyph = new Glyph();
+
+  importedGlyph.advanceWidth = otfGlyph.advanceWidth;
+  importedGlyph.name = otfGlyph.name;
+
+  importedGlyph._rawOtfGlyph = otfGlyph;
+  importedGlyph._isSkeleton = true;
+
+  return importedGlyph;
+}
+
 // --------------------------------------------------------------
 // Progress Indicator
 // --------------------------------------------------------------

@@ -68,6 +68,11 @@ export class Glyph extends GlyphElement {
 		this.gsub = gsub;
 		this.contextCharacters = contextCharacters;
 
+    // Skeleton loading
+    this._isSkeleton = false;
+    this._rawOtfGlyph = false;
+    this._load = false;
+
 		// Changed state metadata
 		this.hasChangedThisSession = false;
 		this.wasCreatedThisSession = true;

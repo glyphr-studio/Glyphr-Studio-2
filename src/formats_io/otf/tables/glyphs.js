@@ -5,6 +5,7 @@ import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project
 import {
 	decrementItemTotal,
 	incrementItemCounter,
+  makeSkeletonGlyphObject,
 	makeGlyphrStudioGlyphObject,
 	updateFontImportProgressIndicator,
 } from '../font_import';
@@ -17,16 +18,30 @@ import {
  * @param {GlyphrStudioProject} project - current project
  * @returns {Promise<Object>} - imported glyphs
  */
+
 export async function importGlyphs(fontGlyphs, project) {
-	const finalGlyphs = {};
-	for (const key of Object.keys(fontGlyphs)) {
-		await updateFontImportProgressIndicator('character');
-		importOneGlyph(fontGlyphs[key], project, finalGlyphs);
-	}
+  const finalGlyphs = {};
+  const glyphKeys = Object.keys(fontGlyphs);
+  const total = glyphKeys.length;
+  const BATCH_SIZE = 500;
 
-	return finalGlyphs;
+
+  for (let i = 0;i < total;i += BATCH_SIZE) {
+    const end = Math.min(i + BATCH_SIZE, total);
+
+    for (let j = i;j < end;j++) {
+      const key = glyphKeys[j];
+      importOneGlyph(fontGlyphs[key], project, finalGlyphs);
+    }
+
+    await updateFontImportProgressIndicator('character');
+
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+  }
+
+  return finalGlyphs;
 }
-
 /**
  * Imports one Opentype.js Glyph object and adds it
  * to the current project
@@ -45,10 +60,14 @@ function importOneGlyph(otfGlyph, project, finalGlyphs) {
 	// log(otfGlyph);
 
 	if (isNaN(otfGlyph.unicode)) {
-		// log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
-		decrementItemTotal();
-		// log('importOneGlyph', 'end');
-		return;
+    if (Array.isArray(otfGlyph.unicodes) && otfGlyph.unicodes.length > 0) {
+      otfGlyph.unicode = otfGlyph.unicodes[0];
+    } else {
+      // log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
+      decrementItemTotal();
+      // log('importOneGlyph', 'end');
+      return;
+    }
 	}
 
 	if (!Array.isArray(otfGlyph.unicodes)) otfGlyph.unicodes = [otfGlyph.unicode];
@@ -57,7 +76,8 @@ function importOneGlyph(otfGlyph, project, finalGlyphs) {
 	}
 
 	// log(`primaryUnicodeHex: ${primaryUnicodeHex}`);
-	const importedGlyph = makeGlyphrStudioGlyphObject(otfGlyph);
+  // const importedGlyph = makeGlyphrStudioGlyphObject(otfGlyph);
+  const importedGlyph = makeSkeletonGlyphObject(otfGlyph);
 
 	if (!importedGlyph) {
 		console.warn(`Something went wrong with importing this glyph.`);
@@ -71,11 +91,24 @@ function importOneGlyph(otfGlyph, project, finalGlyphs) {
 		const unicodeHex = decToHex(unicode || 0);
 		const glyphID = `glyph-${unicodeHex}`;
 		if (!finalGlyphs[glyphID]) {
-			const newGlyph = new Glyph(importedGlyph.save());
+      const newGlyph = new Glyph(importedGlyph.save());
+
+      newGlyph._rawOtfGlyph = otfGlyph;
+      newGlyph._isSkeleton = true;
+      newGlyph._load = function () {
+        // log(`Lazy loading glyph: ${this.id}`);
+        const loaded = makeGlyphrStudioGlyphObject(this._rawOtfGlyph);
+        this.shapes = loaded.shapes;
+        this.advanceWidth = loaded.advanceWidth;
+        this._isSkeleton = false;
+        delete this._rawOtfGlyph;
+        delete this._load;
+        return this;
+      };
 			newGlyph.id = glyphID;
 			finalGlyphs[glyphID] = newGlyph;
 
-			if (isControlChar(unicodeHex) && unicodeHex !== '0x0') {
+      if (isControlChar(Number(unicodeHex)) && unicodeHex !== '0x0') {
 				project.settings.app.showNonCharPoints = true;
 			}
 
