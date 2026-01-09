@@ -219,6 +219,32 @@ describe('Glyph - Getters and Setters', () => {
 		const g = multiTriangleGlyph();
 		expect(g.maxes.yMax).toBe(950);
 	});
+
+  it('Skeleton loading: should trigger _load manually', () => {
+    const g = new Glyph({ id: 'glyph-0x41' });
+    g._isSkeleton = true;
+    let loadCalled = false;
+    g._load = () => {
+      loadCalled = true;
+      g.shapes = [{ name: 'Test Path', pathPoints: [] }];
+      g._isSkeleton = false;
+      delete g._load;
+    };
+
+    expect(g._isSkeleton).toBe(true);
+    g._load();
+    const shapes = g.shapes;
+    expect(loadCalled).toBe(true);
+    expect(shapes.length).toBe(1);
+    expect(g._isSkeleton).toBe(false);
+    expect(g._load).toBeUndefined();
+  });
+
+  it('Skeleton loading: should have sessionState as old', () => {
+    const g = new Glyph({ id: 'glyph-0x41' });
+    g._isSkeleton = true;
+    expect(g.sessionState).toBe('old');
+  });
 });
 
 describe('Glyph - outputs', () => {

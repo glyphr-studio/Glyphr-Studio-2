@@ -16,6 +16,7 @@ import { importTable_head } from './tables/head.js';
 import { importTable_name } from './tables/name.js';
 import { importTable_os2 } from './tables/os2.js';
 import { importTable_post } from './tables/post.js';
+import { Maxes } from '../../project_data/maxes.js';
 
 /**
 	IO > Import > OpenType
@@ -145,6 +146,32 @@ export function makeGlyphrStudioGlyphObject(otfGlyph) {
 
 	// log(`makeGlyphrStudioGlyphObject`, 'end');
 	return importedGlyph;
+}
+
+/**
+ * Creates a "skeleton" Glyph object that holds
+ * the bare minimum info plus the raw OTF glyph data.
+ * Used for faster imports when we don't need full SVG data yet.
+ */
+
+export function makeSkeletonGlyphObject(otfGlyph) {
+  const importedGlyph = new Glyph();
+
+  importedGlyph.advanceWidth = otfGlyph.advanceWidth;
+  importedGlyph.name = otfGlyph.name;
+
+  importedGlyph._rawOtfGlyph = otfGlyph;
+  importedGlyph._isSkeleton = true;
+
+  // Pre-populate maxes to avoid triggering recalculateGlyphMaxes -> shapes access
+  importedGlyph.cache.maxes = new Maxes({
+    xMin: otfGlyph.xMin || 0,
+    xMax: otfGlyph.xMax || 0,
+    yMin: otfGlyph.yMin || 0,
+    yMax: otfGlyph.yMax || 0,
+  });
+
+  return importedGlyph;
 }
 
 // --------------------------------------------------------------

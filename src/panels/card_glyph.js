@@ -233,12 +233,13 @@ export function getAdjacentItem(item, delta) {
 export function isInEnabledRange(itemID) {
 	// log(`isInEnabledRange`, 'start');
 	const project = getCurrentProject();
+  const hex = Number(itemID.substring(6));
 	let result = false;
 	let enabledRanges = project.settings.project.characterRanges.filter((range) => range.enabled);
 
 	for (let r = 0; r < enabledRanges.length; r++) {
 		let range = enabledRanges[r];
-		if (range.getMemberIDs().indexOf(itemID.substring(6)) > -1) {
+    if (hex >= range.begin && hex <= range.end) {
 			result = true;
 			break;
 		}

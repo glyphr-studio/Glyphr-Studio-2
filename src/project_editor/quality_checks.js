@@ -36,7 +36,7 @@ export function runQualityChecksForItem(item) {
 			// log(`shape.name: ${shape.name}`);
 			if (shape.objType === 'Path') {
 				// Reset the cache
-				shape.chache = {};
+				shape.cache = {};
 
 				// Run the checks
 				for (let index = 0; index < shape.pathPoints.length; index++) {
