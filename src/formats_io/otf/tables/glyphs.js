@@ -97,10 +97,14 @@ function importOneGlyph(otfGlyph, project, finalGlyphs) {
       newGlyph._isSkeleton = true;
       newGlyph._load = function () {
         // log(`Lazy loading glyph: ${this.id}`);
-        const loaded = makeGlyphrStudioGlyphObject(this._rawOtfGlyph);
-        this.shapes = loaded.shapes;
-        this.advanceWidth = loaded.advanceWidth;
+        if (!this._isSkeleton) return this;
         this._isSkeleton = false;
+        const rawOtfGlyph = this._rawOtfGlyph;
+
+        const loaded = makeGlyphrStudioGlyphObject(rawOtfGlyph);
+        this._shapes = loaded._shapes;
+        this._advanceWidth = loaded._advanceWidth;
+
         delete this._rawOtfGlyph;
         delete this._load;
         return this;

@@ -349,7 +349,7 @@ async function generateOneGlyph (currentExportItem, upm = 1000) {
 	// export this glyph
 	const glyph = currentExportItem.xg;
 	const num = currentExportItem.xc;
-	const maxes = glyph.maxes;
+  const maxes = (glyph._isSkeleton && glyph.cache.maxes) ? glyph.cache.maxes : (glyph.maxes || { xMin: 0, xMax: 0, yMin: 0, yMax: 0 });
 
 	// log(`num: ${num}`);
 	// log(`\n⮟glyph⮟`);
