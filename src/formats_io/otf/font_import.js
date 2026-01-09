@@ -16,6 +16,7 @@ import { importTable_head } from './tables/head.js';
 import { importTable_name } from './tables/name.js';
 import { importTable_os2 } from './tables/os2.js';
 import { importTable_post } from './tables/post.js';
+import { Maxes } from '../../project_data/maxes.js';
 
 /**
 	IO > Import > OpenType
@@ -161,6 +162,14 @@ export function makeSkeletonGlyphObject(otfGlyph) {
 
   importedGlyph._rawOtfGlyph = otfGlyph;
   importedGlyph._isSkeleton = true;
+
+  // Pre-populate maxes to avoid triggering recalculateGlyphMaxes -> shapes access
+  importedGlyph.cache.maxes = new Maxes({
+    xMin: otfGlyph.xMin || 0,
+    xMax: otfGlyph.xMax || 0,
+    yMin: otfGlyph.yMin || 0,
+    yMax: otfGlyph.yMax || 0,
+  });
 
   return importedGlyph;
 }

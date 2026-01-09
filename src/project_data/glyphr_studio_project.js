@@ -724,7 +724,9 @@ export class GlyphrStudioProject {
 	 */
 	resetSessionStateForAllItems() {
 		this.forEachItem((item) => {
-			if (item.shapes.length === 0 && item.advanceWidth === 0) {
+      if (item._isSkeleton) {
+        item.wasCreatedThisSession = false;
+      } else if (item.shapes.length === 0 && item.advanceWidth === 0) {
 				item.wasCreatedThisSession = true;
 			} else {
 				item.wasCreatedThisSession = false;

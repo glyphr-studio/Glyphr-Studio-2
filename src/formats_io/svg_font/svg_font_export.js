@@ -17,7 +17,9 @@ import { shouldExportItem } from '../otf/font_export.js';
  * the format of a SVG Font. Then, trigger a text
  * file download in the browser.
  */
-export function ioSVG_exportSVGfont() {
+import { pause } from '../../common/functions.js';
+
+export async function ioSVG_exportSVGfont () {
 	// log('ioSVG_exportSVGfont', 'start');
 	const project = getCurrentProject();
 	const app = getGlyphrStudioApp();
@@ -29,6 +31,9 @@ export function ioSVG_exportSVGfont() {
 	timeOutput[0] = timeOutput[0].replace(/\./g, '-');
 	timeOutput[1] = timeOutput[1].replace(/\./g, ':');
 	let timeOutputString = timeOutput.join(' at ');
+
+  showToast('Exporting SVG Font...');
+  await pause();
 
 	let con = `<?xml version="1.0"?>
 <svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -48,7 +53,7 @@ export function ioSVG_exportSVGfont() {
 				</font-face-src>
 			</font-face>
 ${ioSVG_makeMissingGlyph()}
-${ioSVG_makeAllGlyphs()}
+${await ioSVG_makeAllGlyphs()}
 ${ioSVG_makeAllKernPairs()}
 		</font>
 	</defs>
@@ -180,7 +185,7 @@ function ioSVG_makeMissingGlyph() {
  * and creates SVG code for them.
  * @returns {String}
  */
-function ioSVG_makeAllGlyphs() {
+async function ioSVG_makeAllGlyphs () {
 	// log('ioSVG_makeAllGlyphs', 'start');
 	const project = getCurrentProject();
 	const checklist = [];
@@ -203,9 +208,14 @@ function ioSVG_makeAllGlyphs() {
 	let con = '';
 
 	con += '\t\t\t<!-- Glyphs -->\n';
-	exportGlyphs.forEach((glyph) => {
-		con += ioSVG_makeOneGlyph(glyph.xg, glyph.xc);
-	});
+  for (let g = 0;g < exportGlyphs.length;g++) {
+    const glyph = exportGlyphs[g];
+    if (g % 100 === 0) {
+      showToast(`Exporting SVG<br>${glyph.xg.name}`, 999999);
+      await pause();
+    }
+    con += ioSVG_makeOneGlyph(glyph.xg, glyph.xc);
+  }
 
 	if (project.settings.app.exportLigatures) {
 		con += '\n';

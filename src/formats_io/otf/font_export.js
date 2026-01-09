@@ -35,9 +35,11 @@ export async function ioFont_exportFont() {
 
 	// Add Characters
 	let exportedItem;
+  const upm = project.settings.font.upm;
 	for (let g = 0; g < exportLists.glyphs.length; g++) {
-		exportedItem = await generateOneGlyph(exportLists.glyphs[g]);
+    exportedItem = await generateOneGlyph(exportLists.glyphs[g], upm);
 		options.glyphs.push(exportedItem);
+    if (g % 100 === 0) await pause();
 	}
 	// log(`\n⮟codePointGlyphIndexTable⮟`);
 	// log(codePointGlyphIndexTable);
@@ -342,7 +344,7 @@ function addNotdefToExport(options) {
  * @param {Object} currentExportItem - Information about a single item
  * @returns {Promise<Object>} - Opentype.js Glyph object
  */
-async function generateOneGlyph(currentExportItem) {
+async function generateOneGlyph (currentExportItem, upm = 1000) {
 	// log('generateOneGlyph', 'start');
 	// export this glyph
 	const glyph = currentExportItem.xg;
@@ -353,15 +355,29 @@ async function generateOneGlyph(currentExportItem) {
 	// log(`\n⮟glyph⮟`);
 	// log(glyph);
 
-	showToast('Exporting<br>' + glyph.name, 999999);
-
 	// Path data
-	const thisPath = makeOpenTypeJS_Glyph(glyph, new openTypeJS.Path());
+  let thisPath;
+  if (glyph._isSkeleton && glyph._rawOtfGlyph) {
+    const otfGlyph = glyph._rawOtfGlyph;
+    if (otfGlyph.components && otfGlyph.components.length > 0) {
+      thisPath = otfGlyph.getPath(0, 0, upm);
+    } else {
+      thisPath = otfGlyph.path;
+    }
+  } else {
+    if (glyph._isSkeleton && glyph._load) glyph._load();
+    thisPath = makeOpenTypeJS_Glyph(glyph, new openTypeJS.Path());
+  }
 	// log('openTypeJS thisPath');
 	// log(thisPath);
 
 	// Index & Unicode
 	const thisIndex = getNextGlyphIndexNumber();
+
+  if (thisIndex % 100 === 0) {
+    showToast('Exporting<br>' + glyph.name, 999999);
+  }
+
 	// log(`thisIndex: ${thisIndex}`);
 	const thisUnicode = parseInt(num);
 	// log(`thisUnicode: ${thisUnicode}`);
@@ -391,7 +407,6 @@ async function generateOneGlyph(currentExportItem) {
 	// Add this finished glyph
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
 
-	await pause();
 	// log(thisGlyph);
 	// log('generateOneGlyph', 'end');
 	return thisGlyph;
@@ -436,8 +451,7 @@ async function generateOneLigature(currentExportItem) {
 	const charSubList = liga.gsub.map((v) => String.fromCharCode(v));
 	ligatureSubstitutions.push({ subChars: charSubList, byIndex: thisIndex });
 
-	// log(thisLigature);
-	await pause();
+  // log(thisLigature);
 	// log(`generateOneLigature`, 'end');
 	return thisLigature;
 }

@@ -70,8 +70,8 @@ export class Glyph extends GlyphElement {
 
     // Skeleton loading
     this._isSkeleton = false;
-    this._rawOtfGlyph = false;
-    this._load = false;
+    this._rawOtfGlyph = undefined;
+    this._load = undefined;
 
 		// Changed state metadata
 		this.hasChangedThisSession = false;
@@ -186,7 +186,7 @@ export class Glyph extends GlyphElement {
 	 * get shapes
 	 * @returns {Array}
 	 */
-	get shapes() {
+  get shapes () {
 		return this._shapes || [];
 	}
 
@@ -250,6 +250,7 @@ export class Glyph extends GlyphElement {
 	 */
 	get sessionState() {
 		if (this.hasChangedThisSession === true) return 'changed';
+    if (this._isSkeleton) return 'old';
 		if (this.wasCreatedThisSession === true) return 'new';
 		return 'old';
 	}
@@ -902,12 +903,19 @@ export class Glyph extends GlyphElement {
 	 * @returns {String} - SVG definition for the path d="" attribute
 	 */
 	get svgPathData() {
-		// log(`Glyph GET svgPathData`, 'start');
-		// log(this);
+    if (this._isSkeleton && this._rawOtfGlyph) {
+      const otfGlyph = this._rawOtfGlyph;
+      if (otfGlyph.components && otfGlyph.components.length > 0) {
+        const upm = this.parent?.settings?.font?.upm || 1000;
+        return otfGlyph.getPath(0, 0, upm).toPathData();
+      } else {
+        return otfGlyph.path.toPathData();
+      }
+    }
+
 		if (!this?.cache?.svgPathData) {
 			this.cache.svgPathData = this.makeSVGPathData();
-		}
-		// log(`Glyph GET svgPathData`, 'end');
+    }
 		return this.cache.svgPathData;
 	}
 
