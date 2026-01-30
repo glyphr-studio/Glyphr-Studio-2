@@ -31,7 +31,7 @@
     "buffer": "^6.0.3",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-storybook": "^0.8.0",
+    "eslint-plugin-storybook": "^10.2.3",
     "jsdom": "^24.0.0",
     "lit": "^3.1.4",
     "paper": "^0.12.17",
@@ -58,6 +58,6 @@
     "arrowParens": "always"
   },
   "dependencies": {
-    "eslint": "^8.33.0"
+    "eslint": "^9.39.2"
   }
 }
