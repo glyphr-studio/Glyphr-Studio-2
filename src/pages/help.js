@@ -291,6 +291,7 @@ export function makeKeyboardShortcutReference() {
 		['Ctrl', 'V'],
 		`Paste the selected shapes (Glyphr Studio Clipboard)<br>Paste to import copied SVG Code (Operating System Clipboard)`
 	);
+	makeOneRow(['Ctrl', 'Z'], `Undo the last action. If the previous action was on a different item, undo navigates to the previously changed item without undoing the change.`);
 	makeOneRow(['Ctrl', ']'], `Move shape up`);
 	makeOneRow(['Ctrl', '['], `Move shape down`);
 	makeOneRow(['Ctrl', 'Shift', ']'], `Move shape to the top`);
