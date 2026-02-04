@@ -10,17 +10,19 @@ export class TextBlockOptions {
 		// log('options');
 		// log(options);
 		this.text = options.text || '';
-		this.fontSize = options.fontSize || 48;
-		this.lineGap = options.lineGap || 12;
-		this.pagePadding = options.pagePadding || 10;
+		this.fontSize = options.fontSize ?? 48;
+		this.lineGap = options.lineGap ?? 12;
+		this.pagePadding = options.pagePadding ?? 10;
 		this.pageWidth = options.pageWidth || 'fit';
 		this.pageHeight = options.pageHeight || 'auto';
 		this.showCharacterExtras = options.showCharacterExtras || false;
 		this.showLineExtras = options.showLineExtras || false;
 		this.showPageExtras = options.showPageExtras || false;
 		this.showPlaceholderMessage = options.showPlaceholderMessage || false;
-		this.widthAdjustment = options.widthAdjustment || 0;
+		this.widthAdjustment = options.widthAdjustment ?? 0;
 		// log(`TextBlockOptions.constructor`, 'end');
+
+		if (this.fontSize <= 0) this.fontSize = 1;
 	}
 
 	/**
