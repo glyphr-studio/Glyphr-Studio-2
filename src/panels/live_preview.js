@@ -195,9 +195,16 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 	let fontSizeLabel = makeSingleLabel('Font size:');
 	let fontSizeInput = makeElement({
 		tag: 'input-number',
+		id: 'fontSizeInput',
 		attributes: { value: textBlockOptions.fontSize },
 	});
 	fontSizeInput.addEventListener('change', (event) => {
+		// @ts-expect-error 'property does exist'
+		if (event.target.value <= 0) {
+			// @ts-expect-error 'property does exist'
+			event.target.value = 1;
+			document.getElementById('fontSizeInput').setAttribute('value', '1');
+		}
 		// @ts-expect-error 'property does exist'
 		textBlockOptions.fontSize = event.target.value;
 		redrawAllLivePreviews();
