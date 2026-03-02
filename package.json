@@ -34,7 +34,7 @@
     "paper": "^0.12.17",
     "prettier": "^2.7.1",
     "run-func": "^3.0.0",
-    "storybook": "^10.2.6",
+    "storybook": "^10.2.13",
     "svg-to-bezier": "^2.3.0",
     "vi-canvas-mock": "^1.0.0",
     "vite": ">=6.4.1",
