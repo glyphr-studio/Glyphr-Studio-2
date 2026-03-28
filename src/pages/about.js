@@ -97,15 +97,15 @@ function makeLicenseInfo() {
 		</div>
 
 		<div class="page__card">
-			<h3>Paper.js</h3>
-			<a href="http://paperjs.org/" target="_blank">paperjs.org</a>
+			<h3>bezier-boolean</h3>
+			<a href="https://www.npmjs.com/package/bezier-boolean" target="_blank">npmjs.com/package/bezier-boolean</a>
 			<br><br>
 			Available on
-			<a href="https://github.com/paperjs/paper.js" target="_blank">GitHub</a>
-			under a
-			<a href='https://raw.githubusercontent.com/paperjs/paper.js/develop/LICENSE.txt' target='_blank'>MIT license</a>.
+			<a href="https://github.com/Pomax/bezier-boolean" target="_blank">GitHub</a>
+			under an
+			<a href="https://github.com/Pomax/bezier-boolean/blob/main/LICENSE" target="_blank">MIT license</a>.
 			<br><br>
-			Copyright © 2011, Juerg Lehni & Jonathan Puckey
+			Copyright © 2020, Pomax
 		</div>
 
 		<div class="page__card">
