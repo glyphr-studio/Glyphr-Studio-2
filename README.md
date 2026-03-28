@@ -21,8 +21,8 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
 
 - The only external library we will use _for the UI_ is OpenType.js, for importing and
   exporting OTF files.
-  - This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js
-    (except for shape combine actions).
+  - This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js.
+  - For boolean (combine) path operations, we use [bezier-boolean](https://www.npmjs.com/package/bezier-boolean).
 - The app build will output HTML, JavaScript, CSS, and asset files:
   - Continuing the ability to run on a local server (or online) without a back-end.
   - Build process using Vite for modules.
