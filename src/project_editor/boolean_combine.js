@@ -1,5 +1,8 @@
+// @ts-ignore
 import { combine as bezierCombine } from 'bezier-boolean';
+
 import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outlines/svg_outline_import.js';
+import { SVGtoBezier } from 'svg-to-bezier';
 
 
 /**
@@ -56,17 +59,14 @@ export function combinePaths(gsPaths = [], operation = 'unite') {
  */
 function convertToBezierLoop(gsPath) {
 	if (!gsPath || !gsPath.svgPathData) return null;
-	// Use svg-to-bezier to convert SVG path data to BezierLoop
 	try {
 		// svg-to-bezier expects a full SVG string
-		const bezierData = window.SVGtoBezier
-			? window.SVGtoBezier(`<svg><path d="${gsPath.svgPathData}"></path></svg>`) // browser global
-			: require('svg-to-bezier').SVGtoBezier(`<svg><path d="${gsPath.svgPathData}"></path></svg>`); // fallback for node
+		const bezierData = SVGtoBezier(`<svg><path d="${gsPath.svgPathData}"></path></svg>`);
 		if (Array.isArray(bezierData) && bezierData.length > 0) {
 			return bezierData[0]; // Each path is an array of loops; take the first
 		}
 	} catch (e) {
-		// log error
+		// Optionally log error
 	}
 	return null;
 }
