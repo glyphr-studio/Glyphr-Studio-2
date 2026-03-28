@@ -101,11 +101,11 @@ function makeLicenseInfo() {
 			<a href="https://www.npmjs.com/package/bezier-boolean" target="_blank">npmjs.com/package/bezier-boolean</a>
 			<br><br>
 			Available on
-			<a href="https://github.com/Pomax/bezier-boolean" target="_blank">GitHub</a>
+			<a href="https://github.com/mattlag/bezier-boolean" target="_blank">GitHub</a>
 			under an
-			<a href="https://github.com/Pomax/bezier-boolean/blob/main/LICENSE" target="_blank">MIT license</a>.
+			<a href="https://github.com/mattlag/bezier-boolean/blob/main/LICENSE" target="_blank">GNU General Public License</a>.
 			<br><br>
-			Copyright © 2020, Pomax
+			Copyright © 2026, Matthew LaGrandeur
 		</div>
 
 		<div class="page__card">
