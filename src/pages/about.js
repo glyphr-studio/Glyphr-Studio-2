@@ -119,8 +119,8 @@ function makeLicenseInfo() {
 		</div>
 
 		<div class="page__card">
-			<h3>XMLtoJSON</h3>
-			<a href="https://github.com/mattlag/XMLtoJSON" target="_blank">github.com/mattlag/XMLtoJSON</a>
+			<h3>@mattlag/xmltojson</h3>
+			<a href="https://www.npmjs.com/package/@mattlag/xmltojson" target="_blank">npmjs.com/package/@mattlag/xmltojson</a>
 			<br><br>
 			Licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
