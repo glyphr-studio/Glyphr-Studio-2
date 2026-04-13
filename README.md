@@ -19,7 +19,7 @@ Glyphr Studio v2 is a web-based font editor, optimized for typeface design begin
 
 So, here at Glyphr Studio, we've always had a very strong DIY attitude - this means:
 
-- The only external library we will use _for the UI_ is OpenType.js, for importing and
+- The only external library we will use _for the UI_ is FontFlux JS, for importing and
   exporting OTF files.
   - This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js.
   - For boolean (combine) path operations, we use [bezier-boolean](https://www.npmjs.com/package/bezier-boolean).

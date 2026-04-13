@@ -1,9 +1,9 @@
 import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project';
 
 /**
- * Finds metadata from the name table in the opentype.js font object,
+ * Finds metadata from the name table in a FontFlux font object,
  * and pulls appropriate data into a provided Glyphr Studio Project.
- * @param {Object} importedFont - opentype.js font object
+ * @param {Object} importedFont - FontFlux font object
  * @param {GlyphrStudioProject} project - current Glyphr Studio Project
  */
 export function importTable_name(importedFont, project) {
@@ -41,19 +41,11 @@ export function importTable_name(importedFont, project) {
  * @returns {String | false}
  */
 function getTableValue(name, importedFont) {
-	let nameTable = importedFont?.tables?.name;
-	if (!nameTable) return false;
+	const info = importedFont.info;
+	if (!info) return false;
 
-	const platforms = ['windows', 'macintosh', 'unicode'];
-
-	for (let i = 0; i < platforms.length; i++) {
-		if (nameTable[platforms[i]]) {
-			if (nameTable[platforms[i]][name]) {
-				if (nameTable[platforms[i]][name].en) return nameTable[platforms[i]][name].en;
-			}
-		}
-	}
-	return false;
+	const value = info[name];
+	return value || false;
 }
 
 /*
