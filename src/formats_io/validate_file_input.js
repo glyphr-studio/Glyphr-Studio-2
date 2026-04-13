@@ -1,6 +1,6 @@
 import { getGlyphrStudioApp } from '../app/main.js';
 import { FontFlux } from 'font-flux-js';
-import { XMLtoJSON } from '../lib/xml_to_json.js';
+import { XMLtoJSON } from '@mattlag/xmltojson';
 import { getFirstTagInstance } from './svg_font/svg_font_import.js';
 
 /**

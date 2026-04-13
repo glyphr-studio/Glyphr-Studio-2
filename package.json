@@ -54,6 +54,7 @@
     "arrowParens": "always"
   },
   "dependencies": {
+    "@mattlag/xmltojson": "^2.0.2",
     "bezier-boolean": "^1.0.0",
     "eslint": "^9.39.2",
     "font-flux-js": "^2.0.0"
