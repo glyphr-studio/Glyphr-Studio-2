@@ -7,9 +7,9 @@ import {
 } from '../font_import';
 
 /**
- * Converts opentype.js ligatures into Glyphr Studio ligatures
- * @param {Object} importedFont - opentype.js font object
- * @param {Object} fontLigatures - opentype.js ligature table
+ * Converts FontFlux ligatures into Glyphr Studio ligatures
+ * @param {Object} importedFont - FontFlux font object
+ * @param {Array} fontLigatures - FontFlux ligature table
  * @returns {Promise<Object>} - imported ligature groups
  */
 export async function importLigatures(importedFont, fontLigatures) {
@@ -32,10 +32,10 @@ export async function importLigatures(importedFont, fontLigatures) {
 // Ligatures
 // --------------------------------------------------------------
 /**
- * Imports one Opentype.js Ligature and adds it
+ * Imports one FontFlux ligature and adds it
  * to the current project
- * @param {Object} otfLigature - Opentype.js Ligature object
- * @param {Object} importedFont - entire Opentype.js Font object
+ * @param {Object} otfLigature - FontFlux ligature object
+ * @param {Object} importedFont - entire FontFlux Font object
  * @returns nothing
  */
 function importOneLigature(otfLigature, importedFont, finalLigatures) {

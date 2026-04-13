@@ -1,33 +1,23 @@
 import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project';
 
 /**
- * Finds metadata from the OS/2 table in the opentype.js font object,
+ * Finds metadata from the OS/2 table in a FontFlux font object,
  * and pulls appropriate data into a provided Glyphr Studio Project.
- * @param {Object} importedFont - opentype.js font object
+ * @param {Object} importedFont - FontFlux font object
  * @param {GlyphrStudioProject} project - current Glyphr Studio Project
  */
 export function importTable_os2(importedFont, project) {
-	const os2 = importedFont.tables.os2;
 	const fontSettings = project.settings.font;
+	const info = importedFont.info;
+	if (!info) return;
 
-	// Ascender
-	fontSettings.ascent = 1 * (os2?.sTypoAscender || importedFont?.ascender || fontSettings.ascent);
-
-	// Descender
-	/** @type {any} */
-	let typoDescender = os2?.sTypoDescender || importedFont?.descender || fontSettings.descent;
-	if (typoDescender) {
-		typoDescender = parseFloat(typoDescender);
-		fontSettings.descent = -1 * Math.abs(1 * typoDescender);
-	}
-
-	// Other key metrics
-	fontSettings.capHeight = 1 * (os2?.sCapHeight || fontSettings.capHeight);
-	fontSettings.xHeight = 1 * (os2?.sxHeight || fontSettings.xHeight);
+	fontSettings.ascent = 1 * (info.ascender || fontSettings.ascent);
+	fontSettings.descent = 1 * (info.descender || fontSettings.descent);
+	fontSettings.capHeight = 1 * (info.capHeight || fontSettings.capHeight);
+	fontSettings.xHeight = 1 * (info.xHeight || fontSettings.xHeight);
 	fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
-	fontSettings.weight = os2?.usWeightClass || 400;
-	// fontSettings.lineGap = 1 * (os2?.sTypoLineGap || fontSettings.lineGap);
-	fontSettings.panose = os2?.panose.join(' ') || '0 0 0 0 0 0 0 0 0 0';
+	fontSettings.weight = info.weight || 400;
+	fontSettings.panose = info.panose || '0 0 0 0 0 0 0 0 0 0';
 }
 
 /*

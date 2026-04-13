@@ -85,15 +85,15 @@ function makeLicenseInfo() {
 		<p>Glyphr Studio includes the following 3rd party libraries:</p>
 
 		<div class="page__card">
-			<h3>opentype.js</h3>
-			<a href="https://opentype.js.org/" target="_blank">opentype.js.org</a>
+			<h3>Font Flux JS</h3>
+			<a href="https://www.glyphrstudio.com/fontfluxjs/docs/" target="_blank">Font Flux JS Documentation</a>
 			<br><br>
 			Available on
-			<a href="https://github.com/opentypejs/opentype.js" target="_blank">GitHub</a>
+			<a href="https://www.npmjs.com/package/font-flux-js" target="_blank">NPM</a>
 			under a
-			<a href="https://raw.github.com/opentypejs/opentype.js/master/LICENSE" target="_blank">MIT License</a>.
+			<a href="https://raw.github.com/mattlag/Font-Flux-JS/master/LICENSE" target="_blank">MIT License</a>.
 			<br><br>
-			Copyright © 2020, Frederik De Bleser
+			Part of the Glyphr Studio family
 		</div>
 
 		<div class="page__card">

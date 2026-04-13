@@ -2,19 +2,18 @@ import { getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { pause, round } from '../../common/functions.js';
 import { closeAllToasts, showError, showToast } from '../../controls/dialogs/dialogs.js';
-import openTypeJS from '../../lib/opentype.js-september-2024-kern-write/opentype.mjs';
+import { FontFlux } from 'font-flux-js';
 import { getUnicodeShortName } from '../../lib/unicode/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
-import { Path } from '../../project_data/path.js';
 import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
 import { saveFile } from '../../project_editor/file_io.js';
 import { writeGposKernDataToFont } from './tables/gpos.js';
 
 /**
-	IO > Export > OpenType
-	Using OpenType.js to convert a Glyphr Studio
-	Project into OpenType.js format for saving.
+	IO > Export > Font
+	Using FontFlux and path-conversion helpers to export a Glyphr Studio
+	project into OpenType format for saving.
 **/
 
 let ligatureSubstitutions = [];
@@ -59,21 +58,37 @@ export async function ioFont_exportFont() {
 	// Create Font
 	// log('NEW options ARG TO FONT');
 	// log(options);
-	const font = new openTypeJS.Font(options);
+	const font = FontFlux.create({
+		familyName: options.familyName,
+		styleName: options.styleName,
+		unitsPerEm: options.unitsPerEm,
+		ascender: options.ascender,
+		descender: options.descender,
+		copyright: options.copyright,
+		version: options.version,
+		weight: options.weightClass,
+		italicAngle: options.italicAngle,
+	});
+
+	// Add glyphs
+	options.glyphs.forEach(glyph => {
+		font.addGlyph(glyph);
+	});
 
 	// log(`\n⮟font⮟`);
 	// log(font);
 
 	// log(`\n⮟ligatureSubstitutions⮟`);
 	// log(ligatureSubstitutions);
-	if (exportLigatures) {
-		ligatureSubstitutions.forEach((sub) => {
-			// log(`Adding ligature to font`);
-			const subIndexes = sub.subChars.map((char) => font.charToGlyphIndex(char));
-			// log(sub);
-			font.substitution.addLigature('liga', { sub: subIndexes, by: sub.byIndex });
-		});
-	}
+	// TODO: Implement ligature support for FontFlux
+	// if (exportLigatures) {
+	// 	ligatureSubstitutions.forEach((sub) => {
+	// 		// log(`Adding ligature to font`);
+	// 		const subIndexes = sub.subChars.map((char) => font.charToGlyphIndex(char));
+	// 		// log(sub);
+	// 		font.substitution.addLigature('liga', { sub: subIndexes, by: sub.byIndex });
+	// 	});
+	// }
 
 	// Write kern pair data
 	if (project.settings.app.exportKerning) {
@@ -105,12 +120,12 @@ export async function ioFont_exportFont() {
 function saveOTFFile(font) {
 	let result = true;
 	try {
-		const familyName = font.getEnglishName('fontFamily');
-		const styleName = font.getEnglishName('fontSubfamily');
+		const familyName = font.info.familyName || 'MyFont';
+		const styleName = font.info.styleName || 'Regular';
 		const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
 		// log(`\n⮟font⮟`);
 		// log(font);
-		const arrayBuffer = font.toArrayBuffer();
+		const arrayBuffer = font.export({ format: 'sfnt' });
 		const dataView = new DataView(arrayBuffer);
 		const blob = new Blob([dataView], { type: 'font/opentype' });
 
@@ -315,20 +330,15 @@ function addNotdefToExport(options) {
 	// log(notdef);
 
 	// Add it to the export
-	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
-	let thisAdvance = notdef.advanceWidth;
+	const svgPath = makeSvgPathForGlyph(notdef);
+	const contours = FontFlux.svgToContours(svgPath, 'cff');
 
-	const notdefGlyph = new openTypeJS.Glyph({
+	const notdefGlyph = {
 		name: '.null',
 		unicode: 0,
-		index: 0,
-		xMin: round(notdef.maxes.xMin),
-		xMax: round(notdef.maxes.xMax),
-		yMin: round(notdef.maxes.yMin),
-		yMax: round(notdef.maxes.yMax),
-		path: notdefPath,
-	});
-	notdefGlyph.advanceWidth = thisAdvance;
+		advanceWidth: notdef.advanceWidth,
+		contours: contours,
+	};
 
 	options.glyphs.push(notdefGlyph);
 
@@ -340,7 +350,7 @@ function addNotdefToExport(options) {
  * Makes one item from the export list, and updates the
  * exterior export process, as well as the UI progress bar.
  * @param {Object} currentExportItem - Information about a single item
- * @returns {Promise<Object>} - Opentype.js Glyph object
+ * @returns {Promise<Object>} - FontFlux Glyph object
  */
 async function generateOneGlyph(currentExportItem) {
 	// log('generateOneGlyph', 'start');
@@ -356,14 +366,11 @@ async function generateOneGlyph(currentExportItem) {
 	showToast('Exporting<br>' + glyph.name, 999999);
 
 	// Path data
-	const thisPath = makeOpenTypeJS_Glyph(glyph, new openTypeJS.Path());
-	// log('openTypeJS thisPath');
-	// log(thisPath);
+	const svgPath = makeSvgPathForGlyph(glyph);
 
-	// Index & Unicode
-	const thisIndex = getNextGlyphIndexNumber();
-	// log(`thisIndex: ${thisIndex}`);
+	// Unicode
 	const thisUnicode = parseInt(num);
+	const thisIndex = getNextGlyphIndexNumber();
 	// log(`thisUnicode: ${thisUnicode}`);
 
 	// Name
@@ -372,21 +379,15 @@ async function generateOneGlyph(currentExportItem) {
 	// log(`decToHex(num): ${decToHex(num)}`);
 	// log(`thisName: ${thisName}`);
 
-	// Create OTF.js Glyph
-	const thisGlyph = new openTypeJS.Glyph({
+	// Create FontFlux Glyph
+	const contours = FontFlux.svgToContours(svgPath, 'cff'); // Use CFF for OTF export
+
+	const thisGlyph = {
 		name: thisName,
 		unicode: thisUnicode,
-		index: thisIndex,
-		xMin: round(maxes.xMin),
-		xMax: round(maxes.xMax),
-		yMin: round(maxes.yMin),
-		yMax: round(maxes.yMax),
-		path: thisPath,
-	});
-
-	// Opentype.js Glyph constructor removes Advance Width of zero.
-	// So, incase we need it to be zero, we add it here.
-	thisGlyph.advanceWidth = glyph.advanceWidth;
+		advanceWidth: glyph.advanceWidth,
+		contours: contours,
+	};
 
 	// Add this finished glyph
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
@@ -401,7 +402,7 @@ async function generateOneGlyph(currentExportItem) {
  * Makes one item from the export list, and updates the
  * exterior export process, as well as the UI progress bar.
  * @param {Object} currentExportItem - Information about a single item
- * @returns {Promise<Object>} - Opentype.js Glyph object
+ * @returns {Promise<Object>} - FontFlux Glyph object
  */
 async function generateOneLigature(currentExportItem) {
 	// log(`generateOneLigature`, 'start');
@@ -409,32 +410,22 @@ async function generateOneLigature(currentExportItem) {
 
 	// export this glyph
 	const liga = currentExportItem.xg;
-	const maxes = liga.maxes;
 
 	// log(`generateOneLigature: ${ligaID}\t${liga.name}\t${getNameForExport(ligaID)}`);
 	showToast('Exporting<br>' + liga.name, 999999);
 
-	const thisPath = makeOpenTypeJS_Glyph(liga, new openTypeJS.Path());
-	const thisIndex = getNextGlyphIndexNumber();
-	// log(`thisIndex: ${thisIndex}`);
+	const svgPath = makeSvgPathForGlyph(liga);
+	const contours = FontFlux.svgToContours(svgPath, 'cff');
 
-	const thisLigature = new openTypeJS.Glyph({
+	const thisLigature = {
 		name: generateLigatureExportName(liga),
-		index: thisIndex,
-		path: thisPath,
-		xMin: round(maxes.xMin),
-		xMax: round(maxes.xMax),
-		yMin: round(maxes.yMin),
-		yMax: round(maxes.yMax),
-	});
+		advanceWidth: liga.advanceWidth,
+		contours: contours,
+	};
 
-	// Opentype.js Glyph constructor removes Advance Width of zero.
-	// So, incase we need it to be zero, we add it here.
-	thisLigature.advanceWidth = liga.advanceWidth;
-
-	// Add substitution info to font
-	const charSubList = liga.gsub.map((v) => String.fromCharCode(v));
-	ligatureSubstitutions.push({ subChars: charSubList, byIndex: thisIndex });
+	// TODO: Add substitution info for FontFlux
+	// const charSubList = liga.gsub.map((v) => String.fromCharCode(v));
+	// ligatureSubstitutions.push({ subChars: charSubList, byIndex: thisIndex });
 
 	// log(thisLigature);
 	await pause();
@@ -469,61 +460,42 @@ function getNextGlyphIndexNumber() {
 }
 
 /**
- * Converts a Glyphr Studio item into an Opentype.js Glyph
+ * Converts a Glyphr Studio item into an SVG path string.
  * @param {Glyph | Object} item - Item to convert
- * @param {Object} openTypePath - current path to add to
- * @returns {Object}
+ * @returns {String} SVG path data
  */
-function makeOpenTypeJS_Glyph(item, openTypePath) {
-	// log(`makeOpenTypeJS_Glyph`, 'start');
+function makeSvgPathForGlyph(item) {
 	let flatItem = makeGlyphWithResolvedLinks(item);
+	let pathData = '';
 	flatItem.shapes.forEach((shape) => {
 		if (shape.objType === 'Path') {
-			openTypePath = makeOpenTypeJS_Path(shape, openTypePath);
+			pathData += makeSvgPathForPath(shape);
 		}
 	});
-	// log(`makeOpenTypeJS_Glyph`, 'end');
-	return openTypePath;
+	return `<svg><path d="${pathData}"/></svg>`;
 }
 
 /**
- * Converts a Glyphr Studio Path into an Opentype.js Path
+ * Converts a Glyphr Studio Path into an SVG path string.
  * @param {Path| Object} path - Item to convert
- * @param {Object} openTypePath - current path to add to
- * @returns {Object}
+ * @returns {String} SVG path data
  */
-function makeOpenTypeJS_Path(path, openTypePath) {
-	// log('makeOpenTypeJS_Path', 'start');
-	// log('openTypePath:');
-	// log(openTypePath);
-
+function makeSvgPathForPath(path) {
 	if (!path.pathPoints || path.pathPoints.length === 0 || !path.pathPoints[0]) {
-		// log('!!!Path has zero points!');
-		openTypePath.close();
-		return openTypePath;
+		return '';
 	}
 
-	path.reverseWinding(); // OTF.js reverses the winding for some reason
+	path.reverseWinding();
 
-	openTypePath.moveTo(round(path.pathPoints[0].p.x), round(path.pathPoints[0].p.y));
+	let d = `M${round(path.pathPoints[0].p.x)} ${round(path.pathPoints[0].p.y)}`;
 
 	path.pathPoints.forEach((point) => {
 		const nextPoint = path.pathPoints[path.getNextPointNumber(point.pointNumber)];
-		openTypePath.curveTo(
-			round(point.h2.x),
-			round(point.h2.y),
-			round(nextPoint.h1.x),
-			round(nextPoint.h1.y),
-			round(nextPoint.p.x),
-			round(nextPoint.p.y)
-		);
+		d += ` C${round(point.h2.x)} ${round(point.h2.y)} ${round(nextPoint.h1.x)} ${round(nextPoint.h1.y)} ${round(nextPoint.p.x)} ${round(nextPoint.p.y)}`;
 	});
 
-	openTypePath.close();
-	path.reverseWinding(); // Put it back
+	d += ' Z';
+	path.reverseWinding();
 
-	// log('returning path');
-	// log(openTypePath);
-	// log('makeOpenTypeJS_Path', 'end');
-	return openTypePath;
+	return d;
 }
