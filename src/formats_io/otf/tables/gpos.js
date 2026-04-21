@@ -3,9 +3,9 @@ import { makeKernGroupID } from '../../../pages/kerning.js';
 import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../../../project_data/kern_group.js';
 import {
-	decrementItemTotal,
-	incrementItemCounter,
-	updateFontImportProgressIndicator,
+    decrementItemTotal,
+    incrementItemCounter,
+    updateFontImportProgressIndicator,
 } from '../font_import.js';
 
 // --------------------------------------------------------------
@@ -163,15 +163,36 @@ ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 export function writeGposKernDataToFont(exportingFont, project) {
 	const kernPairs = project.makeCollectionOfKernPairs();
 
-	if (!exportingFont.addKerning) {
-		console.warn(`Kerning export requires a FontFlux font with addKerning support.`);
+	// Only proceed if there are kern pairs to export
+	if (!kernPairs || kernPairs.length === 0) {
+		// log('No kern pairs to export');
 		return;
 	}
 
-	const fontFluxKernPairs = kernPairs.map(pair => ({
-		left: String.fromCodePoint(pair.left),
-		right: String.fromCodePoint(pair.right),
-		value: pair.value
-	}));
-	exportingFont.addKerning(fontFluxKernPairs);
+	try {
+		const fontFluxKernPairs = kernPairs
+			.filter(pair => {
+				// Validate each pair has required properties
+				return pair && typeof pair.left === 'number' &&
+					   typeof pair.right === 'number' &&
+					   typeof pair.value === 'number';
+			})
+			.map(pair => ({
+				left: String.fromCodePoint(pair.left),
+				right: String.fromCodePoint(pair.right),
+				value: pair.value
+			}));
+
+		// Only add kerning if we have valid pairs
+		if (fontFluxKernPairs.length > 0) {
+			// Try using addKerning if available
+			if (exportingFont.addKerning && typeof exportingFont.addKerning === 'function') {
+				exportingFont.addKerning(fontFluxKernPairs);
+			}
+		}
+	} catch (error) {
+		// Log the error but don't fail the entire export
+		// Kerning export is optional and shouldn't block font export
+		console.warn(`Warning: Kerning export failed (font will export without kerning): ${error.message}`);
+	}
 }

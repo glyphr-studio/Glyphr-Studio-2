@@ -1,8 +1,8 @@
+import { FontFlux } from 'font-flux-js';
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { pause, round } from '../../common/functions.js';
 import { closeAllToasts, showError, showToast } from '../../controls/dialogs/dialogs.js';
-import { FontFlux } from 'font-flux-js';
 import { getUnicodeShortName } from '../../lib/unicode/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
@@ -80,19 +80,19 @@ export async function ioFont_exportFont() {
 
 	// log(`\n⮟ligatureSubstitutions⮟`);
 	// log(ligatureSubstitutions);
-	// TODO: Implement ligature support for FontFlux
-	// if (exportLigatures) {
-	// 	ligatureSubstitutions.forEach((sub) => {
-	// 		// log(`Adding ligature to font`);
-	// 		const subIndexes = sub.subChars.map((char) => font.charToGlyphIndex(char));
-	// 		// log(sub);
-	// 		font.substitution.addLigature('liga', { sub: subIndexes, by: sub.byIndex });
-	// 	});
-	// }
 
-	// Write kern pair data
+	// Write kern pair data first, before setting GSUB features
+	// This ensures the font's GPOS table is properly initialized
 	if (project.settings.app.exportKerning) {
 		writeGposKernDataToFont(font, project);
+	}
+
+	if (exportLigatures && ligatureSubstitutions.length > 0) {
+		font.setFeatures({
+			GSUB: {
+				liga: ligatureSubstitutions
+			}
+		});
 	}
 
 	// TODO investigate advanced table values
@@ -423,9 +423,10 @@ async function generateOneLigature(currentExportItem) {
 		contours: contours,
 	};
 
-	// TODO: Add substitution info for FontFlux
-	// const charSubList = liga.gsub.map((v) => String.fromCharCode(v));
-	// ligatureSubstitutions.push({ subChars: charSubList, byIndex: thisIndex });
+	// Add substitution info for FontFlux
+	const thisIndex = getNextGlyphIndexNumber();
+	const subIndexes = liga.gsub.map((unicode) => codePointGlyphIndexTable[parseCharsInputAsHex(String.fromCharCode(unicode))]);
+	ligatureSubstitutions.push({ sub: subIndexes, by: thisIndex });
 
 	// log(thisLigature);
 	await pause();
