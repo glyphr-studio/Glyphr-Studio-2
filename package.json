@@ -1,7 +1,7 @@
 {
   "name": "glyphr-studio-2",
   "author": "Matt LaGrandeur",
-  "version": "2.8",
+  "version": "2.9",
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/glyphr-studio/Glyphr-Studio-2#readme",
   "description": "Glyphr Studio v2 is a web-based font editor, optimized for typeface design beginners or hobbyists.",
@@ -57,6 +57,6 @@
     "@mattlag/xmltojson": "^2.0.2",
     "bezier-boolean": "^1.0.0",
     "eslint": "^9.39.2",
-    "font-flux-js": "^2.0.0"
+    "font-flux-js": "^2.3.1"
   }
 }
