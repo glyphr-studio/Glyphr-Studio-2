@@ -6,9 +6,11 @@ import { closeAllToasts, showError, showToast } from '../../controls/dialogs/dia
 import { getUnicodeShortName } from '../../lib/unicode/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
+import { Path } from '../../project_data/path.js';
 import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions.js';
 import { saveFile } from '../../project_editor/file_io.js';
 import { writeGposKernDataToFont } from './tables/gpos.js';
+
 
 /**
 	IO > Export > Font
@@ -59,16 +61,18 @@ export async function ioFont_exportFont() {
 	// log('NEW options ARG TO FONT');
 	// log(options);
 	const font = FontFlux.create({
-		familyName: options.familyName,
-		styleName: options.styleName,
+		family: options.familyName,
 		unitsPerEm: options.unitsPerEm,
 		ascender: options.ascender,
 		descender: options.descender,
-		copyright: options.copyright,
-		version: options.version,
-		weight: options.weightClass,
-		italicAngle: options.italicAngle,
 	});
+
+	// Set additional font info properties
+	font.info.styleName = options.styleName;
+	font.info.copyright = options.copyright;
+	font.info.version = options.version;
+	font.info.weight = options.weightClass;
+	font.info.italicAngle = options.italicAngle;
 
 	// Add glyphs
 	options.glyphs.forEach(glyph => {
@@ -88,10 +92,15 @@ export async function ioFont_exportFont() {
 	}
 
 	if (exportLigatures && ligatureSubstitutions.length > 0) {
-		font.setFeatures({
-			GSUB: {
-				liga: ligatureSubstitutions
-			}
+		ligatureSubstitutions.forEach(sub => {
+			font.addSubstitution({
+				type: 'ligature',
+				feature: 'liga',
+				substitution: {
+					components: sub.components,
+					ligature: sub.ligature,
+				},
+			});
 		});
 	}
 
@@ -125,6 +134,7 @@ function saveOTFFile(font) {
 		const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
 		// log(`\n⮟font⮟`);
 		// log(font);
+		// Export as SFNT (complete OpenType file with all required tables)
 		const arrayBuffer = font.export({ format: 'sfnt' });
 		const dataView = new DataView(arrayBuffer);
 		const blob = new Blob([dataView], { type: 'font/opentype' });
@@ -330,8 +340,7 @@ function addNotdefToExport(options) {
 	// log(notdef);
 
 	// Add it to the export
-	const svgPath = makeSvgPathForGlyph(notdef);
-	const contours = FontFlux.svgToContours(svgPath, 'cff');
+	const contours = glyphToContours(notdef);
 
 	const notdefGlyph = {
 		name: '.null',
@@ -357,30 +366,19 @@ async function generateOneGlyph(currentExportItem) {
 	// export this glyph
 	const glyph = currentExportItem.xg;
 	const num = currentExportItem.xc;
-	const maxes = glyph.maxes;
-
-	// log(`num: ${num}`);
-	// log(`\n⮟glyph⮟`);
-	// log(glyph);
 
 	showToast('Exporting<br>' + glyph.name, 999999);
-
-	// Path data
-	const svgPath = makeSvgPathForGlyph(glyph);
 
 	// Unicode
 	const thisUnicode = parseInt(num);
 	const thisIndex = getNextGlyphIndexNumber();
-	// log(`thisUnicode: ${thisUnicode}`);
 
 	// Name
 	const hexID = decToHex(num);
 	const thisName = hexID ? getUnicodeShortName(hexID) : 'name';
-	// log(`decToHex(num): ${decToHex(num)}`);
-	// log(`thisName: ${thisName}`);
 
-	// Create FontFlux Glyph
-	const contours = FontFlux.svgToContours(svgPath, 'cff'); // Use CFF for OTF export
+	// Convert glyph outlines directly to FontFlux contours
+	const contours = glyphToContours(glyph);
 
 	const thisGlyph = {
 		name: thisName,
@@ -393,8 +391,6 @@ async function generateOneGlyph(currentExportItem) {
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
 
 	await pause();
-	// log(thisGlyph);
-	// log('generateOneGlyph', 'end');
 	return thisGlyph;
 }
 
@@ -406,16 +402,14 @@ async function generateOneGlyph(currentExportItem) {
  */
 async function generateOneLigature(currentExportItem) {
 	// log(`generateOneLigature`, 'start');
-	// log(currentExportItem);
 
 	// export this glyph
 	const liga = currentExportItem.xg;
 
-	// log(`generateOneLigature: ${ligaID}\t${liga.name}\t${getNameForExport(ligaID)}`);
 	showToast('Exporting<br>' + liga.name, 999999);
 
-	const svgPath = makeSvgPathForGlyph(liga);
-	const contours = FontFlux.svgToContours(svgPath, 'cff');
+	// Convert ligature outlines directly to FontFlux contours
+	const contours = glyphToContours(liga);
 
 	const thisLigature = {
 		name: generateLigatureExportName(liga),
@@ -424,13 +418,13 @@ async function generateOneLigature(currentExportItem) {
 	};
 
 	// Add substitution info for FontFlux
-	const thisIndex = getNextGlyphIndexNumber();
-	const subIndexes = liga.gsub.map((unicode) => codePointGlyphIndexTable[parseCharsInputAsHex(String.fromCharCode(unicode))]);
-	ligatureSubstitutions.push({ sub: subIndexes, by: thisIndex });
+	const componentNames = liga.gsub.map((unicode) => {
+		const hexID = decToHex(unicode);
+		return hexID ? getUnicodeShortName(hexID) : 'name';
+	});
+	ligatureSubstitutions.push({ components: componentNames, ligature: thisLigature.name });
 
-	// log(thisLigature);
 	await pause();
-	// log(`generateOneLigature`, 'end');
 	return thisLigature;
 }
 
@@ -461,42 +455,75 @@ function getNextGlyphIndexNumber() {
 }
 
 /**
- * Converts a Glyphr Studio item into an SVG path string.
+ * Converts a Glyphr Studio Glyph directly to FontFlux contours format.
  * @param {Glyph | Object} item - Item to convert
- * @returns {String} SVG path data
+ * @returns {Array<Array>} - Array of contours, each contour is an array of points
  */
-function makeSvgPathForGlyph(item) {
-	let flatItem = makeGlyphWithResolvedLinks(item);
-	let pathData = '';
+function glyphToContours(item) {
+	const flatItem = makeGlyphWithResolvedLinks(item);
+	const contours = [];
+
 	flatItem.shapes.forEach((shape) => {
 		if (shape.objType === 'Path') {
-			pathData += makeSvgPathForPath(shape);
+			const contour = pathToContour(shape);
+			if (contour && contour.length > 0) {
+				contours.push(contour);
+			}
 		}
 	});
-	return `<svg><path d="${pathData}"/></svg>`;
+
+	return contours;
 }
 
 /**
- * Converts a Glyphr Studio Path into an SVG path string.
- * @param {Path| Object} path - Item to convert
- * @returns {String} SVG path data
+ * Converts a Glyphr Studio Path into a FontFlux CFF contour (cubic Bézier format).
+ * Uses explicit 'M' (move) and 'C' (cubic curve) commands.
+ * Format: [{ type: 'M', x, y }, { type: 'C', x1, y1, x2, y2, x, y }, ...]
+ * @param {Path} path - Path object to convert
+ * @returns {Array} - Contour commands in CFF cubic format
  */
-function makeSvgPathForPath(path) {
-	if (!path.pathPoints || path.pathPoints.length === 0 || !path.pathPoints[0]) {
-		return '';
+function pathToContour(path) {
+	if (!path.pathPoints || path.pathPoints.length === 0) {
+		return [];
 	}
 
+	const contour = [];
+	const points = path.pathPoints;
+
+	// Reverse winding for correct direction
 	path.reverseWinding();
 
-	let d = `M${round(path.pathPoints[0].p.x)} ${round(path.pathPoints[0].p.y)}`;
+	try {
+		// Start with move command to first point
+		contour.push({
+			type: 'M',
+			x: round(points[0].p.x),
+			y: round(points[0].p.y),
+		});
 
-	path.pathPoints.forEach((point) => {
-		const nextPoint = path.pathPoints[path.getNextPointNumber(point.pointNumber)];
-		d += ` C${round(point.h2.x)} ${round(point.h2.y)} ${round(nextPoint.h1.x)} ${round(nextPoint.h1.y)} ${round(nextPoint.p.x)} ${round(nextPoint.p.y)}`;
-	});
+		// Add cubic curve for each segment
+		points.forEach((point, index) => {
+			const nextIndex = (index + 1) % points.length;
+			const nextPoint = points[nextIndex];
 
-	d += ' Z';
-	path.reverseWinding();
+			// Cubic curve command
+			// x1, y1 = first control point (from current point's h2)
+			// x2, y2 = second control point (to next point's h1)
+			// x, y = end point
+			contour.push({
+				type: 'C',
+				x1: round(point.h2.x),
+				y1: round(point.h2.y),
+				x2: round(nextPoint.h1.x),
+				y2: round(nextPoint.h1.y),
+				x: round(nextPoint.p.x),
+				y: round(nextPoint.p.y),
+			});
+		});
+	} finally {
+		// Restore winding
+		path.reverseWinding();
+	}
 
-	return d;
+	return contour;
 }

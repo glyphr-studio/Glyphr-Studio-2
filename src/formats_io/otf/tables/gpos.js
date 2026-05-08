@@ -170,24 +170,31 @@ export function writeGposKernDataToFont(exportingFont, project) {
 	}
 
 	try {
+		// Filter and convert kern pairs to FontFlux format
+		// FontFlux.addKerning expects pairs with unicode values or glyph names
 		const fontFluxKernPairs = kernPairs
 			.filter(pair => {
 				// Validate each pair has required properties
-				return pair && typeof pair.left === 'number' &&
-					   typeof pair.right === 'number' &&
+				return pair && typeof pair.left === 'string' &&
+					   typeof pair.right === 'string' &&
 					   typeof pair.value === 'number';
 			})
 			.map(pair => ({
-				left: String.fromCodePoint(pair.left),
-				right: String.fromCodePoint(pair.right),
+				left: pair.left,  // Hex string
+				right: pair.right, // Hex string
 				value: pair.value
 			}));
 
-		// Only add kerning if we have valid pairs
+		// Add kerning pairs individually for better error handling
 		if (fontFluxKernPairs.length > 0) {
-			// Try using addKerning if available
 			if (exportingFont.addKerning && typeof exportingFont.addKerning === 'function') {
-				exportingFont.addKerning(fontFluxKernPairs);
+				fontFluxKernPairs.forEach(pair => {
+					try {
+						exportingFont.addKerning(pair);
+					} catch (pairError) {
+						console.warn(`Warning: Failed to add kerning pair ${pair.left}-${pair.right}: ${pairError.message}`);
+					}
+				});
 			}
 		}
 	} catch (error) {
