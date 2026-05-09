@@ -73,6 +73,8 @@ export async function ioFont_exportFont() {
 	font.info.version = options.version;
 	font.info.weight = options.weightClass;
 	font.info.italicAngle = options.italicAngle;
+	font.info.ascender = options.ascender;
+	font.info.descender = options.descender;
 
 	// Add glyphs
 	options.glyphs.forEach(glyph => {
@@ -477,8 +479,8 @@ function glyphToContours(item) {
 
 /**
  * Converts a Glyphr Studio Path into a FontFlux CFF contour (cubic Bézier format).
- * Uses explicit 'M' (move) and 'C' (cubic curve) commands.
- * Format: [{ type: 'M', x, y }, { type: 'C', x1, y1, x2, y2, x, y }, ...]
+ * Uses 'M' (move), 'L' (line), and 'C' (cubic curve) commands.
+ * Format: [{ type: 'M', x, y }, { type: 'L', x, y }, { type: 'C', x1, y1, x2, y2, x, y }, ...]
  * @param {Path} path - Path object to convert
  * @returns {Array} - Contour commands in CFF cubic format
  */
@@ -490,9 +492,6 @@ function pathToContour(path) {
 	const contour = [];
 	const points = path.pathPoints;
 
-	// Reverse winding for correct direction
-	path.reverseWinding();
-
 	try {
 		// Start with move command to first point
 		contour.push({
@@ -501,28 +500,44 @@ function pathToContour(path) {
 			y: round(points[0].p.y),
 		});
 
-		// Add cubic curve for each segment
+		// Add curve or line for each segment
 		points.forEach((point, index) => {
 			const nextIndex = (index + 1) % points.length;
 			const nextPoint = points[nextIndex];
 
-			// Cubic curve command
-			// x1, y1 = first control point (from current point's h2)
-			// x2, y2 = second control point (to next point's h1)
-			// x, y = end point
-			contour.push({
-				type: 'C',
-				x1: round(point.h2.x),
-				y1: round(point.h2.y),
-				x2: round(nextPoint.h1.x),
-				y2: round(nextPoint.h1.y),
-				x: round(nextPoint.p.x),
-				y: round(nextPoint.p.y),
-			});
+			// Check if this is a straight line (handles at the points)
+			const isLine = (
+				round(point.h2.x) === round(point.p.x) &&
+				round(point.h2.y) === round(point.p.y) &&
+				round(nextPoint.h1.x) === round(nextPoint.p.x) &&
+				round(nextPoint.h1.y) === round(nextPoint.p.y)
+			);
+
+			if (isLine) {
+				// Line command
+				contour.push({
+					type: 'L',
+					x: round(nextPoint.p.x),
+					y: round(nextPoint.p.y),
+				});
+			} else {
+				// Cubic curve command
+				// x1, y1 = first control point (from current point's h2)
+				// x2, y2 = second control point (to next point's h1)
+				// x, y = end point
+				contour.push({
+					type: 'C',
+					x1: round(point.h2.x),
+					y1: round(point.h2.y),
+					x2: round(nextPoint.h1.x),
+					y2: round(nextPoint.h1.y),
+					x: round(nextPoint.p.x),
+					y: round(nextPoint.p.y),
+				});
+			}
 		});
-	} finally {
-		// Restore winding
-		path.reverseWinding();
+	} catch (e) {
+		console.warn(e);
 	}
 
 	return contour;
