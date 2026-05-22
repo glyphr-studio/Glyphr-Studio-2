@@ -14,6 +14,7 @@ import { KernGroup } from '../project_data/kern_group.js';
 export class History {
 	constructor() {
 		this.queue = [];
+		this.redoQueue = [];
 		this.initialTimeStamp = 0;
 		this.initialProject = {};
 	}
@@ -39,6 +40,7 @@ export class History {
 		// log(`History.addState`, 'start');
 		const entry = makeHistoryEntry({ title: title, itemWasDeleted: itemWasDeleted });
 		this.queue.unshift(entry);
+		this.redoQueue = [];
 		this.updateAfterSaveState();
 		// log(this);
 		// log(`History.addState`, 'end');
@@ -63,6 +65,7 @@ export class History {
 			entry.page = editor.nav.page;
 		}
 		this.queue.unshift(entry);
+		this.redoQueue = [];
 		this.updateAfterSaveState();
 	}
 
@@ -97,6 +100,9 @@ export class History {
 
 		const undoButton = document.querySelector('#actionButtonUndo');
 		if (undoButton) undoButton.removeAttribute('disabled');
+
+		const redoButton = document.querySelector('#actionButtonRedo');
+		if (redoButton) redoButton.setAttribute('disabled', 'disabled');
 
 		if (editor.project.settings.app.autoSave) {
 			const app = getGlyphrStudioApp();
@@ -220,13 +226,19 @@ export class History {
 		editor.multiSelect.points.clear();
 		editor.multiSelect.shapes.clear();
 
+		// Capture entries being removed from the queue for redo
+		const redoEntries = [q[0]];
+
 		// Overwrite the current item with the previous state
 		if (nextEntry.wholeProjectSave) {
 			// log(`Overwriting whole project`);
 			// log(`\n⮟nextEntry.itemState⮟`);
 			// log(nextEntry.itemState);
 			editor._project = nextEntry.itemState;
-			if (q[0].wholeProjectSave) q.shift();
+			if (q[0].wholeProjectSave) {
+				q.shift();
+				redoEntries.push(nextEntry);
+			}
 		} else {
 			// log(editor.selectedItem.print());
 			// log(`overwriting ${editor.selectedItem.name}`);
@@ -240,6 +252,9 @@ export class History {
 		// Index 0 is the previous current state, so remove it
 		q.shift();
 
+		// Save undone state for redo
+		this.redoQueue.unshift(redoEntries);
+
 		// Finalize UI stuff
 		if (editor.nav.panel === 'History') refreshPanel();
 		if (q.length === 0) {
@@ -248,8 +263,67 @@ export class History {
 			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
 		}
 
+		const redoButton = document.querySelector('#actionButtonRedo');
+		if (redoButton) redoButton.removeAttribute('disabled');
+
 		// log(q);
 		// log(`History.restoreState`, 'end');
+	}
+
+	/**
+	 * Step back N undos at once, used when the user clicks a specific
+	 * entry in the History panel to revert to that point in time.
+	 * Passing a number larger than queue length jumps to the initial state.
+	 * @param {Number} steps - How many undo steps to apply
+	 */
+	jumpToState(steps) {
+		for (let i = 0; i < steps; i++) {
+			if (this.queue.length === 0) break;
+			this.restoreState();
+		}
+	}
+
+	/**
+	 * Re-apply the most recently undone change. Reverses restoreState.
+	 */
+	redoState() {
+		const editor = getCurrentProjectEditor();
+
+		if (this.redoQueue.length === 0) {
+			const redoButton = document.querySelector('#actionButtonRedo');
+			if (redoButton) redoButton.setAttribute('disabled', 'disabled');
+			showToast(`No more redo`);
+			return;
+		}
+
+		const entries = this.redoQueue.shift();
+		const targetEntry = entries[0];
+
+		editor.multiSelect.points.clear();
+		editor.multiSelect.shapes.clear();
+
+		if (targetEntry.wholeProjectSave) {
+			editor._project = targetEntry.itemState;
+		} else {
+			editor.selectedItem = targetEntry.itemState;
+		}
+		editor.publish('currentItem', editor.selectedItem);
+
+		// Restore the queue entries so subsequent undos behave correctly
+		for (let i = entries.length - 1; i >= 0; i--) {
+			this.queue.unshift(entries[i]);
+		}
+
+		editor.setProjectAsUnsaved();
+		if (editor.nav.panel === 'History') refreshPanel();
+
+		const undoButton = document.querySelector('#actionButtonUndo');
+		if (undoButton) undoButton.removeAttribute('disabled');
+
+		if (this.redoQueue.length === 0) {
+			const redoButton = document.querySelector('#actionButtonRedo');
+			if (redoButton) redoButton.setAttribute('disabled', 'disabled');
+		}
 	}
 }
 

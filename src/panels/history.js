@@ -10,14 +10,26 @@ export function makePanel_History() {
 	let historyArea = makeElement({ className: 'panel__card history-list' });
 
 	let length = editor.history.length;
+	let redoLength = editor.history.redoQueue.length;
+
+	let buttonRow = makeElement({
+		className: 'history-list__button-row',
+	});
+	historyArea.appendChild(buttonRow);
 
 	let undoButton = makeElement({
 		tag: 'button',
 		className: length > 0 ? 'button__call-to-action number' : 'number',
 		innerHTML: `undo ${length}`,
-		style: 'max-width: 30%; grid-column: 1 / -1;',
 	});
-	historyArea.appendChild(undoButton);
+	buttonRow.appendChild(undoButton);
+
+	let redoButton = makeElement({
+		tag: 'button',
+		className: redoLength > 0 ? 'button__call-to-action number' : 'number',
+		innerHTML: `redo ${redoLength}`,
+	});
+	buttonRow.appendChild(redoButton);
 
 	if (length > 0) {
 		undoButton.addEventListener('click', () => {
@@ -27,6 +39,17 @@ export function makePanel_History() {
 		});
 	} else {
 		undoButton.setAttribute('disabled', '');
+	}
+
+	if (redoLength > 0) {
+		redoButton.addEventListener('click', () => {
+			editor.history.redoState();
+		});
+	} else {
+		redoButton.setAttribute('disabled', '');
+	}
+
+	if (length === 0) {
 		historyArea.appendChild(
 			makeElement({
 				tag: 'h3',
@@ -36,6 +59,7 @@ export function makePanel_History() {
 	}
 
 	let currentItemID = 'initial';
+	let visibleIndex = 0;
 
 	editor.history.queue.forEach((entry) => {
 		if (entry.title !== '_whole_project_change_post_state_') {
@@ -53,9 +77,24 @@ export function makePanel_History() {
 			// Individual change title
 			let title = entry.title;
 			if (entry.wholeProjectSave) title = `<strong>${entry.title}</strong>`;
-			historyArea.appendChild(
-				makeElement({ className: 'history-list__title', innerHTML: title })
-			);
+
+			const stepsToUndo = visibleIndex;
+			const isCurrent = visibleIndex === 0;
+			const titleEl = makeElement({
+				className:
+					'history-list__title' +
+					(isCurrent ? ' history-list__title--current' : ' history-list__title--clickable'),
+				innerHTML: isCurrent ? `${title} <span class="history-list__current-tag">current</span>` : title,
+				attributes: isCurrent
+					? {}
+					: { title: `Click to revert to this point (undo ${stepsToUndo} step${stepsToUndo > 1 ? 's' : ''})` },
+			});
+			if (!isCurrent) {
+				titleEl.addEventListener('click', () => {
+					editor.history.jumpToState(stepsToUndo);
+				});
+			}
+			historyArea.appendChild(titleEl);
 
 			// Time stamp
 			historyArea.appendChild(
@@ -65,17 +104,27 @@ export function makePanel_History() {
 					title: new Date(entry.timeStamp).toLocaleString(),
 				})
 			);
+
+			visibleIndex++;
 		}
 	});
 
 	// historyArea.appendChild(makeElement({ tag: 'hr' }));
 
-	historyArea.appendChild(
-		makeElement({
-			className: 'history-list__title history-list__initial-entry',
-			innerHTML: 'Initial state',
-		})
-	);
+	const initialIsClickable = editor.history.queue.length > 0;
+	const initialTitleEl = makeElement({
+		className:
+			'history-list__title history-list__initial-entry' +
+			(initialIsClickable ? ' history-list__title--clickable' : ''),
+		innerHTML: 'Initial state',
+		attributes: initialIsClickable ? { title: 'Click to revert to the initial project state' } : {},
+	});
+	if (initialIsClickable) {
+		initialTitleEl.addEventListener('click', () => {
+			editor.history.jumpToState(editor.history.queue.length);
+		});
+	}
+	historyArea.appendChild(initialTitleEl);
 
 	historyArea.appendChild(
 		makeElement({

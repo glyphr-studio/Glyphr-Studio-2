@@ -623,6 +623,46 @@ nav .item-chooser__wrapper {
 	opacity: 0.6;
 }
 
+.history-list__button-row {
+	grid-column: 1 / -1;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.history-list__button-row button {
+	flex: 0 0 auto;
+}
+
+.history-list__title--clickable {
+	cursor: pointer;
+	border-radius: 3px;
+	padding: 1px 4px;
+	margin: -1px -4px;
+	transition: background-color 0.1s ease;
+}
+
+.history-list__title--clickable:hover {
+	background-color: var(--gray-l90);
+	color: var(--royal-l25);
+}
+
+.history-list__title--current {
+	font-weight: 600;
+}
+
+.history-list__current-tag {
+	display: inline-block;
+	margin-left: 6px;
+	padding: 0 5px;
+	font-size: 10px;
+	font-weight: 400;
+	border-radius: 3px;
+	background-color: var(--royal-l85);
+	color: var(--royal-l25);
+	vertical-align: middle;
+}
+
 /*
 		Content Pages
 */
