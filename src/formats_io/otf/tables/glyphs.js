@@ -10,54 +10,54 @@ import {
 } from '../font_import';
 
 /**
- * In OTF fonts, there isn't really a "glyphs" table, but
- * opentype.js has a glyphs table abstraction that we use
- * to import character data.
- * @param {Object} fontGlyphs - opentype.js glyph data
+ * Imports glyph data from FontFlux
+ * @param {Array} fontGlyphs - FontFlux glyph array
  * @param {GlyphrStudioProject} project - current project
  * @returns {Promise<Object>} - imported glyphs
  */
 export async function importGlyphs(fontGlyphs, project) {
 	const finalGlyphs = {};
-	for (const key of Object.keys(fontGlyphs)) {
+
+	for (const glyph of fontGlyphs) {
 		await updateFontImportProgressIndicator('character');
-		importOneGlyph(fontGlyphs[key], project, finalGlyphs);
+		importOneGlyph(glyph, project, finalGlyphs);
 	}
 
 	return finalGlyphs;
 }
 
 /**
- * Imports one Opentype.js Glyph object and adds it
+ * Imports one FontFlux Glyph object and adds it
  * to the current project
- * @param {Object} otfGlyph - Opentype.js Glyph object
+ * @param {Object} glyph - FontFlux Glyph object
  * @param {GlyphrStudioProject} project - current project
- * @param {Object} finalGlyphs -  imported glyphs
+ * @param {Object} finalGlyphs - imported glyphs
  * @returns nothing
  */
-function importOneGlyph(otfGlyph, project, finalGlyphs) {
+function importOneGlyph(glyph, project, finalGlyphs) {
 	// log('importOneGlyph', 'start');
 
 	// Get the appropriate unicode decimal for this glyph
-	// log(`otfGlyph.unicode: ${otfGlyph.unicode}`);
-	// log(`otfGlyph.name: ${otfGlyph.name}`);
-	// log(`otfGlyph.advanceWidth: ${otfGlyph.advanceWidth}`);
-	// log(otfGlyph);
+	// log(`glyph.unicode: ${glyph.unicode}`);
+	// log(`glyph.name: ${glyph.name}`);
+	// log(`glyph.advanceWidth: ${glyph.advanceWidth}`);
+	// log(glyph);
 
-	if (isNaN(otfGlyph.unicode)) {
-		// log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
-		decrementItemTotal();
-		// log('importOneGlyph', 'end');
-		return;
-	}
+	const unicode = glyph.unicode;
+	const unicodes = glyph.unicodes || (unicode !== undefined ? [unicode] : []);
 
-	if (!Array.isArray(otfGlyph.unicodes)) otfGlyph.unicodes = [otfGlyph.unicode];
-	if (otfGlyph.unicodes[0] !== otfGlyph.unicode) {
-		otfGlyph.unicodes.unshift(otfGlyph.unicode);
+	if (unicode === undefined || isNaN(unicode)) {
+		// Skip glyphs without unicode, except for special cases
+		if (glyph.name !== '.notdef') {
+			// log(`!!! Skipping ${glyph.name} NO UNICODE !!!`);
+			decrementItemTotal();
+			// log('importOneGlyph', 'end');
+			return;
+		}
 	}
 
 	// log(`primaryUnicodeHex: ${primaryUnicodeHex}`);
-	const importedGlyph = makeGlyphrStudioGlyphObject(otfGlyph);
+	const importedGlyph = makeGlyphrStudioGlyphObject(glyph);
 
 	if (!importedGlyph) {
 		console.warn(`Something went wrong with importing this glyph.`);
@@ -66,9 +66,9 @@ function importOneGlyph(otfGlyph, project, finalGlyphs) {
 		return;
 	}
 
-	for (let i = 0; i < otfGlyph.unicodes.length; i++) {
-		const unicode = otfGlyph.unicodes[i];
-		const unicodeHex = decToHex(unicode || 0);
+	for (let i = 0; i < unicodes.length; i++) {
+		const unicodeVal = unicodes[i];
+		const unicodeHex = decToHex(unicodeVal || 0);
 		const glyphID = `glyph-${unicodeHex}`;
 		if (!finalGlyphs[glyphID]) {
 			const newGlyph = new Glyph(importedGlyph.save());

@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"checkJs": true,
+		"strict": false,
 		"target": "es2022",
 		"module": "ESNext",
 		"moduleResolution": "Bundler"

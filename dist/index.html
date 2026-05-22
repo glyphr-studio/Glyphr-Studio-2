@@ -121,6 +121,7 @@
 				width: 100%;
 				user-select: text;
 			}
+<<<<<<< HEAD
 		</style>
 		<script type="module" crossorigin src="/app/assets/index-CT4VZ42X.js"></script>
 		<link rel="stylesheet" crossorigin href="/app/assets/index-DUMgHHVO.css">
@@ -184,3 +185,68 @@
 		<div id="app__wrapper"></div>
 	</body>
 </html>
+=======
+		</style>
+		<script type="module" crossorigin src="/app/assets/index-CAvWNSgt.js"></script>
+		<link rel="stylesheet" crossorigin href="/app/assets/index-RjMpBlOP.css">
+	</head>
+
+	<body
+		style="
+			background-color: var(--dark-gradient-background);
+			width: 100%;
+			height: 100%;
+			min-width: 100%;
+			min-height: 100%;
+			margin: 0;
+			padding: 0;
+		"
+	>
+		<div id="app__landing-page">
+			<svg
+				version="1.1"
+				xmlns="http://www.w3.org/2000/svg"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xml:space="preserve"
+				viewBox="0 0 200 128"
+				enable-background="new 0 0 200 128"
+				class="mainLogo"
+			></svg>
+			<script>
+				setTimeout(function () {
+					let errorDiv = document.querySelector('#errorMessage');
+					if (errorDiv) {
+						errorDiv.style.display = 'block';
+						document.querySelector('.mainLogo').style.display = 'none';
+					}
+				}, 5000);
+			</script>
+
+			<div id="errorMessage" style="display: none; width: 400px">
+				<div
+					style="font-size: 80px; padding-bottom: 20px; text-align: center; color: var(--blue-l60)"
+				>
+					¯\_(ツ)_/¯
+				</div>
+
+				<div
+					style="margin: auto; font-size: 16px; text-align: center; color: rgba(255, 255, 255, 0.8)"
+				>
+					It looks like Glyphr Studio failed to load. Bummer.
+					<br />
+					Try using the latest version of FireFox, Edge, or Chrome.
+					<br /><br />
+					Or, send us an email:
+					<a
+						style="color: white; text-decoration: underline"
+						href="mailto:mail@glyphrstudio.com&subject=Howdy"
+						>mail@glyphrstudio.com</a
+					>
+				</div>
+			</div>
+		</div>
+
+		<div id="app__wrapper"></div>
+	</body>
+</html>
+>>>>>>> 1b8a4a8241e9d74d717c58a8b479de55b0cb3b69

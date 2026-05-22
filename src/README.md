@@ -173,7 +173,7 @@ folders all support this overall App model.
 
 There are a few other folders:
 
-**Lib** holds libraries (like OpenType.js)
+**Lib** holds libraries (like FontFlux JS)
 and also fixed reference data (like Unicode Names). The whole **lib** folder
 should be excluded from **src** folder level searches, as those files
 should not need updating.
