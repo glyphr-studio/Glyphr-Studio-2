@@ -111,8 +111,17 @@ export function handleKeyPress(event) {
 		closeEveryTypeOfDialog();
 	}
 
-	// Ctrl+Z - Undo
-	if (key === 'Undo' || (ehd.isCtrlDown && key === 'z')) {
+	// Ctrl+Shift+Z or Ctrl+Y - Redo (must come before plain Ctrl+Z check)
+	if (
+		key === 'Redo' ||
+		(ehd.isCtrlDown && key === 'y') ||
+		(ehd.isCtrlDown && ehd.isShiftDown && key === 'z') ||
+		(ehd.isCtrlDown && ehd.isShiftDown && key === 'Z')
+	) {
+		cancelDefaultEventActions(event);
+		editor.history.redoState();
+	} else if (key === 'Undo' || (ehd.isCtrlDown && key === 'z')) {
+		// Ctrl+Z - Undo
 		cancelDefaultEventActions(event);
 		editor.history.restoreState();
 	}
