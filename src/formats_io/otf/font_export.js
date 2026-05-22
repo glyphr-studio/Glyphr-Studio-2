@@ -75,6 +75,9 @@ export async function ioFont_exportFont() {
 	font.info.italicAngle = options.italicAngle;
 	font.info.ascender = options.ascender;
 	font.info.descender = options.descender;
+	font.info.lineGap = options.lineGap;
+	font.info.capHeight = options.capHeight;
+	font.info.xHeight = options.xHeight;
 
 	// Add glyphs
 	options.glyphs.forEach(glyph => {
@@ -163,8 +166,15 @@ function createOptionsObject() {
 	const fontSettings = project.settings.font;
 
 	options.unitsPerEm = fontSettings.upm || 1000;
-	options.ascender = fontSettings.ascent || 0.00001;
-	options.descender = -1 * Math.abs(fontSettings.descent) || -0.00001;
+	// Calculate proportional defaults based on UPM if metrics are missing
+	// Standard OpenType proportions: ascender ~80% of UPM, descender ~20% of UPM
+	const defaultAscender = Math.round(options.unitsPerEm * 0.8);
+	const defaultDescender = Math.round(options.unitsPerEm * 0.2);
+	options.ascender = fontSettings.ascent || defaultAscender;
+	options.descender = -1 * Math.abs(fontSettings.descent || defaultDescender);
+	options.lineGap = fontSettings.lineGap || 0;
+	options.capHeight = fontSettings.capHeight || options.ascender;
+	options.xHeight = fontSettings.xHeight || Math.round(options.ascender * 0.7);
 	options.familyName = fontSettings.family || ' ';
 	options.styleName = fontSettings.style || ' ';
 	options.designer = fontSettings.designer || ' ';
