@@ -1,10 +1,5 @@
 {
-  "version": "2.9.2",
-<<<<<<< HEAD
-  "versionDate": 1779451200000,
-  "devMode": false
-=======
+  "version": "2.9.3",
   "versionDate": 0,
   "devMode": true
->>>>>>> 1b8a4a8241e9d74d717c58a8b479de55b0cb3b69
 }
