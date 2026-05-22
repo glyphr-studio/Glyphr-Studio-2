@@ -57,6 +57,6 @@
     "@mattlag/xmltojson": "^2.0.2",
     "bezier-boolean": "^1.0.0",
     "eslint": "^9.39.2",
-    "font-flux-js": "^2.3.1"
+    "font-flux-js": "^2.4.0"
   }
 }
