@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { describe, expect, it } from 'vitest';
-import { FontFlux } from 'font-flux-js';
+import openTypeJS from '../../../lib/opentype.js-september-2024-kern-write/opentype.mjs';
 import { ioFont_importFont } from '../font_import.js';
 
 describe('Most Basic Test Fonts', () => {
@@ -9,8 +9,7 @@ describe('Most Basic Test Fonts', () => {
 		const mostBasicTestOTF = './MostBasicTestRegular.otf';
 		const filePath = path.resolve(__dirname, mostBasicTestOTF);
 		const fontBuffer = fs.readFileSync(filePath);
-		const arrayBuffer = new Uint8Array(fontBuffer).buffer;
-		const loadResult = FontFlux.open(arrayBuffer);
+		const loadResult = openTypeJS.parse(fontBuffer);
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 
@@ -28,8 +27,7 @@ describe('Most Basic Test Fonts', () => {
 		const mostBasicTestTTF = './MostBasicTest.ttf';
 		const filePath = path.resolve(__dirname, mostBasicTestTTF);
 		const fontBuffer = fs.readFileSync(filePath);
-		const arrayBuffer = new Uint8Array(fontBuffer).buffer;
-		const loadResult = FontFlux.open(arrayBuffer);
+		const loadResult = openTypeJS.parse(fontBuffer);
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 
@@ -47,8 +45,7 @@ describe('Most Basic Test Fonts', () => {
 		const mostBasicTestWOFF = './MostBasicTest.woff';
 		const filePath = path.resolve(__dirname, mostBasicTestWOFF);
 		const fontBuffer = fs.readFileSync(filePath);
-		const arrayBuffer = new Uint8Array(fontBuffer).buffer;
-		const loadResult = FontFlux.open(arrayBuffer);
+		const loadResult = openTypeJS.parse(fontBuffer);
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 
@@ -69,8 +66,7 @@ describe('OTF Extended Test Font', () => {
 		const obleggExtendedTestOTF = './ObleggExtendedTestRegular.otf';
 		const filePath = path.resolve(__dirname, obleggExtendedTestOTF);
 		const fontBuffer = fs.readFileSync(filePath);
-		const arrayBuffer = new Uint8Array(fontBuffer).buffer;
-		const loadResult = FontFlux.open(arrayBuffer);
+		const loadResult = openTypeJS.parse(fontBuffer);
 		const result = await ioFont_importFont(loadResult, true);
 		expect(result).toBeTruthy();
 
@@ -88,6 +84,6 @@ describe('OTF Extended Test Font', () => {
 		expect(kernOne.value).toEqual(-219);
 
 		// Metadata
-	expect(result.settings.font.style).toEqual('Regular');
+		expect(result.settings.font.style).toEqual('ExtendedTestRegular');
 	});
 });

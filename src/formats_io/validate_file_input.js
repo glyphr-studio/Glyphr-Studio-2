@@ -1,6 +1,6 @@
 import { getGlyphrStudioApp } from '../app/main.js';
-import { FontFlux } from 'font-flux-js';
-import { XMLtoJSON } from '@mattlag/xmltojson';
+import openTypeJS from '../lib/opentype.js-september-2024-kern-write/opentype.mjs';
+import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { getFirstTagInstance } from './svg_font/svg_font_import.js';
 
 /**
@@ -19,7 +19,7 @@ let postValidationCallback;
 
 /**
  * Handles all the validation for anything a user inputs.
- * Font validation is performed using the current font parser.
+ * OpenType.js used to validate
  * 	- Open Type Font (.otf)
  *  - True Type font (.ttf)
  * Glyphr Studio to validate
@@ -107,7 +107,7 @@ function readerValidateFont() {
 
 	try {
 		// @ts-expect-error 'property does exist'
-		font = FontFlux.open(file);
+		font = openTypeJS.parse(file);
 		// log(font);
 	} catch (e) {
 		return failWithError(`

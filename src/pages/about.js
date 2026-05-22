@@ -85,54 +85,46 @@ function makeLicenseInfo() {
 		<p>Glyphr Studio includes the following 3rd party libraries:</p>
 
 		<div class="page__card">
-			<h3>Font Flux JS</h3>
+			<h3>opentype.js</h3>
+			<a href="https://opentype.js.org/" target="_blank">opentype.js.org</a>
+			<br><br>
 			Available on
-			<a href="https://github.com/mattlag/Font-Flux-JS" target="_blank">GitHub</a>
-			and
-			<a href="https://www.npmjs.com/package/font-flux-js" target="_blank">NPM</a>.
-			<br>
-			Licensed under a
-			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
-			<br>
-			Copyright © 2026, Matthew LaGrandeur
+			<a href="https://github.com/opentypejs/opentype.js" target="_blank">GitHub</a>
+			under a
+			<a href="https://raw.github.com/opentypejs/opentype.js/master/LICENSE" target="_blank">MIT License</a>.
+			<br><br>
+			Copyright © 2020, Frederik De Bleser
 		</div>
 
 		<div class="page__card">
 			<h3>bezier-boolean</h3>
+			<a href="https://www.npmjs.com/package/bezier-boolean" target="_blank">npmjs.com/package/bezier-boolean</a>
+			<br><br>
 			Available on
 			<a href="https://github.com/mattlag/bezier-boolean" target="_blank">GitHub</a>
-			and
-			<a href="https://www.npmjs.com/package/bezier-boolean" target="_blank">NPM</a>.
-			<br>
-			Licensed under a
-			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
-			<br>
+			under an
+			<a href="https://github.com/mattlag/bezier-boolean/blob/main/LICENSE" target="_blank">GNU General Public License</a>.
+			<br><br>
 			Copyright © 2026, Matthew LaGrandeur
 		</div>
 
 		<div class="page__card">
 			<h3>SVG-to-Bézier</h3>
-			Available on
-			<a href="https://github.com/mattlag/SVG-to-Bezier" target="_blank">GitHub</a>
-			and
-			<a href="https://www.npmjs.com/package/svg-to-bezier" target="_blank">NPM</a>.
-			<br>
+			<a href="https://github.com/mattlag/SVG-to-Bezier" target="_blank">github.com/mattlag/SVG-to-Bezier</a>
+			<br><br>
 			Licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
-			<br>
+			<br><br>
 			Copyright © 2026, Matthew LaGrandeur
 		</div>
 
 		<div class="page__card">
 			<h3>XMLtoJSON</h3>
-			Available on
-			<a href="https://github.com/mattlag/XMLtoJSON" target="_blank">GitHub</a>
-			and
-			<a href="https://www.npmjs.com/package/@mattlag/xmltojson" target="_blank">NPM</a>.
-			<br>
+			<a href="https://github.com/mattlag/XMLtoJSON" target="_blank">github.com/mattlag/XMLtoJSON</a>
+			<br><br>
 			Licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
-			<br>
+			<br><br>
 			Copyright © 2026, Matthew LaGrandeur
 		</div>
 

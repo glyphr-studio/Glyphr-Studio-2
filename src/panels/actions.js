@@ -64,6 +64,7 @@ export function getActionData(name) {
 	let clipBoardShapes = editor.clipboard.shapes;
 	let clipBoardPathCount = clipBoardShapes ? clipBoardShapes.length : 0;
 	let historyLength = editor.history.queue.length;
+	let redoLength = editor.history.redoQueue.length;
 
 	// UNIVERSAL ACTIONS
 	if (name === 'allActions') {
@@ -100,6 +101,16 @@ export function getActionData(name) {
 				id: 'actionButtonUndo',
 				onClick: () => {
 					editor.history.restoreState();
+				},
+			},
+			{
+				iconName: 'redo',
+				iconOptions: !redoLength,
+				title: `Redo\nStep forward in time one action.`,
+				disabled: !redoLength,
+				id: 'actionButtonRedo',
+				onClick: () => {
+					editor.history.redoState();
 				},
 			},
 		];

@@ -1,12 +1,11 @@
 import { decToHex } from '../../../common/character_ids.js';
-import { getUnicodeShortName } from '../../../lib/unicode/unicode_names.js';
 import { makeKernGroupID } from '../../../pages/kerning.js';
 import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../../../project_data/kern_group.js';
 import {
-    decrementItemTotal,
-    incrementItemCounter,
-    updateFontImportProgressIndicator,
+	decrementItemTotal,
+	incrementItemCounter,
+	updateFontImportProgressIndicator,
 } from '../font_import.js';
 
 // --------------------------------------------------------------
@@ -83,34 +82,49 @@ function coverageTableToGlyphList(coverage) {
 // --------------------------------------------------------------
 
 /**
- * Converts FontFlux kern pairs into Glyphr Studio kern groups
- * @param {Object} importedFont - FontFlux font object
- * @param {Array} kernPairs - FontFlux kerning pair array
+ *
+ * @param {Object} importedFont - opentype.js font object
+ * @param {Object} gposKernTables - opentype.js gpos kern tables
  * @returns {Promise<Object>} - imported kern groups
  */
-export async function importGposKernPairs(importedFont, kernPairs) {
+export async function importGposKernPairs(importedFont, gposKernTables) {
+	// log(`importGposKernPairs`, 'start');
+	// log(`\n⮟gposKernTables⮟`);
+	// log(gposKernTables);
 	const finalKerns = {};
-
-	if (!Array.isArray(kernPairs)) return finalKerns;
-
-	for (const pair of kernPairs) {
-		await updateFontImportProgressIndicator('kern pair');
-		const leftGlyph = importedFont.glyphs.find(g => g.name === pair.left);
-		const rightGlyph = importedFont.glyphs.find(g => g.name === pair.right);
-		if (leftGlyph && rightGlyph) {
-			importOneGposKernPair(leftGlyph, rightGlyph, pair.value, finalKerns);
+	for (let t = 0; t < gposKernTables.length; t++) {
+		for (let s = 0; s < gposKernTables[t].length; s++) {
+			const pairSets = gposKernTables[t][s].pairSets;
+			const glyphList = gposKernTables[t][s].glyphList;
+			for (let leftPairID = 0; leftPairID < pairSets.length; leftPairID++) {
+				const pairSet = pairSets[leftPairID];
+				const leftID = glyphList[leftPairID];
+				const leftGlyph = importedFont.glyphs.glyphs[leftID];
+				for (let p = 0; p < pairSet.length; p++) {
+					const pair = pairSet[p];
+					const rightID = pair.secondGlyph;
+					// GS Kerns are relative to the left hand glyph,
+					// So we need to invert this data from the right hand glyph
+					const kernValue = pair.value1.xAdvance;
+					const rightGlyph = importedFont.glyphs.glyphs[rightID];
+					// log(`${leftGlyph.name} : ${rightGlyph.name} = ${kernValue}`);
+					await updateFontImportProgressIndicator('kern pair');
+					importOneGposKernPair(leftGlyph, rightGlyph, kernValue, finalKerns);
+				}
+			}
 		}
 	}
-
+	// log(`importGposKernPairs`, 'end');
 	return finalKerns;
 }
 
 /**
- * Imports kern information into the current Glyphr Studio project.
+ * Imports kern information from Opentype.js into the
+ * current Glyphr Studio project.
  * @param {Object} leftGlyph - kern left glyph
  * @param {Object} rightGlyph - kern right glyph
  * @param {Number} value - kern value
- * @param {Object} finalKerns - imported kern groups
+ * @param {Object} finalKerns -  imported kern groups
  * @returns nothing
  */
 function importOneGposKernPair(leftGlyph, rightGlyph, value, finalKerns) {
@@ -156,51 +170,29 @@ ${leftGlyph?.name} | ${rightGlyph?.name} = ${value} `);
 // --------------------------------------------------------------
 
 /**
- * Writes kerning data to a FontFlux font object
- * @param {Object} exportingFont - FontFlux font object
+ *
+ * @param {Object} exportingFont - opentype.js font object
  * @param {GlyphrStudioProject} project - current project
  * @returns
  */
 export function writeGposKernDataToFont(exportingFont, project) {
 	const kernPairs = project.makeCollectionOfKernPairs();
 
-	// Only proceed if there are kern pairs to export
-	if (!kernPairs || kernPairs.length === 0) {
-		// log('No kern pairs to export');
-		return;
-	}
-
-	try {
-		// Filter and convert kern pairs to FontFlux format
-		// FontFlux.addKerning expects pairs with unicode values or glyph names
-		const fontFluxKernPairs = kernPairs
-			.filter(pair => {
-				// Validate each pair has required properties
-				return pair && typeof pair.left === 'string' &&
-					   typeof pair.right === 'string' &&
-					   typeof pair.value === 'number';
-			})
-			.map(pair => ({
-				left: getUnicodeShortName(pair.left) || pair.left,  // Convert hex to glyph name
-				right: getUnicodeShortName(pair.right) || pair.right, // Convert hex to glyph name
-				value: pair.value
-			}));
-
-		// Add kerning pairs individually for better error handling
-		if (fontFluxKernPairs.length > 0) {
-			if (exportingFont.addKerning && typeof exportingFont.addKerning === 'function') {
-				fontFluxKernPairs.forEach(pair => {
-					try {
-						exportingFont.addKerning(pair);
-					} catch (pairError) {
-						console.warn(`Warning: Failed to add kerning pair ${pair.left}-${pair.right}: ${pairError.message}`);
-					}
-				});
-			}
+	exportingFont.kerningPairs = {};
+	let notExported = '';
+	kernPairs.forEach((pair) => {
+		const leftID = exportingFont.charToGlyphIndex(String.fromCodePoint(pair.left));
+		const rightID = exportingFont.charToGlyphIndex(String.fromCodePoint(pair.right));
+		if (!(leftID === null) && !(rightID === null)) {
+			exportingFont.kerningPairs[`${leftID},${rightID}`] = pair.value;
+		} else {
+			notExported += `${pair.left} (${leftID}) | ${pair.right} (${rightID})\n`;
 		}
-	} catch (error) {
-		// Log the error but don't fail the entire export
-		// Kerning export is optional and shouldn't block font export
-		console.warn(`Warning: Kerning export failed (font will export without kerning): ${error.message}`);
+	});
+
+	if (notExported !== '') {
+		console.warn(`Some characters were not found in this project, and their kern values were not exported.
+			The non-existent characters are designated by a (null) after the code point ID.
+			${notExported}`);
 	}
 }
