@@ -8,7 +8,7 @@
       "purpose": "any"
     }
   ],
-  "start_url": "index.html",
+  "start_url": "https://www.glyphrstudio.com/app/",
   "display": "standalone",
   "theme_color": "#29b7ff",
   "background_color": "white"
