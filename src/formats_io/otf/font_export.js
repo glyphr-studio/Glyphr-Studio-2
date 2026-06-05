@@ -23,8 +23,10 @@ let codePointGlyphIndexTable = {};
 
 /**
  * Exports the current project to an .otf file
+ * @param {Boolean} testing - if true, returns ArrayBuffer instead of saving to file
+ * @returns {Promise<ArrayBuffer|void>} - ArrayBuffer if testing, otherwise void
  */
-export async function ioFont_exportFont() {
+export async function ioFont_exportFont(testing = false) {
 	// log('ioFont_exportFont', 'start');
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
@@ -52,7 +54,7 @@ export async function ioFont_exportFont() {
 			options.glyphs.push(exportedItem);
 		}
 	}
-	showToast('Finalizing...');
+	if (!testing) showToast('Finalizing...');
 
 	// log(`\n⮟options.glyphs⮟`);
 	// log(options.glyphs);
@@ -114,6 +116,17 @@ export async function ioFont_exportFont() {
 	// log('Font object:');
 	// log(font);
 	// log(font.toTables());
+
+	if (testing) {
+		// Return buffer for testing
+		try {
+			const arrayBuffer = font.export({ format: 'sfnt' });
+			return arrayBuffer;
+		} catch (e) {
+			console.error(e);
+			throw e;
+		}
+	}
 
 	const result = saveOTFFile(font);
 	await pause();
