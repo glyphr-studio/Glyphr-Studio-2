@@ -4,9 +4,9 @@ import { makeKernGroupID } from '../../../pages/kerning.js';
 import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../../../project_data/kern_group.js';
 import {
-    decrementItemTotal,
-    incrementItemCounter,
-    updateFontImportProgressIndicator,
+	decrementItemTotal,
+	incrementItemCounter,
+	updateFontImportProgressIndicator,
 } from '../font_import.js';
 
 // --------------------------------------------------------------
@@ -95,8 +95,8 @@ export async function importGposKernPairs(importedFont, kernPairs) {
 
 	for (const pair of kernPairs) {
 		await updateFontImportProgressIndicator('kern pair');
-		const leftGlyph = importedFont.glyphs.find(g => g.name === pair.left);
-		const rightGlyph = importedFont.glyphs.find(g => g.name === pair.right);
+		const leftGlyph = importedFont.glyphs.find((g) => g.name === pair.left);
+		const rightGlyph = importedFont.glyphs.find((g) => g.name === pair.right);
 		if (leftGlyph && rightGlyph) {
 			importOneGposKernPair(leftGlyph, rightGlyph, pair.value, finalKerns);
 		}
@@ -174,26 +174,31 @@ export function writeGposKernDataToFont(exportingFont, project) {
 		// Filter and convert kern pairs to FontFlux format
 		// FontFlux.addKerning expects pairs with unicode values or glyph names
 		const fontFluxKernPairs = kernPairs
-			.filter(pair => {
+			.filter((pair) => {
 				// Validate each pair has required properties
-				return pair && typeof pair.left === 'string' &&
-					   typeof pair.right === 'string' &&
-					   typeof pair.value === 'number';
+				return (
+					pair &&
+					typeof pair.left === 'string' &&
+					typeof pair.right === 'string' &&
+					typeof pair.value === 'number'
+				);
 			})
-			.map(pair => ({
-				left: getUnicodeShortName(pair.left) || pair.left,  // Convert hex to glyph name
+			.map((pair) => ({
+				left: getUnicodeShortName(pair.left) || pair.left, // Convert hex to glyph name
 				right: getUnicodeShortName(pair.right) || pair.right, // Convert hex to glyph name
-				value: pair.value
+				value: pair.value,
 			}));
 
 		// Add kerning pairs individually for better error handling
 		if (fontFluxKernPairs.length > 0) {
 			if (exportingFont.addKerning && typeof exportingFont.addKerning === 'function') {
-				fontFluxKernPairs.forEach(pair => {
+				fontFluxKernPairs.forEach((pair) => {
 					try {
 						exportingFont.addKerning(pair);
 					} catch (pairError) {
-						console.warn(`Warning: Failed to add kerning pair ${pair.left}-${pair.right}: ${pairError.message}`);
+						console.warn(
+							`Warning: Failed to add kerning pair ${pair.left}-${pair.right}: ${pairError.message}`
+						);
 					}
 				});
 			}
@@ -201,6 +206,8 @@ export function writeGposKernDataToFont(exportingFont, project) {
 	} catch (error) {
 		// Log the error but don't fail the entire export
 		// Kerning export is optional and shouldn't block font export
-		console.warn(`Warning: Kerning export failed (font will export without kerning): ${error.message}`);
+		console.warn(
+			`Warning: Kerning export failed (font will export without kerning): ${error.message}`
+		);
 	}
 }

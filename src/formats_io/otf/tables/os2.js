@@ -17,7 +17,13 @@ export function importTable_os2(importedFont, project) {
 	fontSettings.xHeight = 1 * (info.xHeight || fontSettings.xHeight);
 	fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
 	fontSettings.weight = info.weight || 400;
-	fontSettings.panose = info.panose || '0 0 0 0 0 0 0 0 0 0';
+	// FontFlux returns panose as an array of ten numbers, but Glyphr Studio
+	// stores panose as a space-separated string.
+	if (Array.isArray(info.panose)) {
+		fontSettings.panose = info.panose.join(' ');
+	} else {
+		fontSettings.panose = info.panose || '0 0 0 0 0 0 0 0 0 0';
+	}
 }
 
 /*

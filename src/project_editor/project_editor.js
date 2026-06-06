@@ -54,7 +54,6 @@ export class ProjectEditor {
 
 		// Project
 		this.project = undefined;
-		// if (newProjectEditor.project) this.project = newProjectEditor.project;
 		// log(`this.project`);
 		// log(this.project);
 
@@ -131,6 +130,10 @@ export class ProjectEditor {
 
 		// Dialogs
 		this.closeAllDialogsOverride = false;
+
+		// Project (set last, after PubSub and selection defaults are
+		// initialized, since the project setter publishes selection changes)
+		if (newProjectEditor && newProjectEditor.project) this.project = newProjectEditor.project;
 
 		// log(`\n⮟ProjectEditor⮟`);
 		// log(this);

@@ -11,7 +11,6 @@ import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_acti
 import { saveFile } from '../../project_editor/file_io.js';
 import { writeGposKernDataToFont } from './tables/gpos.js';
 
-
 /**
 	IO > Export > Font
 	Using FontFlux and path-conversion helpers to export a Glyphr Studio
@@ -80,9 +79,19 @@ export async function ioFont_exportFont(testing = false) {
 	font.info.lineGap = options.lineGap;
 	font.info.capHeight = options.capHeight;
 	font.info.xHeight = options.xHeight;
+	// Name-table metadata. FontFlux uses `vendorURL` for the manufacturer /
+	// vendor URL (name ID 11); the other fields map by the same name.
+	font.info.description = options.description;
+	font.info.designer = options.designer;
+	font.info.designerURL = options.designerURL;
+	font.info.manufacturer = options.manufacturer;
+	font.info.vendorURL = options.manufacturerURL;
+	font.info.license = options.license;
+	font.info.licenseURL = options.licenseURL;
+	font.info.trademark = options.trademark;
 
 	// Add glyphs
-	options.glyphs.forEach(glyph => {
+	options.glyphs.forEach((glyph) => {
 		font.addGlyph(glyph);
 	});
 
@@ -99,7 +108,7 @@ export async function ioFont_exportFont(testing = false) {
 	}
 
 	if (exportLigatures && ligatureSubstitutions.length > 0) {
-		ligatureSubstitutions.forEach(sub => {
+		ligatureSubstitutions.forEach((sub) => {
 			font.addSubstitution({
 				type: 'ligature',
 				feature: 'liga',
@@ -367,8 +376,13 @@ function addNotdefToExport(options) {
 	// Add it to the export
 	const contours = glyphToContours(notdef);
 
+	// Use the standard '.notdef' name so FontFlux recognizes this as the
+	// special glyph-zero. If it is named anything else (e.g. '.null'),
+	// FontFlux injects its own default '.notdef' (advanceWidth 500) at
+	// index 0 and keeps ours as a duplicate glyph mapped to unicode 0,
+	// which loses our advanceWidth on round-trip.
 	const notdefGlyph = {
-		name: '.null',
+		name: '.notdef',
 		unicode: 0,
 		advanceWidth: notdef.advanceWidth,
 		contours: contours,
@@ -529,12 +543,11 @@ function pathToContour(path) {
 			const nextPoint = points[nextIndex];
 
 			// Check if this is a straight line (handles at the points)
-			const isLine = (
+			const isLine =
 				round(point.h2.x) === round(point.p.x) &&
 				round(point.h2.y) === round(point.p.y) &&
 				round(nextPoint.h1.x) === round(nextPoint.p.x) &&
-				round(nextPoint.h1.y) === round(nextPoint.p.y)
-			);
+				round(nextPoint.h1.y) === round(nextPoint.p.y);
 
 			if (isLine) {
 				// Line command

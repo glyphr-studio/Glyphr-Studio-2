@@ -146,12 +146,14 @@ export class GlyphrStudioApp {
 	 * @param {ProjectEditor} editor
 	 */
 	set selectedProjectEditor(editor) {
-		if (this.projectEditors[0] === editor) {
-			this._selectedProjectEditor = this.projectEditors[0];
+		if (!editor) return;
+		// Make sure the editor is tracked in the projectEditors list,
+		// then select it. Previously this only worked for editors that
+		// were already at index 0 or 1, silently ignoring any other editor.
+		if (!this.projectEditors.includes(editor)) {
+			this.projectEditors.push(editor);
 		}
-		if (this.projectEditors[1] === editor) {
-			this._selectedProjectEditor = this.projectEditors[1];
-		}
+		this._selectedProjectEditor = editor;
 	}
 
 	/**
