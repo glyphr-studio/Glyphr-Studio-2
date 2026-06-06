@@ -1,8 +1,8 @@
 import { decToHex } from '../../../common/character_ids.js';
-import { getUnicodeShortName } from '../../../lib/unicode/unicode_names.js';
 import { makeKernGroupID } from '../../../pages/kerning.js';
 import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../../../project_data/kern_group.js';
+import { getUniqueGlyphName } from '../font_export.js';
 import {
 	decrementItemTotal,
 	incrementItemCounter,
@@ -184,8 +184,8 @@ export function writeGposKernDataToFont(exportingFont, project) {
 				);
 			})
 			.map((pair) => ({
-				left: getUnicodeShortName(pair.left) || pair.left, // Convert hex to glyph name
-				right: getUnicodeShortName(pair.right) || pair.right, // Convert hex to glyph name
+				left: getUniqueGlyphName(pair.left), // hex code point -> uniXXXX export name
+				right: getUniqueGlyphName(pair.right), // hex code point -> uniXXXX export name
 				value: pair.value,
 			}));
 

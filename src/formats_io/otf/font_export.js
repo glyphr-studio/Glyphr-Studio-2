@@ -3,7 +3,6 @@ import { getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { pause, round } from '../../common/functions.js';
 import { closeAllToasts, showError, showToast } from '../../controls/dialogs/dialogs.js';
-import { getUnicodeShortName } from '../../lib/unicode/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
 import { Path } from '../../project_data/path.js';
@@ -413,8 +412,12 @@ async function generateOneGlyph(currentExportItem) {
 	const thisIndex = getNextGlyphIndexNumber();
 
 	// Name
-	const hexID = decToHex(num);
-	const thisName = hexID ? getUnicodeShortName(hexID) : 'name';
+	// Glyph names in the OpenType `post` table must be unique. The human-readable
+	// short names are lossy (truncated to 20 chars), which collides for whole
+	// blocks (e.g. every "CYRILLIC Capital Letter X" → "CYRILLICCapitalLette"),
+	// causing FontFlux to overwrite/drop glyphs that share a name. Use the
+	// canonical AGL `uniXXXX` / `uXXXXXX` convention to guarantee uniqueness.
+	const thisName = getUniqueGlyphName(thisUnicode);
 
 	// Convert glyph outlines directly to FontFlux contours
 	const contours = glyphToContours(glyph);
@@ -456,11 +459,9 @@ async function generateOneLigature(currentExportItem) {
 		contours: contours,
 	};
 
-	// Add substitution info for FontFlux
-	const componentNames = liga.gsub.map((unicode) => {
-		const hexID = decToHex(unicode);
-		return hexID ? getUnicodeShortName(hexID) : 'name';
-	});
+	// Add substitution info for FontFlux. Component references must match the
+	// exported glyph names exactly (uniXXXX), or the substitution won't resolve.
+	const componentNames = liga.gsub.map((unicode) => getUniqueGlyphName(unicode));
 	ligatureSubstitutions.push({ components: componentNames, ligature: thisLigature.name });
 
 	await pause();
@@ -477,14 +478,27 @@ function generateLigatureExportName(lig) {
 	let result = 'lig';
 
 	lig.gsub.forEach((char) => {
-		const hex = decToHex(char);
-		let shortName;
-		if (hex) shortName = getUnicodeShortName(hex);
-		if (!shortName) shortName = '?';
-		result += '.' + shortName;
+		result += '.' + getUniqueGlyphName(char).replace(/^uni?/, '');
 	});
 
 	return result;
+}
+
+/**
+ * Generates a unique, valid OpenType glyph name for a code point using the
+ * canonical AGL `uniXXXX` (BMP) / `uXXXXXX` (supplementary) convention. Unlike
+ * the human-readable short names, these are guaranteed unique per code point,
+ * which the `post` table requires — otherwise FontFlux overwrites/drops glyphs
+ * that would otherwise share a (lossily truncated) name.
+ * @param {Number} unicode - Decimal code point
+ * @returns {String} - Unique glyph name
+ */
+export function getUniqueGlyphName(unicode) {
+	const num = parseInt('' + unicode);
+	if (isNaN(num)) return 'name';
+	const hex = num.toString(16).toUpperCase();
+	if (num <= 0xffff) return 'uni' + hex.padStart(4, '0');
+	return 'u' + hex.padStart(6, '0');
 }
 
 let currentIndex = 0;

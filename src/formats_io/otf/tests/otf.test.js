@@ -1,7 +1,7 @@
+import { FontFlux } from 'font-flux-js';
 import fs from 'fs';
 import path from 'path';
 import { describe, expect, it } from 'vitest';
-import { FontFlux } from 'font-flux-js';
 import { ioFont_importFont } from '../font_import.js';
 
 describe('Most Basic Test Fonts', () => {

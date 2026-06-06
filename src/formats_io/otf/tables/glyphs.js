@@ -17,10 +17,13 @@ import {
  */
 export async function importGlyphs(fontGlyphs, project) {
 	const finalGlyphs = {};
+	// Tracks, per glyph slot, how the current occupant was assigned so a more
+	// authoritative mapping can replace a weaker one (see importOneGlyph).
+	const glyphSlotMeta = {};
 
 	for (const glyph of fontGlyphs) {
 		await updateFontImportProgressIndicator('character');
-		importOneGlyph(glyph, project, finalGlyphs);
+		importOneGlyph(glyph, project, finalGlyphs, glyphSlotMeta);
 	}
 
 	return finalGlyphs;
@@ -32,9 +35,10 @@ export async function importGlyphs(fontGlyphs, project) {
  * @param {Object} glyph - FontFlux Glyph object
  * @param {GlyphrStudioProject} project - current project
  * @param {Object} finalGlyphs - imported glyphs
+ * @param {Object} glyphSlotMeta - per-slot assignment metadata
  * @returns nothing
  */
-function importOneGlyph(glyph, project, finalGlyphs) {
+function importOneGlyph(glyph, project, finalGlyphs, glyphSlotMeta = {}) {
 	// log('importOneGlyph', 'start');
 
 	// Get the appropriate unicode decimal for this glyph
@@ -66,20 +70,48 @@ function importOneGlyph(glyph, project, finalGlyphs) {
 		return;
 	}
 
+	const newGlyphIsEmpty = !importedGlyph.shapes || importedGlyph.shapes.length === 0;
+
 	for (let i = 0; i < unicodes.length; i++) {
 		const unicodeVal = unicodes[i];
+		// A glyph's primary `.unicode` is the authoritative (Unicode cmap)
+		// mapping. Additional entries in `.unicodes` can include secondary /
+		// legacy mappings (for example Mac Roman byte values surfaced by
+		// font-flux-js) which must never override a real primary mapping -
+		// even when the primary glyph is an (as yet undecomposed) empty
+		// composite and the secondary glyph happens to carry outlines.
+		const viaPrimary = unicodeVal === unicode;
 		const unicodeHex = decToHex(unicodeVal || 0);
 		const glyphID = `glyph-${unicodeHex}`;
-		if (!finalGlyphs[glyphID]) {
+
+		// Rank a slot claim so the strongest mapping wins. Primary mappings
+		// dominate secondary ones; within the same kind, a glyph with outlines
+		// beats an empty placeholder. Equal ranks keep the first claimant.
+		const rankOf = (isPrimary, isEmpty) => (isPrimary ? 2 : 0) + (isEmpty ? 0 : 1);
+		const newRank = rankOf(viaPrimary, newGlyphIsEmpty);
+
+		const existingMeta = glyphSlotMeta[glyphID];
+		let shouldAssign = false;
+		if (!existingMeta) {
+			shouldAssign = true;
+		} else if (newRank > rankOf(existingMeta.viaPrimary, existingMeta.empty)) {
+			shouldAssign = true;
+		}
+
+		if (shouldAssign) {
+			const isNewSlot = !finalGlyphs[glyphID];
 			const newGlyph = new Glyph(importedGlyph.save());
 			newGlyph.id = glyphID;
 			finalGlyphs[glyphID] = newGlyph;
+			glyphSlotMeta[glyphID] = { viaPrimary, empty: newGlyphIsEmpty };
 
-			if (isControlChar(unicodeHex) && unicodeHex !== '0x0') {
-				project.settings.app.showNonCharPoints = true;
+			if (isNewSlot) {
+				if (isControlChar(unicodeHex) && unicodeHex !== '0x0') {
+					project.settings.app.showNonCharPoints = true;
+				}
+
+				if (!isNaN(Number(unicodeHex))) project.incrementRangeCountFor(Number(unicodeHex));
 			}
-
-			if (!isNaN(Number(unicodeHex))) project.incrementRangeCountFor(Number(unicodeHex));
 		}
 	}
 
