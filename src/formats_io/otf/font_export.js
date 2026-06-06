@@ -196,18 +196,21 @@ function createOptionsObject() {
 	options.lineGap = fontSettings.lineGap || 0;
 	options.capHeight = fontSettings.capHeight || options.ascender;
 	options.xHeight = fontSettings.xHeight || Math.round(options.ascender * 0.7);
-	options.familyName = fontSettings.family || ' ';
-	options.styleName = fontSettings.style || ' ';
-	options.designer = fontSettings.designer || ' ';
-	options.designerURL = fontSettings.designerURL || ' ';
-	options.manufacturer = fontSettings.manufacturer || ' ';
-	options.manufacturerURL = fontSettings.manufacturerURL || ' ';
-	options.license = fontSettings.license || ' ';
-	options.licenseURL = fontSettings.licenseURL || ' ';
-	options.version = fontSettings.version || '1.0';
-	options.description = fontSettings.description || ' ';
-	options.copyright = fontSettings.copyright || ' ';
-	options.trademark = fontSettings.trademark || ' ';
+	// Name-table values must be strings. Legacy / imported projects may carry
+	// non-string metadata (e.g. a numeric `version: 1.003`), which would crash
+	// the downstream FontFlux name-table writer, so coerce each field here.
+	options.familyName = String(fontSettings.family || ' ');
+	options.styleName = String(fontSettings.style || ' ');
+	options.designer = String(fontSettings.designer || ' ');
+	options.designerURL = String(fontSettings.designerURL || ' ');
+	options.manufacturer = String(fontSettings.manufacturer || ' ');
+	options.manufacturerURL = String(fontSettings.manufacturerURL || ' ');
+	options.license = String(fontSettings.license || ' ');
+	options.licenseURL = String(fontSettings.licenseURL || ' ');
+	options.version = String(fontSettings.version || '1.0');
+	options.description = String(fontSettings.description || ' ');
+	options.copyright = String(fontSettings.copyright || ' ');
+	options.trademark = String(fontSettings.trademark || ' ');
 	options.weightClass = parseInt(fontSettings.weight);
 	options.panose = fontSettings.panose.split(' ').map(Number) || [];
 	options.italicAngle = fontSettings.italicAngle || 0;

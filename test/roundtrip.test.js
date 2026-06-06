@@ -3,9 +3,11 @@ import fs from 'fs';
 import path from 'path';
 import { describe, expect, it } from 'vitest';
 import { setCurrentProjectEditor } from '../src/app/main.js';
-import { ioFont_exportFont } from '../src/formats_io/otf/font_export.js';
+import { ioFont_exportFont, shouldExportItem } from '../src/formats_io/otf/font_export.js';
 import { ioFont_importFont } from '../src/formats_io/otf/font_import.js';
+import { importGlyphrProjectFromText } from '../src/project_editor/import_project.js';
 import { ProjectEditor } from '../src/project_editor/project_editor.js';
+import { projects as sampleProjects } from '../src/samples/samples.js';
 
 /**
  * Round trip test: Import -> Export -> Import
@@ -213,9 +215,10 @@ describe('Font Round Trip Tests', () => {
  *     code point (e.g. ligatures); Glyphr Studio cannot kern those, so they are
  *     intentionally dropped.
  *   - `allowDiffInRange`: a `[lo, hi]` code-point range within which advance /
- *     geometry differences are tolerated. Used for fonts affected by the
- *     font-flux-js Mac Roman cmap conflation bug (see FONT_FLUX_BUGS.md), whose
- *     damage is confined to 0x80-0xFF.
+ *     geometry differences are tolerated. Previously needed for the
+ *     font-flux-js Mac Roman cmap conflation bug (confined to 0x80-0xFF), which
+ *     was fixed in font-flux-js 2.4.23 — no font currently needs it, but the
+ *     mechanism is retained as a guard for future regressions.
  *
  * Skipped on purpose (unsupported by Glyphr Studio or out of scope here):
  * color fonts (EmojiOneColor.otf, Multicoloure-SVGinOT.ttf, Reinebow-SVGinOT.ttf,
@@ -238,7 +241,6 @@ const SAMPLE_FONT_TESTS = [
 		family: 'Arial Narrow',
 		kerningExact: false,
 		excludeDegenerate: true,
-		allowDiffInRange: [0x80, 0xff],
 	},
 ];
 
@@ -320,6 +322,135 @@ describe('Font Round Trip Tests - sample fonts', () => {
 			if (cfg.kerningExact) {
 				expect(kerningValueMultiset(roundTripped)).toEqual(kerningValueMultiset(original));
 			}
+		}, 60000);
+	}
+});
+
+/**
+ * Reads a sample project file (`.gs2` / `.json`) from `src/samples/` as text.
+ * @param {string} file - File name within `src/samples/`
+ * @returns {string} - Raw file contents
+ */
+function loadSampleProjectText(file) {
+	return fs.readFileSync(path.resolve(__dirname, '../src/samples', file), 'utf8');
+}
+
+/**
+ * Loads a Glyphr Studio project (modern `.gs2`/`.json` text or a legacy v1
+ * project object), runs it through one OTF export, and re-reads the result with
+ * FontFlux. This exercises exactly the path a user hits when they open a `.gs2`
+ * file and export a font.
+ * @param {string|Object} rawProjectData - Raw project text/object
+ * @returns {Promise<{project: Object, font: Object}>} - Loaded project and the
+ *   re-imported FontFlux font
+ */
+async function exportSampleProjectAndReimport(rawProjectData) {
+	// importGlyphrProjectFromText reads the current editor for system-guide
+	// visibility, so a placeholder editor must exist before loading.
+	setCurrentProjectEditor(new ProjectEditor());
+	const project = importGlyphrProjectFromText(rawProjectData);
+	const editor = new ProjectEditor({ project });
+	setCurrentProjectEditor(editor);
+	const exportedBuffer = await ioFont_exportFont(true);
+	return { project, font: FontFlux.open(exportedBuffer) };
+}
+
+/**
+ * Mirrors the export's glyph-selection logic to find which code points a
+ * project intends to export. Walks every enabled character range, dedupes, and
+ * applies `shouldExportItem`. Returns both the full exportable set and the
+ * subset that actually carries outlines (`shapes.length > 0`) - the latter are
+ * the glyphs that must survive export, since they represent real geometry.
+ * @param {Object} project - A GlyphrStudioProject
+ * @returns {{all: Set<number>, withShapes: Set<number>}} - Exportable code points
+ */
+function projectExportableCodePoints(project) {
+	const all = new Set();
+	const withShapes = new Set();
+	const seen = new Set();
+	project.settings.project.characterRanges.forEach((range) => {
+		if (!range.enabled) return;
+		range.getMemberIDs().forEach((hexID) => {
+			if (seen.has(hexID)) return;
+			seen.add(hexID);
+			const item = project.getItem(`glyph-${hexID}`);
+			if (item && shouldExportItem(item)) {
+				const codePoint = parseInt(hexID);
+				all.add(codePoint);
+				if (item.shapes && item.shapes.length > 0) withShapes.add(codePoint);
+			}
+		});
+	});
+	return { all, withShapes };
+}
+
+/**
+ * Glyphr Studio native sample projects kept in `src/samples/`. Each is loaded
+ * (modern `.gs2`/`.json` JSON, or a legacy v1 project object migrated on import)
+ * and run through one OTF export, then re-read with FontFlux. This is the
+ * project-side counterpart to the binary round-trip tests above and guards the
+ * same export path (`font_export.js` / `gpos.js`) against regressions such as
+ * dropped glyphs or lost kerning.
+ *
+ *   - `.gs2` / `.json`: current v2 schema, loaded directly as JSON text.
+ *   - `.js`: legacy v1 schema objects (`projectsettings`, `versionnum`, ...),
+ *     migrated to v2 by `importGlyphrProjectFromText` on load.
+ */
+const SAMPLE_PROJECT_TESTS = [
+	{ name: 'oblegg.gs2', getData: () => loadSampleProjectText('oblegg.gs2') },
+	{ name: 'boolean_tests.gs2', getData: () => loadSampleProjectText('boolean_tests.gs2') },
+	{
+		name: 'simpleExampleProject.json',
+		getData: () => loadSampleProjectText('simpleExampleProject.json'),
+	},
+	{ name: 'modegg.js (v1)', getData: () => sampleProjects.modegg },
+	{ name: 'california_gothic.js (v1)', getData: () => sampleProjects.californiaGothic },
+	{ name: 'merriweather_sans.js (v1)', getData: () => sampleProjects.merriweatherSans },
+];
+
+describe('Project Round Trip Tests - sample projects (.gs2)', () => {
+	for (const cfg of SAMPLE_PROJECT_TESTS) {
+		it(`Round trip: ${cfg.name} - load -> export -> re-import preserves glyphs and kerning`, async () => {
+			const { project, font } = await exportSampleProjectAndReimport(cfg.getData());
+			const { all, withShapes } = projectExportableCodePoints(project);
+
+			// Map the re-imported font by Unicode code point.
+			const fontByUnicode = new Map();
+			font.glyphs.forEach((g) => {
+				if (g.unicode !== undefined && g.unicode !== null) fontByUnicode.set(g.unicode, g);
+			});
+			const hex = (unicode) => `U+${unicode.toString(16).toUpperCase().padStart(4, '0')}`;
+
+			// --- Glyph coverage ----------------------------------------------
+			// Every project glyph that carries outlines must appear in the
+			// exported font. A failure here means glyphs were silently dropped
+			// (e.g. by colliding export names).
+			const dropped = [];
+			for (const codePoint of withShapes) {
+				if (!fontByUnicode.has(codePoint)) dropped.push(hex(codePoint));
+			}
+			expect(dropped, 'Glyphs with outlines must not be dropped on export').toEqual([]);
+
+			// --- Kerning -----------------------------------------------------
+			// Permute the project's kern groups into pairs, keep only those whose
+			// left and right are both exportable code points (the only pairs the
+			// font can actually represent), and compare the value multiset to the
+			// re-imported font's kerning.
+			const expectedKern = project
+				.makeCollectionOfKernPairs()
+				.filter(
+					(pair) =>
+						typeof pair.left === 'string' &&
+						typeof pair.right === 'string' &&
+						typeof pair.value === 'number' &&
+						all.has(parseInt(pair.left)) &&
+						all.has(parseInt(pair.right))
+				)
+				.map((pair) => String(pair.value))
+				.sort();
+			expect(kerningValueMultiset(font), 'Kerning must be preserved on export').toEqual(
+				expectedKern
+			);
 		}, 60000);
 	}
 });
