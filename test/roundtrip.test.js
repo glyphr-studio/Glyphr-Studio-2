@@ -85,7 +85,7 @@ async function roundTripThroughGlyphrStudio(arrayBuffer) {
 	const project = await ioFont_importFont(FontFlux.open(arrayBuffer), true);
 	const editor = new ProjectEditor({ project });
 	setCurrentProjectEditor(editor);
-	return await ioFont_exportFont(true);
+	return await ioFont_exportFont('otf', true);
 }
 
 describe('Font Round Trip Tests', () => {
@@ -351,7 +351,7 @@ async function exportSampleProjectAndReimport(rawProjectData) {
 	const project = importGlyphrProjectFromText(rawProjectData);
 	const editor = new ProjectEditor({ project });
 	setCurrentProjectEditor(editor);
-	const exportedBuffer = await ioFont_exportFont(true);
+	const exportedBuffer = await ioFont_exportFont('otf', true);
 	return { project, font: FontFlux.open(exportedBuffer) };
 }
 

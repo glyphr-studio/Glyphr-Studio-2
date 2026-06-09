@@ -6,7 +6,7 @@ import {
 	showModalDialog,
 	showToast,
 } from '../controls/dialogs/dialogs.js';
-import { ioFont_exportFont } from '../formats_io/otf/font_export.js';
+import { ioFont_exportOTF, ioFont_exportTTF, ioFont_exportWOFF, ioFont_exportWOFF2 } from '../formats_io/otf/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import { makeFileName } from '../project_editor/file_io.js';
 import { emailLink } from './app.js';
@@ -146,7 +146,25 @@ function makeMenu(menuName) {
 				name: 'Export OTF file',
 				icon: 'command_export',
 				note: ['Ctrl', 'e'],
-				onClick: ioFont_exportFont,
+				onClick: ioFont_exportOTF,
+			},
+			{
+				name: 'Export TTF file',
+				icon: 'command_export',
+				note: ['',''],
+				onClick: ioFont_exportTTF,
+			},
+			{
+				name: 'Export WOFF file',
+				icon: 'command_export',
+				note: ['',''],
+				onClick: ioFont_exportWOFF,
+			},
+			{
+				name: 'Export WOFF2 file',
+				icon: 'command_export',
+				note: ['',''],
+				onClick: ioFont_exportWOFF2,
 			},
 			{ name: 'hr' },
 			{

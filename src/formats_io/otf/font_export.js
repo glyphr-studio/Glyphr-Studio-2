@@ -1,4 +1,4 @@
-import { FontFlux } from 'font-flux-js';
+import { FontFlux, initWoff2 } from 'font-flux-js';
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { pause, round } from '../../common/functions.js';
@@ -21,10 +21,39 @@ let codePointGlyphIndexTable = {};
 
 /**
  * Exports the current project to an .otf file
+ */
+export async function ioFont_exportOTF() {
+	await ioFont_exportFont('otf', false);
+}
+
+/**
+ * Exports the current project to a .ttf file
+ */
+export async function ioFont_exportTTF() {
+	await ioFont_exportFont('ttf', false);
+}
+
+/**
+ * Exports the current project to a .woff file
+ */
+export async function ioFont_exportWOFF() {
+	await ioFont_exportFont('woff', false);
+}
+
+/**
+ * Exports the current project to a .woff2 file
+ */
+export async function ioFont_exportWOFF2() {
+	await ioFont_exportFont('woff2', false);
+}
+
+/**
+ * Exports the current project
+ * @param {String} suffix - file extension suffix (e.g. 'otf' or 'ttf')
  * @param {Boolean} testing - if true, returns ArrayBuffer instead of saving to file
  * @returns {Promise<ArrayBuffer|void>} - ArrayBuffer if testing, otherwise void
  */
-export async function ioFont_exportFont(testing = false) {
+export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	// log('ioFont_exportFont', 'start');
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
@@ -136,15 +165,15 @@ export async function ioFont_exportFont(testing = false) {
 		}
 	}
 
-	const result = saveOTFFile(font);
-	await pause();
+	const result = await saveFontFile(font, suffix);
+	// await pause();
 	if (result === true) {
 		showToast('Export complete!');
 		await pause(1000);
 		closeAllToasts();
 	} else {
 		showError(`
-			The OTF file could not be saved. Here is the error message that was returned:
+			The ${suffix.toUpperCase()} file could not be saved. Here is the error message that was returned:
 			<hr>
 			${result}
 		`);
@@ -152,16 +181,20 @@ export async function ioFont_exportFont(testing = false) {
 	// log('ioFont_exportFont', 'end');
 }
 
-function saveOTFFile(font) {
+async function saveFontFile(font, suffix = 'otf') {
 	let result = true;
 	try {
-		const familyName = font.info.familyName || 'MyFont';
-		const styleName = font.info.styleName || 'Regular';
-		const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
 		// log(`\n⮟font⮟`);
 		// log(font);
-		// Export as SFNT (complete OpenType file with all required tables)
-		const arrayBuffer = font.export({ format: 'sfnt' });
+		if (suffix === 'woff2') {
+			// log('Initializing WOFF2 support (this may take a moment)...');
+			await initWoff2();
+			// log('WOFF2 support initialized.');
+		}
+		const familyName = font.info.familyName || 'MyFont';
+		const styleName = font.info.styleName || 'Regular';
+		const fileName = `${familyName.replace(/\s/g, '')}-${styleName}.${suffix.toLowerCase()}`;
+		const arrayBuffer = font.export({ format: suffix });
 		const dataView = new DataView(arrayBuffer);
 		const blob = new Blob([dataView], { type: 'font/opentype' });
 
