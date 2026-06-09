@@ -1,9 +1,8 @@
+import { FontFlux, initWoff2 } from 'font-flux-js';
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { pause, round } from '../../common/functions.js';
 import { closeAllToasts, showError, showToast } from '../../controls/dialogs/dialogs.js';
-import openTypeJS from '../../lib/opentype.js-september-2024-kern-write/opentype.mjs';
-import { getUnicodeShortName } from '../../lib/unicode/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
 import { Path } from '../../project_data/path.js';
@@ -12,9 +11,9 @@ import { saveFile } from '../../project_editor/file_io.js';
 import { writeGposKernDataToFont } from './tables/gpos.js';
 
 /**
-	IO > Export > OpenType
-	Using OpenType.js to convert a Glyphr Studio
-	Project into OpenType.js format for saving.
+	IO > Export > Font
+	Using FontFlux and path-conversion helpers to export a Glyphr Studio
+	project into OpenType format for saving.
 **/
 
 let ligatureSubstitutions = [];
@@ -23,7 +22,38 @@ let codePointGlyphIndexTable = {};
 /**
  * Exports the current project to an .otf file
  */
-export async function ioFont_exportFont() {
+export async function ioFont_exportOTF() {
+	await ioFont_exportFont('otf', false);
+}
+
+/**
+ * Exports the current project to a .ttf file
+ */
+export async function ioFont_exportTTF() {
+	await ioFont_exportFont('ttf', false);
+}
+
+/**
+ * Exports the current project to a .woff file
+ */
+export async function ioFont_exportWOFF() {
+	await ioFont_exportFont('woff', false);
+}
+
+/**
+ * Exports the current project to a .woff2 file
+ */
+export async function ioFont_exportWOFF2() {
+	await ioFont_exportFont('woff2', false);
+}
+
+/**
+ * Exports the current project
+ * @param {String} suffix - file extension suffix (e.g. 'otf' or 'ttf')
+ * @param {Boolean} testing - if true, returns ArrayBuffer instead of saving to file
+ * @returns {Promise<ArrayBuffer|void>} - ArrayBuffer if testing, otherwise void
+ */
+export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	// log('ioFont_exportFont', 'start');
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
@@ -51,7 +81,7 @@ export async function ioFont_exportFont() {
 			options.glyphs.push(exportedItem);
 		}
 	}
-	showToast('Finalizing...');
+	if (!testing) showToast('Finalizing...');
 
 	// log(`\n⮟options.glyphs⮟`);
 	// log(options.glyphs);
@@ -59,25 +89,63 @@ export async function ioFont_exportFont() {
 	// Create Font
 	// log('NEW options ARG TO FONT');
 	// log(options);
-	const font = new openTypeJS.Font(options);
+	const font = FontFlux.create({
+		family: options.familyName,
+		unitsPerEm: options.unitsPerEm,
+		ascender: options.ascender,
+		descender: options.descender,
+	});
+
+	// Set additional font info properties
+	font.info.styleName = options.styleName;
+	font.info.copyright = options.copyright;
+	font.info.version = options.version;
+	font.info.weight = options.weightClass;
+	font.info.italicAngle = options.italicAngle;
+	font.info.ascender = options.ascender;
+	font.info.descender = options.descender;
+	font.info.lineGap = options.lineGap;
+	font.info.capHeight = options.capHeight;
+	font.info.xHeight = options.xHeight;
+	// Name-table metadata. FontFlux uses `vendorURL` for the manufacturer /
+	// vendor URL (name ID 11); the other fields map by the same name.
+	font.info.description = options.description;
+	font.info.designer = options.designer;
+	font.info.designerURL = options.designerURL;
+	font.info.manufacturer = options.manufacturer;
+	font.info.vendorURL = options.manufacturerURL;
+	font.info.license = options.license;
+	font.info.licenseURL = options.licenseURL;
+	font.info.trademark = options.trademark;
+
+	// Add glyphs
+	options.glyphs.forEach((glyph) => {
+		font.addGlyph(glyph);
+	});
 
 	// log(`\n⮟font⮟`);
 	// log(font);
 
 	// log(`\n⮟ligatureSubstitutions⮟`);
 	// log(ligatureSubstitutions);
-	if (exportLigatures) {
-		ligatureSubstitutions.forEach((sub) => {
-			// log(`Adding ligature to font`);
-			const subIndexes = sub.subChars.map((char) => font.charToGlyphIndex(char));
-			// log(sub);
-			font.substitution.addLigature('liga', { sub: subIndexes, by: sub.byIndex });
-		});
-	}
 
-	// Write kern pair data
+	// Write kern pair data first, before setting GSUB features
+	// This ensures the font's GPOS table is properly initialized
 	if (project.settings.app.exportKerning) {
 		writeGposKernDataToFont(font, project);
+	}
+
+	if (exportLigatures && ligatureSubstitutions.length > 0) {
+		ligatureSubstitutions.forEach((sub) => {
+			font.addSubstitution({
+				type: 'ligature',
+				feature: 'liga',
+				substitution: {
+					components: sub.components,
+					ligature: sub.ligature,
+				},
+			});
+		});
 	}
 
 	// TODO investigate advanced table values
@@ -86,15 +154,26 @@ export async function ioFont_exportFont() {
 	// log(font);
 	// log(font.toTables());
 
-	const result = saveOTFFile(font);
-	await pause();
+	if (testing) {
+		// Return buffer for testing
+		try {
+			const arrayBuffer = font.export({ format: 'sfnt' });
+			return arrayBuffer;
+		} catch (e) {
+			console.error(e);
+			throw e;
+		}
+	}
+
+	const result = await saveFontFile(font, suffix);
+	// await pause();
 	if (result === true) {
 		showToast('Export complete!');
 		await pause(1000);
 		closeAllToasts();
 	} else {
 		showError(`
-			The OTF file could not be saved. Here is the error message that was returned:
+			The ${suffix.toUpperCase()} file could not be saved. Here is the error message that was returned:
 			<hr>
 			${result}
 		`);
@@ -102,15 +181,20 @@ export async function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'end');
 }
 
-function saveOTFFile(font) {
+async function saveFontFile(font, suffix = 'otf') {
 	let result = true;
 	try {
-		const familyName = font.getEnglishName('fontFamily');
-		const styleName = font.getEnglishName('fontSubfamily');
-		const fileName = familyName.replace(/\s/g, '') + '-' + styleName + '.otf';
 		// log(`\n⮟font⮟`);
 		// log(font);
-		const arrayBuffer = font.toArrayBuffer();
+		if (suffix === 'woff2') {
+			// log('Initializing WOFF2 support (this may take a moment)...');
+			await initWoff2();
+			// log('WOFF2 support initialized.');
+		}
+		const familyName = font.info.familyName || 'MyFont';
+		const styleName = font.info.styleName || 'Regular';
+		const fileName = `${familyName.replace(/\s/g, '')}-${styleName}.${suffix.toLowerCase()}`;
+		const arrayBuffer = font.export({ format: suffix });
 		const dataView = new DataView(arrayBuffer);
 		const blob = new Blob([dataView], { type: 'font/opentype' });
 
@@ -136,20 +220,30 @@ function createOptionsObject() {
 	const fontSettings = project.settings.font;
 
 	options.unitsPerEm = fontSettings.upm || 1000;
-	options.ascender = fontSettings.ascent || 0.00001;
-	options.descender = -1 * Math.abs(fontSettings.descent) || -0.00001;
-	options.familyName = fontSettings.family || ' ';
-	options.styleName = fontSettings.style || ' ';
-	options.designer = fontSettings.designer || ' ';
-	options.designerURL = fontSettings.designerURL || ' ';
-	options.manufacturer = fontSettings.manufacturer || ' ';
-	options.manufacturerURL = fontSettings.manufacturerURL || ' ';
-	options.license = fontSettings.license || ' ';
-	options.licenseURL = fontSettings.licenseURL || ' ';
-	options.version = fontSettings.version || '1.0';
-	options.description = fontSettings.description || ' ';
-	options.copyright = fontSettings.copyright || ' ';
-	options.trademark = fontSettings.trademark || ' ';
+	// Calculate proportional defaults based on UPM if metrics are missing
+	// Standard OpenType proportions: ascender ~80% of UPM, descender ~20% of UPM
+	const defaultAscender = Math.round(options.unitsPerEm * 0.8);
+	const defaultDescender = Math.round(options.unitsPerEm * 0.2);
+	options.ascender = fontSettings.ascent || defaultAscender;
+	options.descender = -1 * Math.abs(fontSettings.descent || defaultDescender);
+	options.lineGap = fontSettings.lineGap || 0;
+	options.capHeight = fontSettings.capHeight || options.ascender;
+	options.xHeight = fontSettings.xHeight || Math.round(options.ascender * 0.7);
+	// Name-table values must be strings. Legacy / imported projects may carry
+	// non-string metadata (e.g. a numeric `version: 1.003`), which would crash
+	// the downstream FontFlux name-table writer, so coerce each field here.
+	options.familyName = String(fontSettings.family || ' ');
+	options.styleName = String(fontSettings.style || ' ');
+	options.designer = String(fontSettings.designer || ' ');
+	options.designerURL = String(fontSettings.designerURL || ' ');
+	options.manufacturer = String(fontSettings.manufacturer || ' ');
+	options.manufacturerURL = String(fontSettings.manufacturerURL || ' ');
+	options.license = String(fontSettings.license || ' ');
+	options.licenseURL = String(fontSettings.licenseURL || ' ');
+	options.version = String(fontSettings.version || '1.0');
+	options.description = String(fontSettings.description || ' ');
+	options.copyright = String(fontSettings.copyright || ' ');
+	options.trademark = String(fontSettings.trademark || ' ');
 	options.weightClass = parseInt(fontSettings.weight);
 	options.panose = fontSettings.panose.split(' ').map(Number) || [];
 	options.italicAngle = fontSettings.italicAngle || 0;
@@ -315,20 +409,19 @@ function addNotdefToExport(options) {
 	// log(notdef);
 
 	// Add it to the export
-	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
-	let thisAdvance = notdef.advanceWidth;
+	const contours = glyphToContours(notdef);
 
-	const notdefGlyph = new openTypeJS.Glyph({
-		name: '.null',
+	// Use the standard '.notdef' name so FontFlux recognizes this as the
+	// special glyph-zero. If it is named anything else (e.g. '.null'),
+	// FontFlux injects its own default '.notdef' (advanceWidth 500) at
+	// index 0 and keeps ours as a duplicate glyph mapped to unicode 0,
+	// which loses our advanceWidth on round-trip.
+	const notdefGlyph = {
+		name: '.notdef',
 		unicode: 0,
-		index: 0,
-		xMin: round(notdef.maxes.xMin),
-		xMax: round(notdef.maxes.xMax),
-		yMin: round(notdef.maxes.yMin),
-		yMax: round(notdef.maxes.yMax),
-		path: notdefPath,
-	});
-	notdefGlyph.advanceWidth = thisAdvance;
+		advanceWidth: notdef.advanceWidth,
+		contours: contours,
+	};
 
 	options.glyphs.push(notdefGlyph);
 
@@ -340,60 +433,42 @@ function addNotdefToExport(options) {
  * Makes one item from the export list, and updates the
  * exterior export process, as well as the UI progress bar.
  * @param {Object} currentExportItem - Information about a single item
- * @returns {Promise<Object>} - Opentype.js Glyph object
+ * @returns {Promise<Object>} - FontFlux Glyph object
  */
 async function generateOneGlyph(currentExportItem) {
 	// log('generateOneGlyph', 'start');
 	// export this glyph
 	const glyph = currentExportItem.xg;
 	const num = currentExportItem.xc;
-	const maxes = glyph.maxes;
-
-	// log(`num: ${num}`);
-	// log(`\n⮟glyph⮟`);
-	// log(glyph);
 
 	showToast('Exporting<br>' + glyph.name, 999999);
 
-	// Path data
-	const thisPath = makeOpenTypeJS_Glyph(glyph, new openTypeJS.Path());
-	// log('openTypeJS thisPath');
-	// log(thisPath);
-
-	// Index & Unicode
-	const thisIndex = getNextGlyphIndexNumber();
-	// log(`thisIndex: ${thisIndex}`);
+	// Unicode
 	const thisUnicode = parseInt(num);
-	// log(`thisUnicode: ${thisUnicode}`);
+	const thisIndex = getNextGlyphIndexNumber();
 
 	// Name
-	const hexID = decToHex(num);
-	const thisName = hexID ? getUnicodeShortName(hexID) : 'name';
-	// log(`decToHex(num): ${decToHex(num)}`);
-	// log(`thisName: ${thisName}`);
+	// Glyph names in the OpenType `post` table must be unique. The human-readable
+	// short names are lossy (truncated to 20 chars), which collides for whole
+	// blocks (e.g. every "CYRILLIC Capital Letter X" → "CYRILLICCapitalLette"),
+	// causing FontFlux to overwrite/drop glyphs that share a name. Use the
+	// canonical AGL `uniXXXX` / `uXXXXXX` convention to guarantee uniqueness.
+	const thisName = getUniqueGlyphName(thisUnicode);
 
-	// Create OTF.js Glyph
-	const thisGlyph = new openTypeJS.Glyph({
+	// Convert glyph outlines directly to FontFlux contours
+	const contours = glyphToContours(glyph);
+
+	const thisGlyph = {
 		name: thisName,
 		unicode: thisUnicode,
-		index: thisIndex,
-		xMin: round(maxes.xMin),
-		xMax: round(maxes.xMax),
-		yMin: round(maxes.yMin),
-		yMax: round(maxes.yMax),
-		path: thisPath,
-	});
-
-	// Opentype.js Glyph constructor removes Advance Width of zero.
-	// So, incase we need it to be zero, we add it here.
-	thisGlyph.advanceWidth = glyph.advanceWidth;
+		advanceWidth: glyph.advanceWidth,
+		contours: contours,
+	};
 
 	// Add this finished glyph
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
 
 	await pause();
-	// log(thisGlyph);
-	// log('generateOneGlyph', 'end');
 	return thisGlyph;
 }
 
@@ -401,44 +476,31 @@ async function generateOneGlyph(currentExportItem) {
  * Makes one item from the export list, and updates the
  * exterior export process, as well as the UI progress bar.
  * @param {Object} currentExportItem - Information about a single item
- * @returns {Promise<Object>} - Opentype.js Glyph object
+ * @returns {Promise<Object>} - FontFlux Glyph object
  */
 async function generateOneLigature(currentExportItem) {
 	// log(`generateOneLigature`, 'start');
-	// log(currentExportItem);
 
 	// export this glyph
 	const liga = currentExportItem.xg;
-	const maxes = liga.maxes;
 
-	// log(`generateOneLigature: ${ligaID}\t${liga.name}\t${getNameForExport(ligaID)}`);
 	showToast('Exporting<br>' + liga.name, 999999);
 
-	const thisPath = makeOpenTypeJS_Glyph(liga, new openTypeJS.Path());
-	const thisIndex = getNextGlyphIndexNumber();
-	// log(`thisIndex: ${thisIndex}`);
+	// Convert ligature outlines directly to FontFlux contours
+	const contours = glyphToContours(liga);
 
-	const thisLigature = new openTypeJS.Glyph({
+	const thisLigature = {
 		name: generateLigatureExportName(liga),
-		index: thisIndex,
-		path: thisPath,
-		xMin: round(maxes.xMin),
-		xMax: round(maxes.xMax),
-		yMin: round(maxes.yMin),
-		yMax: round(maxes.yMax),
-	});
+		advanceWidth: liga.advanceWidth,
+		contours: contours,
+	};
 
-	// Opentype.js Glyph constructor removes Advance Width of zero.
-	// So, incase we need it to be zero, we add it here.
-	thisLigature.advanceWidth = liga.advanceWidth;
+	// Add substitution info for FontFlux. Component references must match the
+	// exported glyph names exactly (uniXXXX), or the substitution won't resolve.
+	const componentNames = liga.gsub.map((unicode) => getUniqueGlyphName(unicode));
+	ligatureSubstitutions.push({ components: componentNames, ligature: thisLigature.name });
 
-	// Add substitution info to font
-	const charSubList = liga.gsub.map((v) => String.fromCharCode(v));
-	ligatureSubstitutions.push({ subChars: charSubList, byIndex: thisIndex });
-
-	// log(thisLigature);
 	await pause();
-	// log(`generateOneLigature`, 'end');
 	return thisLigature;
 }
 
@@ -452,14 +514,27 @@ function generateLigatureExportName(lig) {
 	let result = 'lig';
 
 	lig.gsub.forEach((char) => {
-		const hex = decToHex(char);
-		let shortName;
-		if (hex) shortName = getUnicodeShortName(hex);
-		if (!shortName) shortName = '?';
-		result += '.' + shortName;
+		result += '.' + getUniqueGlyphName(char).replace(/^uni?/, '');
 	});
 
 	return result;
+}
+
+/**
+ * Generates a unique, valid OpenType glyph name for a code point using the
+ * canonical AGL `uniXXXX` (BMP) / `uXXXXXX` (supplementary) convention. Unlike
+ * the human-readable short names, these are guaranteed unique per code point,
+ * which the `post` table requires — otherwise FontFlux overwrites/drops glyphs
+ * that would otherwise share a (lossily truncated) name.
+ * @param {Number} unicode - Decimal code point
+ * @returns {String} - Unique glyph name
+ */
+export function getUniqueGlyphName(unicode) {
+	const num = parseInt('' + unicode);
+	if (isNaN(num)) return 'name';
+	const hex = num.toString(16).toUpperCase();
+	if (num <= 0xffff) return 'uni' + hex.padStart(4, '0');
+	return 'u' + hex.padStart(6, '0');
 }
 
 let currentIndex = 0;
@@ -469,61 +544,87 @@ function getNextGlyphIndexNumber() {
 }
 
 /**
- * Converts a Glyphr Studio item into an Opentype.js Glyph
+ * Converts a Glyphr Studio Glyph directly to FontFlux contours format.
  * @param {Glyph | Object} item - Item to convert
- * @param {Object} openTypePath - current path to add to
- * @returns {Object}
+ * @returns {Array<Array>} - Array of contours, each contour is an array of points
  */
-function makeOpenTypeJS_Glyph(item, openTypePath) {
-	// log(`makeOpenTypeJS_Glyph`, 'start');
-	let flatItem = makeGlyphWithResolvedLinks(item);
+function glyphToContours(item) {
+	const flatItem = makeGlyphWithResolvedLinks(item);
+	const contours = [];
+
 	flatItem.shapes.forEach((shape) => {
 		if (shape.objType === 'Path') {
-			openTypePath = makeOpenTypeJS_Path(shape, openTypePath);
+			const contour = pathToContour(shape);
+			if (contour && contour.length > 0) {
+				contours.push(contour);
+			}
 		}
 	});
-	// log(`makeOpenTypeJS_Glyph`, 'end');
-	return openTypePath;
+
+	return contours;
 }
 
 /**
- * Converts a Glyphr Studio Path into an Opentype.js Path
- * @param {Path| Object} path - Item to convert
- * @param {Object} openTypePath - current path to add to
- * @returns {Object}
+ * Converts a Glyphr Studio Path into a FontFlux CFF contour (cubic Bézier format).
+ * Uses 'M' (move), 'L' (line), and 'C' (cubic curve) commands.
+ * Format: [{ type: 'M', x, y }, { type: 'L', x, y }, { type: 'C', x1, y1, x2, y2, x, y }, ...]
+ * @param {Path} path - Path object to convert
+ * @returns {Array} - Contour commands in CFF cubic format
  */
-function makeOpenTypeJS_Path(path, openTypePath) {
-	// log('makeOpenTypeJS_Path', 'start');
-	// log('openTypePath:');
-	// log(openTypePath);
-
-	if (!path.pathPoints || path.pathPoints.length === 0 || !path.pathPoints[0]) {
-		// log('!!!Path has zero points!');
-		openTypePath.close();
-		return openTypePath;
+function pathToContour(path) {
+	if (!path.pathPoints || path.pathPoints.length === 0) {
+		return [];
 	}
 
-	path.reverseWinding(); // OTF.js reverses the winding for some reason
+	const contour = [];
+	const points = path.pathPoints;
 
-	openTypePath.moveTo(round(path.pathPoints[0].p.x), round(path.pathPoints[0].p.y));
+	try {
+		// Start with move command to first point
+		contour.push({
+			type: 'M',
+			x: round(points[0].p.x),
+			y: round(points[0].p.y),
+		});
 
-	path.pathPoints.forEach((point) => {
-		const nextPoint = path.pathPoints[path.getNextPointNumber(point.pointNumber)];
-		openTypePath.curveTo(
-			round(point.h2.x),
-			round(point.h2.y),
-			round(nextPoint.h1.x),
-			round(nextPoint.h1.y),
-			round(nextPoint.p.x),
-			round(nextPoint.p.y)
-		);
-	});
+		// Add curve or line for each segment
+		points.forEach((point, index) => {
+			const nextIndex = (index + 1) % points.length;
+			const nextPoint = points[nextIndex];
 
-	openTypePath.close();
-	path.reverseWinding(); // Put it back
+			// Check if this is a straight line (handles at the points)
+			const isLine =
+				round(point.h2.x) === round(point.p.x) &&
+				round(point.h2.y) === round(point.p.y) &&
+				round(nextPoint.h1.x) === round(nextPoint.p.x) &&
+				round(nextPoint.h1.y) === round(nextPoint.p.y);
 
-	// log('returning path');
-	// log(openTypePath);
-	// log('makeOpenTypeJS_Path', 'end');
-	return openTypePath;
+			if (isLine) {
+				// Line command
+				contour.push({
+					type: 'L',
+					x: round(nextPoint.p.x),
+					y: round(nextPoint.p.y),
+				});
+			} else {
+				// Cubic curve command
+				// x1, y1 = first control point (from current point's h2)
+				// x2, y2 = second control point (to next point's h1)
+				// x, y = end point
+				contour.push({
+					type: 'C',
+					x1: round(point.h2.x),
+					y1: round(point.h2.y),
+					x2: round(nextPoint.h1.x),
+					y2: round(nextPoint.h1.y),
+					x: round(nextPoint.p.x),
+					y: round(nextPoint.p.y),
+				});
+			}
+		});
+	} catch (e) {
+		console.warn(e);
+	}
+
+	return contour;
 }

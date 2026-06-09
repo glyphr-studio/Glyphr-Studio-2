@@ -1,16 +1,16 @@
+import { FontFlux } from 'font-flux-js';
 import {
-	getGlyphrStudioApp,
-	getProjectEditorImportTarget,
-	setCurrentProjectEditor,
+    getGlyphrStudioApp,
+    getProjectEditorImportTarget,
+    setCurrentProjectEditor,
 } from '../../app/main.js';
-import { countItems } from '../../common/functions.js';
 import { updateProgressIndicator } from '../../controls/progress-indicator/progress_indicator.js';
 import { sortCharacterRanges } from '../../pages/settings_project.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { ProjectEditor } from '../../project_editor/project_editor.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outlines/svg_outline_import.js';
 import { importGlyphs } from './tables/glyphs.js';
-import { importGposKernPairs, loadOneKernTable } from './tables/gpos.js';
+import { importGposKernPairs } from './tables/gpos.js';
 import { importLigatures } from './tables/gsub.js';
 import { importTable_head } from './tables/head.js';
 import { importTable_name } from './tables/name.js';
@@ -18,17 +18,47 @@ import { importTable_os2 } from './tables/os2.js';
 import { importTable_post } from './tables/post.js';
 
 /**
-	IO > Import > OpenType
-	Using OpenType.js to read in a font file
-	and convert it to a Glyphr Studio Project.
-**/
+ * Extracts ligature data from the GSUB table
+ * @param {Object} importedFont - FontFlux font object
+ * @returns {Array} - Array of ligature objects {by: glyphIndex, sub: [glyphIndex1, glyphIndex2, ...]}
+ */
+function extractLigaturesFromGSUB(importedFont) {
+	const ligatures = [];
+
+	if (!importedFont.features?.GSUB?.lookupList?.lookups) {
+		return ligatures;
+	}
+
+	const lookups = importedFont.features.GSUB.lookupList.lookups;
+
+	// Find ligature lookups (type 4)
+	for (const lookup of lookups) {
+		if (lookup.lookupType === 4) { // Ligature substitution
+			for (const subtable of lookup.subtables) {
+				// Process each ligature set
+				for (const ligatureSet of subtable.ligatureSets) {
+					for (const ligature of ligatureSet) {
+						if (ligature.componentGlyphIDs && ligature.ligatureGlyph !== undefined) {
+							ligatures.push({
+								by: ligature.ligatureGlyph,
+								sub: ligature.componentGlyphIDs
+							});
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return ligatures;
+}
 let importItemCounter = 0;
 let importItemTotal = 0;
 
 /**
- * Takes the import result from Opentype.js, reads the data, and
+ * Takes the import result from Font Flux JS, reads the data, and
  * creates a new Glyphr Studio Project from it.
- * @param {Object} importedFont - result from Opentype.js import
+ * @param {Object} importedFont - result from Font Flux JS import
  * @param {Boolean} testing - is this a vitest test
  * @returns nothing
  */
@@ -45,13 +75,13 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	// Set up import groups
 	// --------------------------------------------------------------
 
-	const fontGlyphs = importedFont.glyphs.glyphs || {};
+	const fontGlyphs = importedFont.glyphs || {};
 	// log(`\nfontGlyphs:`);
 	// log(fontGlyphs);
-	const fontLigatures = importedFont.substitution.getLigatures('liga') || [];
+	const fontLigatures = extractLigaturesFromGSUB(importedFont) || [];
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
-	const gposKernTables = importedFont.position.getKerningTables() || [];
+	const gposKernTables = importedFont.kerning || [];
 	// log(`\n⮟kernTables⮟`);
 	// log(gposKernTables);
 
@@ -61,12 +91,14 @@ export async function ioFont_importFont(importedFont, testing = false) {
 
 	let kernPairCount = 0;
 	const loadedGposKernTables = [];
-	gposKernTables.forEach((table) => {
-		const tableData = loadOneKernTable(table);
-		loadedGposKernTables.push(tableData.subtables);
-		kernPairCount += tableData.kernPairCount;
-	});
-	importItemTotal = countItems(fontGlyphs) + fontLigatures.length + kernPairCount;
+	// For FontFlux, kerning is already a simple array
+	// gposKernTables.forEach((table) => {
+	// 	const tableData = loadOneKernTable(table);
+	// 	loadedGposKernTables.push(tableData.subtables);
+	// 	kernPairCount += tableData.kernPairCount;
+	// });
+	kernPairCount = gposKernTables.length;
+	importItemTotal = fontGlyphs.length + fontLigatures.length + kernPairCount;
 
 	// --------------------------------------------------------------
 	// Import data
@@ -79,7 +111,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	project.ligatures = await importLigatures(importedFont, fontLigatures);
 
 	// Kern data
-	project.kerning = await importGposKernPairs(importedFont, loadedGposKernTables);
+	project.kerning = await importGposKernPairs(importedFont, gposKernTables);
 
 	// Metadata
 	importTable_head(importedFont, project);
@@ -106,32 +138,29 @@ export async function ioFont_importFont(importedFont, testing = false) {
 }
 
 /**
- * Converts one Opentype.js Glyph into a Glyphr Studio Glyph.
+ * Converts one FontFlux Glyph into a Glyphr Studio Glyph.
  * Used for characters and ligatures.
- * @param {Object} otfGlyph - Opentype.js Glyph object
+ * @param {Object} glyph - FontFlux Glyph object
  * @returns {Glyph}
  */
-export function makeGlyphrStudioGlyphObject(otfGlyph) {
+export function makeGlyphrStudioGlyphObject(glyph) {
 	// log(`makeGlyphrStudioGlyphObject`, 'start');
-	// log(otfGlyph);
-	const advance = otfGlyph.advanceWidth;
+	// log(glyph);
+	const advance = glyph.advanceWidth;
 	// log(`advance: ${advance}`);
 
 	// Import Path Data
-	const svgImportOptions = {
-		decimalPlaces: 9,
-		optimize: false,
-		flipY: false,
-		flipYBase: 0,
-	};
-	let data = otfGlyph.path.toSVG(svgImportOptions);
-	// log('Glyph has .toSVG data');
+	let data;
+	if (glyph.contours) {
+		data = FontFlux.contoursToSVG(glyph.contours);
+	}
+	// log('Glyph has SVG data');
 	// log(data);
 
 	let importedGlyph;
 
 	if (data) {
-		importedGlyph = ioSVG_convertSVGTagsToGlyph(`<svg>${data}</svg>`, false);
+		importedGlyph = ioSVG_convertSVGTagsToGlyph(`<svg><path d="${data}"/></svg>`, false);
 		// log(`importedGlyph`);
 		// log(importedGlyph);
 	} else {

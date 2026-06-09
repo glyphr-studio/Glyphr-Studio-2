@@ -30,9 +30,9 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: config.devMode, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
-				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample project
+				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: false, // {Sentence case page name} navigate straight to a page
+				currentPage: 'Overview', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Sentence case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
@@ -146,12 +146,14 @@ export class GlyphrStudioApp {
 	 * @param {ProjectEditor} editor
 	 */
 	set selectedProjectEditor(editor) {
-		if (this.projectEditors[0] === editor) {
-			this._selectedProjectEditor = this.projectEditors[0];
+		if (!editor) return;
+		// Make sure the editor is tracked in the projectEditors list,
+		// then select it. Previously this only worked for editors that
+		// were already at index 0 or 1, silently ignoring any other editor.
+		if (!this.projectEditors.includes(editor)) {
+			this.projectEditors.push(editor);
 		}
-		if (this.projectEditors[1] === editor) {
-			this._selectedProjectEditor = this.projectEditors[1];
-		}
+		this._selectedProjectEditor = editor;
 	}
 
 	/**

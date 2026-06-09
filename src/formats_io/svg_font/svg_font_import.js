@@ -25,10 +25,10 @@ let glyphTags = [];
 let kernTags = [];
 
 /**
- * Takes SVG code representing a SVG Font, and imports all it's
+ * Takes SVG code representing a SVG Font, and imports all its
  * data into a Glyphr Studio Project. Also updates the import
  * progress UI.
- * @param {Object} font - Opentype.js font object
+ * @param {Object} font - SVG font object
  * @param {Boolean} testing - is this a vitest test?
  * @returns {Promise}
  */

@@ -1,9 +1,9 @@
 import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project';
 
 /**
- * Finds metadata from the name table in the opentype.js font object,
+ * Finds metadata from the name table in a FontFlux font object,
  * and pulls appropriate data into a provided Glyphr Studio Project.
- * @param {Object} importedFont - opentype.js font object
+ * @param {Object} importedFont - FontFlux font object
  * @param {GlyphrStudioProject} project - current Glyphr Studio Project
  */
 export function importTable_name(importedFont, project) {
@@ -12,19 +12,22 @@ export function importTable_name(importedFont, project) {
 	const fontSettings = project.settings.font;
 
 	// Font Family
-	const familyName = getTableValue('fontFamily', importedFont) || 'My Font';
+	// FontFlux exposes name-table data as flat properties on `info` (e.g.
+	// `familyName`, `styleName`, `vendorURL`), not the legacy nested
+	// `fontFamily`/`fontSubfamily` structure.
+	const familyName = getTableValue('familyName', importedFont) || 'My Font';
 	project.settings.project.name = familyName;
 	fontSettings.name = familyName;
 	fontSettings.family = familyName.substring(0, 31); // long family names cause errors
 
 	// Table data
-	fontSettings.style = getTableValue('fontSubfamily', importedFont) || 'Regular';
+	fontSettings.style = getTableValue('styleName', importedFont) || 'Regular';
 	fontSettings.copyright = getTableValue('copyright', importedFont) || '';
 	fontSettings.trademark = getTableValue('trademark', importedFont) || '';
 	fontSettings.designer = getTableValue('designer', importedFont) || '';
 	fontSettings.designerURL = getTableValue('designerURL', importedFont) || '';
 	fontSettings.manufacturer = getTableValue('manufacturer', importedFont) || '';
-	fontSettings.manufacturerURL = getTableValue('manufacturerURL', importedFont) || '';
+	fontSettings.manufacturerURL = getTableValue('vendorURL', importedFont) || '';
 	fontSettings.license = getTableValue('license', importedFont) || '';
 	fontSettings.licenseURL = getTableValue('licenseURL', importedFont) || '';
 	fontSettings.description = getTableValue('description', importedFont) || '';
@@ -41,19 +44,11 @@ export function importTable_name(importedFont, project) {
  * @returns {String | false}
  */
 function getTableValue(name, importedFont) {
-	let nameTable = importedFont?.tables?.name;
-	if (!nameTable) return false;
+	const info = importedFont.info;
+	if (!info) return false;
 
-	const platforms = ['windows', 'macintosh', 'unicode'];
-
-	for (let i = 0; i < platforms.length; i++) {
-		if (nameTable[platforms[i]]) {
-			if (nameTable[platforms[i]][name]) {
-				if (nameTable[platforms[i]][name].en) return nameTable[platforms[i]][name].en;
-			}
-		}
-	}
-	return false;
+	const value = info[name];
+	return value || false;
 }
 
 /*
