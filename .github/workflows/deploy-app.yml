@@ -1,0 +1,54 @@
+# Deploy dist app to personal website via SFTP
+#
+# Prerequisites — add these as Repository Secrets (Settings → Secrets → Actions):
+#   1. SFTP_HOST     — hostname (e.g. glyphrstudio.com)
+#   2. SFTP_USERNAME — your SSH/SFTP login
+#   3. SFTP_PASSWORD — your SSH/SFTP password
+#   4. SFTP_PATH     — remote directory (e.g. /home/user/public_html/app)
+
+name: Deploy Demo to Website
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Only one deployment at a time
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build library
+        run: npm run build
+
+      - name: Deploy via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          source: dist/*
+          target: ${{ secrets.SFTP_PATH }}
+          strip_components: 2
