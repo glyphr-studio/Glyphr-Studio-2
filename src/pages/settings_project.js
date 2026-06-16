@@ -46,6 +46,7 @@ export function makeSettingsTabContentProject() {
 		makeOneSettingsRow('project', 'initialVersion'),
 		makeOneSettingsRow('project', 'id'),
 		makeOneSettingsRow('project', 'exportComponentsAsComposites'),
+		makeOneSettingsRow('project', 'importComponentsFromComposites'),
 		textToNode('<br>'),
 	]);
 
