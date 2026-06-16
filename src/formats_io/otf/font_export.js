@@ -115,8 +115,8 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	}
 
 	// Add building-block glyphs referenced by any composite glyphs. These are
-	// always flattened (and mostly unencoded) and must exist before composite
-	// component indices are resolved below.
+	// always flattened (and mostly unencoded) so the composites have concrete
+	// outlines to reference by name.
 	buildingBlocks.forEach((glyphObject) => {
 		options.glyphs.push(glyphObject);
 	});
@@ -157,32 +157,12 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	font.info.licenseURL = options.licenseURL;
 	font.info.trademark = options.trademark;
 
-	// Add glyphs
+	// Add glyphs. Composite components reference their target glyphs by name
+	// (`glyphName`); FontFlux (v2.7+) resolves those names against the finalized
+	// glyph array at export time, so no manual index bookkeeping is needed here.
 	options.glyphs.forEach((glyph) => {
 		font.addGlyph(glyph);
 	});
-
-	// Resolve composite component glyph indices by name, now that every glyph
-	// (including injected `.notdef`/`space` and building blocks) exists in the
-	// final glyph array. Component references are stashed as `_linkName` during
-	// generation because final indices aren't knowable until this point.
-	if (exportComposites) {
-		const nameToIndex = {};
-		font.glyphs.forEach((glyph, index) => {
-			if (glyph.name) nameToIndex[glyph.name] = index;
-		});
-		font.glyphs.forEach((glyph) => {
-			if (Array.isArray(glyph.components)) {
-				glyph.components.forEach((component) => {
-					if (component._linkName != null) {
-						const resolvedIndex = nameToIndex[component._linkName];
-						if (resolvedIndex !== undefined) component.glyphIndex = resolvedIndex;
-						delete component._linkName;
-					}
-				});
-			}
-		});
-	}
 
 	// log(`\n⮟font⮟`);
 	// log(font);
@@ -616,41 +596,20 @@ function getNextGlyphIndexNumber() {
  * component instance whose link resolves to an exportable target - this returns
  * a `{ components }` payload that FontFlux writes as a TrueType composite glyph.
  *
- * In a composite-enabled export, non-qualifying glyphs use a `{ path }` (SVG)
- * payload rather than command-style `{ contours }`: FontFlux's glyf builder
- * only links composite components to referenced glyphs correctly when those
- * glyphs are supplied as point/path outlines. TrueType is quadratic regardless,
- * so this is loss-free here.
- *
- * Otherwise (OpenType/CFF export, or the setting disabled) it falls back to the
- * command-style `{ contours }` payload, which preserves cubic outlines exactly.
+ * Otherwise it returns a command-style `{ contours }` payload, which preserves
+ * cubic outlines exactly. FontFlux (v2.7+) keeps composites intact even when
+ * sibling and building-block glyphs use command-format contours, so flattened
+ * glyphs no longer need to be coerced into SVG/point format.
  * @param {Glyph | Object} item - Item to convert
  * @param {Object} compositeContext - Shared composite-export bookkeeping
- * @returns {Object} - `{ components }`, `{ path }`, or `{ contours }`
+ * @returns {Object} - `{ components }` or `{ contours }`
  */
 function buildGlyphOutline(item, compositeContext) {
 	if (compositeContext?.exportComposites) {
 		const components = getCompositeComponents(item, compositeContext);
 		if (components) return { components };
-		return { path: makeResolvedSvgPathData(item) };
 	}
 	return { contours: glyphToContours(item) };
-}
-
-/**
- * Produces a clean SVG path string for an item with all component links
- * resolved to outlines. `Glyph.makeSVGPathData()` always emits a leading
- * degenerate `M0,0` move; FontFlux's glyf builder would otherwise turn that
- * into an empty contour, which breaks composite-glyph component linking. This
- * strips any such degenerate `M0,0` prefix while preserving a real first point
- * that happens to sit at the origin.
- * @param {Glyph | Object} item - Item to resolve and serialize
- * @returns {String} - SVG path `d` data with no degenerate leading move
- */
-function makeResolvedSvgPathData(item) {
-	let pathData = makeGlyphWithResolvedLinks(item).svgPathData;
-	while (pathData.startsWith('M0,0M')) pathData = pathData.slice(4);
-	return pathData;
 }
 
 /**
@@ -686,11 +645,9 @@ function getCompositeComponents(item, compositeContext) {
 		if (!linkName) return false;
 
 		components.push({
-			glyphIndex: -1,
-			_linkName: linkName,
-			flags: { argsAreXYValues: true },
-			argument1: round(shape.translateX || 0),
-			argument2: round(shape.translateY || 0),
+			glyphName: linkName,
+			dx: round(shape.translateX || 0),
+			dy: round(shape.translateY || 0),
 		});
 	}
 
@@ -741,8 +698,8 @@ function resolveComponentTargetName(linkId, compositeContext) {
 /**
  * Registers a flattened, unencoded building-block glyph that one or more
  * composite glyphs reference. Building blocks are always flattened (resolving
- * any nested links recursively) and supplied as SVG `path` outlines so the
- * FontFlux glyf builder links composite components to them correctly.
+ * any nested links recursively) so the composite has concrete outlines to
+ * reference by name.
  * @param {String} name - Unique glyph name
  * @param {Glyph | Object} item - Source item to flatten
  * @param {Map} buildingBlocks - name -> FontFlux glyph object
@@ -752,7 +709,7 @@ function ensureBuildingBlock(name, item, buildingBlocks) {
 	buildingBlocks.set(name, {
 		name: name,
 		advanceWidth: item.advanceWidth,
-		path: makeResolvedSvgPathData(item),
+		contours: glyphToContours(item),
 	});
 }
 
