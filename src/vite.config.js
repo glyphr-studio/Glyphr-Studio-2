@@ -8,7 +8,7 @@ export default defineConfig({
 		emptyOutDir: true,
 		chunkSizeWarningLimit: 3000,
 		rollupOptions: {
-			treeshake: 'recommended',
+			treeshake: true,
 		},
 	}
 });
