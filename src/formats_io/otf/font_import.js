@@ -4,6 +4,7 @@ import {
 	getProjectEditorImportTarget,
 	setCurrentProjectEditor,
 } from '../../app/main.js';
+import { isUIUpdateDue, resetUIUpdateThrottle } from '../../common/functions.js';
 import { updateProgressIndicator } from '../../controls/progress-indicator/progress_indicator.js';
 import { sortCharacterRanges } from '../../pages/settings_project.js';
 import { Glyph } from '../../project_data/glyph.js';
@@ -71,6 +72,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	// Reset module data
 	importItemCounter = 0;
 	importItemTotal = 0;
+	resetUIUpdateThrottle();
 
 	// --------------------------------------------------------------
 	// Set up import groups
@@ -222,6 +224,13 @@ function resolveGlyphContours(glyph, importedFont) {
  * @param {String} type - Character, Ligature, Kern Pair
  */
 export async function updateFontImportProgressIndicator(type) {
+	// Throttle to ~60fps. The per-item counter still increments on every loop
+	// iteration (see incrementItemCounter); here we just skip the DOM write and
+	// event-loop yield most of the time, so the import runs at full speed
+	// instead of pausing per item. When a frame is due, the counter has jumped
+	// across however many items were processed in the interim, so it still
+	// appears to whiz by.
+	if (!isUIUpdateDue()) return;
 	await updateProgressIndicator(`
 			<span class="progress-indicator__title">Importing ${type}s</span>
 			Item

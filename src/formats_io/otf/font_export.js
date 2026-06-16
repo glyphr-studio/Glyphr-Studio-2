@@ -1,7 +1,7 @@
 import { FontFlux, initWoff2 } from 'font-flux-js';
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
-import { pause, round } from '../../common/functions.js';
+import { isUIUpdateDue, pause, resetUIUpdateThrottle, round } from '../../common/functions.js';
 import { closeAllToasts, showError, showToast } from '../../controls/dialogs/dialogs.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { sortLigatures } from '../../project_data/glyphr_studio_project.js';
@@ -61,6 +61,7 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	ligatureSubstitutions = [];
 	codePointGlyphIndexTable = {};
 	currentIndex = 0;
+	resetUIUpdateThrottle();
 
 	// When enabled, glyphs built entirely from pure-translation component
 	// instances are exported as TrueType composite glyphs (preserving the
@@ -503,8 +504,6 @@ async function generateOneGlyph(currentExportItem, compositeContext) {
 	const glyph = currentExportItem.xg;
 	const num = currentExportItem.xc;
 
-	showToast('Exporting<br>' + glyph.name, 999999);
-
 	// Unicode
 	const thisUnicode = parseInt(num);
 	const thisIndex = getNextGlyphIndexNumber();
@@ -527,10 +526,15 @@ async function generateOneGlyph(currentExportItem, compositeContext) {
 	// Add this finished glyph
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
 
-	// Yield to the event loop so the UI/progress bar stays responsive during a
-	// real export. Skipped under test, where it is pure dead time (a 10ms timer
-	// per glyph adds up to tens of seconds for large fonts).
-	if (!compositeContext?.testing) await pause();
+	// Update the toast and yield to the event loop so it paints, but only at a
+	// throttled rate (~60fps) rather than once per glyph. A fixed pause per
+	// glyph is pure dead time that adds up to tens of seconds for large fonts;
+	// throttling lets the export run at full speed while the glyph name still
+	// appears to whiz by. Skipped entirely under test.
+	if (!compositeContext?.testing && isUIUpdateDue()) {
+		showToast('Exporting<br>' + glyph.name, 999999);
+		await pause(0);
+	}
 	return thisGlyph;
 }
 
@@ -547,8 +551,6 @@ async function generateOneLigature(currentExportItem, compositeContext) {
 	// export this glyph
 	const liga = currentExportItem.xg;
 
-	showToast('Exporting<br>' + liga.name, 999999);
-
 	const thisLigature = {
 		name: generateLigatureExportName(liga),
 		advanceWidth: liga.advanceWidth,
@@ -560,7 +562,10 @@ async function generateOneLigature(currentExportItem, compositeContext) {
 	const componentNames = liga.gsub.map((unicode) => getUniqueGlyphName(unicode));
 	ligatureSubstitutions.push({ components: componentNames, ligature: thisLigature.name });
 
-	if (!compositeContext?.testing) await pause();
+	if (!compositeContext?.testing && isUIUpdateDue()) {
+		showToast('Exporting<br>' + liga.name, 999999);
+		await pause(0);
+	}
 	return thisLigature;
 }
 

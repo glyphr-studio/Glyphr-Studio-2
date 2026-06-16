@@ -433,6 +433,43 @@ export function pause(ms = 10) {
 }
 
 // --------------------------------------------------------------
+// Throttled UI updates
+// --------------------------------------------------------------
+
+let lastUIUpdateTime = 0;
+
+/**
+ * Resets the throttled-UI-update timer. Call once at the start of a long
+ * batch operation (e.g. font import/export) so the first item paints
+ * promptly instead of being gated by a stale timestamp.
+ */
+export function resetUIUpdateThrottle() {
+	lastUIUpdateTime = 0;
+}
+
+/**
+ * Time-throttle for UI updates inside tight processing loops. Returns true
+ * at most once per `intervalMs`; the rest of the time it returns false so the
+ * loop keeps running at full speed without touching the DOM or yielding.
+ *
+ * This is the "best of both worlds" for progress counters/toasts: the heavy
+ * work runs as fast as the code can go (not gated by a fixed pause per item),
+ * while the on-screen counter still updates at a smooth ~60fps and appears to
+ * whiz by — because each painted frame jumps across however many items were
+ * processed in the interim.
+ * @param {Number} intervalMs - minimum wall-clock ms between updates
+ * @returns {Boolean} - true when a UI update should be performed now
+ */
+export function isUIUpdateDue(intervalMs = 16) {
+	const now = typeof performance !== 'undefined' ? performance.now() : Date.now();
+	if (now - lastUIUpdateTime >= intervalMs) {
+		lastUIUpdateTime = now;
+		return true;
+	}
+	return false;
+}
+
+// --------------------------------------------------------------
 // Translation
 // --------------------------------------------------------------
 

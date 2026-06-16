@@ -5,17 +5,26 @@ import { describe, expect, it } from 'vitest';
 import { ioFont_importFont } from '../font_import.js';
 
 function bbox(contours) {
-	let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-	for (const c of contours) for (const p of c) {
-		xMin = Math.min(xMin, p.x); xMax = Math.max(xMax, p.x);
-		yMin = Math.min(yMin, p.y); yMax = Math.max(yMax, p.y);
-	}
+	let xMin = Infinity,
+		xMax = -Infinity,
+		yMin = Infinity,
+		yMax = -Infinity;
+	for (const c of contours)
+		for (const p of c) {
+			xMin = Math.min(xMin, p.x);
+			xMax = Math.max(xMax, p.x);
+			yMin = Math.min(yMin, p.y);
+			yMax = Math.max(yMax, p.y);
+		}
 	return { xMin, xMax, yMin, yMax, w: xMax - xMin, h: yMax - yMin };
 }
 
 describe('Inter composite glyph import (correctness)', () => {
 	it('imports i/j with the CORRECT outlines (by-name decomposition)', async () => {
-		const filePath = path.resolve(__dirname, '../../../../test/sample fonts/Inter_18pt-Regular.ttf');
+		const filePath = path.resolve(
+			__dirname,
+			'../../../../test/sample fonts/Inter_18pt-Regular.ttf'
+		);
 		const fontBuffer = fs.readFileSync(filePath);
 		const arrayBuffer = new Uint8Array(fontBuffer).buffer;
 		const loadResult = FontFlux.open(arrayBuffer);
@@ -38,13 +47,17 @@ describe('Inter composite glyph import (correctness)', () => {
 	}, 30000);
 
 	it('all imported ligatures (if any) have outlines', async () => {
-		const filePath = path.resolve(__dirname, '../../../../test/sample fonts/Inter_18pt-Regular.ttf');
+		const filePath = path.resolve(
+			__dirname,
+			'../../../../test/sample fonts/Inter_18pt-Regular.ttf'
+		);
 		const fontBuffer = fs.readFileSync(filePath);
 		const arrayBuffer = new Uint8Array(fontBuffer).buffer;
 		const loadResult = FontFlux.open(arrayBuffer);
 		const result = await ioFont_importFont(loadResult, true);
 
-		let emptyLig = 0, totalLig = 0;
+		let emptyLig = 0,
+			totalLig = 0;
 		for (const key of Object.keys(result.ligatures)) {
 			totalLig++;
 			if ((result.ligatures[key].shapes?.length ?? 0) === 0) emptyLig++;
