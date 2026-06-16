@@ -1,9 +1,6 @@
-// @ts-ignore
 import { combine as bezierCombine } from 'bezier-boolean';
-
-import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outlines/svg_outline_import.js';
 import { SVGtoBezier } from 'svg-to-bezier';
-
+import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outlines/svg_outline_import.js';
 
 /**
  * Combines an array of paths using bezier-boolean
@@ -18,7 +15,7 @@ export function combinePaths(gsPaths = [], operation = 'unite') {
 	}
 
 	// Convert Glyphr Studio paths to bezier-boolean BezierLoops
-	const bezierLoops = gsPaths.map(gsPath => convertToBezierLoop(gsPath)).filter(Boolean);
+	const bezierLoops = gsPaths.map((gsPath) => convertToBezierLoop(gsPath)).filter(Boolean);
 
 	if (bezierLoops.length === 0) return 'No valid paths to combine.';
 
@@ -34,7 +31,7 @@ export function combinePaths(gsPaths = [], operation = 'unite') {
 
 	// Convert result BezierLoops back to Glyphr Studio paths
 	let newGSPaths = [];
-	resultLoops.forEach(loop => {
+	resultLoops.forEach((loop) => {
 		const svgPath = bezierLoopToSVGPath(loop);
 		const gsFromSVG = ioSVG_convertSVGTagsToGlyph(`<svg><path d="${svgPath}"></path></svg>`, false);
 		if (gsFromSVG.shapes && gsFromSVG.shapes.length) {
@@ -43,10 +40,6 @@ export function combinePaths(gsPaths = [], operation = 'unite') {
 	});
 	return newGSPaths;
 }
-
-
-
-
 
 // --------------------------------------------------------------
 // Conversion Functions for bezier-boolean

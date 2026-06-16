@@ -3,7 +3,7 @@ import { makeElement } from '../common/dom.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
-import { ioFont_exportOTF, ioFont_exportTTF } from '../formats_io/otf/font_export.js';
+import { ioFont_exportOTF } from '../formats_io/otf/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import { getAdjacentItem } from '../panels/card_glyph.js';
 import {

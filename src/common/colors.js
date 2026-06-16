@@ -3,7 +3,6 @@ import { round } from './functions.js';
 // --------------------------------------------------------------
 // Re-usable Colors
 // --------------------------------------------------------------
-/* eslint-disable key-spacing */
 
 export const accentColors = {
 	gray: {
