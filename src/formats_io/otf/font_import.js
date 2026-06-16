@@ -1,8 +1,8 @@
 import { FontFlux } from 'font-flux-js';
 import {
-    getGlyphrStudioApp,
-    getProjectEditorImportTarget,
-    setCurrentProjectEditor,
+	getGlyphrStudioApp,
+	getProjectEditorImportTarget,
+	setCurrentProjectEditor,
 } from '../../app/main.js';
 import { updateProgressIndicator } from '../../controls/progress-indicator/progress_indicator.js';
 import { sortCharacterRanges } from '../../pages/settings_project.js';
@@ -10,7 +10,7 @@ import { Glyph } from '../../project_data/glyph.js';
 import { ProjectEditor } from '../../project_editor/project_editor.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outlines/svg_outline_import.js';
 import { importGlyphs } from './tables/glyphs.js';
-import { importGposKernPairs } from './tables/gpos.js';
+import { extractGposKernGroups, importGposKernGroups } from './tables/gpos.js';
 import { importLigatures } from './tables/gsub.js';
 import { importTable_head } from './tables/head.js';
 import { importTable_name } from './tables/name.js';
@@ -33,7 +33,8 @@ function extractLigaturesFromGSUB(importedFont) {
 
 	// Find ligature lookups (type 4)
 	for (const lookup of lookups) {
-		if (lookup.lookupType === 4) { // Ligature substitution
+		if (lookup.lookupType === 4) {
+			// Ligature substitution
 			for (const subtable of lookup.subtables) {
 				// Process each ligature set
 				for (const ligatureSet of subtable.ligatureSets) {
@@ -41,7 +42,7 @@ function extractLigaturesFromGSUB(importedFont) {
 						if (ligature.componentGlyphIDs && ligature.ligatureGlyph !== undefined) {
 							ligatures.push({
 								by: ligature.ligatureGlyph,
-								sub: ligature.componentGlyphIDs
+								sub: ligature.componentGlyphIDs,
 							});
 						}
 					}
@@ -81,24 +82,22 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	const fontLigatures = extractLigaturesFromGSUB(importedFont) || [];
 	// log(`\nfontLigatures:`);
 	// log(fontLigatures);
-	const gposKernTables = importedFont.kerning || [];
-	// log(`\n⮟kernTables⮟`);
-	// log(gposKernTables);
+
+	// Import kern data as compact Kern Groups built straight from the kern data
+	// FontFlux has already parsed. FontFlux 2.6.0 keeps class-based (PairPos
+	// format 2) kerning as native class entries on `font.data.kerningClasses`
+	// and individual pairs on `font.kerning`, so a single class-vs-class kern
+	// maps to one Kern Group instead of exploding into hundreds of thousands of
+	// individual pairs (e.g. for fonts like Inter).
+	const gposKernGroups = extractGposKernGroups(importedFont);
+	// log(`\n⮟kernGroups⮟`);
+	// log(gposKernGroups);
 
 	// --------------------------------------------------------------
 	// Count items and set up progress indicator
 	// --------------------------------------------------------------
 
-	let kernPairCount = 0;
-	const loadedGposKernTables = [];
-	// For FontFlux, kerning is already a simple array
-	// gposKernTables.forEach((table) => {
-	// 	const tableData = loadOneKernTable(table);
-	// 	loadedGposKernTables.push(tableData.subtables);
-	// 	kernPairCount += tableData.kernPairCount;
-	// });
-	kernPairCount = gposKernTables.length;
-	importItemTotal = fontGlyphs.length + fontLigatures.length + kernPairCount;
+	importItemTotal = fontGlyphs.length + fontLigatures.length + gposKernGroups.length;
 
 	// --------------------------------------------------------------
 	// Import data
@@ -111,7 +110,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	project.ligatures = await importLigatures(importedFont, fontLigatures);
 
 	// Kern data
-	project.kerning = await importGposKernPairs(importedFont, gposKernTables);
+	project.kerning = await importGposKernGroups(importedFont, gposKernGroups);
 
 	// Metadata
 	importTable_head(importedFont, project);

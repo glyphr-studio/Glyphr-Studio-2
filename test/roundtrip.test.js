@@ -69,11 +69,62 @@ function onCurvePointSet(contours, { excludeDegenerate = false } = {}) {
  * are intentionally ignored because the source font may store numeric glyph
  * names while Glyphr Studio re-exports proper Unicode glyph names; only the
  * pair values matter for fidelity.
+ *
+ * FontFlux 2.6.0 stores kerning in two places: flat individual pairs on
+ * `font.kerning` (GPOS PairPos format 1 / legacy `kern`) and class-based
+ * kerning on `font.data.kerningClasses` (GPOS PairPos format 2). A single
+ * class pair `{ left: '@L', right: '@R', value }` expands to
+ * `members(L) x members(R)` individual pairs, so both sources are expanded to
+ * a flat list of values here. This keeps the comparison partition-independent:
+ * whether a given pair is represented as a flat pair or inside a class subtable
+ * is an internal encoding detail that may legitimately change across a round
+ * trip.
+ *
  * @param {Object} font - A FontFlux font
- * @returns {string[]} - Sorted list of kerning values
+ * @returns {string[]} - Sorted list of expanded kerning values
  */
 function kerningValueMultiset(font) {
-	return font.kerning.map((pair) => String(pair.value)).sort();
+	return expandKerningValues(font).sort();
+}
+
+/**
+ * Resolves a kern class pair reference (`'@className'`) to its member glyph
+ * names, or returns the single glyph name when the reference is not a class.
+ * @param {string} ref - Pair side reference (e.g. '@kern_L0' or a glyph name)
+ * @param {Object} classMap - Map of className -> [member glyph names]
+ * @returns {string[]} - Member glyph names
+ */
+function resolveKernClassMembers(ref, classMap) {
+	if (typeof ref === 'string' && ref.startsWith('@')) {
+		return classMap[ref.slice(1)] || [];
+	}
+	return [ref];
+}
+
+/**
+ * Expands every kerning pair a FontFlux font represents - both flat
+ * `font.kerning` pairs and class-based `font.data.kerningClasses` pairs - into
+ * a flat array of stringified values (one entry per resolved individual pair).
+ * @param {Object} font - A FontFlux font
+ * @returns {string[]} - Unsorted list of expanded kerning values
+ */
+function expandKerningValues(font) {
+	const values = [];
+	(font.kerning || []).forEach((pair) => values.push(String(pair.value)));
+	const classEntries = font.data && font.data.kerningClasses;
+	if (Array.isArray(classEntries)) {
+		classEntries.forEach((entry) => {
+			const leftClasses = entry.leftClasses || {};
+			const rightClasses = entry.rightClasses || {};
+			(entry.pairs || []).forEach((pair) => {
+				const leftMembers = resolveKernClassMembers(pair.left, leftClasses);
+				const rightMembers = resolveKernClassMembers(pair.right, rightClasses);
+				const count = leftMembers.length * rightMembers.length;
+				for (let i = 0; i < count; i++) values.push(String(pair.value));
+			});
+		});
+	}
+	return values;
 }
 
 /**
@@ -164,9 +215,12 @@ describe('Font Round Trip Tests', () => {
 		expect(geometryLoss, 'On-curve geometry must be preserved').toEqual([]);
 
 		// --- Kerning ---------------------------------------------------------
-		// Counts and the multiset of values must match (names may be remapped
-		// from numeric to Unicode glyph names, so values are what matter).
-		expect(roundTripped.kerning.length).toEqual(original.kerning.length);
+		// The expanded multiset of kerning values must match (names may be
+		// remapped from numeric to Unicode glyph names, so values are what
+		// matter). FontFlux may encode a given pair as either a flat pair or a
+		// class subtable, and that partition can legitimately change across a
+		// round trip, so compare the fully expanded value multisets rather than
+		// the raw `font.kerning` length.
 		expect(kerningValueMultiset(roundTripped)).toEqual(kerningValueMultiset(original));
 	});
 
