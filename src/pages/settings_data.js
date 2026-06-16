@@ -22,6 +22,11 @@ export default {
 			description: `A unique ID used to identify this project.`,
 			type: `Read only`,
 		},
+		exportComponentsAsComposites: {
+			label: `Export components as composite glyphs`,
+			description: `When checked, characters that are built entirely from Components (using pure-position moves, with no resizing, rotating, or flipping) are exported as TrueType composite glyphs. This preserves the component structure so the font can round-trip back into Glyphr Studio with its components intact. When unchecked, these characters are flattened into plain outlines on export.<br><br>Note: This only applies to TrueType-flavored formats (.ttf, .woff, .woff2). OpenType/CFF (.otf) does not support composite glyphs, so components are always flattened for that format. Characters using resized, rotated, or flipped components are always flattened as well.`,
+			type: `Boolean`,
+		},
 	},
 	font: {
 		family: {

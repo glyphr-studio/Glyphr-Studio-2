@@ -45,7 +45,7 @@ function importOneLigature(otfLigature, importedFont, finalLigatures) {
 
 	if (otfLigature?.glyph) {
 		// make the Glyphr Studio Glyph
-		const importedLigature = makeGlyphrStudioGlyphObject(otfLigature.glyph);
+		const importedLigature = makeGlyphrStudioGlyphObject(otfLigature.glyph, importedFont);
 		if (!importedLigature) {
 			console.warn(`Something went wrong with importing this glyph.`);
 

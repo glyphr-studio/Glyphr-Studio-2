@@ -13,9 +13,10 @@ import {
  * Imports glyph data from FontFlux
  * @param {Array} fontGlyphs - FontFlux glyph array
  * @param {GlyphrStudioProject} project - current project
+ * @param {Object} importedFont - FontFlux font object (used to decompose composites)
  * @returns {Promise<Object>} - imported glyphs
  */
-export async function importGlyphs(fontGlyphs, project) {
+export async function importGlyphs(fontGlyphs, project, importedFont) {
 	const finalGlyphs = {};
 	// Tracks, per glyph slot, how the current occupant was assigned so a more
 	// authoritative mapping can replace a weaker one (see importOneGlyph).
@@ -23,7 +24,7 @@ export async function importGlyphs(fontGlyphs, project) {
 
 	for (const glyph of fontGlyphs) {
 		await updateFontImportProgressIndicator('character');
-		importOneGlyph(glyph, project, finalGlyphs, glyphSlotMeta);
+		importOneGlyph(glyph, project, finalGlyphs, glyphSlotMeta, importedFont);
 	}
 
 	return finalGlyphs;
@@ -36,9 +37,10 @@ export async function importGlyphs(fontGlyphs, project) {
  * @param {GlyphrStudioProject} project - current project
  * @param {Object} finalGlyphs - imported glyphs
  * @param {Object} glyphSlotMeta - per-slot assignment metadata
+ * @param {Object =} importedFont - FontFlux font object (used to decompose composites)
  * @returns nothing
  */
-function importOneGlyph(glyph, project, finalGlyphs, glyphSlotMeta = {}) {
+function importOneGlyph(glyph, project, finalGlyphs, glyphSlotMeta = {}, importedFont = false) {
 	// log('importOneGlyph', 'start');
 
 	// Get the appropriate unicode decimal for this glyph
@@ -61,7 +63,7 @@ function importOneGlyph(glyph, project, finalGlyphs, glyphSlotMeta = {}) {
 	}
 
 	// log(`primaryUnicodeHex: ${primaryUnicodeHex}`);
-	const importedGlyph = makeGlyphrStudioGlyphObject(glyph);
+	const importedGlyph = makeGlyphrStudioGlyphObject(glyph, importedFont);
 
 	if (!importedGlyph) {
 		console.warn(`Something went wrong with importing this glyph.`);

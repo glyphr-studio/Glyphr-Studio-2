@@ -60,13 +60,44 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	const project = getCurrentProject();
 	ligatureSubstitutions = [];
 	codePointGlyphIndexTable = {};
+	currentIndex = 0;
+
+	// When enabled, glyphs built entirely from pure-translation component
+	// instances are exported as TrueType composite glyphs (preserving the
+	// component structure for round-trip fidelity) instead of being flattened
+	// to outlines. Composites can only be stored in TrueType-flavored formats
+	// (.ttf/.woff/.woff2); OpenType/CFF (.otf) has no composite mechanism, so
+	// the setting is ignored there and components are always flattened.
+	const isTrueTypeFlavor = suffix === 'ttf' || suffix === 'woff' || suffix === 'woff2';
+	const exportComposites =
+		isTrueTypeFlavor && !!project?.settings?.project?.exportComponentsAsComposites;
+
+	// Names of every character that will be exported, so a composite's component
+	// reference can tell whether its linked character is already present in the
+	// font (otherwise it gets added as an unencoded building-block glyph).
+	const plannedCharacterNames = new Set();
+	for (let g = 0; g < exportLists.glyphs.length; g++) {
+		plannedCharacterNames.add(getUniqueGlyphName(parseInt(exportLists.glyphs[g].xc)));
+	}
+
+	// Flattened building-block glyphs (components / off-list characters) that
+	// composite glyphs reference and therefore must also exist in the font.
+	const buildingBlocks = new Map();
+	const compositeContext = {
+		exportComposites,
+		project,
+		buildingBlocks,
+		plannedCharacterNames,
+		testing,
+	};
+
 	// Add .notdef
-	addNotdefToExport(options);
+	addNotdefToExport(options, compositeContext);
 
 	// Add Characters
 	let exportedItem;
 	for (let g = 0; g < exportLists.glyphs.length; g++) {
-		exportedItem = await generateOneGlyph(exportLists.glyphs[g]);
+		exportedItem = await generateOneGlyph(exportLists.glyphs[g], compositeContext);
 		options.glyphs.push(exportedItem);
 	}
 	// log(`\n⮟codePointGlyphIndexTable⮟`);
@@ -77,10 +108,17 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	// log(`exportLigatures: ${exportLigatures}`);
 	if (exportLigatures) {
 		for (let l = 0; l < exportLists.ligatures.length; l++) {
-			exportedItem = await generateOneLigature(exportLists.ligatures[l]);
+			exportedItem = await generateOneLigature(exportLists.ligatures[l], compositeContext);
 			options.glyphs.push(exportedItem);
 		}
 	}
+
+	// Add building-block glyphs referenced by any composite glyphs. These are
+	// always flattened (and mostly unencoded) and must exist before composite
+	// component indices are resolved below.
+	buildingBlocks.forEach((glyphObject) => {
+		options.glyphs.push(glyphObject);
+	});
 	if (!testing) showToast('Finalizing...');
 
 	// log(`\n⮟options.glyphs⮟`);
@@ -123,6 +161,28 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 		font.addGlyph(glyph);
 	});
 
+	// Resolve composite component glyph indices by name, now that every glyph
+	// (including injected `.notdef`/`space` and building blocks) exists in the
+	// final glyph array. Component references are stashed as `_linkName` during
+	// generation because final indices aren't knowable until this point.
+	if (exportComposites) {
+		const nameToIndex = {};
+		font.glyphs.forEach((glyph, index) => {
+			if (glyph.name) nameToIndex[glyph.name] = index;
+		});
+		font.glyphs.forEach((glyph) => {
+			if (Array.isArray(glyph.components)) {
+				glyph.components.forEach((component) => {
+					if (component._linkName != null) {
+						const resolvedIndex = nameToIndex[component._linkName];
+						if (resolvedIndex !== undefined) component.glyphIndex = resolvedIndex;
+						delete component._linkName;
+					}
+				});
+			}
+		});
+	}
+
 	// log(`\n⮟font⮟`);
 	// log(font);
 
@@ -155,9 +215,13 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	// log(font.toTables());
 
 	if (testing) {
-		// Return buffer for testing
+		// Return buffer for testing. Honor the requested flavor so callers can
+		// validate format-specific behavior (e.g. TrueType composite glyphs);
+		// `otf` keeps using the generic `sfnt` container for backward
+		// compatibility with existing round-trip tests.
 		try {
-			const arrayBuffer = font.export({ format: 'sfnt' });
+			const format = suffix === 'otf' ? 'sfnt' : suffix;
+			const arrayBuffer = font.export({ format });
 			return arrayBuffer;
 		} catch (e) {
 			console.error(e);
@@ -366,7 +430,7 @@ function populateExportList() {
  * @param {Object} options - The options object that is being
  * built for the .otf export
  */
-function addNotdefToExport(options) {
+function addNotdefToExport(options, compositeContext) {
 	// log(`addNotdefToExport`, 'start');
 	const project = getCurrentProject();
 	let notdef = project.getItem('glyph-0x0');
@@ -408,9 +472,6 @@ function addNotdefToExport(options) {
 	// log(`\n⮟notdef⮟`);
 	// log(notdef);
 
-	// Add it to the export
-	const contours = glyphToContours(notdef);
-
 	// Use the standard '.notdef' name so FontFlux recognizes this as the
 	// special glyph-zero. If it is named anything else (e.g. '.null'),
 	// FontFlux injects its own default '.notdef' (advanceWidth 500) at
@@ -420,7 +481,7 @@ function addNotdefToExport(options) {
 		name: '.notdef',
 		unicode: 0,
 		advanceWidth: notdef.advanceWidth,
-		contours: contours,
+		...buildGlyphOutline(notdef, compositeContext),
 	};
 
 	options.glyphs.push(notdefGlyph);
@@ -433,9 +494,10 @@ function addNotdefToExport(options) {
  * Makes one item from the export list, and updates the
  * exterior export process, as well as the UI progress bar.
  * @param {Object} currentExportItem - Information about a single item
+ * @param {Object} compositeContext - Shared composite-export bookkeeping
  * @returns {Promise<Object>} - FontFlux Glyph object
  */
-async function generateOneGlyph(currentExportItem) {
+async function generateOneGlyph(currentExportItem, compositeContext) {
 	// log('generateOneGlyph', 'start');
 	// export this glyph
 	const glyph = currentExportItem.xg;
@@ -455,20 +517,20 @@ async function generateOneGlyph(currentExportItem) {
 	// canonical AGL `uniXXXX` / `uXXXXXX` convention to guarantee uniqueness.
 	const thisName = getUniqueGlyphName(thisUnicode);
 
-	// Convert glyph outlines directly to FontFlux contours
-	const contours = glyphToContours(glyph);
-
 	const thisGlyph = {
 		name: thisName,
 		unicode: thisUnicode,
 		advanceWidth: glyph.advanceWidth,
-		contours: contours,
+		...buildGlyphOutline(glyph, compositeContext),
 	};
 
 	// Add this finished glyph
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
 
-	await pause();
+	// Yield to the event loop so the UI/progress bar stays responsive during a
+	// real export. Skipped under test, where it is pure dead time (a 10ms timer
+	// per glyph adds up to tens of seconds for large fonts).
+	if (!compositeContext?.testing) await pause();
 	return thisGlyph;
 }
 
@@ -476,9 +538,10 @@ async function generateOneGlyph(currentExportItem) {
  * Makes one item from the export list, and updates the
  * exterior export process, as well as the UI progress bar.
  * @param {Object} currentExportItem - Information about a single item
+ * @param {Object} compositeContext - Shared composite-export bookkeeping
  * @returns {Promise<Object>} - FontFlux Glyph object
  */
-async function generateOneLigature(currentExportItem) {
+async function generateOneLigature(currentExportItem, compositeContext) {
 	// log(`generateOneLigature`, 'start');
 
 	// export this glyph
@@ -486,13 +549,10 @@ async function generateOneLigature(currentExportItem) {
 
 	showToast('Exporting<br>' + liga.name, 999999);
 
-	// Convert ligature outlines directly to FontFlux contours
-	const contours = glyphToContours(liga);
-
 	const thisLigature = {
 		name: generateLigatureExportName(liga),
 		advanceWidth: liga.advanceWidth,
-		contours: contours,
+		...buildGlyphOutline(liga, compositeContext),
 	};
 
 	// Add substitution info for FontFlux. Component references must match the
@@ -500,7 +560,7 @@ async function generateOneLigature(currentExportItem) {
 	const componentNames = liga.gsub.map((unicode) => getUniqueGlyphName(unicode));
 	ligatureSubstitutions.push({ components: componentNames, ligature: thisLigature.name });
 
-	await pause();
+	if (!compositeContext?.testing) await pause();
 	return thisLigature;
 }
 
@@ -544,12 +604,166 @@ function getNextGlyphIndexNumber() {
 }
 
 /**
+ * Builds the outline payload for an export glyph object.
+ *
+ * When composite export is active (a TrueType-flavored export with the project
+ * setting enabled) and the item qualifies - every shape is a pure-translation
+ * component instance whose link resolves to an exportable target - this returns
+ * a `{ components }` payload that FontFlux writes as a TrueType composite glyph.
+ *
+ * In a composite-enabled export, non-qualifying glyphs use a `{ path }` (SVG)
+ * payload rather than command-style `{ contours }`: FontFlux's glyf builder
+ * only links composite components to referenced glyphs correctly when those
+ * glyphs are supplied as point/path outlines. TrueType is quadratic regardless,
+ * so this is loss-free here.
+ *
+ * Otherwise (OpenType/CFF export, or the setting disabled) it falls back to the
+ * command-style `{ contours }` payload, which preserves cubic outlines exactly.
+ * @param {Glyph | Object} item - Item to convert
+ * @param {Object} compositeContext - Shared composite-export bookkeeping
+ * @returns {Object} - `{ components }`, `{ path }`, or `{ contours }`
+ */
+function buildGlyphOutline(item, compositeContext) {
+	if (compositeContext?.exportComposites) {
+		const components = getCompositeComponents(item, compositeContext);
+		if (components) return { components };
+		return { path: makeResolvedSvgPathData(item) };
+	}
+	return { contours: glyphToContours(item) };
+}
+
+/**
+ * Produces a clean SVG path string for an item with all component links
+ * resolved to outlines. `Glyph.makeSVGPathData()` always emits a leading
+ * degenerate `M0,0` move; FontFlux's glyf builder would otherwise turn that
+ * into an empty contour, which breaks composite-glyph component linking. This
+ * strips any such degenerate `M0,0` prefix while preserving a real first point
+ * that happens to sit at the origin.
+ * @param {Glyph | Object} item - Item to resolve and serialize
+ * @returns {String} - SVG path `d` data with no degenerate leading move
+ */
+function makeResolvedSvgPathData(item) {
+	let pathData = makeGlyphWithResolvedLinks(item).svgPathData;
+	while (pathData.startsWith('M0,0M')) pathData = pathData.slice(4);
+	return pathData;
+}
+
+/**
+ * Determines whether an item can be exported as a TrueType composite glyph.
+ * Only pure-translation component instances qualify (no resize, rotation, flip,
+ * or winding reversal) - these map cleanly to TrueType component offsets and
+ * guarantee visually identical output. Anything else returns false so the
+ * caller flattens the outlines instead.
+ * @param {Glyph | Object} item - Item to evaluate
+ * @param {Object} compositeContext - Shared composite-export bookkeeping
+ * @returns {Array<Object> | false} - FontFlux component descriptors, or false
+ */
+function getCompositeComponents(item, compositeContext) {
+	const shapes = item?.shapes;
+	if (!shapes || shapes.length === 0) return false;
+
+	const components = [];
+	for (const shape of shapes) {
+		if (shape.objType !== 'ComponentInstance') return false;
+		// Pure translation only - any other transform falls back to flattening.
+		if (
+			shape.resizeWidth ||
+			shape.resizeHeight ||
+			shape.rotation ||
+			shape.isFlippedEW ||
+			shape.isFlippedNS ||
+			shape.reverseWinding
+		) {
+			return false;
+		}
+
+		const linkName = resolveComponentTargetName(shape.link, compositeContext);
+		if (!linkName) return false;
+
+		components.push({
+			glyphIndex: -1,
+			_linkName: linkName,
+			flags: { argsAreXYValues: true },
+			argument1: round(shape.translateX || 0),
+			argument2: round(shape.translateY || 0),
+		});
+	}
+
+	return components;
+}
+
+/**
+ * Resolves the exported glyph name a composite component should reference, and
+ * ensures that target exists in the font (adding it as a flattened
+ * building-block glyph when it isn't already part of the export).
+ * @param {String} linkId - Component instance link id (glyph-/comp-/liga-)
+ * @param {Object} compositeContext - Shared composite-export bookkeeping
+ * @returns {String | false} - Target glyph name, or false if unresolvable
+ */
+function resolveComponentTargetName(linkId, compositeContext) {
+	if (!linkId) return false;
+	const { project, buildingBlocks, plannedCharacterNames } = compositeContext;
+	const target = project.getItem(linkId);
+	if (!target) return false;
+
+	if (linkId.startsWith('glyph-')) {
+		const codePoint = parseInt(linkId.substring(6));
+		if (isNaN(codePoint)) return false;
+		const name = getUniqueGlyphName(codePoint);
+		// Already part of the export (encoded) - just reference it. Otherwise add
+		// an unencoded, flattened copy so the composite has something to point at.
+		if (!plannedCharacterNames.has(name)) {
+			ensureBuildingBlock(name, target, buildingBlocks);
+		}
+		return name;
+	}
+
+	if (linkId.startsWith('comp-')) {
+		const name = ('comp_' + linkId.substring(5)).replace(/[^A-Za-z0-9._]/g, '_');
+		ensureBuildingBlock(name, target, buildingBlocks);
+		return name;
+	}
+
+	if (linkId.startsWith('liga-')) {
+		const name = generateLigatureExportName(target);
+		ensureBuildingBlock(name, target, buildingBlocks);
+		return name;
+	}
+
+	return false;
+}
+
+/**
+ * Registers a flattened, unencoded building-block glyph that one or more
+ * composite glyphs reference. Building blocks are always flattened (resolving
+ * any nested links recursively) and supplied as SVG `path` outlines so the
+ * FontFlux glyf builder links composite components to them correctly.
+ * @param {String} name - Unique glyph name
+ * @param {Glyph | Object} item - Source item to flatten
+ * @param {Map} buildingBlocks - name -> FontFlux glyph object
+ */
+function ensureBuildingBlock(name, item, buildingBlocks) {
+	if (buildingBlocks.has(name)) return;
+	buildingBlocks.set(name, {
+		name: name,
+		advanceWidth: item.advanceWidth,
+		path: makeResolvedSvgPathData(item),
+	});
+}
+
+/**
  * Converts a Glyphr Studio Glyph directly to FontFlux contours format.
  * @param {Glyph | Object} item - Item to convert
  * @returns {Array<Array>} - Array of contours, each contour is an array of points
  */
 function glyphToContours(item) {
-	const flatItem = makeGlyphWithResolvedLinks(item);
+	// Resolving component links rebuilds the whole glyph, which is expensive.
+	// Only pay that cost for glyphs that actually contain component instances;
+	// path-only glyphs (the vast majority in most fonts) can be read directly.
+	const hasComponents =
+		Array.isArray(item.shapes) &&
+		item.shapes.some((shape) => shape.objType === 'ComponentInstance');
+	const flatItem = hasComponents ? makeGlyphWithResolvedLinks(item) : item;
 	const contours = [];
 
 	flatItem.shapes.forEach((shape) => {

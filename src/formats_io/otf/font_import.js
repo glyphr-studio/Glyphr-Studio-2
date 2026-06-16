@@ -104,7 +104,7 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	// --------------------------------------------------------------
 
 	// Characters
-	project.glyphs = await importGlyphs(fontGlyphs, project);
+	project.glyphs = await importGlyphs(fontGlyphs, project, importedFont);
 
 	// Ligatures
 	project.ligatures = await importLigatures(importedFont, fontLigatures);
@@ -140,18 +140,22 @@ export async function ioFont_importFont(importedFont, testing = false) {
  * Converts one FontFlux Glyph into a Glyphr Studio Glyph.
  * Used for characters and ligatures.
  * @param {Object} glyph - FontFlux Glyph object
+ * @param {Object =} importedFont - FontFlux font object, used to decompose
+ * 		composite (component-based) glyphs into outlines
  * @returns {Glyph}
  */
-export function makeGlyphrStudioGlyphObject(glyph) {
+export function makeGlyphrStudioGlyphObject(glyph, importedFont = false) {
 	// log(`makeGlyphrStudioGlyphObject`, 'start');
 	// log(glyph);
 	const advance = glyph.advanceWidth;
 	// log(`advance: ${advance}`);
 
+	const contours = resolveGlyphContours(glyph, importedFont);
+
 	// Import Path Data
 	let data;
-	if (glyph.contours) {
-		data = FontFlux.contoursToSVG(glyph.contours);
+	if (contours) {
+		data = FontFlux.contoursToSVG(contours);
 	}
 	// log('Glyph has SVG data');
 	// log(data);
@@ -173,6 +177,40 @@ export function makeGlyphrStudioGlyphObject(glyph) {
 
 	// log(`makeGlyphrStudioGlyphObject`, 'end');
 	return importedGlyph;
+}
+
+/**
+ * Returns the renderable contours for a FontFlux glyph. Simple glyphs already
+ * carry their own `contours`. TrueType composite glyphs (e.g. `i`, `j`, and
+ * accented letters in fonts like Inter) instead arrive with a `components`
+ * array and no `contours`, so they would otherwise import as empty glyphs.
+ * This decomposes them via FontFlux's own composite flattening.
+ *
+ * The glyph's `name` is used as the lookup key on purpose: FontFlux resolves a
+ * numeric id as a Unicode code point (never an array index), so passing an
+ * index would silently return the wrong glyph, and unencoded building-block
+ * components have no code point to look up by at all.
+ * @param {Object} glyph - FontFlux glyph object
+ * @param {Object} importedFont - FontFlux font object (or false)
+ * @returns {Array | undefined} - contours array, or undefined if none
+ */
+function resolveGlyphContours(glyph, importedFont) {
+	if (glyph.contours) return glyph.contours;
+
+	const isComposite = glyph.components?.length;
+	if (!isComposite || typeof importedFont?.getGlyphContours !== 'function') return undefined;
+
+	const lookupKey = glyph.name ?? glyph.unicode;
+	if (lookupKey === undefined || lookupKey === null) return undefined;
+
+	try {
+		const contours = importedFont.getGlyphContours(lookupKey);
+		if (contours && contours.length) return contours;
+	} catch (error) {
+		console.warn(`Could not decompose composite glyph "${glyph.name}":`, error);
+	}
+
+	return undefined;
 }
 
 // --------------------------------------------------------------

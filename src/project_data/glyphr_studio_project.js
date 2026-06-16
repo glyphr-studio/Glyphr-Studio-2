@@ -35,6 +35,7 @@ export class GlyphrStudioProject {
 				latestVersion: false,
 				initialVersion: false,
 				id: false,
+				exportComponentsAsComposites: true,
 				characterRanges: [],
 			},
 			app: {
