@@ -150,7 +150,9 @@ function leftSideBearingMismatches(byUnicode, { tolerance = 1, hex } = {}) {
 		const minX = outlineMinX(glyph.contours);
 		if (minX === null) continue; // empty glyph (e.g. space): lsb is irrelevant
 		if (Math.abs(glyph.leftSideBearing - minX) > tolerance) {
-			mismatches.push(`${format(unicode)}: lsb ${glyph.leftSideBearing} vs outline xMin ${Math.round(minX)}`);
+			mismatches.push(
+				`${format(unicode)}: lsb ${glyph.leftSideBearing} vs outline xMin ${Math.round(minX)}`
+			);
 		}
 	}
 	return mismatches;
