@@ -492,6 +492,7 @@ function addNotdefToExport(options, compositeContext) {
 		name: '.notdef',
 		unicode: 0,
 		advanceWidth: notdef.advanceWidth,
+		leftSideBearing: round(notdef.leftSideBearing),
 		...buildGlyphOutline(notdef, compositeContext),
 	};
 
@@ -530,6 +531,11 @@ async function generateOneGlyph(currentExportItem, compositeContext) {
 		name: thisName,
 		unicode: thisUnicode,
 		advanceWidth: glyph.advanceWidth,
+		// Explicitly set the left side bearing to the outline's xMin. FontFlux
+		// defaults a missing lsb to 0, which makes the hmtx lsb disagree with the
+		// glyf xMin; Windows then shifts the glyph by (xMin - lsb), visibly
+		// reducing spacing for glyphs that overhang left (e.g. j, J).
+		leftSideBearing: round(glyph.leftSideBearing),
 		...buildGlyphOutline(glyph, compositeContext),
 	};
 
@@ -565,6 +571,7 @@ async function generateOneLigature(currentExportItem, compositeContext) {
 	const thisLigature = {
 		name: generateLigatureExportName(liga),
 		advanceWidth: liga.advanceWidth,
+		leftSideBearing: round(liga.leftSideBearing),
 		...buildGlyphOutline(liga, compositeContext),
 	};
 
@@ -741,6 +748,7 @@ function ensureBuildingBlock(name, item, buildingBlocks) {
 	buildingBlocks.set(name, {
 		name: name,
 		advanceWidth: item.advanceWidth,
+		leftSideBearing: round(item.leftSideBearing),
 		contours: glyphToContours(item),
 	});
 }

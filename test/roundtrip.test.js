@@ -65,6 +65,98 @@ function onCurvePointSet(contours, { excludeDegenerate = false } = {}) {
 }
 
 /**
+ * Returns the minimum x of a single cubic Bézier segment, accounting for the
+ * curve's interior extrema (a curve can bulge left of both of its anchor
+ * points, so simply taking the anchors would overstate the left edge).
+ * @param {number} x0 - Start anchor x
+ * @param {number} x1 - First control point x
+ * @param {number} x2 - Second control point x
+ * @param {number} x3 - End anchor x
+ * @returns {number} - Minimum x reached by the segment
+ */
+function cubicSegmentMinX(x0, x1, x2, x3) {
+	let min = Math.min(x0, x3);
+	// B'(t) = 0  ->  A t^2 + B t + C = 0
+	const A = x3 - 3 * x2 + 3 * x1 - x0;
+	const B = 2 * (x2 - 2 * x1 + x0);
+	const C = x1 - x0;
+	const roots = [];
+	if (Math.abs(A) < 1e-9) {
+		if (Math.abs(B) > 1e-9) roots.push(-C / B);
+	} else {
+		const disc = B * B - 4 * A * C;
+		if (disc >= 0) {
+			const s = Math.sqrt(disc);
+			roots.push((-B + s) / (2 * A), (-B - s) / (2 * A));
+		}
+	}
+	for (const t of roots) {
+		if (t > 0 && t < 1) {
+			const mt = 1 - t;
+			const x = mt * mt * mt * x0 + 3 * mt * mt * t * x1 + 3 * mt * t * t * x2 + t * t * t * x3;
+			min = Math.min(min, x);
+		}
+	}
+	return min;
+}
+
+/**
+ * Computes the true left edge (minimum rendered x) of a FontFlux glyph's
+ * outline. This is the value the `hmtx` left side bearing must equal for the
+ * glyph to sit in the correct horizontal position; a disagreement makes
+ * rasterizers (e.g. Windows GDI) shift the glyph by (xMin - lsb) without
+ * touching advance widths or on-curve geometry. Cubic (OTF) commands are
+ * evaluated with their interior extrema; line/move points are taken directly.
+ * @param {Array} contours - FontFlux contours (cubic command format)
+ * @returns {number|null} - Minimum rendered x, or null for an empty glyph
+ */
+function outlineMinX(contours) {
+	if (!contours) return null;
+	let min = Infinity;
+	contours.forEach((contour) => {
+		let prevX;
+		contour.forEach((command) => {
+			if (command.x === undefined) return;
+			if (command.type === 'C' && prevX !== undefined) {
+				min = Math.min(min, cubicSegmentMinX(prevX, command.x1, command.x2, command.x));
+			} else {
+				min = Math.min(min, command.x);
+			}
+			prevX = command.x;
+		});
+	});
+	return min === Infinity ? null : min;
+}
+
+/**
+ * Collects glyphs whose `hmtx` left side bearing disagrees with their outline's
+ * true left edge by more than a rounding tolerance. An empty list means every
+ * glyph is positioned consistently with its advance width and outline. This is
+ * the check that catches a left-side-bearing regression (e.g. lsb defaulting to
+ * 0 while the glyph overhangs to a negative xMin), which leaves advance widths
+ * and on-curve geometry untouched and therefore slips past every other check.
+ * @param {Map<number, Object>} byUnicode - code point -> FontFlux glyph
+ * @param {Object} [options]
+ * @param {number} [options.tolerance] - Allowed |lsb - xMin| (default 1, for
+ *   coordinate rounding)
+ * @param {(unicode: number) => string} [options.hex] - code point formatter
+ * @returns {string[]} - Human-readable mismatch descriptions
+ */
+function leftSideBearingMismatches(byUnicode, { tolerance = 1, hex } = {}) {
+	const format = hex || ((u) => `U+${u.toString(16).toUpperCase().padStart(4, '0')}`);
+	const mismatches = [];
+	for (const [unicode, glyph] of byUnicode) {
+		if (glyph.leftSideBearing === undefined || glyph.leftSideBearing === null) continue;
+		const minX = outlineMinX(glyph.contours);
+		if (minX === null) continue; // empty glyph (e.g. space): lsb is irrelevant
+		if (Math.abs(glyph.leftSideBearing - minX) > tolerance) {
+			mismatches.push(`${format(unicode)}: lsb ${glyph.leftSideBearing} vs outline xMin ${Math.round(minX)}`);
+		}
+	}
+	return mismatches;
+}
+
+/**
  * Builds a sorted multiset of kerning values from a FontFlux font. Glyph names
  * are intentionally ignored because the source font may store numeric glyph
  * names while Glyphr Studio re-exports proper Unicode glyph names; only the
@@ -213,6 +305,16 @@ describe('Font Round Trip Tests', () => {
 		}
 		expect(advanceMismatch, 'Advance widths must be preserved').toEqual([]);
 		expect(geometryLoss, 'On-curve geometry must be preserved').toEqual([]);
+
+		// --- Left side bearings ----------------------------------------------
+		// The hmtx left side bearing must agree with each glyph's actual left
+		// edge. A mismatch shifts the glyph horizontally in the rasterizer
+		// without changing advance widths or on-curve geometry, so it is
+		// invisible to the checks above.
+		expect(
+			leftSideBearingMismatches(roundTripByUnicode),
+			'Left side bearings must match outline xMin'
+		).toEqual([]);
 
 		// --- Kerning ---------------------------------------------------------
 		// The expanded multiset of kerning values must match (names may be
@@ -371,6 +473,17 @@ describe('Font Round Trip Tests - sample fonts', () => {
 			}
 			expect(advanceMismatch, 'Advance widths must be preserved').toEqual([]);
 			expect(geometryLoss, 'On-curve geometry must be preserved').toEqual([]);
+
+			// --- Left side bearings ------------------------------------------
+			// The hmtx left side bearing must track each glyph's true left edge.
+			// When it does not, the rasterizer shifts the glyph horizontally
+			// (Windows shifts by xMin - lsb) while leaving advance widths and
+			// on-curve geometry untouched, so this is the only check that sees
+			// such a regression.
+			expect(
+				leftSideBearingMismatches(roundTripByUnicode, { hex }),
+				'Left side bearings must match outline xMin'
+			).toEqual([]);
 
 			// --- Kerning -----------------------------------------------------
 			if (cfg.kerningExact) {
