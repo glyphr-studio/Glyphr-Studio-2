@@ -48,6 +48,31 @@ export async function ioFont_exportWOFF2() {
 }
 
 /**
+ * Valid font export formats, used to validate the project's saved
+ * preferred export format before falling back to OTF.
+ */
+const validExportFormats = ['otf', 'ttf', 'woff', 'woff2'];
+
+/**
+ * Reads the project's preferred export format (the format that was originally
+ * imported, or 'otf' for new projects). Always returns a known-good value.
+ * @returns {String} - one of 'otf', 'ttf', 'woff', 'woff2'
+ */
+export function getPreferredExportFormat() {
+	const format = getCurrentProject()?.settings?.project?.exportFormat;
+	return validExportFormats.includes(format) ? format : 'otf';
+}
+
+/**
+ * Exports the current project using its preferred format (the format that was
+ * originally imported, defaulting to OTF for new projects). Backs the Ctrl+E
+ * keyboard shortcut and the primary File menu export entry.
+ */
+export async function ioFont_exportDefaultFormat() {
+	await ioFont_exportFont(getPreferredExportFormat(), false);
+}
+
+/**
  * Exports the current project
  * @param {String} suffix - file extension suffix (e.g. 'otf' or 'ttf')
  * @param {Boolean} testing - if true, returns ArrayBuffer instead of saving to file
@@ -112,6 +137,11 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 			exportedItem = await generateOneLigature(exportLists.ligatures[l], compositeContext);
 			options.glyphs.push(exportedItem);
 		}
+	}
+
+	if (!testing) {
+		showToast('Exporting...');
+		await pause(0);
 	}
 
 	// Add building-block glyphs referenced by any composite glyphs. These are
@@ -515,6 +545,7 @@ async function generateOneGlyph(currentExportItem, compositeContext) {
 		showToast('Exporting<br>' + glyph.name, 999999);
 		await pause(0);
 	}
+
 	return thisGlyph;
 }
 
@@ -546,6 +577,7 @@ async function generateOneLigature(currentExportItem, compositeContext) {
 		showToast('Exporting<br>' + liga.name, 999999);
 		await pause(0);
 	}
+
 	return thisLigature;
 }
 

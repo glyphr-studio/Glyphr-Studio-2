@@ -62,9 +62,11 @@ let importItemTotal = 0;
  * creates a new Glyphr Studio Project from it.
  * @param {Object} importedFont - result from Font Flux JS import
  * @param {Boolean} testing - is this a vitest test
+ * @param {String|Boolean} importedFormat - the original file format that was
+ * 		imported ('otf', 'ttf', 'woff', 'woff2'), so exports can default to it
  * @returns nothing
  */
-export async function ioFont_importFont(importedFont, testing = false) {
+export async function ioFont_importFont(importedFont, testing = false, importedFormat = false) {
 	if (!testing) console.log(importedFont);
 	const editor = testing ? new ProjectEditor() : getProjectEditorImportTarget();
 	const project = editor.project;
@@ -119,6 +121,13 @@ export async function ioFont_importFont(importedFont, testing = false) {
 	importTable_name(importedFont, project);
 	importTable_os2(importedFont, project);
 	importTable_post(importedFont, project);
+
+	// Remember which font format was imported so the Ctrl+E shortcut and the
+	// File menu default to exporting that same format instead of always OTF.
+	const validFormats = ['otf', 'ttf', 'woff', 'woff2'];
+	if (validFormats.includes(importedFormat)) {
+		project.settings.project.exportFormat = importedFormat;
+	}
 
 	// --------------------------------------------------------------
 	// Finish up

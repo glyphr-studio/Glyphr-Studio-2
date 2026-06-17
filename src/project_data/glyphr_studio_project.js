@@ -37,6 +37,11 @@ export class GlyphrStudioProject {
 				id: false,
 				exportComponentsAsComposites: true,
 				importComponentsFromComposites: true,
+				// Preferred font export format ('otf', 'ttf', 'woff', 'woff2').
+				// New projects default to OTF; importing a font file overwrites
+				// this with the format that was imported, so the Ctrl+E shortcut
+				// and the File menu preview default to that same format.
+				exportFormat: 'otf',
 				characterRanges: [],
 			},
 			app: {

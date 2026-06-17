@@ -3,7 +3,10 @@ import { makeElement } from '../common/dom.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
-import { ioFont_exportOTF } from '../formats_io/otf/font_export.js';
+import {
+	getPreferredExportFormat,
+	ioFont_exportDefaultFormat,
+} from '../formats_io/otf/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import { getAdjacentItem } from '../panels/card_glyph.js';
 import {
@@ -64,8 +67,8 @@ export function handleKeyPress(event) {
 	// e
 	if (ehd.isCtrlDown && key === 'e') {
 		cancelDefaultEventActions(event);
-		showToast('Exporting OTF font file...');
-		setTimeout(ioFont_exportOTF, 500);
+		showToast(`Exporting ${getPreferredExportFormat().toUpperCase()} font file...`);
+		setTimeout(ioFont_exportDefaultFormat, 500);
 	}
 
 	// o

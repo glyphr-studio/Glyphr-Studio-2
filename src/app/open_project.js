@@ -404,7 +404,7 @@ function postValidationCallback(validationResult) {
 	if (isSecondProject) addProjectEditorAndSetAsImportTarget();
 	if (validationResult.content) {
 		if (validationResult.fileType === 'font') {
-			ioFont_importFont(validationResult.content);
+			ioFont_importFont(validationResult.content, false, validationResult.fileSuffix);
 		} else if (validationResult.fileType === 'svg') {
 			ioSVG_importSVGfont(validationResult.content);
 		} else if (validationResult.fileType === 'project') {

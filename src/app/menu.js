@@ -7,6 +7,7 @@ import {
 	showToast,
 } from '../controls/dialogs/dialogs.js';
 import {
+	getPreferredExportFormat,
 	ioFont_exportOTF,
 	ioFont_exportTTF,
 	ioFont_exportWOFF,
@@ -88,6 +89,9 @@ function makeMenu(menuName) {
 	if (menuName === 'File') {
 		/** @type {Array} */
 		let fileMenuData = [];
+		// Preferred font export format (the format that was imported, or 'otf'
+		// for new projects) drives the file name preview and the Ctrl+E note.
+		const preferredExportFormat = getPreferredExportFormat();
 		if (typeof editor.loadedFileHandle === 'object') {
 			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
 
@@ -140,7 +144,7 @@ function makeMenu(menuName) {
 				child: makeElement({
 					tag: 'h2',
 					content:
-						`${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`.replaceAll(
+						`${editor.project.settings.font.family}-${editor.project.settings.font.style}.${preferredExportFormat}`.replaceAll(
 							' ',
 							''
 						),
@@ -150,22 +154,25 @@ function makeMenu(menuName) {
 			{
 				name: 'Export OTF file',
 				icon: 'command_export',
-				note: ['Ctrl', 'e'],
+				note: preferredExportFormat === 'otf' ? ['Ctrl', 'e'] : false,
 				onClick: ioFont_exportOTF,
 			},
 			{
 				name: 'Export TTF file',
 				icon: 'command_export',
+				note: preferredExportFormat === 'ttf' ? ['Ctrl', 'e'] : false,
 				onClick: ioFont_exportTTF,
 			},
 			{
 				name: 'Export WOFF file',
 				icon: 'command_export',
+				note: preferredExportFormat === 'woff' ? ['Ctrl', 'e'] : false,
 				onClick: ioFont_exportWOFF,
 			},
 			{
 				name: 'Export WOFF2 file',
 				icon: 'command_export',
+				note: preferredExportFormat === 'woff2' ? ['Ctrl', 'e'] : false,
 				onClick: ioFont_exportWOFF2,
 			},
 			{ name: 'hr' },
