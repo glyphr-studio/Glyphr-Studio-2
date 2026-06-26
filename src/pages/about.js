@@ -3,6 +3,9 @@ import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import donateKofiSrc from '../common/graphics/donate-kofi.png';
 import donatePaypalSrc from '../common/graphics/donate-paypal.png';
+import fam_fd from '../common/graphics/fam_fd.png';
+import fam_ffjs from '../common/graphics/fam_ffjs.png';
+import fam_un from '../common/graphics/fam_un.png';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import { TabControl } from '../controls/tabs/tab_control.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
@@ -40,6 +43,7 @@ export function makePage_About() {
 
 	tabControl.registerTab('Version', makeVersionInfo);
 	tabControl.registerTab('Contact and socials', makeContactInfo);
+	tabControl.registerTab('Family of products', makeFamilyInfo);
 	tabControl.registerTab('License', makeLicenseInfo);
 
 	tabControl.selectTab('Version');
@@ -134,20 +138,6 @@ function makeLicenseInfo() {
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
 			<br>
 			Copyright © 2026, Matthew LaGrandeur
-		</div>
-
-
-		<br>
-		<br>
-		<h2>Related projects</h2>
-		<p>Check out these projects related to typeface design:</p>
-
-		<div class="page__card">
-			<h3>Unicode Ninja</h3>
-			<a href="https://unicode.ninja" target="_blank">unicode.ninja</a>
-			<br><br>
-			Unicode Ninja lets you explore the Unicode Basic Multilingual Plane. Browse through all character ranges, either
-			sorted numerically or categorized. Search for individual characters by name, and copy their HTML codes to your clipboard.
 		</div>
 	`,
 	});
@@ -292,6 +282,65 @@ function makeContactInfo() {
 				<a href="https://github.com/glyphr-studio" target="_blank">github.com/glyphr-studio</a>
 			</div>
 		`,
+	});
+
+	return content;
+}
+
+/**
+ * Makes content for family info
+ * @returns {Element}
+ */
+function makeFamilyInfo() {
+	const content = makeElement({
+		tag: 'div',
+		attributes: { style: 'margin: 20px;' },
+		innerHTML: `
+			<h1>Family of products</h1>
+			Check out these other tools that are part of the Glyphr Studio family of font-related products:
+			<br><br>
+
+			<div class="page__card family-card">
+				<h3 class="span-all">Font Flux JS</h3>
+				<img class="page__card__logo-image" src="${fam_ffjs}" />
+				<p>
+					Convert fonts to JSON, make edits, then convert them back!
+					Font Flux JS is a JavaScript library for parsing OpenType/TrueType font binaries into structured JSON, then exporting that JSON back into a valid font binary. Every table is fully parsed into human-readable fields!
+					<br/><br/>
+					<a href="https://www.glyprstudio.com/font-flux-js" target="_blank">glyphrstudio.com/font-flux-js</a>
+					<br/>
+					<a href="https://www.github.com/mattlag/font-flux-js" target="_blank">github.com/mattlag/font-flux-js</a>
+				</p>
+			</div>
+
+			<div class="page__card family-card">
+				<h3 class="span-all">Unicode Ninja</h3>
+				<img class="page__card__logo-image" src="${fam_un}" />
+				<p>
+					Easily explore Unicode characters and ranges. Now supporting Unicode planes 0, 1, 2, and 3!
+					Useful for typeface designers, or regular humans looking for funky glyphs.
+					Unicode Ninja provides quick access to information about characters you know about, and easily discover characters you don't know about.
+					<br/><br/>
+					<a href="https://www.glyprstudio.com/unicodeninja" target="_blank">glyphrstudio.com/unicodeninja</a>
+					<br/>
+					<a href="https://www.github.com/mattlag/unicodeninja" target="_blank">github.com/mattlag/unicodeninja</a>
+				</p>
+			</div>
+
+			<div class="page__card family-card">
+				<h3 class="span-all">FontDiff</h3>
+				<img class="page__card__logo-image" src="${fam_fd}" />
+				<p>
+					Drop two fonts to see their differences, both visually and data-ly.
+					Useful for comparing different versions of a font, trying to identify what exactly is
+					making it work (or not).
+					<br/><br/>
+					<a href="https://www.glyprstudio.com/fontdiff" target="_blank">glyphrstudio.com/fontdiff</a>
+					<br/>
+					<a href="https://www.github.com/mattlag/fontdiff" target="_blank">github.com/mattlag/fontdiff</a>
+				</p>
+			</div>
+			`,
 	});
 
 	return content;

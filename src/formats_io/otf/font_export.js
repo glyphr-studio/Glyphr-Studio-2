@@ -286,13 +286,13 @@ async function saveFontFile(font, suffix = 'otf') {
  * Creates the options object
  * @returns {Object}
  */
-function createOptionsObject() {
+export function createOptionsObject(project) {
 	// log('createOptionsObject', 'start');
 
 	// Add settings
 	const options = {};
-	const project = getCurrentProject();
-	const fontSettings = project.settings.font;
+	const sourceProject = project || getCurrentProject();
+	const fontSettings = sourceProject.settings.font;
 
 	options.unitsPerEm = fontSettings.upm || 1000;
 	// Calculate proportional defaults based on UPM if metrics are missing
@@ -758,7 +758,7 @@ function ensureBuildingBlock(name, item, buildingBlocks) {
  * @param {Glyph | Object} item - Item to convert
  * @returns {Array<Array>} - Array of contours, each contour is an array of points
  */
-function glyphToContours(item) {
+export function glyphToContours(item) {
 	// Resolving component links rebuilds the whole glyph, which is expensive.
 	// Only pay that cost for glyphs that actually contain component instances;
 	// path-only glyphs (the vast majority in most fonts) can be read directly.

@@ -111,6 +111,32 @@
 	gap: 5px;
 }
 
+.page__card__logo-image {
+	width: 100px;
+	height: 100px;
+	border-radius: 4px;
+	overflow: hidden;
+	margin-right: 10px;
+}
+
+.page__card.family-card {
+	width: 600px;
+	display: grid;
+	grid-template-columns: min-content 1fr;
+	column-gap: 12px;
+	padding-right: 20px;
+	padding-bottom: 4px;
+}
+
+.page__card.family-card h3 {
+	grid-column: 1 / -1;
+}
+
+.page__card.family-card a {
+	display: inline-block;
+	padding-bottom: 8px;
+}
+
 .content-page__right-area p {
 	margin-bottom: 10px;
 	margin-left: 1px;
