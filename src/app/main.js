@@ -1,5 +1,6 @@
 /* Web Components */
 import { FancyButton } from '../controls/fancy-button/fancy_button.js';
+import { FontPreview } from '../controls/font-preview/font_preview.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { InfoBubble } from '../controls/info-bubble/info_bubble.js';
 import { InputNumber } from '../controls/input-number/input_number.js';
@@ -77,6 +78,7 @@ function registerCustomComponents() {
 		{ fileName: 'option-toggle', className: OptionToggle },
 		{ fileName: 'display-canvas', className: DisplayCanvas },
 		{ fileName: 'fancy-button', className: FancyButton },
+		{ fileName: 'font-preview', className: FontPreview },
 		{ fileName: 'glyph-tile', className: GlyphTile },
 		{ fileName: 'info-bubble', className: InfoBubble },
 		{ fileName: 'input-number', className: InputNumber },

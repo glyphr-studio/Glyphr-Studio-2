@@ -1,6 +1,6 @@
 import { FontFlux } from 'font-flux-js';
 import { describe, expect, it } from 'vitest';
-import { FontPreviewBuilder } from '../src/formats_io/otf/font_preview.js';
+import { FontPreviewBuilder } from '../src/controls/font-preview/font_preview.js';
 import { importGlyphrProjectFromText } from '../src/project_editor/import_project.js';
 
 function makePreviewProjectText() {

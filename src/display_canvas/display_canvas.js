@@ -13,6 +13,10 @@ import { drawGlyph } from './draw_paths.js';
 import { TextBlock } from './text_block.js';
 import { TextBlockOptions } from './text_block_options.js';
 
+// Extra padding (in canvas pixels) added above the text, on top of pagePadding,
+// so the first line isn't drawn too close to the top edge.
+const EXTRA_TOP_PADDING = 5;
+
 /**
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
  * No editing involved
@@ -161,7 +165,7 @@ export class DisplayCanvas extends HTMLElement {
 		// Heights
 		if (pageHeight === 'auto') {
 			newHeight = this.textBlock.pixelHeight;
-			newHeight += this.textBlockOptions.pagePadding;
+			newHeight += this.textBlockOptions.pagePadding + EXTRA_TOP_PADDING;
 		} else if (pageHeight === 'fit') {
 			newHeight = clientRect.height;
 		} else if (!isNaN(parseInt(pageHeight))) {
@@ -232,7 +236,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		const maxes = {
 			xMin: pagePadding,
-			yMin: pagePadding,
+			yMin: pagePadding + EXTRA_TOP_PADDING,
 			xMax: 1000,
 			yMax: 1000,
 		};

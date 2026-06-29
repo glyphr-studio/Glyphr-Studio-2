@@ -32,6 +32,17 @@ display-canvas {
 	background-color: white;
 }
 
+/*
+	The wrapper disables pointer events so the canvas (Glyphr Studio) previews
+	are display-only. The OTF / TTF font-preview previews are editable live text,
+	so they need pointer events re-enabled to be clicked and typed into.
+*/
+font-preview {
+	display: block;
+	margin: 10px;
+	pointer-events: auto;
+}
+
 .pop-out__footer {
 	margin: 20px 10px 10px 10px;
 	padding: 40px 0px;

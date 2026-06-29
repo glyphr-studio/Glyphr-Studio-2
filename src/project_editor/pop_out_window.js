@@ -5,6 +5,7 @@ import logo from '../common/graphics/logo-icon.svg?raw';
 import resetStyle from '../common/resets.css?inline';
 import { closeEveryTypeOfDialog, makeModalDialog, showToast } from '../controls/dialogs/dialogs';
 import dialogStyle from '../controls/dialogs/dialogs.css?inline';
+import { FontPreview } from '../controls/font-preview/font_preview';
 import { DisplayCanvas } from '../display_canvas/display_canvas';
 import { TextBlockOptions } from '../display_canvas/text_block_options';
 import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
@@ -21,6 +22,8 @@ export function openPopOutWindow() {
 	// Define custom elements for the Pop Out Window
 	// @ts-expect-error 'property does exist'
 	editor.popOutWindow.customElements.define('display-canvas', DisplayCanvas);
+	// @ts-expect-error 'property does exist'
+	editor.popOutWindow.customElements.define('font-preview', FontPreview);
 
 	// Init window properties
 	// @ts-expect-error 'property does exist'
@@ -81,11 +84,10 @@ export function updatePopOutWindowContent() {
 		// index 0 is for the Live Previews Page
 		// the rest are for the Pop Out Window
 		if (index !== 0) {
-			// log(`appending new display canvas`);
+			// log(`appending new live preview renderer`);
 			// log(options);
 			options.widthAdjustment = -20;
-			const newCanvas = new DisplayCanvas(options);
-			popWrapper.appendChild(newCanvas);
+			popWrapper.appendChild(makeLivePreviewRenderer(options));
 		}
 	});
 
@@ -134,6 +136,31 @@ export function updatePopOutWindowContent() {
 	// log(`updatePopOutWindowContent`, 'end');
 }
 
+/**
+ * Builds the live preview renderer for a single pop-out preview based on its
+ * selected render flavor. 'gs' (Glyphr Studio) uses the canvas-drawn
+ * display-canvas control; 'otf' / 'ttf' use the font-preview control, which
+ * renders editable native text backed by an on-the-fly generated font binary.
+ * @param {Object} livePreviewOptions - TextBlockOptions for the preview
+ * @returns {Element} - the renderer web component
+ */
+function makeLivePreviewRenderer(livePreviewOptions) {
+	const flavor = livePreviewOptions.previewFlavor || 'gs';
+
+	if (flavor === 'otf' || flavor === 'ttf') {
+		const fontPreview = new FontPreview(livePreviewOptions);
+		// The font-preview control is the live text input for native flavors,
+		// so keep the shared options text in sync as the user types.
+		fontPreview.addEventListener('text-change', (event) => {
+			// @ts-expect-error CustomEvent detail
+			livePreviewOptions.text = event.detail.text;
+		});
+		return fontPreview;
+	}
+
+	return new DisplayCanvas(livePreviewOptions);
+}
+
 export function closePopOutWindow(event) {
 	// log(`closePopOutWindow`, 'start');
 
@@ -168,11 +195,17 @@ function redrawPopOutWindow() {
 	// log(`redrawPopOutWindow`, 'start');
 	const editor = getCurrentProjectEditor();
 	// @ts-expect-error 'property does exist'
-	const canvases = editor.popOutWindow.document.body.querySelectorAll('display-canvas');
-	// log(`canvases.length: ${canvases.length}`);
-	canvases.forEach((can) => {
+	const popDoc = editor.popOutWindow.document;
+
+	// display-canvas (Glyphr Studio flavor) rebuilds its text block then redraws.
+	popDoc.body.querySelectorAll('display-canvas').forEach((can) => {
 		can.updateTextBlock();
 		can.redraw();
+	});
+
+	// font-preview (OTF / TTF flavors) regenerates its font binary and redraws.
+	popDoc.body.querySelectorAll('font-preview').forEach((preview) => {
+		preview.rebuildAndRedraw();
 	});
 	// log(`redrawPopOutWindow`, 'end');
 }
@@ -212,6 +245,11 @@ export function livePreviewPopOutWindowResize() {
 		// log(displayCanvas);
 		// log(`displayCanvas.constructor.name: ${displayCanvas.constructor.name}`);
 		displayCanvas.resizeAndRedraw(-50);
+	});
+
+	// font-preview renderers reflow natively; just rebuild and redraw them.
+	popDoc.querySelectorAll('font-preview').forEach((preview) => {
+		preview.resizeAndRedraw();
 	});
 	// log(`livePreviewPopOutWindowResize`, 'end');
 }

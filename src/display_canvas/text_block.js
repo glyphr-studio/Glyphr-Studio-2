@@ -202,10 +202,9 @@ export class TextBlock {
 		for (textBlockNumber = 0; textBlockNumber < this.textBlocks.length; textBlockNumber++) {
 			// log(`================ START textBlockNumber: ${textBlockNumber}`);
 
-			currentBlock = findAndMergeLigatures(
-				[...this.textBlocks[textBlockNumber]],
-				this.project
-			);
+			currentBlock = this.options.enableLigatures
+				? findAndMergeLigatures([...this.textBlocks[textBlockNumber]], this.project)
+				: [...this.textBlocks[textBlockNumber]];
 			this.data[textBlockNumber] = [];
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
@@ -225,7 +224,9 @@ export class TextBlock {
 				thisWidth = thisItem ? thisItem.advanceWidth : this.project.defaultAdvanceWidth;
 
 				// Kern distance
-				thisKern = calculateKernOffset(currentChar, currentBlock[charNumber + 1]);
+				thisKern = this.options.enableKerning
+					? calculateKernOffset(currentChar, currentBlock[charNumber + 1])
+					: 0;
 				aggregateWidth += thisWidth + thisKern;
 
 				// Each char gets this data to draw it

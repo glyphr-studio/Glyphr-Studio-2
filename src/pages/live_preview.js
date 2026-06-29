@@ -1,7 +1,7 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-// import { DisplayCanvas } from '../display_canvas/display_canvas.js';
-import { FontPreviewBuilder } from '../formats_io/otf/font_preview.js';
+import { FontPreview } from '../controls/font-preview/font_preview.js';
+import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { makePanel_LivePreview } from '../panels/live_preview.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
@@ -37,8 +37,7 @@ export function makePage_LivePreview() {
 	let canvasWrapper = content.querySelector('.live-preview-page__canvas-wrapper');
 	const editor = getCurrentProjectEditor();
 	const livePreviewOptions = editor.livePreviewPageOptions;
-	// canvasWrapper.appendChild(new DisplayCanvas(livePreviewOptions));
-	canvasWrapper.appendChild(makeNativeFontPreview(livePreviewOptions));
+	canvasWrapper.appendChild(makeLivePreviewRenderer(livePreviewOptions));
 
 	window.addEventListener('resize', livePreviewPageWindowResize);
 
@@ -60,11 +59,12 @@ export function makePage_LivePreview() {
  */
 export function livePreviewPageWindowResize() {
 	// log(`livePreviewPageWindowResize`, 'start');
-	// Native text preview reflows automatically, so a resize redraw is not needed.
-	// const wrapper = document.querySelector('.live-preview-page__canvas-wrapper');
-	// /** @type {DisplayCanvas} */
-	// const displayCanvas = wrapper.querySelector('display-canvas');
-	// displayCanvas.resizeAndRedraw();
+	// The display-canvas renderer needs to refit to the new parent size; the
+	// font-preview renderer reflows automatically. Both expose resizeAndRedraw.
+	const wrapper = document.querySelector('.live-preview-page__canvas-wrapper');
+	const renderer = wrapper?.firstElementChild;
+	// @ts-expect-error resizeAndRedraw exists on the renderer web components
+	if (renderer && typeof renderer.resizeAndRedraw === 'function') renderer.resizeAndRedraw();
 	// log(`livePreviewPageWindowResize`, 'end');
 }
 
@@ -76,65 +76,31 @@ export function redrawLivePreviewPageDisplayCanvas() {
 	if (editor.nav.page === 'Live preview') {
 		let canvasWrapper = document.querySelector('.live-preview-page__canvas-wrapper');
 		canvasWrapper.innerHTML = '';
-		const livePreviewOptions = editor.livePreviewPageOptions;
-		// canvasWrapper.appendChild(new DisplayCanvas(livePreviewOptions));
-		canvasWrapper.appendChild(makeNativeFontPreview(livePreviewOptions));
+		canvasWrapper.appendChild(makeLivePreviewRenderer(editor.livePreviewPageOptions));
 	}
 }
 
-let nativeFontPreviewCounter = 0;
-
 /**
- * Builds a native-text live preview backed by an on-the-fly generated font binary
- * of the current project. Editing the text rebuilds the font so that any newly
- * typed glyphs are included.
- * @param {Object} textBlockOptions - TextBlockOptions for the preview (text, fontSize, lineGap)
- * @returns {Element} - wrapper element containing the preview textarea
+ * Builds the live preview renderer for the page based on the selected render
+ * flavor. 'gs' (Glyphr Studio) uses the canvas-drawn display-canvas control;
+ * 'otf' / 'ttf' use the font-preview control, which renders editable native
+ * text backed by an on-the-fly generated font binary.
+ * @param {Object} livePreviewOptions - TextBlockOptions for the preview
+ * @returns {Element} - the renderer web component
  */
-function makeNativeFontPreview(textBlockOptions) {
-	const wrapper = makeElement({
-		tag: 'div',
-		className: 'live-preview-page__native-wrapper',
-	});
+function makeLivePreviewRenderer(livePreviewOptions) {
+	const flavor = livePreviewOptions.previewFlavor || 'gs';
 
-	const styleTag = makeElement({ tag: 'style' });
-	const textArea = makeElement({
-		tag: 'textarea',
-		className: 'live-preview-page__native-textarea',
-		attributes: { spellcheck: 'false' },
-	});
-	// @ts-expect-error textarea value
-	textArea.value = textBlockOptions.text || '';
-
-	const fontSize = textBlockOptions.fontSize ?? 48;
-	const lineGap = textBlockOptions.lineGap ?? 12;
-	textArea.style.fontSize = `${fontSize}px`;
-	textArea.style.lineHeight = `${fontSize + lineGap}px`;
-
-	function rebuildFont() {
-		// @ts-expect-error textarea value
-		const text = textArea.value || '';
-		const project = getCurrentProject();
-		const fontFamily = `LivePreviewFont-${++nativeFontPreviewCounter}`;
-		try {
-			const builder = new FontPreviewBuilder(project);
-			const buffer = builder.buildFontBuffer(text);
-			styleTag.textContent = builder.makeFontFaceCSS(buffer, fontFamily);
-			textArea.style.fontFamily = `"${fontFamily}", sans-serif`;
-		} catch (error) {
-			console.warn('Live preview font generation failed', error);
-		}
+	if (flavor === 'otf' || flavor === 'ttf') {
+		const fontPreview = new FontPreview(livePreviewOptions);
+		// The font-preview control is the live text input for native flavors,
+		// so keep the shared options text in sync as the user types.
+		fontPreview.addEventListener('text-change', (event) => {
+			// @ts-expect-error CustomEvent detail
+			livePreviewOptions.text = event.detail.text;
+		});
+		return fontPreview;
 	}
 
-	textArea.addEventListener('input', () => {
-		const editor = getCurrentProjectEditor();
-		// @ts-expect-error textarea value
-		textBlockOptions.text = textArea.value;
-		editor.livePreviewPageOptions = textBlockOptions;
-		rebuildFont();
-	});
-
-	rebuildFont();
-	addAsChildren(wrapper, [styleTag, textArea]);
-	return wrapper;
+	return new DisplayCanvas(livePreviewOptions);
 }

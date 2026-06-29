@@ -305,6 +305,48 @@
 }
 
 /*
+	Render flavor toggle (Live Preview)
+*/
+.renderFlavorButtonWrapper {
+	display: flex;
+	gap: 5px;
+}
+
+.renderFlavorButton,
+.renderFlavorButton:hover,
+.renderFlavorButton:focus {
+	display: inline-block;
+	height: 28px;
+	padding: 0px 10px;
+	background-color: var(--enabled-restingLight-background);
+	color: var(--blue-l15);
+	box-shadow: none;
+	border-style: solid;
+	border-color: var(--enabled-restingLight-border);
+	border-radius: 4px;
+	white-space: nowrap;
+}
+
+.renderFlavorButton[selected] {
+	border-color: var(--accent-color);
+	background-color: var(--blue-l85);
+	color: var(--blue-l15);
+}
+
+.renderFlavorButton[selected]:hover {
+	cursor: default;
+	border-color: var(--blue-l55);
+	background-color: var(--blue-l85);
+	color: var(--blue-l15);
+}
+
+.renderFlavorButton:hover {
+	border-color: var(--accent-color);
+	background-color: var(--blue-l95);
+	color: var(--blue-l15);
+}
+
+/*
 	Actions
 */
 :root {
