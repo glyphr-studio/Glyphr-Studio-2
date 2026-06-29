@@ -1,3 +1,4 @@
+/* global Buffer */
 import { FontFlux } from 'font-flux-js';
 import { charToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { round } from '../../common/functions.js';
