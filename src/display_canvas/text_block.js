@@ -265,15 +265,25 @@ export class TextBlock {
 		let currentBaselineY = 0;
 		let checkForBreak = false;
 
-		const scale = this.options.fontSize / this.project.totalVertical;
+		// Scale by the em square (UPM) to match how a browser renders the
+		// generated OTF/TTF font, so the 'gs' flavor overlaps the native previews.
+		const upm = parseInt(this.project.settings.font.upm);
+		const totalVertical = this.project.totalVertical;
+		const scale = this.options.fontSize / upm;
 		// log(`scale: ${scale}`);
 
-		const ascent = this.project.settings.font.ascent;
+		const ascent = parseInt(this.project.settings.font.ascent);
 		// log(`ascent: ${ascent}`);
+
+		// First-baseline offset (in UPM) that reproduces the CSS inline box used by
+		// native text: split leading (lineGap) half above the first line, plus the
+		// em/content centering when ascent + |descent| !== upm.
+		const firstBaselineOffset =
+			ascent + (upm - totalVertical) / 2 + this.options.lineGap / (2 * scale);
 
 		//Convert area properties to project / UPM scales
 		const upmMaxes = {
-			lineHeight: this.project.totalVertical + this.options.lineGap / scale,
+			lineHeight: upm + this.options.lineGap / scale,
 			width: this.canvasMaxes.width / scale,
 			yMax: this.canvasMaxes.yMax / scale,
 			yMin: this.canvasMaxes.yMin / scale,
@@ -287,7 +297,7 @@ export class TextBlock {
 
 		// log('========================== LOOP 2: CALCULATING DATA PER CHAR');
 		currentX = upmMaxes.xMin;
-		currentBaselineY = upmMaxes.yMin + ascent;
+		currentBaselineY = upmMaxes.yMin + firstBaselineOffset;
 		for (textBlockNumber = 0; textBlockNumber < this.data.length; textBlockNumber++) {
 			currentBlock = this.data[textBlockNumber];
 			// log(`================ START textBlockNumber: ${textBlockNumber}`);
@@ -336,7 +346,8 @@ export class TextBlock {
 								// log(`more vertical space for next line`);
 								currentX = upmMaxes.xMin;
 								// currentX = 0;
-								currentBaselineY = upmMaxes.yMin + ascent + currentLine * upmMaxes.lineHeight;
+								currentBaselineY =
+									upmMaxes.yMin + firstBaselineOffset + currentLine * upmMaxes.lineHeight;
 								// log(`currentBaselineY: ${currentBaselineY}`);
 							}
 						}
@@ -376,7 +387,8 @@ export class TextBlock {
 
 			currentX = upmMaxes.xMin;
 			// currentX = 0;
-			currentBaselineY = upmMaxes.yMin + ascent + currentLine * upmMaxes.lineHeight;
+			currentBaselineY =
+				upmMaxes.yMin + firstBaselineOffset + currentLine * upmMaxes.lineHeight;
 			this.pixelHeight = currentLine * upmMaxes.lineHeight * scale;
 			// log(`================ END textBlockNumber: ${textBlockNumber}`);
 		}
