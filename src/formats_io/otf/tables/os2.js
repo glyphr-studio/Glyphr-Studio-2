@@ -16,7 +16,9 @@ export function importTable_os2(importedFont, project) {
 	fontSettings.capHeight = 1 * (info.capHeight || fontSettings.capHeight);
 	fontSettings.xHeight = 1 * (info.xHeight || fontSettings.xHeight);
 	fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
-	fontSettings.weight = info.weight || 400;
+	// FontFlux exposes the OS/2 usWeightClass as `info.weightClass`; reading
+	// `info.weight` (which FontFlux does not set) always fell back to 400.
+	fontSettings.weight = info.weightClass || info.weight || 400;
 	// FontFlux returns panose as an array of ten numbers, but Glyphr Studio
 	// stores panose as a space-separated string.
 	if (Array.isArray(info.panose)) {

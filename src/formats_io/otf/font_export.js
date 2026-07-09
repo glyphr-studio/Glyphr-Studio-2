@@ -169,7 +169,9 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	font.info.styleName = options.styleName;
 	font.info.copyright = options.copyright;
 	font.info.version = options.version;
-	font.info.weight = options.weightClass;
+	// FontFlux reads the weight from `info.weightClass` (OS/2 usWeightClass), not
+	// `info.weight`; using the wrong name silently dropped the weight on export.
+	font.info.weightClass = options.weightClass;
 	font.info.italicAngle = options.italicAngle;
 	font.info.ascender = options.ascender;
 	font.info.descender = options.descender;
@@ -186,6 +188,13 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	font.info.license = options.license;
 	font.info.licenseURL = options.licenseURL;
 	font.info.trademark = options.trademark;
+	// PANOSE classification (OS/2 table) and underline metrics (post table).
+	// FontFlux maps each of these `info` fields into their respective binary
+	// tables at export time. Without this, PANOSE and underline settings the
+	// user configures were silently dropped from exported fonts.
+	font.info.panose = options.panose;
+	font.info.underlinePosition = options.underlinePosition;
+	font.info.underlineThickness = options.underlineThickness;
 
 	// Add glyphs. Composite components reference their target glyphs by name
 	// (`glyphName`); FontFlux (v2.7+) resolves those names against the finalized
@@ -283,6 +292,26 @@ async function saveFontFile(font, suffix = 'otf') {
 }
 
 /**
+ * Normalizes a PANOSE value into the fixed-length array of ten numbers that
+ * the OS/2 table requires. Glyphr Studio stores PANOSE as a space-separated
+ * string (e.g. "2 0 0 0 0 0 0 0 0 0"); a malformed, short, or over-long string
+ * would otherwise yield an invalid OS/2 panose field on export.
+ * @param {String} panoseString - space-separated PANOSE digits
+ * @returns {Number[]} - array of exactly ten byte-ranged (0-255) numbers
+ */
+function normalizePanose(panoseString) {
+	const parts = String(panoseString || '')
+		.trim()
+		.split(/\s+/)
+		.map((n) => parseInt(n, 10));
+	return Array.from({ length: 10 }, (_, i) => {
+		const value = parts[i];
+		if (!Number.isFinite(value)) return 0;
+		return Math.max(0, Math.min(255, value));
+	});
+}
+
+/**
  * Creates the options object
  * @returns {Object}
  */
@@ -320,9 +349,15 @@ export function createOptionsObject(project) {
 	options.copyright = String(fontSettings.copyright || ' ');
 	options.trademark = String(fontSettings.trademark || ' ');
 	options.weightClass = parseInt(fontSettings.weight);
-	options.panose = fontSettings.panose.split(' ').map(Number) || [];
+	// PANOSE is stored as a space-separated string of ten classification digits,
+	// but the OS/2 table requires exactly ten numbers. Normalize to a
+	// fixed-length numeric array so a malformed or short string can't produce an
+	// invalid OS/2 panose field on export.
+	options.panose = normalizePanose(fontSettings.panose);
 	options.italicAngle = fontSettings.italicAngle || 0;
 	options.slope = fontSettings.slope || 0;
+	options.underlinePosition = fontSettings.underlinePosition ?? 0;
+	options.underlineThickness = fontSettings.underlineThickness ?? 0;
 
 	options.glyphs = [];
 
