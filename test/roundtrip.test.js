@@ -637,7 +637,7 @@ describe('Font Metadata Round Trip Tests', () => {
 		const project = importGlyphrProjectFromText(loadSampleProjectText('oblegg.gs2'));
 
 		const f = project.settings.font;
-		f.style = 'Bold';
+		f.style = 'Bold Italic';
 		f.version = 'Version 2.5';
 		f.copyright = 'Metadata roundtrip copyright';
 		f.designer = 'Test Designer';
@@ -664,7 +664,7 @@ describe('Font Metadata Round Trip Tests', () => {
 		expect(Math.round(font.info.italicAngle)).toEqual(-12);
 		expect(font.info.underlinePosition).toEqual(-123);
 		expect(font.info.underlineThickness).toEqual(45);
-		expect(font.info.styleName).toEqual('Bold');
+		expect(font.info.styleName).toEqual('Bold Italic');
 		expect(font.info.version).toContain('2.5');
 		expect(font.info.copyright).toEqual('Metadata roundtrip copyright');
 		expect(font.info.designer).toEqual('Test Designer');
@@ -684,5 +684,82 @@ describe('Font Metadata Round Trip Tests', () => {
 
 		expect(font.info.panose).toEqual([2, 0, 255, 0, 0, 0, 0, 0, 0, 0]);
 	}, 60000);
-});
 
+	it('maps font-stretch to OS/2 usWidthClass and back to the stretch keyword', async () => {
+		setCurrentProjectEditor(new ProjectEditor());
+		const project = importGlyphrProjectFromText(loadSampleProjectText('oblegg.gs2'));
+		project.settings.font.stretch = 'condensed';
+
+		const editor = new ProjectEditor({ project });
+		setCurrentProjectEditor(editor);
+		const exportedBuffer = await ioFont_exportFont('otf', true);
+		const font = FontFlux.open(exportedBuffer);
+
+		// 'condensed' -> usWidthClass 3. Previously this was always 5 (normal).
+		expect(font.info.widthClass).toEqual(3);
+
+		// And it must round-trip back into the project as the stretch keyword.
+		const reimported = await ioFont_importFont(FontFlux.open(exportedBuffer), true);
+		expect(reimported.settings.font.stretch).toEqual('condensed');
+	}, 60000);
+
+	it('writes coordinated family, full, and machine-safe PostScript names', async () => {
+		setCurrentProjectEditor(new ProjectEditor());
+		const project = importGlyphrProjectFromText(loadSampleProjectText('oblegg.gs2'));
+		const f = project.settings.font;
+		f.family = 'Acme Sans';
+		f.style = 'Bold Italic';
+		f.weight = 700;
+		f.italicAngle = -12;
+
+		const editor = new ProjectEditor({ project });
+		setCurrentProjectEditor(editor);
+		const exportedBuffer = await ioFont_exportFont('otf', true);
+		const font = FontFlux.open(exportedBuffer);
+
+		// Name IDs 1/2 keep the user's family and style.
+		expect(font.info.familyName).toEqual('Acme Sans');
+		expect(font.info.styleName).toEqual('Bold Italic');
+		// Name ID 4: readable full name.
+		expect(font.info.fullName).toEqual('Acme Sans Bold Italic');
+		// Name ID 6: ASCII, no spaces (FontFlux's fallback would keep the space).
+		expect(font.info.postScriptName).toEqual('AcmeSans-BoldItalic');
+		expect(font.info.postScriptName).not.toContain(' ');
+
+		// FontFlux 2.7.1 honors explicit fsSelection and head.macStyle; both must
+		// be set and agree (bold + italic) so legacy apps style the font right.
+		expect(font.info.fsSelection & 0x20, 'fsSelection BOLD bit').toBeTruthy();
+		expect(font.info.fsSelection & 0x01, 'fsSelection ITALIC bit').toBeTruthy();
+		expect(font.info.macStyle & 0x01, 'macStyle bold bit').toBeTruthy();
+		expect(font.info.macStyle & 0x02, 'macStyle italic bit').toBeTruthy();
+	}, 60000);
+
+	it('keeps Name ID 2 RIBBI-safe and preserves the true style in Name ID 17', async () => {
+		setCurrentProjectEditor(new ProjectEditor());
+		const project = importGlyphrProjectFromText(loadSampleProjectText('oblegg.gs2'));
+		const f = project.settings.font;
+		f.family = 'Acme Sans';
+		f.style = 'Light';
+		f.weight = 300;
+		f.italicAngle = 0;
+
+		const editor = new ProjectEditor({ project });
+		setCurrentProjectEditor(editor);
+		const exportedBuffer = await ioFont_exportFont('otf', true);
+		const font = FontFlux.open(exportedBuffer);
+
+		// Name ID 2 is RIBBI-safe (a non-RIBBI "Light" collapses to "Regular")...
+		expect(font.info.styleName).toEqual('Regular');
+		// ...while the true style lives in Name ID 17, now emitted by FontFlux 2.7.1.
+		expect(font.info.typographicSubfamily).toEqual('Light');
+		expect(font.info.weightClass).toEqual(300);
+		// A non-bold, non-italic font gets the REGULAR fsSelection bit and no
+		// macStyle bits.
+		expect(font.info.fsSelection & 0x40, 'fsSelection REGULAR bit').toBeTruthy();
+		expect(font.info.macStyle).toEqual(0);
+
+		// And it round-trips: re-importing recovers the real style from Name ID 17.
+		const reimported = await ioFont_importFont(FontFlux.open(exportedBuffer), true);
+		expect(reimported.settings.font.style).toEqual('Light');
+	}, 60000);
+});
