@@ -11,7 +11,13 @@ export function importTable_post(importedFont, project) {
 	const info = importedFont.info;
 	fontSettings.italicAngle = info?.italicAngle || 0;
 
-	// These are not part of the Options argument
-	// fontSettings.underlinePosition = importedFont.tables?.post?.underlinePosition || 0;
-	// fontSettings.underlineThickness = importedFont.tables?.post?.underlineThickness || 0;
+	// FontFlux exposes the post-table underline metrics on `info`. These are
+	// surfaced to users in the font settings, so import them (and export them in
+	// font_export.js) to keep them round-trippable.
+	if (typeof info?.underlinePosition === 'number') {
+		fontSettings.underlinePosition = info.underlinePosition;
+	}
+	if (typeof info?.underlineThickness === 'number') {
+		fontSettings.underlineThickness = info.underlineThickness;
+	}
 }

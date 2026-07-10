@@ -165,11 +165,28 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 		descender: options.descender,
 	});
 
-	// Set additional font info properties
+	// Set additional font info properties.
+	// Name ID 2 (subfamily) is the RIBBI-safe value while Name ID 17
+	// (typographic subfamily) carries the user's true style; FontFlux 2.7.1 emits
+	// Name ID 17 when it differs from Name ID 2, so non-RIBBI styles (Light,
+	// SemiBold, ...) stay legacy-safe and are preserved. Name IDs 4/6 get a
+	// readable full name and a machine-safe PostScript name, usWidthClass comes
+	// from the font-stretch keyword, and fsSelection / head.macStyle are set to
+	// coordinated RIBBI-correct values (FontFlux 2.7.1 honors both overrides).
+	font.info.familyName = options.familyName;
 	font.info.styleName = options.styleName;
+	font.info.typographicFamily = options.typographicFamily;
+	font.info.typographicSubfamily = options.typographicSubfamily;
+	font.info.fullName = options.fullName;
+	font.info.postScriptName = options.postScriptName;
+	font.info.widthClass = options.widthClass;
+	font.info.fsSelection = options.fsSelection;
+	font.info.macStyle = options.macStyle;
 	font.info.copyright = options.copyright;
 	font.info.version = options.version;
-	font.info.weight = options.weightClass;
+	// FontFlux reads the weight from `info.weightClass` (OS/2 usWeightClass), not
+	// `info.weight`; using the wrong name silently dropped the weight on export.
+	font.info.weightClass = options.weightClass;
 	font.info.italicAngle = options.italicAngle;
 	font.info.ascender = options.ascender;
 	font.info.descender = options.descender;
@@ -186,6 +203,13 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	font.info.license = options.license;
 	font.info.licenseURL = options.licenseURL;
 	font.info.trademark = options.trademark;
+	// PANOSE classification (OS/2 table) and underline metrics (post table).
+	// FontFlux maps each of these `info` fields into their respective binary
+	// tables at export time. Without this, PANOSE and underline settings the
+	// user configures were silently dropped from exported fonts.
+	font.info.panose = options.panose;
+	font.info.underlinePosition = options.underlinePosition;
+	font.info.underlineThickness = options.underlineThickness;
 
 	// Add glyphs. Composite components reference their target glyphs by name
 	// (`glyphName`); FontFlux (v2.7+) resolves those names against the finalized
@@ -268,7 +292,10 @@ async function saveFontFile(font, suffix = 'otf') {
 		}
 		const familyName = font.info.familyName || 'MyFont';
 		const styleName = font.info.styleName || 'Regular';
-		const fileName = `${familyName.replace(/\s/g, '')}-${styleName}.${suffix.toLowerCase()}`;
+		// Use the machine-safe PostScript name (ASCII, no spaces) for the file
+		// name so styles like "Bold Italic" don't leave a space in the file name.
+		const baseName = font.info.postScriptName || `${familyName.replace(/\s/g, '')}-${styleName}`;
+		const fileName = `${baseName}.${suffix.toLowerCase()}`;
 		const arrayBuffer = font.export({ format: suffix });
 		const dataView = new DataView(arrayBuffer);
 		const blob = new Blob([dataView], { type: 'font/opentype' });
@@ -280,6 +307,150 @@ async function saveFontFile(font, suffix = 'otf') {
 	}
 
 	return result;
+}
+
+/**
+ * Normalizes a PANOSE value into the fixed-length array of ten numbers that
+ * the OS/2 table requires. Glyphr Studio stores PANOSE as a space-separated
+ * string (e.g. "2 0 0 0 0 0 0 0 0 0"); a malformed, short, or over-long string
+ * would otherwise yield an invalid OS/2 panose field on export.
+ * @param {String} panoseString - space-separated PANOSE digits
+ * @returns {Number[]} - array of exactly ten byte-ranged (0-255) numbers
+ */
+function normalizePanose(panoseString) {
+	const parts = String(panoseString || '')
+		.trim()
+		.split(/\s+/)
+		.map((n) => parseInt(n, 10));
+	return Array.from({ length: 10 }, (_, i) => {
+		const value = parts[i];
+		if (!Number.isFinite(value)) return 0;
+		return Math.max(0, Math.min(255, value));
+	});
+}
+
+// CSS-style font-stretch keyword -> OS/2 usWidthClass (1-9). Glyphr Studio only
+// collects the keyword (`settings.font.stretch`); the OS/2 table needs the
+// numeric class, which was previously never set (always defaulted to 5).
+const WIDTH_CLASS_BY_STRETCH = {
+	'ultra-condensed': 1,
+	'extra-condensed': 2,
+	condensed: 3,
+	'semi-condensed': 4,
+	normal: 5,
+	'semi-expanded': 6,
+	expanded: 7,
+	'extra-expanded': 8,
+	'ultra-expanded': 9,
+};
+
+/**
+ * Maps a CSS-style font-stretch keyword to an OS/2 usWidthClass (1-9).
+ * @param {String} stretch - font-stretch keyword (e.g. 'condensed')
+ * @returns {Number} - usWidthClass in [1, 9]
+ */
+function widthClassFromStretch(stretch) {
+	const key = String(stretch || 'normal')
+		.trim()
+		.toLowerCase();
+	return WIDTH_CLASS_BY_STRETCH[key] || 5;
+}
+
+/**
+ * Produces a machine-safe PostScript name (name ID 6): ASCII only, no spaces,
+ * no characters that are illegal in PostScript names, capped at 63 characters.
+ * FontFlux's fallback keeps spaces from the style name, which is non-compliant,
+ * so Glyphr Studio supplies a clean value.
+ * @param {String} family - typographic family name
+ * @param {String} style - typographic subfamily name
+ * @returns {String} - clean PostScript name
+ */
+function makePostScriptName(family, style) {
+	const clean = (str) =>
+		String(str || '')
+			.normalize('NFKD')
+			.replace(/[^\x20-\x7e]/g, '') // ASCII only
+			.replace(/[[\](){}<>/%]/g, '') // characters illegal in PostScript names
+			.replace(/\s+/g, ''); // no spaces
+	const f = clean(family) || 'Font';
+	const s = clean(style) || 'Regular';
+	return `${f}-${s}`.substring(0, 63);
+}
+
+/**
+ * Computes coordinated OS/2 `fsSelection` and `head.macStyle` values from the
+ * weight and italic angle, following the RIBBI convention (bold only for weight
+ * exactly 700; italic whenever the italic angle is non-zero). FontFlux 2.7.1
+ * honors these explicit values and validates that the two tables agree, so
+ * computing them here keeps ExtraBold / Black and upright-italic fonts from
+ * getting contradictory or over-eager style bits.
+ * @param {Number} weightClass - OS/2 usWeightClass
+ * @param {Number} italicAngle - italic angle in degrees
+ * @returns {Object} - { isBold, isItalic, fsSelection, macStyle }
+ */
+function computeStyleBits(weightClass, italicAngle) {
+	const isBold = weightClass === 700;
+	const isItalic = (italicAngle || 0) !== 0;
+
+	let fsSelection = 0;
+	if (isItalic) fsSelection |= 0x01; // ITALIC
+	if (isBold) fsSelection |= 0x20; // BOLD
+	if (!isBold && !isItalic) fsSelection |= 0x40; // REGULAR
+	fsSelection |= 0x80; // USE_TYPO_METRICS
+
+	let macStyle = 0;
+	if (isBold) macStyle |= 0x01; // Bold
+	if (isItalic) macStyle |= 0x02; // Italic
+
+	return { isBold, isItalic, fsSelection, macStyle };
+}
+
+/**
+ * Derives a coordinated set of OpenType naming and classification fields from
+ * the simplified metadata Glyphr Studio collects (family, style, weight, width,
+ * italic angle). It:
+ *
+ *   - Sets Name ID 2 (subfamily) to the RIBBI-safe value (only ever Regular /
+ *     Bold / Italic / Bold Italic) so the font is legacy-safe, while Name ID 17
+ *     (typographic subfamily) keeps the user's true style (e.g. "Light"). This
+ *     is the key thing FontFlux 2.7.1 unlocked: Name ID 17 is now emitted when
+ *     it differs from Name ID 2, so the real style name is preserved without
+ *     breaking legacy grouping.
+ *   - Keeps Name ID 1/16 (family) as the user's family, so the exported font's
+ *     identity is preserved and round-trips cleanly.
+ *   - Builds a readable full name (Name ID 4) and a machine-safe PostScript name
+ *     (Name ID 6).
+ *   - Maps the font-stretch keyword to OS/2 usWidthClass, which Glyphr Studio
+ *     previously never set (it always defaulted to 5 / normal).
+ *   - Computes coordinated fsSelection / head.macStyle style bits.
+ *
+ * @param {Object} fontSettings - project.settings.font
+ * @returns {Object} - derived naming and classification fields
+ */
+function deriveFontNaming(fontSettings) {
+	const family = String(fontSettings.family || 'My Font').trim() || 'My Font';
+	const style = String(fontSettings.style || '').trim() || 'Regular';
+	const weightClass = parseInt(String(fontSettings.weight), 10) || 400;
+	const bits = computeStyleBits(weightClass, fontSettings.italicAngle);
+
+	let ribbiSubfamily = 'Regular';
+	if (bits.isBold && bits.isItalic) ribbiSubfamily = 'Bold Italic';
+	else if (bits.isBold) ribbiSubfamily = 'Bold';
+	else if (bits.isItalic) ribbiSubfamily = 'Italic';
+
+	const fullName = style.toLowerCase() === 'regular' ? family : `${family} ${style}`;
+
+	return {
+		familyName: family, // Name ID 1
+		styleName: ribbiSubfamily, // Name ID 2 (RIBBI-safe)
+		typographicFamily: family, // Name ID 16 (== Name ID 1, so not emitted)
+		typographicSubfamily: style, // Name ID 17 (true style; emitted when != Name ID 2)
+		fullName, // Name ID 4
+		postScriptName: makePostScriptName(family, style), // Name ID 6
+		widthClass: widthClassFromStretch(fontSettings.stretch),
+		fsSelection: bits.fsSelection,
+		macStyle: bits.macStyle,
+	};
 }
 
 /**
@@ -307,8 +478,19 @@ export function createOptionsObject(project) {
 	// Name-table values must be strings. Legacy / imported projects may carry
 	// non-string metadata (e.g. a numeric `version: 1.003`), which would crash
 	// the downstream FontFlux name-table writer, so coerce each field here.
-	options.familyName = String(fontSettings.family || ' ');
-	options.styleName = String(fontSettings.style || ' ');
+	// Derive coordinated OpenType naming (family/subfamily, typographic
+	// family/subfamily, a readable full name, a clean PostScript name) and the
+	// OS/2 width class from the simple metadata the user provides.
+	const naming = deriveFontNaming(fontSettings);
+	options.familyName = naming.familyName;
+	options.styleName = naming.styleName;
+	options.typographicFamily = naming.typographicFamily;
+	options.typographicSubfamily = naming.typographicSubfamily;
+	options.fullName = naming.fullName;
+	options.postScriptName = naming.postScriptName;
+	options.widthClass = naming.widthClass;
+	options.fsSelection = naming.fsSelection;
+	options.macStyle = naming.macStyle;
 	options.designer = String(fontSettings.designer || ' ');
 	options.designerURL = String(fontSettings.designerURL || ' ');
 	options.manufacturer = String(fontSettings.manufacturer || ' ');
@@ -320,9 +502,15 @@ export function createOptionsObject(project) {
 	options.copyright = String(fontSettings.copyright || ' ');
 	options.trademark = String(fontSettings.trademark || ' ');
 	options.weightClass = parseInt(fontSettings.weight);
-	options.panose = fontSettings.panose.split(' ').map(Number) || [];
+	// PANOSE is stored as a space-separated string of ten classification digits,
+	// but the OS/2 table requires exactly ten numbers. Normalize to a
+	// fixed-length numeric array so a malformed or short string can't produce an
+	// invalid OS/2 panose field on export.
+	options.panose = normalizePanose(fontSettings.panose);
 	options.italicAngle = fontSettings.italicAngle || 0;
 	options.slope = fontSettings.slope || 0;
+	options.underlinePosition = fontSettings.underlinePosition ?? 0;
+	options.underlineThickness = fontSettings.underlineThickness ?? 0;
 
 	options.glyphs = [];
 

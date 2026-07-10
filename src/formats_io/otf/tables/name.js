@@ -14,14 +14,22 @@ export function importTable_name(importedFont, project) {
 	// Font Family
 	// FontFlux exposes name-table data as flat properties on `info` (e.g.
 	// `familyName`, `styleName`, `vendorURL`), not the legacy nested
-	// `fontFamily`/`fontSubfamily` structure.
+	// `fontFamily`/`fontSubfamily` structure. Use the legacy family (name ID 1)
+	// for the family so width/weight-specific family names (e.g. "Arial Narrow",
+	// whose typographic family name ID 16 is just "Arial") are preserved.
 	const familyName = getTableValue('familyName', importedFont) || 'My Font';
 	project.settings.project.name = familyName;
 	fontSettings.name = familyName;
 	fontSettings.family = familyName.substring(0, 31); // long family names cause errors
 
 	// Table data
-	fontSettings.style = getTableValue('styleName', importedFont) || 'Regular';
+	// Prefer the typographic subfamily (name ID 17) when present: it carries the
+	// true style (e.g. "Light") while name ID 2 is only the RIBBI-safe value
+	// ("Regular"), so this recovers styles that RIBBI can't express.
+	fontSettings.style =
+		getTableValue('typographicSubfamily', importedFont) ||
+		getTableValue('styleName', importedFont) ||
+		'Regular';
 	fontSettings.copyright = getTableValue('copyright', importedFont) || '';
 	fontSettings.trademark = getTableValue('trademark', importedFont) || '';
 	fontSettings.designer = getTableValue('designer', importedFont) || '';
