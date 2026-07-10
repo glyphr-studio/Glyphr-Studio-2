@@ -104,6 +104,28 @@
 	overflow-y: auto;
 }
 
+.live-preview-page__native-wrapper {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: 1fr;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.live-preview-page__native-textarea {
+	width: 100%;
+	height: 100%;
+	border: none;
+	outline: none;
+	resize: none;
+	padding: 10px;
+	box-sizing: border-box;
+	background-color: white;
+	color: black;
+	overflow-y: auto;
+}
+
 #done-creating-path-button {
 	position: absolute;
 	color: var(--blue-l30);

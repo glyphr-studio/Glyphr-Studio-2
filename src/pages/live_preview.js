@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
+import { FontPreview } from '../controls/font-preview/font_preview.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { makePanel_LivePreview } from '../panels/live_preview.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
@@ -36,7 +37,7 @@ export function makePage_LivePreview() {
 	let canvasWrapper = content.querySelector('.live-preview-page__canvas-wrapper');
 	const editor = getCurrentProjectEditor();
 	const livePreviewOptions = editor.livePreviewPageOptions;
-	canvasWrapper.appendChild(new DisplayCanvas(livePreviewOptions));
+	canvasWrapper.appendChild(makeLivePreviewRenderer(livePreviewOptions));
 
 	window.addEventListener('resize', livePreviewPageWindowResize);
 
@@ -58,10 +59,12 @@ export function makePage_LivePreview() {
  */
 export function livePreviewPageWindowResize() {
 	// log(`livePreviewPageWindowResize`, 'start');
+	// The display-canvas renderer needs to refit to the new parent size; the
+	// font-preview renderer reflows automatically. Both expose resizeAndRedraw.
 	const wrapper = document.querySelector('.live-preview-page__canvas-wrapper');
-	/** @type {DisplayCanvas} */
-	const displayCanvas = wrapper.querySelector('display-canvas');
-	displayCanvas.resizeAndRedraw();
+	const renderer = wrapper?.firstElementChild;
+	// @ts-expect-error resizeAndRedraw exists on the renderer web components
+	if (renderer && typeof renderer.resizeAndRedraw === 'function') renderer.resizeAndRedraw();
 	// log(`livePreviewPageWindowResize`, 'end');
 }
 
@@ -73,7 +76,31 @@ export function redrawLivePreviewPageDisplayCanvas() {
 	if (editor.nav.page === 'Live preview') {
 		let canvasWrapper = document.querySelector('.live-preview-page__canvas-wrapper');
 		canvasWrapper.innerHTML = '';
-		const livePreviewOptions = editor.livePreviewPageOptions;
-		canvasWrapper.appendChild(new DisplayCanvas(livePreviewOptions));
+		canvasWrapper.appendChild(makeLivePreviewRenderer(editor.livePreviewPageOptions));
 	}
+}
+
+/**
+ * Builds the live preview renderer for the page based on the selected render
+ * flavor. 'gs' (Glyphr Studio) uses the canvas-drawn display-canvas control;
+ * 'otf' / 'ttf' use the font-preview control, which renders editable native
+ * text backed by an on-the-fly generated font binary.
+ * @param {Object} livePreviewOptions - TextBlockOptions for the preview
+ * @returns {Element} - the renderer web component
+ */
+function makeLivePreviewRenderer(livePreviewOptions) {
+	const flavor = livePreviewOptions.previewFlavor || 'gs';
+
+	if (flavor === 'otf' || flavor === 'ttf') {
+		const fontPreview = new FontPreview(livePreviewOptions);
+		// The font-preview control is the live text input for native flavors,
+		// so keep the shared options text in sync as the user types.
+		fontPreview.addEventListener('text-change', (event) => {
+			// @ts-expect-error CustomEvent detail
+			livePreviewOptions.text = event.detail.text;
+		});
+		return fontPreview;
+	}
+
+	return new DisplayCanvas(livePreviewOptions);
 }

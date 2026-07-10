@@ -9,9 +9,12 @@ export class TextBlockOptions {
 		// log(`TextBlockOptions.constructor`, 'start');
 		// log('options');
 		// log(options);
+		this.previewFlavor = options.previewFlavor || 'gs';
 		this.text = options.text || '';
 		this.fontSize = options.fontSize ?? 48;
 		this.lineGap = options.lineGap ?? 12;
+		this.enableLigatures = options.enableLigatures ?? true;
+		this.enableKerning = options.enableKerning ?? true;
 		this.pagePadding = options.pagePadding ?? 10;
 		this.pageWidth = options.pageWidth || 'fit';
 		this.pageHeight = options.pageHeight || 'auto';
@@ -61,8 +64,12 @@ export class TextBlockOptions {
 	 */
 	save() {
 		let result = {};
+		if (this.previewFlavor && this.previewFlavor !== 'gs')
+			result.previewFlavor = this.previewFlavor;
 		if (this.fontSize && this.fontSize !== 48) result.fontSize = this.fontSize;
 		if (this.lineGap && this.lineGap !== 12) result.lineGap = this.lineGap;
+		if (this.enableLigatures === false) result.enableLigatures = this.enableLigatures;
+		if (this.enableKerning === false) result.enableKerning = this.enableKerning;
 		if (this.pagePadding && this.pagePadding !== 10) result.pagePadding = this.pagePadding;
 		if (this.pageWidth && this.pageWidth !== 'fit') result.pageWidth = this.pageWidth;
 		if (this.pageHeight && this.pageHeight !== 'auto') result.pageHeight = this.pageHeight;

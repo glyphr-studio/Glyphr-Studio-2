@@ -13,6 +13,11 @@ import { drawGlyph } from './draw_paths.js';
 import { TextBlock } from './text_block.js';
 import { TextBlockOptions } from './text_block_options.js';
 
+// Extra padding (in canvas pixels) added above the text, on top of pagePadding.
+// Kept at 0 so the 'gs' renderer's top inset matches the native OTF/TTF
+// textarea (which uses pagePadding only), keeping the previews aligned.
+const EXTRA_TOP_PADDING = 0;
+
 /**
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
  * No editing involved
@@ -161,7 +166,10 @@ export class DisplayCanvas extends HTMLElement {
 		// Heights
 		if (pageHeight === 'auto') {
 			newHeight = this.textBlock.pixelHeight;
-			newHeight += this.textBlockOptions.pagePadding;
+			// Symmetric vertical padding (top + bottom), matching the native
+			// font-preview textarea which uses pagePadding on every side. This
+			// keeps the 'gs' and 'otf'/'ttf' previews the same element height.
+			newHeight += this.textBlockOptions.pagePadding * 2 + EXTRA_TOP_PADDING;
 		} else if (pageHeight === 'fit') {
 			newHeight = clientRect.height;
 		} else if (!isNaN(parseInt(pageHeight))) {
@@ -232,7 +240,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		const maxes = {
 			xMin: pagePadding,
-			yMin: pagePadding,
+			yMin: pagePadding + EXTRA_TOP_PADDING,
 			xMax: 1000,
 			yMax: 1000,
 		};

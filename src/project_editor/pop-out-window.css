@@ -26,10 +26,31 @@ dialog {
 
 display-canvas {
 	box-sizing: content-box;
-	display: inline-block;
+	display: block;
+	width: fit-content;
+	max-width: 100%;
 	margin: 10px;
 	border: 1px solid white;
 	background-color: white;
+}
+
+/*
+	The wrapper disables pointer events so the canvas (Glyphr Studio) previews
+	are display-only. The OTF / TTF font-preview previews are editable live text,
+	so they need pointer events re-enabled to be clicked and typed into.
+
+	Both renderers use the same block-level, top-aligned box model (matching
+	margin and border) so the preview doesn't shift vertically when switching
+	render flavors. (display-canvas is inline-block-free here on purpose — an
+	inline-block strut would offset the text relative to the block font-preview.)
+*/
+font-preview {
+	box-sizing: content-box;
+	display: block;
+	margin: 10px;
+	border: 1px solid white;
+	background-color: white;
+	pointer-events: auto;
 }
 
 .pop-out__footer {
@@ -43,7 +64,7 @@ display-canvas {
 
 body:hover .pop-out__footer {
 	transition: opacity 300ms ease-in-out;
-	opacity: 0.5
+	opacity: 0.5;
 }
 
 body:hover .pop-out__footer:hover {

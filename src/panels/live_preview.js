@@ -19,8 +19,6 @@ export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 		innerHTML: '<h3>Options</h3>',
 	});
 
-	addAsChildren(basicOptionsCard, makeTextBlockOptions_basicOptions(textBlockOptions));
-
 	// Show
 	let pageOptionsCard = makeElement({
 		tag: 'div',
@@ -29,6 +27,27 @@ export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 	});
 
 	addAsChildren(pageOptionsCard, makeTextBlockOptions_pageOptions(textBlockOptions));
+
+	// Basic options include the render flavor chooser, which can toggle the
+	// visibility of the Text option and the entire Show card.
+	const basicOptions = makeTextBlockOptions_basicOptions(textBlockOptions, updateFlavorVisibility);
+	addAsChildren(basicOptionsCard, basicOptions.elements);
+
+	/**
+	 * Shows or hides flavor-dependent controls. The Glyphr Studio renderer
+	 * supports the Text input and the Show card (bounding boxes, baselines,
+	 * page outline); the native OTF / TTF renderers render live text directly,
+	 * so those controls do not apply.
+	 */
+	function updateFlavorVisibility() {
+		const isNative =
+			textBlockOptions.previewFlavor === 'otf' || textBlockOptions.previewFlavor === 'ttf';
+		basicOptions.textOptionElements.forEach((element) => {
+			element.style.display = isNative ? 'none' : '';
+		});
+		pageOptionsCard.style.display = isNative ? 'none' : '';
+	}
+	updateFlavorVisibility();
 
 	let sampleTextHeader = makeElement({
 		className: 'panel__card no-card',
@@ -175,7 +194,26 @@ function makePermutations(upper) {
 	return result;
 }
 
-function makeTextBlockOptions_basicOptions(textBlockOptions) {
+function makeTextBlockOptions_basicOptions(textBlockOptions, onFlavorChange) {
+	// Render flavor
+	let flavorLabel = makeSingleLabel(
+		'Render flavor:',
+		`Choose how the live preview is rendered:
+		<br><br>
+		<b>Glyphr Studio</b> &ndash; draws your glyph outlines directly to a
+		canvas, exactly as you've designed them. Best for inspecting your work
+		with bounding boxes, baselines, and other guides.
+		<br><br>
+		<b>OTF</b> &ndash; generates a temporary OpenType (PostScript / cubic
+		outlines) font from your project and renders it as live, editable text,
+		showing how your font behaves once exported.
+		<br><br>
+		<b>TTF</b> &ndash; generates a temporary TrueType (quadratic outlines)
+		font and renders it as live, editable text, showing how your font behaves
+		once exported.`
+	);
+	let flavorChooser = makeRenderFlavorChooser(textBlockOptions, onFlavorChange);
+
 	// Text
 	let textLabel = makeSingleLabel('Text:');
 	let textInput = makeElement({
@@ -222,7 +260,70 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 		redrawAllLivePreviews();
 	});
 
-	return [textLabel, textInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
+	// Preview kerning
+	let kerningLabel = makeSingleLabel('Preview kerning:');
+	let kerningToggle = makeDirectCheckbox(textBlockOptions, 'enableKerning', () => {
+		redrawAllLivePreviews();
+	});
+
+	// Preview ligatures
+	let ligatureLabel = makeSingleLabel('Preview ligatures:');
+	let ligatureToggle = makeDirectCheckbox(textBlockOptions, 'enableLigatures', () => {
+		redrawAllLivePreviews();
+	});
+
+	return {
+		elements: [
+			flavorLabel,
+			flavorChooser,
+			textLabel,
+			textInput,
+			fontSizeLabel,
+			fontSizeInput,
+			lineGapLabel,
+			lineGapInput,
+			kerningLabel,
+			kerningToggle,
+			ligatureLabel,
+			ligatureToggle,
+		],
+		// Elements hidden when a native (OTF / TTF) render flavor is selected
+		textOptionElements: [textLabel, textInput],
+	};
+}
+
+// Render flavor IDs map to the previewFlavor stored in TextBlockOptions.
+// 'gs' uses the display-canvas renderer; 'otf' / 'ttf' use the native
+// font-preview renderer (FontFlux-generated font binary).
+const RENDER_FLAVOR_NAMES = { gs: 'Glyphr Studio', otf: 'OTF', ttf: 'TTF' };
+
+function makeRenderFlavorChooser(textBlockOptions, onFlavorChange) {
+	const currentFlavor = textBlockOptions.previewFlavor || 'gs';
+	let wrapper = makeElement({ className: 'renderFlavorButtonWrapper' });
+
+	Object.keys(RENDER_FLAVOR_NAMES).forEach((flavorID) => {
+		let button = makeElement({
+			tag: 'button',
+			className: 'renderFlavorButton',
+			innerHTML: RENDER_FLAVOR_NAMES[flavorID],
+			attributes: { title: `Render flavor: ${RENDER_FLAVOR_NAMES[flavorID]}` },
+		});
+		if (flavorID === currentFlavor) button.setAttribute('selected', '');
+
+		button.addEventListener('click', () => {
+			textBlockOptions.previewFlavor = flavorID;
+			wrapper.querySelectorAll('.renderFlavorButton').forEach((otherButton) => {
+				otherButton.removeAttribute('selected');
+			});
+			button.setAttribute('selected', '');
+			if (onFlavorChange) onFlavorChange();
+			redrawAllLivePreviews();
+		});
+
+		wrapper.appendChild(button);
+	});
+
+	return wrapper;
 }
 
 function makeTextBlockOptions_pageOptions(textBlockOptions) {
