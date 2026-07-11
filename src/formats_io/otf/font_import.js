@@ -125,7 +125,7 @@ export async function ioFont_importFont(importedFont, testing = false, importedF
 	// Remember which font format was imported so the Ctrl+E shortcut and the
 	// File menu default to exporting that same format instead of always OTF.
 	const validFormats = ['otf', 'ttf', 'woff', 'woff2'];
-	if (validFormats.includes(importedFormat)) {
+	if (typeof importedFormat === 'string' && validFormats.includes(importedFormat)) {
 		project.settings.project.exportFormat = importedFormat;
 	}
 

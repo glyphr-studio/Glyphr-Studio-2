@@ -38,8 +38,6 @@ export class PathPoint extends GlyphElement {
 		this.type = type;
 		this.objType = 'PathPoint';
 
-		if (this.hasOverlappingHandle('h1')) this.h1.use = false;
-		if (this.hasOverlappingHandle('h2')) this.h2.use = false;
 		// log(`PathPoint.constructor`, 'end');
 	}
 
@@ -56,14 +54,9 @@ export class PathPoint extends GlyphElement {
 		const re = {
 			type: this.type,
 			p: this.p.save(verbose),
+			h1: this.h1.save(verbose),
+			h2: this.h2.save(verbose),
 		};
-
-		if (this.h1.use || (!this.h1.use && !this.hasOverlappingHandle('h1'))) {
-			re.h1 = this.h1.save(verbose);
-		}
-		if (this.h2.use || (!this.h2.use && !this.hasOverlappingHandle('h2'))) {
-			re.h2 = this.h2.save(verbose);
-		}
 
 		if (verbose) re.objType = this.objType;
 		// if (!verbose && this.__ID) delete this.__ID;
