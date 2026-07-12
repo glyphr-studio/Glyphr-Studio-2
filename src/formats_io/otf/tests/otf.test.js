@@ -89,6 +89,6 @@ describe('OTF Extended Test Font', () => {
 
 		// Metadata
 		expect(result.settings.font.family).toEqual('Oblegg');
-		expect(result.settings.font.style).toEqual('ExtendedTestRegular');
+		expect(result.settings.font.style).toEqual('Regular');
 	});
 });
