@@ -51,4 +51,4 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           source: dist/
           target: ${{ secrets.SFTP_PATH }}
-          strip_components: 2
+          strip_components: 1
