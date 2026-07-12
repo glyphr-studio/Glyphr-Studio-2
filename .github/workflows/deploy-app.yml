@@ -6,7 +6,7 @@
 #   3. SFTP_PASSWORD — your SSH/SFTP password
 #   4. SFTP_PATH     — remote directory (e.g. /home/user/public_html/app)
 
-name: Deploy Demo to Website
+name: Deploy App to Website
 
 on:
   push:
