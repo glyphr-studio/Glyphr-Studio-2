@@ -324,7 +324,11 @@ export class FontPreview extends HTMLElement {
 			const targetDocument = this.ownerDocument || document;
 			const targetWindow = targetDocument.defaultView || window;
 			const FontFaceCtor = targetWindow.FontFace || FontFace;
-			const { source, cleanup } = createFontFaceSource(buffer, resolvePreviewFlavor(this.textBlockOptions.previewFlavor), targetDocument);
+			const { source, cleanup } = createFontFaceSource(
+				buffer,
+				resolvePreviewFlavor(this.textBlockOptions.previewFlavor),
+				targetDocument
+			);
 			const fontFace = new FontFaceCtor(this.fontFamilyName, source);
 			targetDocument.fonts.add(fontFace);
 			fontFace.load().then(
@@ -605,14 +609,20 @@ export function createFontFaceSource(buffer, flavor = DEFAULT_FLAVOR, targetDocu
 	const targetWindow = targetDocument?.defaultView || window;
 	const urlCreator = targetWindow?.URL?.createObjectURL;
 
+	const format = flavor === 'ttf' ? 'truetype' : 'opentype';
+
 	if (typeof urlCreator === 'function' && typeof Blob !== 'undefined') {
 		const blob = new Blob([bytes], { type: mime });
-		const source = urlCreator(blob);
+		const url = urlCreator(blob);
+		// When the FontFace source is a string it must be a valid CSS `src`
+		// descriptor value (i.e. wrapped in `url(...)`), not a bare blob URL.
+		// Chrome tolerates a bare URL, but Firefox throws "Invalid source url".
+		const source = `url("${url}") format("${format}")`;
 		return {
 			source,
 			cleanup: () => {
 				if (typeof targetWindow?.URL?.revokeObjectURL === 'function') {
-					targetWindow.URL.revokeObjectURL(source);
+					targetWindow.URL.revokeObjectURL(url);
 				}
 			},
 		};
@@ -626,7 +636,8 @@ export function createFontFaceSource(buffer, flavor = DEFAULT_FLAVOR, targetDocu
 
 function ensureFontBytes(buffer) {
 	if (buffer instanceof ArrayBuffer) return buffer;
-	if (ArrayBuffer.isView(buffer)) return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+	if (ArrayBuffer.isView(buffer))
+		return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
 	if (typeof buffer === 'string') return new TextEncoder().encode(buffer).buffer;
 	return new Uint8Array(buffer).buffer;
 }
