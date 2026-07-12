@@ -49,6 +49,6 @@ jobs:
           host: ${{ secrets.SFTP_HOST }}
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
-          source: dist/*
+          source: dist/
           target: ${{ secrets.SFTP_PATH }}
           strip_components: 2
