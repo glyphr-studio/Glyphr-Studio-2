@@ -324,10 +324,12 @@ export class FontPreview extends HTMLElement {
 			const targetDocument = this.ownerDocument || document;
 			const targetWindow = targetDocument.defaultView || window;
 			const FontFaceCtor = targetWindow.FontFace || FontFace;
-			const fontFace = new FontFaceCtor(this.fontFamilyName, new Uint8Array(buffer));
+			const { source, cleanup } = createFontFaceSource(buffer, resolvePreviewFlavor(this.textBlockOptions.previewFlavor), targetDocument);
+			const fontFace = new FontFaceCtor(this.fontFamilyName, source);
 			targetDocument.fonts.add(fontFace);
 			fontFace.load().then(
 				() => {
+					cleanup();
 					// Drop the previous preview font and re-apply styling so the
 					// freshly-loaded font metrics are reflected.
 					if (this.currentFontFace && this.currentFontFace !== fontFace) {
@@ -338,6 +340,7 @@ export class FontPreview extends HTMLElement {
 					this.autoGrow();
 				},
 				(error) => {
+					cleanup();
 					targetDocument.fonts.delete(fontFace);
 					console.warn(`${this.constructor.name}: preview font load failed`, error);
 				}
@@ -594,6 +597,38 @@ function generateLigatureExportName(ligature) {
 		result += '.' + getUniqueGlyphName(char).replace(/^uni?/, '');
 	});
 	return result;
+}
+
+export function createFontFaceSource(buffer, flavor = DEFAULT_FLAVOR, targetDocument = document) {
+	const bytes = ensureFontBytes(buffer);
+	const mime = flavor === 'ttf' ? 'font/truetype' : 'font/opentype';
+	const targetWindow = targetDocument?.defaultView || window;
+	const urlCreator = targetWindow?.URL?.createObjectURL;
+
+	if (typeof urlCreator === 'function' && typeof Blob !== 'undefined') {
+		const blob = new Blob([bytes], { type: mime });
+		const source = urlCreator(blob);
+		return {
+			source,
+			cleanup: () => {
+				if (typeof targetWindow?.URL?.revokeObjectURL === 'function') {
+					targetWindow.URL.revokeObjectURL(source);
+				}
+			},
+		};
+	}
+
+	return {
+		source: bytes,
+		cleanup: () => {},
+	};
+}
+
+function ensureFontBytes(buffer) {
+	if (buffer instanceof ArrayBuffer) return buffer;
+	if (ArrayBuffer.isView(buffer)) return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+	if (typeof buffer === 'string') return new TextEncoder().encode(buffer).buffer;
+	return new Uint8Array(buffer).buffer;
 }
 
 function fontBufferToDataURI(buffer, flavor = DEFAULT_FLAVOR) {
