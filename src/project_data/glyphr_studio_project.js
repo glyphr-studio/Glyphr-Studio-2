@@ -76,6 +76,10 @@ export class GlyphrStudioProject {
 					customShowLabels: false,
 					customTransparency: 70,
 					custom: [],
+					gridShow: false,
+					gridTransparency: 70,
+					gridDivisions: 10,
+					gridSnap: false,
 				},
 				contextCharacters: {
 					showCharacters: false,

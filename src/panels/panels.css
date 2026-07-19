@@ -840,6 +840,20 @@ nav .item-chooser__wrapper {
 	width: 90px;
 }
 
+.guides-card__grid .divisions-container {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.guides-card__grid .divisions-container i {
+	color: var(--gray-l60);
+}
+
+.guides-card__grid input-number {
+	width: 90px;
+}
+
 .guides-card__system label {
 	grid-column: auto;
 }

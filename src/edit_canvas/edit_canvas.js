@@ -199,6 +199,7 @@ export class EditCanvas extends HTMLElement {
 				// if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
 				if (guidesSettings.systemShowGuides) drawSystemGuidelines();
 				if (guidesSettings.customShowGuides) drawCustomGuidelines();
+				if (guidesSettings.gridShow) drawGrid();
 			}
 
 			// Draw glyphs
@@ -251,6 +252,7 @@ export class EditCanvas extends HTMLElement {
 				// if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
 				if (guidesSettings.systemShowGuides) drawSystemGuidelines();
 				if (guidesSettings.customShowGuides) drawCustomGuidelines();
+				if (guidesSettings.gridShow) drawGrid();
 			}
 
 			const contextCharacterSettings = editor.project.settings.app.contextCharacters;
@@ -448,6 +450,26 @@ export class EditCanvas extends HTMLElement {
 						}
 					}
 				});
+			}
+		}
+
+		function drawGrid() {
+			const gridSquareSize =
+				editor.project.settings.font.upm / editor.project.settings.app.guides.gridDivisions;
+			let x0 = Math.floor(cXsX(0) / gridSquareSize) * gridSquareSize;
+			let x1 = Math.ceil(cXsX(width) / gridSquareSize) * gridSquareSize;
+			let y0 = Math.floor(cYsY(height) / gridSquareSize) * gridSquareSize;
+			let y1 = Math.ceil(cYsY(0) / gridSquareSize) * gridSquareSize;
+
+			setSystemGuideColor(
+				'medium',
+				transparencyToAlpha(editor.project.settings.app.guides.gridTransparency)
+			);
+			for (let x = x0; x <= x1; x += gridSquareSize) {
+				ctx.fillRect(sXcX(x), 0, 1, height);
+			}
+			for (let y = y0; y <= y1; y += gridSquareSize) {
+				ctx.fillRect(0, sYcY(y), width, 1);
 			}
 		}
 
