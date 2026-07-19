@@ -209,6 +209,12 @@ function migrate__v1_13_2_to_v2_0_0(oldProject) {
 	// Guides
 	newGuides.systemTransparency = oldColors.systemguidetransparency || 70;
 	newGuides.customTransparency = oldColors.systemguidetransparency || 70;
+	newGuides.gridDivisions = oldSettings.griddivisions;
+	newGuides.gridSnap = oldSettings.snaptogrid;
+	// Seems it's a string in v1 ???
+	let gridTransparency = Number(oldColors.gridtransparency);
+	newGuides.gridShow = gridTransparency !== 100;
+	newGuides.gridTransparency = gridTransparency;
 	if (oldGuides && Object.keys(oldGuides).length) {
 		Object.keys(oldGuides).forEach((key) => {
 			let oldGuide = oldGuides[key];
