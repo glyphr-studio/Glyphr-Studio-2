@@ -10,13 +10,7 @@ import {
 	guideColorMedium,
 } from '../project_editor/guide.js';
 import { makeActionButton } from './action_buttons.js';
-import {
-	makeDirectCheckbox,
-	makeSingleCheckbox,
-	makeSingleInput,
-	makeSingleLabel,
-	rowPad,
-} from './cards.js';
+import { makeDirectCheckbox, makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
 import { refreshPanel } from './panels.js';
 
 // --------------------------------------------------------------
