@@ -135,6 +135,8 @@ export async function ioFont_importFont(importedFont, testing = false, importedF
 
 	// log(editor);
 	if (testing) {
+		console.log(`ioFont_ImportFont TESTING=TRUE`);
+		console.log(editor.project);
 		return editor.project;
 	} else {
 		setCurrentProjectEditor(editor);

@@ -127,6 +127,7 @@ export class GlyphrStudioProject {
 		this.ligatures = {};
 		this.kerning = {};
 		this.components = {};
+		this.variables = {};
 
 		// ---------------------------------------------------------------
 		// Handle passed object
@@ -213,6 +214,14 @@ export class GlyphrStudioProject {
 		this.hydrateProjectItems(KernGroup, newProject.kerning, 'KernGroup');
 		// log('finished hydrating kern pairs - result:');
 		// log(this.kerning);
+
+		// Variables
+		log(`\nStarting variables - passed:`);
+		log(newProject.variables);
+		this.variables = newProject.variables || {};
+		log('finished hydrating variables - result:');
+		log(this.variables);
+
 
 		// log(`\n⮟this⮟`);
 		// log(this);

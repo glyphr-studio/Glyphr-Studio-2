@@ -7,6 +7,7 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
+import ffjsRobotoFlex from '../samples/ffjs-roboto-flex.json';
 /** @type {Object} */
 import * as config from './app_config.json';
 import { _DEV } from './dev_mode_includes.js';
@@ -18,6 +19,7 @@ import {
 	setCurrentProjectEditor,
 } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
+import { ioFont_importFont } from '../formats_io/otf/font_import.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -30,9 +32,10 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: config.devMode, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
-				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
+				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample .gs2 project
+				sampleFFJS: 'ffjs-roboto-flex', // {string} Load a sample .ffjs project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Live preview', // {Sentence case page name} navigate straight to a page
+				currentPage: 'Overview', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Sentence case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
@@ -65,7 +68,7 @@ export class GlyphrStudioApp {
 	/**
 	 * Starts up the app
 	 */
-	setUp() {
+	async setUp() {
 		// log(`GlyphrStudioApp.setUp`, 'start');
 		let editor = addProjectEditorAndSetAsImportTarget();
 
@@ -97,6 +100,8 @@ export class GlyphrStudioApp {
 				if (dev.sampleProject === 'bool') proj = boolTestProject;
 				// if (dev.sampleProject === 'test') proj = test;
 				editor.project = importGlyphrProjectFromText(proj);
+			} else if (typeof dev.sampleFFJS === 'string') {
+				editor.project = await ioFont_importFont(ffjsRobotoFlex, true, 'ttf');
 			}
 			if (typeof dev.currentGlyphID === 'string') editor.selectedGlyphID = dev.currentGlyphID;
 			if (typeof dev.currentPage === 'string') editor.nav.page = dev.currentPage;
