@@ -25,6 +25,7 @@ export function makePanel_Guides() {
 	const guides = getCurrentProject().settings.app.guides;
 	const showSystem = guides.systemShowGuides;
 	const showCustom = guides.customShowGuides;
+	const showGrid = guides.gridShow;
 	addAsChildren(viewOptionsCard, [
 		makeDirectCheckbox(guides, 'drawGuidesOnTop', refreshGuideChange),
 		makeElement({
@@ -79,9 +80,29 @@ export function makePanel_Guides() {
 		]);
 	}
 
+	const gridShowCheckbox = makeDirectCheckbox(guides, 'gridShow');
+	gridShowCheckbox.addEventListener('change', () => {
+		getCurrentProjectEditor().navigate();
+	});
+	addAsChildren(viewOptionsCard, [
+		gridShowCheckbox,
+		makeElement({ tag: 'h4', content: 'Grid guide' }),
+	]);
+	if (showGrid) {
+		addAsChildren(viewOptionsCard, [
+			makeElement(),
+			makeSingleLabel('Transparency'),
+			makeFancySlider(guides.gridTransparency, (newValue) => {
+				guides.gridTransparency = newValue;
+				getCurrentProjectEditor().editCanvas.redraw('guides grid transparency');
+			})
+		]);
+	}
+
 	let result = [viewOptionsCard];
 	if (showSystem) result.push(makeSystemGuidesCard());
 	if (showCustom) result.push(makeCustomGuidesCard());
+	if (showGrid) result.push(makeGridCard());
 	return result;
 }
 
@@ -272,4 +293,40 @@ function makeCustomGuideRow(guide, number) {
 	valueInput.setAttribute('title', 'Guide line position');
 
 	return [viewCheckbox, nameInput, deleteButton, colorButton, angleButton, valueInput];
+}
+
+function makeGridCard() {
+	const guides = getCurrentProject().settings.app.guides;
+	const gridCard = makeElement({
+		className: 'panel__card guides-card__grid',
+		innerHTML: '<h3>Grid</h3>',
+	});
+
+	const gridSquareSize = makeElement({
+		tag:'i',
+		innerHTML : "Grid square size: " + getCurrentProjectEditor().project.settings.font.upm / guides.gridDivisions + " units",
+	});
+	const valueInput = makeSingleInput(guides, 'gridDivisions', 'editCanvasView', 'input-number', ['change']);
+	valueInput.addEventListener('change', () => {
+		gridSquareSize.innerHTML = "Grid square size: " + getCurrentProjectEditor().project.settings.font.upm / valueInput.value + " units";
+	});
+	const divisionsContainer = makeElement({
+		tag: 'span',
+		className: 'divisions-container',
+	});
+	addAsChildren(divisionsContainer, [
+		valueInput,
+		gridSquareSize,
+	]);
+	valueInput.setAttribute('title', 'Grid divisions');
+	addAsChildren(gridCard, [
+		makeElement(),
+		makeSingleLabel('Grid divisions'),
+		divisionsContainer,
+		makeElement(),
+		makeSingleLabel('Snapping'),
+		makeDirectCheckbox(guides, 'gridSnap', undefined),
+		rowPad(),
+	]);
+	return gridCard;
 }

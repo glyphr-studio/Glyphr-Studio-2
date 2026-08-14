@@ -208,6 +208,17 @@ export class Tool_PathEdit {
 						}
 					}
 				}
+				let guides = editor.project.settings.app.guides;
+				if (guides.gridShow && guides.gridSnap) {
+					let gridSquareSize = editor.project.settings.font.upm / guides.gridDivisions;
+					const mouse = { x: cXsX(ehd.mousePosition.x), y: cYsY(ehd.mousePosition.y) };
+					const mouseSnapped = {
+						x: Math.round(mouse.x / gridSquareSize) * gridSquareSize,
+						y: Math.round(mouse.y / gridSquareSize) * gridSquareSize,
+					};
+					dx = mouseSnapped.x - this.controlPoint.x;
+					dy = mouseSnapped.y - this.controlPoint.y;
+				}
 
 				// --------------------------------------------------------------
 				// Locking
