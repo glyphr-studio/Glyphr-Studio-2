@@ -70,11 +70,21 @@ export class ProjectEditor {
 		this.subscribe = subscribe;
 		this.unsubscribe = unsubscribe;
 
+		// Navigation
+		this.nav = new Navigator();
+		this.showPageTransitions = true;
+		this.characterView = 'overview';
+		this.ligatureView = 'overview';
+		this.componentView = 'overview';
+		this.variableSetsView = 'overview';
+
 		// Selections
 		this.selectedGlyphID = false;
 		this.selectedComponentID = false;
 		this.selectedLigatureID = false;
 		this.selectedKernGroupID = false;
+		this.selectedStylisticSetID = false;
+		this.selectedAlternateID = false;
 		this.selectedCharacterRange = false;
 		this.chooserPage = {
 			characters: 0,
@@ -83,10 +93,6 @@ export class ProjectEditor {
 			kerning: 0,
 		};
 		this.kernGroupListSortBy = 'ID';
-
-		// Navigation
-		this.nav = new Navigator();
-		this.showPageTransitions = true;
 
 		// Canvas
 		/** @type {EditCanvas} */
@@ -118,6 +124,11 @@ export class ProjectEditor {
 		// Event handlers
 		this.eventHandlers = {};
 		this.selectedTool = 'resize';
+		this.toolOptions = {
+			borderRadius: 0,
+			shapeWeight: 0,
+			handwritingWeight: 40,
+		};
 
 		// MultiSelect
 		this.multiSelect = {
@@ -182,7 +193,6 @@ export class ProjectEditor {
 			// log(`Importing project...`);
 			this._project = gsp;
 			this.initializeHistory(gsp);
-			this.selectedGlyphID = 'glyph-0x41';
 		} else {
 			// log(`Setting to false`);
 			// this._project = false;
@@ -224,6 +234,8 @@ export class ProjectEditor {
 			// log(`this.selectedKernGroup: ${this.selectedKernGroup}`);
 			// log(`ProjectEditor GET selectedItem`, 'end');
 			return this.selectedKernGroup;
+		} else if (this.nav.page === 'Variable sets' && this.variableSetsView === 'alternate') {
+			return this.selectedAlternate;
 		} else {
 			// log(`Nav page not detected`);
 			// log(`ProjectEditor GET selectedItem`, 'end');
@@ -241,7 +253,13 @@ export class ProjectEditor {
 		else if (this.nav.page === 'Components') return this.selectedComponentID;
 		else if (this.nav.page === 'Ligatures') return this.selectedLigatureID;
 		else if (this.nav.page === 'Kerning') return this.selectedKernGroupID;
-		else return false;
+		else if (this.nav.page === 'Variable sets' && this.variableSetsView === 'alternate') {
+			return this.selectedAlternateID;
+		} else return false;
+	}
+
+	get selectedAlternate() {
+		return this.project.alternates[this.selectedAlternateID] || false;
 	}
 
 	/**
@@ -435,6 +453,8 @@ export class ProjectEditor {
 			// log(`this.selectedKernGroup: ${this.selectedKernGroup}`);
 			// log(`ProjectEditor SET selectedItem`, 'end');
 			this.selectedKernGroup = newItem;
+		} else if (this.nav.page === 'Variable sets' && this.variableSetsView === 'alternate') {
+			this.selectedAlternate = newItem;
 		}
 	}
 
@@ -444,11 +464,39 @@ export class ProjectEditor {
 	 */
 	set selectedItemID(newID) {
 		if (typeof newID === 'string') {
-			if (newID.startsWith('glyph-')) this.selectedGlyphID = newID;
+			if (this.project.alternates[newID]) this.selectedAlternateID = newID;
+			else if (newID.startsWith('glyph-')) this.selectedGlyphID = newID;
 			else if (newID.startsWith('comp-')) this.selectedComponentID = newID;
 			else if (newID.startsWith('liga-')) this.selectedLigatureID = newID;
 			else if (newID.startsWith('kern-')) this.selectedKernGroupID = newID;
+			else if (newID.startsWith('alt-')) {
+				this.selectedAlternateID = newID;
+			}
 		}
+	}
+
+	set selectedAlternate(newAlternate) {
+		const id = this.selectedAlternateID;
+		if (!id) return;
+		newAlternate = new Glyph(newAlternate);
+		newAlternate.id = id;
+		newAlternate.objType = 'Alternate';
+		newAlternate.parent = this.project;
+		this.project.alternates[id] = newAlternate;
+	}
+
+	set selectedAlternateID(id) {
+		this._selectedAlternateID = typeof id === 'string' && this.project.alternates[id] ? id : false;
+		this.publish('whichAlternateIsSelected', this._selectedAlternateID);
+		if (typeof window !== 'undefined') {
+			window.dispatchEvent(
+				new CustomEvent('glyphr:route-selection-change', { detail: { editor: this } })
+			);
+		}
+	}
+
+	get selectedAlternateID() {
+		return this._selectedAlternateID || false;
 	}
 
 	/**
@@ -478,6 +526,12 @@ export class ProjectEditor {
 			this._selectedGlyphID = id;
 		}
 		this.publish('whichGlyphIsSelected', this.selectedGlyphID);
+		if (this.nav?.page === 'Characters') this.navigate();
+		if (typeof window !== 'undefined') {
+			window.dispatchEvent(
+				new CustomEvent('glyphr:route-selection-change', { detail: { editor: this } })
+			);
+		}
 		// log(`ProjectEditor SET selectedGlyphID`, 'end');
 	}
 
@@ -620,6 +674,20 @@ export class ProjectEditor {
 			// log(`deleting selectedKernGroupID: ${this.selectedKernGroupID}`);
 			id = this.selectedKernGroupID;
 			if (id) this.deleteItem(id, this.project.kerning);
+		} else if (itemPageName === 'Variable sets' && this.variableSetsView === 'alternate') {
+			id = this.selectedAlternateID;
+			if (id) {
+				this.history.addWholeProjectChangePreState(`Deleted stylistic alternate: ${id}`);
+				delete this.project.alternates[id];
+				for (const set of Object.values(this.project.stylisticSets)) {
+					set.alternates = set.alternates.filter((alternateID) => alternateID !== id);
+				}
+				this.history.addWholeProjectChangePostState();
+				this.selectedAlternateID = false;
+				this.variableSetsView = 'overview';
+				this.navigate();
+				return;
+			}
 		}
 
 		const fallbackAcrossItemType = this.selectFallbackItem(itemPageName);
@@ -991,7 +1059,16 @@ export class ProjectEditor {
 	getEditCanvasWrapperBounds() {
 		// log(`getEditCanvasWrapperBounds`, 'start');
 
-		let wrapper = document.querySelector('.editor-page__edit-canvas-wrapper');
+		const mainContent = document.querySelector('#app__main-content');
+		const wrappers = mainContent
+			? [...mainContent.querySelectorAll('.editor-page__edit-canvas-wrapper')]
+			: [...document.querySelectorAll('.editor-page__edit-canvas-wrapper')];
+		const visibleWrapper = wrappers.find((wrapper) => {
+			const styles = window.getComputedStyle(wrapper);
+			return !wrapper.hidden && styles.display !== 'none' && styles.visibility !== 'hidden';
+		});
+		const wrapper =
+			visibleWrapper || wrappers[0] || document.querySelector('.editor-page__edit-canvas-wrapper');
 		// log(wrapper);
 		if (wrapper) {
 			// log(`getEditCanvasWrapperBounds`, 'end');

@@ -17,6 +17,7 @@ import { writeGposKernDataToFont } from './tables/gpos.js';
 **/
 
 let ligatureSubstitutions = [];
+let stylisticSubstitutions = [];
 let codePointGlyphIndexTable = {};
 
 /**
@@ -84,6 +85,7 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	const exportLists = populateExportList();
 	const project = getCurrentProject();
 	ligatureSubstitutions = [];
+	stylisticSubstitutions = [];
 	codePointGlyphIndexTable = {};
 	currentIndex = 0;
 	resetUIUpdateThrottle();
@@ -138,6 +140,12 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 			options.glyphs.push(exportedItem);
 		}
 	}
+
+	// Add the unencoded glyphs used by OpenType stylistic-set substitutions.
+	// They deliberately remain separate from Components and Characters so an
+	// alternate can be edited without changing either of those collections.
+	const stylisticGlyphs = generateStylisticAlternateGlyphs(project, compositeContext);
+	stylisticGlyphs.forEach((glyph) => options.glyphs.push(glyph));
 
 	if (!testing) {
 		showToast('Exporting...');
@@ -218,6 +226,8 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 		font.addGlyph(glyph);
 	});
 
+	addProjectVariableAxesToFont(font, project);
+
 	// log(`\n⮟font⮟`);
 	// log(font);
 
@@ -242,6 +252,17 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 			});
 		});
 	}
+
+	stylisticSubstitutions.forEach((substitution) => {
+		font.addSubstitution({
+			type: 'alternate',
+			feature: substitution.feature,
+			substitution: {
+				from: substitution.from,
+				alternates: substitution.alternates,
+			},
+		});
+	});
 
 	// TODO investigate advanced table values
 
@@ -567,6 +588,18 @@ function populateExportList() {
 		}
 	});
 
+	// A stylistic-set source glyph must be present in the exported cmap even if
+	// its character range is currently hidden. Otherwise the GSUB rule would
+	// reference a glyph that does not exist in the font.
+	Object.values(project.stylisticSets || {}).forEach((set) => {
+		const hexID = getHexIDFromGlyphItemID(set.baseItemID);
+		if (!hexID || checklist.includes(hexID)) return;
+		const baseGlyph = project.getItem(set.baseItemID);
+		if (!baseGlyph || !shouldExportItem(baseGlyph)) return;
+		exportGlyphs.push({ xg: baseGlyph, xc: hexID });
+		checklist.push(hexID);
+	});
+
 	exportGlyphs.sort((a, b) => a.xc - b.xc);
 
 	// log(`\n⮟exportGlyphs⮟`);
@@ -774,6 +807,97 @@ async function generateOneLigature(currentExportItem, compositeContext) {
 	}
 
 	return thisLigature;
+}
+
+/**
+ * Builds every unencoded alternate glyph and records the matching GSUB rules.
+ * @param {Object} project - current Glyphr Studio project
+ * @param {Object} compositeContext - shared composite-export bookkeeping
+ * @returns {Array<Object>} - FontFlux glyph objects
+ */
+function generateStylisticAlternateGlyphs(project, compositeContext) {
+	const result = [];
+	const usedNames = new Set();
+
+	Object.values(project.stylisticSets || {}).forEach((set) => {
+		const baseHexID = getHexIDFromGlyphItemID(set.baseItemID);
+		if (!baseHexID) return;
+		const baseName = getUniqueGlyphName(parseInt(baseHexID));
+		const alternateNames = [];
+
+		(set.alternates || []).forEach((alternateID, index) => {
+			// The Components fallback keeps projects saved by the first version of
+			// this feature exportable before they have been opened and re-saved.
+			const alternate = project.alternates?.[alternateID] || project.components?.[alternateID];
+			if (!alternate) return;
+
+			let glyphName = `${baseName}.${set.feature}.${index + 1}`;
+			let duplicate = 2;
+			while (usedNames.has(glyphName)) {
+				glyphName = `${baseName}.${set.feature}.${index + 1}.${duplicate}`;
+				duplicate++;
+			}
+			usedNames.add(glyphName);
+			alternateNames.push(glyphName);
+			result.push({
+				name: glyphName,
+				advanceWidth: alternate.advanceWidth,
+				leftSideBearing: round(alternate.leftSideBearing),
+				...buildGlyphOutline(alternate, compositeContext),
+			});
+		});
+
+		if (alternateNames.length) {
+			stylisticSubstitutions.push({
+				feature: set.feature,
+				from: baseName,
+				alternates: alternateNames,
+			});
+		}
+	});
+
+	return result;
+}
+
+/**
+ * Writes Glyphr Studio variable-axis metadata into FontFlux's fvar model.
+ * Outline interpolation requires masters, but the axes themselves remain
+ * usable by downstream font tools and survive export/import round trips.
+ * @param {FontFlux} font - FontFlux font being exported
+ * @param {Object} project - current Glyphr Studio project
+ */
+export function addProjectVariableAxesToFont(font, project) {
+	Object.values(project.variableAxes || {}).forEach((axis) => {
+		const first = Number(axis.min);
+		const last = Number(axis.max);
+		if (!Number.isFinite(first) || !Number.isFinite(last)) return;
+		const min = Math.min(first, last);
+		const max = Math.max(first, last);
+		const rawDefault = Number(axis.defaultValue);
+		const defaultValue = Number.isFinite(rawDefault)
+			? Math.min(max, Math.max(min, rawDefault))
+			: min;
+		font.addAxis({
+			tag: String(axis.tag || '')
+				.slice(0, 4)
+				.padEnd(4, 'X'),
+			name: axis.name || axis.tag,
+			min,
+			default: defaultValue,
+			max,
+		});
+	});
+}
+
+/**
+ * Gets a numeric-parseable hex ID from a Character item ID.
+ * @param {String} itemID - e.g. glyph-0x41
+ * @returns {String|false}
+ */
+function getHexIDFromGlyphItemID(itemID) {
+	if (typeof itemID !== 'string' || !itemID.startsWith('glyph-0x')) return false;
+	const hexID = itemID.substring('glyph-'.length);
+	return Number.isFinite(parseInt(hexID)) ? hexID : false;
 }
 
 /**

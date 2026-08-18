@@ -1,5 +1,5 @@
-import { makeElement } from '../../common/dom.js';
-import { animateRemove, closeAllInfoBubbles } from '../dialogs/dialogs.js';
+import { getComponentDOM, makeElement } from '../../common/dom.js';
+import { animateRemove, closeAllInfoBubbles, showMountedComponent } from '../dialogs/dialogs.js';
 import bubbleStyle from './info-bubble-popup.css?inline';
 import style from './info-bubble.css?inline';
 
@@ -34,7 +34,8 @@ export class InfoBubble extends HTMLElement {
 	 * Toggle the bubble
 	 */
 	toggle() {
-		if (document.querySelector('#bubble')) this.hide(this.entryPoint);
+		const bubble = document.querySelector('#bubble');
+		if (bubble && !bubble.hidden) this.hide(this.entryPoint);
 		else this.show();
 	}
 
@@ -46,9 +47,9 @@ export class InfoBubble extends HTMLElement {
 		closeAllInfoBubbles();
 		// put together bubble stuff
 		// log(`Making bubble...`);
-		let bubble = makeElement({
-			id: 'bubble',
-		});
+		let bubble = document.querySelector('#bubble');
+		if (!bubble) bubble = makeElement({ id: 'bubble' });
+		bubble.replaceChildren();
 		let bubbleStyles = makeElement({ tag: 'style', innerHTML: bubbleStyle });
 		bubble.appendChild(bubbleStyles);
 
@@ -71,7 +72,8 @@ export class InfoBubble extends HTMLElement {
 		content.addEventListener('mouseleave', () => this.hide(this.entryPoint));
 
 		// Add and show bubble
-		document.body.appendChild(bubble);
+		getComponentDOM().appendChild(bubble);
+		showMountedComponent(bubble);
 		let entryPointRect = this.entryPoint.getBoundingClientRect();
 		let bubbleRect = bubble.getBoundingClientRect();
 		let left = entryPointRect.x + entryPointRect.width + 2;
@@ -109,6 +111,7 @@ export class InfoBubble extends HTMLElement {
 		// log(entryPoint);
 		/** @type {HTMLElement} */
 		let bubble = document.querySelector('#bubble');
+		if (!bubble) return;
 		animateRemove(bubble, 120, 0.98, '0px');
 		// document.body.removeChild(bubble);
 		// log(`bubble has been removed`);

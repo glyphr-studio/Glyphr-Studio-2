@@ -78,6 +78,23 @@ export function makeElement({
 }
 
 /**
+ * Returns the persistent DOM host for app-level components and overlays.
+ * @param {Document=} doc - document that owns the component host
+ * @returns {HTMLElement}
+ */
+export function getComponentDOM(doc = document) {
+	let componentDOM = doc.querySelector('#app__component-dom');
+	if (!componentDOM) {
+		componentDOM = doc.createElement('div');
+		componentDOM.id = 'app__component-dom';
+		doc.body.appendChild(componentDOM);
+	}
+	componentDOM.classList.add('app__component-dom');
+	componentDOM.setAttribute('aria-label', 'Application components');
+	return componentDOM;
+}
+
+/**
  * HTML elements cannot exist without a wrapper or parent element,
  * but sometimes when we generate UI, we just want to create the children
  * without regard for who the parent will be.

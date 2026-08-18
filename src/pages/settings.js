@@ -1,9 +1,8 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { editorText } from '../app/editor_i18n.js';
+import { makeElement, textToNode } from '../common/dom.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
-import { TabControl } from '../controls/tabs/tab_control.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
-import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeSettingsTabContentApp } from './settings_app.js';
 import settingsMap from './settings_data.js';
 import { makeSettingsTabContentFont } from './settings_font.js';
@@ -15,42 +14,48 @@ import { makeSettingsTabContentProject } from './settings_project.js';
  * @returns {Element} - page content
  */
 export function makePage_Settings() {
-	const content = makeElement({
-		tag: 'div',
-		id: 'app__page',
-		innerHTML: `
-		<div class="content__page">
-			<div class="content-page__left-area">
-				<div class="content-page__nav-area">
-					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Settings' })}
-				</div>
-				<div id="content-page__panel">
-				</div>
-			</div>
-			<div class="content-page__right-area">
-			</div>
-		</div>
-		`,
+	const content = makeElement({ tag: 'div', id: 'app__page', className: 'settings-workspace' });
+	content.innerHTML = `
+		<header class="editor-content-header">
+			<div><span>${editorText('settings')}</span><h1>${editorText('settings')}</h1></div>
+		</header>
+		<div class="settings-workspace__layout">
+			<nav class="settings-workspace__tabs liquid-glass" aria-label="${editorText('settings')}"></nav>
+			<section class="settings-workspace__content liquid-glass"></section>
+		</div>`;
+
+	const tabArea = content.querySelector('.settings-workspace__tabs');
+	const panelArea = content.querySelector('.settings-workspace__content');
+	const tabs = [
+		{
+			key: 'project',
+			label: editorText('projectSettings'),
+			makeContent: makeSettingsTabContentProject,
+		},
+		{ key: 'font', label: editorText('fontSettings'), makeContent: makeSettingsTabContentFont },
+		{ key: 'app', label: editorText('appSettings'), makeContent: makeSettingsTabContentApp },
+	];
+
+	const selectTab = (selectedKey) => {
+		tabArea.querySelectorAll('button').forEach((button) => {
+			const selected = button.dataset.settingsTab === selectedKey;
+			button.classList.toggle('settings-workspace__tab--selected', selected);
+			button.setAttribute('aria-selected', String(selected));
+		});
+		const selectedTab = tabs.find((tab) => tab.key === selectedKey) || tabs[0];
+		panelArea.replaceChildren(selectedTab.makeContent());
+	};
+
+	tabs.forEach((tab) => {
+		const button = makeElement({ tag: 'button', content: tab.label });
+		button.dataset.settingsTab = tab.key;
+		button.setAttribute('type', 'button');
+		button.setAttribute('role', 'tab');
+		button.addEventListener('click', () => selectTab(tab.key));
+		tabArea.appendChild(button);
 	});
-
-	let panelArea = content.querySelector('#content-page__panel');
-	let rightArea = content.querySelector('.content-page__right-area');
-
-	const tabControl = new TabControl(rightArea);
-
-	tabControl.registerTab('Project', makeSettingsTabContentProject);
-	tabControl.registerTab('Font', makeSettingsTabContentFont);
-	tabControl.registerTab('App', makeSettingsTabContentApp);
-
-	addAsChildren(panelArea, tabControl.makeTabs());
-	tabControl.selectTab('Project');
-
-	// Page Selector
-	let l1 = content.querySelector('#nav-button-l1');
-	l1.addEventListener('click', function () {
-		toggleNavDropdown(l1);
-	});
-
+	selectTab('project');
+	if (getCurrentProjectEditor().showPageTransitions) content.classList.add('app__page-animation');
 	return content;
 }
 
@@ -89,6 +94,13 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 
 	let type = textToNode('<span></span>');
 	let input;
+	const saveChange = () => {
+		const editor = getCurrentProjectEditor();
+		editor.setProjectAsUnsaved();
+		if (settings.app.autoSave || propertyName === 'autoSave') {
+			void getGlyphrStudioApp().addAutoSaveState(editor.project);
+		}
+	};
 
 	if (settingType === 'Degree' || settingType === 'Em' || settingType === 'Number') {
 		input = makeElement({
@@ -103,6 +115,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 				showToast(`Could not save value - needs to be a number.`);
 			} else {
 				settings[groupName][propertyName] = newValue;
+				saveChange();
 			}
 			if (callback) callback();
 		});
@@ -118,12 +131,16 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 			// @ts-expect-error 'property does exist'
 			let newValue = sanitizeValueWithJSON(event.target.value);
 			settings[groupName][propertyName] = newValue;
+			saveChange();
 			if (callback) callback();
 		});
 	}
 
 	if (settingType === 'Boolean') {
-		input = makeDirectCheckbox(settings[groupName], propertyName, callback);
+		input = makeDirectCheckbox(settings[groupName], propertyName, (newValue) => {
+			if (callback) callback(newValue);
+			saveChange();
+		});
 		if (propertyName === 'showNonCharPoints') {
 			input.addEventListener('change', () => {
 				const project = getCurrentProject();
@@ -153,6 +170,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 	}
 
 	input.setAttribute('id', `settings-page-input__${groupName}-${propertyName}`);
+	label.setAttribute('for', `settings-page-input__${groupName}-${propertyName}`);
 
 	let info;
 	if (thisSetting?.description) {
@@ -171,9 +189,16 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 		info = textToNode('<span></span>');
 	}
 
+	const row = makeElement({ tag: 'div', className: 'settings-row' });
+	if (inputFirst) row.classList.add('settings-row--input-first');
+	const copy = makeElement({ tag: 'div', className: 'settings-row__copy' });
+	copy.append(label, info);
+	const control = makeElement({ tag: 'div', className: 'settings-row__control' });
+	control.append(input, type);
+	row.append(copy, control);
+
 	// log(`makeOneSettingsRow`, 'end');
-	if (inputFirst) return [input, label, info, type];
-	else return [label, info, input, type];
+	return [row];
 }
 
 /**

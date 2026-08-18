@@ -14,7 +14,7 @@ let allBlocks = [
 	unicodeBlocksSIPUnallocated,
 	unicodeBlocksTIP,
 	unicodeBlocksTIPUnallocated,
-	unicodeBlocksOther
+	unicodeBlocksOther,
 ];
 
 /**

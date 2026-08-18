@@ -6,7 +6,8 @@ import { combinePaths } from '../boolean_combine.js';
 function getBoundingBox(svgPathData) {
 	// Only works for simple M/L/C/Z paths, not arcs or complex curves
 	const nums = Array.from(svgPathData.matchAll(/[-+]?[0-9]*\.?[0-9]+/g)).map(Number);
-	let xs = [], ys = [];
+	let xs = [],
+		ys = [];
 	for (let i = 0; i < nums.length; i += 2) {
 		xs.push(nums[i]);
 		ys.push(nums[i + 1]);
@@ -50,14 +51,16 @@ describe('combinePaths', () => {
 		const result = combinePaths(testPaths, 'unite');
 		expect(result).toHaveLength(1);
 		// Expect bounding box to match the union of the two squares
-		const expected = 'M10,0 C10,0,10,5,10,5 C10,5,15,5,15,5 C15,5,15,15,15,15 C15,15,5,15,5,15 C5,15,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0 C0,0,10,0,10,0Z';
+		const expected =
+			'M10,0 C10,0,10,5,10,5 C10,5,15,5,15,5 C15,5,15,15,15,15 C15,15,5,15,5,15 C5,15,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0 C0,0,10,0,10,0Z';
 		expect(pathsRoughlyEqual(result[0].svgPathData, expected)).toBe(true);
 	});
 
 	it('should return the combined paths for the "subtract" operation', () => {
 		const result = combinePaths(testPaths, 'subtract');
 		expect(result).toHaveLength(1);
-		const expected = 'M10,0 C10,0,10,5,10,5 C10,5,5,5,5,5 C5,5,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0 C0,0,10,0,10,0Z';
+		const expected =
+			'M10,0 C10,0,10,5,10,5 C10,5,5,5,5,5 C5,5,5,10,5,10 C5,10,0,10,0,10 C0,10,0,0,0,0 C0,0,10,0,10,0Z';
 		expect(pathsRoughlyEqual(result[0].svgPathData, expected)).toBe(true);
 	});
 
@@ -65,14 +68,16 @@ describe('combinePaths', () => {
 		const result = combinePaths(testPaths, 'divide');
 		expect(result).toHaveLength(3);
 		// Get bounding boxes for each region and sort by minX/minY for stable comparison
-		const actualBoxes = result.map(r => getBoundingBox(r.svgPathData)).sort((a, b) => (a.minX - b.minX) || (a.minY - b.minY));
+		const actualBoxes = result
+			.map((r) => getBoundingBox(r.svgPathData))
+			.sort((a, b) => a.minX - b.minX || a.minY - b.minY);
 		// Update these expected boxes to match bezier-boolean's output order and values
 		const expectedBoxes = [
 			{ minX: 0, maxX: 10, minY: 0, maxY: 10 },
 			{ minX: 5, maxX: 15, minY: 5, maxY: 15 },
 			{ minX: 5, maxX: 10, minY: 5, maxY: 10 },
 		];
-		const sortedExpected = expectedBoxes.sort((a, b) => (a.minX - b.minX) || (a.minY - b.minY));
+		const sortedExpected = expectedBoxes.sort((a, b) => a.minX - b.minX || a.minY - b.minY);
 		actualBoxes.forEach((b, i) => {
 			const e = sortedExpected[i];
 			expect(Math.abs(b.minX - e.minX)).toBeLessThan(0.01);

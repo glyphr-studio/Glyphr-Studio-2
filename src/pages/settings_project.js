@@ -4,6 +4,7 @@ import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { remove } from '../common/functions.js';
 import {
 	closeEveryTypeOfDialog,
+	makeGlassDropdown,
 	showError,
 	showModalDialog,
 	showToast,
@@ -17,6 +18,7 @@ import { makeDirectCheckbox } from '../panels/cards';
 import { CharacterRange } from '../project_data/character_range.js';
 import { resolveItemLinks } from '../project_editor/cross_item_actions';
 import { makeOneSettingsRow } from './settings.js';
+import { settingsText } from './settings_i18n.js';
 
 /**
  * Makes the content for the Settings > Project tab
@@ -30,8 +32,8 @@ export function makeSettingsTabContentProject() {
 		className: 'settings-page__tab-content',
 		id: 'tab-content__project',
 		innerHTML: `
-			<h1>Project settings</h1>
-			<p>These settings affect how this Glyphr Studio Project behaves.</p>
+			<h1>${settingsText('chrome.pageTitle')}</h1>
+			<p>${settingsText('chrome.pageBody')}</p>
 		`,
 	});
 
@@ -47,27 +49,23 @@ export function makeSettingsTabContentProject() {
 		makeOneSettingsRow('project', 'id'),
 		makeOneSettingsRow('project', 'exportComponentsAsComposites'),
 		makeOneSettingsRow('project', 'importComponentsFromComposites'),
+		makeOneSettingsRow('project', 'autoKerning'),
+		makeOneSettingsRow('project', 'autoCorrectWavyLines'),
 		textToNode('<br>'),
 	]);
 
 	const rangesArea = makeElement({
 		tag: 'div',
 		innerHTML: `
-			<h2>Character ranges</h2>
-			<p>
-				Character ranges are based on the <a href="https://en.wikipedia.org/wiki/Unicode" target="_blank">Unicode Standard</a>,
-				which assigns a <a href="https://en.wikipedia.org/wiki/Hexadecimal" target="_blank">hexadecimal number</a>
-				to all possible characters in a font.
-				<a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia's Unicode Block page</a>
-				is a good place to get familiar with all the different characters it's possible to have in a font.
-			</p>
+			<h2>${settingsText('chrome.charRangesTitle')}</h2>
+			${settingsText('chrome.charRangesBody')}
 		`,
 	});
 
 	const addStandardRangeButton = makeElement({
 		tag: 'fancy-button',
 		style: 'margin-bottom: 10px;',
-		innerHTML: 'Add standard character ranges from Unicode',
+		innerHTML: settingsText('chrome.addStandardRanges'),
 		onClick: showUnicodeCharacterRangeDialog,
 	});
 	// Have to add attribute after the button is created
@@ -76,7 +74,7 @@ export function makeSettingsTabContentProject() {
 	const addCustomRangeButton = makeElement({
 		tag: 'fancy-button',
 		style: 'margin-bottom: 10px;',
-		innerHTML: 'Add a custom character range',
+		innerHTML: settingsText('chrome.addCustomRange'),
 		onClick: () => showEditCharacterRangeDialog(),
 	});
 	// Have to add attribute after the button is created
@@ -88,29 +86,13 @@ export function makeSettingsTabContentProject() {
 		addCustomRangeButton,
 		textToNode('<br>'),
 		textToNode('<br>'),
-		textToNode('<h3>Enabled character ranges</h3>'),
-		textToNode(`
-			<p>
-				These character ranges will be visible on the Characters page,
-				and they will be exported to fonts.
-				<br>
-				Hiding a character range <strong>will not</strong>
-				delete individual glyphs from the project.
-			</p>
-		`),
+		textToNode(`<h3>${settingsText('chrome.enabledRangesTitle')}</h3>`),
+		textToNode(`<p>${settingsText('chrome.enabledRangesBody')}</p>`),
 		textToNode('<div id="enabled-range-table__wrapper"></div>'),
 		textToNode('<br>'),
 		textToNode('<br>'),
-		textToNode('<h3>Hidden character ranges</h3>'),
-		textToNode(`
-			<p>
-				These are ranges with characters that are saved in your project,
-				but are not part of enabled character ranges.
-				<br>
-				These will be saved to your Glyphr Studio Project File, but
-				will not be exported to fonts.
-			</p>
-		`),
+		textToNode(`<h3>${settingsText('chrome.hiddenRangesTitle')}</h3>`),
+		textToNode(`<p>${settingsText('chrome.hiddenRangesBody')}</p>`),
 		textToNode('<div id="hidden-range-table__wrapper"></div>'),
 	]);
 
@@ -149,11 +131,11 @@ function makeEnabledRangesTable() {
 	});
 
 	addAsChildren(rangeTable, [
-		textToNode('<span class="list__column-header">Range name</span>'),
-		textToNode('<span class="list__column-header">Start</span>'),
-		textToNode('<span class="list__column-header">End</span>'),
-		textToNode('<span class="list__column-header">Characters</span>'),
-		textToNode('<span class="list__column-header">Actions</span>'),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colRangeName')}</span>`),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colStart')}</span>`),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colEnd')}</span>`),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colCharacters')}</span>`),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colActions')}</span>`),
 	]);
 
 	const project = getCurrentProject();
@@ -179,7 +161,7 @@ function makeEnabledRangesTable() {
 		addAsChildren(actions, [
 			makeElement({
 				tag: 'a',
-				innerHTML: 'Edit',
+				innerHTML: settingsText('chrome.rowEdit'),
 				onClick: () => {
 					showEditCharacterRangeDialog(range);
 				},
@@ -189,14 +171,16 @@ function makeEnabledRangesTable() {
 		if (displayRanges.length <= 1) {
 			actions.appendChild(
 				textToNode(`
-				<span disabled="disabled" title="At least one character range must be enabled">Hide</span>
+				<span disabled="disabled" title="${settingsText('chrome.rowHideDisabledTitle')}">${settingsText(
+					'chrome.rowHide'
+				)}</span>
 			`)
 			);
 		} else {
 			actions.appendChild(
 				makeElement({
 					tag: 'a',
-					innerHTML: 'Hide',
+					innerHTML: settingsText('chrome.rowHide'),
 					onClick: () => hideCharacterRange(range),
 				})
 			);
@@ -233,11 +217,11 @@ function makeHiddenRangesTable() {
 	});
 
 	addAsChildren(rangeTable, [
-		textToNode('<span class="list__column-header">Range name</span>'),
-		textToNode('<span class="list__column-header">Start</span>'),
-		textToNode('<span class="list__column-header">End</span>'),
-		textToNode('<span class="list__column-header">Characters</span>'),
-		textToNode('<span class="list__column-header">Action</span>'),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colRangeName')}</span>`),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colStart')}</span>`),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colEnd')}</span>`),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colCharacters')}</span>`),
+		textToNode(`<span class="list__column-header">${settingsText('chrome.colAction')}</span>`),
 	]);
 
 	const project = getCurrentProject();
@@ -252,7 +236,7 @@ function makeHiddenRangesTable() {
 			addAsChildren(actions, [
 				makeElement({
 					tag: 'a',
-					innerHTML: 'Show',
+					innerHTML: settingsText('chrome.rowShow'),
 					onClick: () => enableCharacterRange(range),
 				}),
 				textToNode('<span>&nbsp;&nbsp;</span>'),
@@ -262,7 +246,7 @@ function makeHiddenRangesTable() {
 				actions.appendChild(
 					makeElement({
 						tag: 'a',
-						innerHTML: 'Remove',
+						innerHTML: settingsText('chrome.rowRemove'),
 						onClick: () => removeCharacterRange(range),
 					})
 				);
@@ -270,7 +254,7 @@ function makeHiddenRangesTable() {
 				actions.appendChild(
 					makeElement({
 						tag: 'a',
-						innerHTML: 'Delete',
+						innerHTML: settingsText('chrome.rowDelete'),
 						attributes: { danger: '' },
 						onClick: () => showDeleteCharacterRangeDialog(range),
 					})
@@ -297,7 +281,7 @@ function makeHiddenRangesTable() {
 			rangeTable,
 			textToNode(`
 			<em class="span-all-columns" style="padding-top: 10px;">
-				All characters in this project are members of enabled character ranges.
+				${settingsText('chrome.allEnabledNote')}
 			</em>
 		`)
 		);
@@ -765,54 +749,51 @@ function showUnicodeCharacterRangeDialog() {
 	const content = makeElement({
 		className: 'glyph-range-chooser__wrapper',
 		innerHTML: `
-			<h1>Add character ranges from Unicode</h1>
-			<h3>Preview</h3>
-			<h3>Blocks</h3>
+			<h1>${settingsText('chrome.unicodeDialogTitle')}</h1>
+			<h3>${settingsText('chrome.unicodeBlockLabel')}</h3>
+			<div class="glyph-range-chooser__dropdown-host"></div>
+			<h3>${settingsText('chrome.unicodePreviewLabel')}</h3>
 			<div class="glyph-range-chooser__preview-area">
 				<div class="glyph-range-chooser__preview">
-					Select a character range from the right to preview it here.
+					${settingsText('chrome.unicodePreviewPlaceholder')}
 				</div>
 				<h4 id="glyph-range-chooser__preview-selected"></h4>
 				<span id="glyph-range-chooser__add-button-wrapper">
-					<fancy-button disabled id="glyph-range-chooser__add-button">Add range to project</fancy-button>
+					<fancy-button disabled id="glyph-range-chooser__add-button">${settingsText(
+						'chrome.addRangeToProject'
+					)}</fancy-button>
 				</span>
 			</div>
-			<div class="glyph-range-chooser__list-area"></div>
 		`,
 	});
 
-	const listArea = content.querySelector('.glyph-range-chooser__list-area');
+	// All Unicode blocks, keyed by a unique "begin-end" string so the
+	// dropdown's plain string value can be mapped back to its block.
+	const blocksByKey = {};
+	[...unicodeBlocksBMP, ...unicodeBlocksSMP, ...unicodeBlocksSIP, ...unicodeBlocksTIP].forEach(
+		(block) => {
+			blocksByKey[`${block.begin}-${block.end}`] = block;
+		}
+	);
 
-	addAsChildren(listArea, [
-		textToNode('<span class="list__column-header">Range name</span>'),
-		textToNode('<span class="list__column-header">Start</span>'),
-		textToNode('<span class="list__column-header">End</span>'),
-	]);
-
-	let rowWrapper;
-	unicodeBlocksBMP.forEach(processOneBlock);
-	unicodeBlocksSMP.forEach(processOneBlock);
-	unicodeBlocksSIP.forEach(processOneBlock);
-	unicodeBlocksTIP.forEach(processOneBlock);
-
-	function processOneBlock(block) {
-		rowWrapper = makeElement({
-			className: 'list__row-wrapper__selectable',
-			onClick: () => {
-				previewCharacterRange(block);
-			},
-		});
-
-		addAsChildren(rowWrapper, [
-			textToNode(`<span>${block.name}</span>`),
-			textToNode(`<code>${decToHex(block.begin)}</code>`),
-			textToNode(`<code>${decToHex(block.end)}</code>`),
-		]);
-
-		addAsChildren(listArea, rowWrapper);
-	}
+	const dropdown = makeGlassDropdown({
+		label: settingsText('chrome.unicodeBlockLabel'),
+		value: '',
+		options: Object.keys(blocksByKey).map((key) => {
+			const block = blocksByKey[key];
+			return {
+				value: key,
+				label: `${block.name}  (${decToHex(block.begin)}–${decToHex(block.end)})`,
+			};
+		}),
+		onChange: (key) => previewCharacterRange(blocksByKey[key]),
+	});
+	content.querySelector('.glyph-range-chooser__dropdown-host').appendChild(dropdown.element);
 
 	showModalDialog(content);
+	// previewCharacterRange looks up its target elements via document.querySelector,
+	// so it can only run after the modal (and this content) is mounted.
+	previewCharacterRange(blocksByKey[dropdown.value]);
 }
 
 function previewCharacterRange(range) {
@@ -823,7 +804,7 @@ function previewCharacterRange(range) {
 	const addButton = makeElement({
 		tag: 'fancy-button',
 		id: 'glyph-range-chooser__add-button',
-		content: 'Add range to project',
+		content: settingsText('chrome.addRangeToProject'),
 	});
 	addButton.addEventListener('click', () => {
 		addCharacterRangeToCurrentProject(range, updateRangesTables);

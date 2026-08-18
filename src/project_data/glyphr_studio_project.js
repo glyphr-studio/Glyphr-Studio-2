@@ -14,6 +14,8 @@ import { basicLatinOrder, CharacterRange } from './character_range.js';
 import { ComponentInstance } from './component_instance.js';
 import { KernGroup } from './kern_group.js';
 import { Path } from './path.js';
+import { StylisticSet } from './stylistic_set.js';
+import { VariableAxis } from './variable_axis.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -37,6 +39,9 @@ export class GlyphrStudioProject {
 				id: false,
 				exportComponentsAsComposites: true,
 				importComponentsFromComposites: true,
+				// Off by default so existing projects keep rendering exactly as saved
+				autoKerning: false,
+				autoCorrectWavyLines: true,
 				// Preferred font export format ('otf', 'ttf', 'woff', 'woff2').
 				// New projects default to OTF; importing a font file overwrites
 				// this with the format that was imported, so the Ctrl+E shortcut
@@ -52,7 +57,7 @@ export class GlyphrStudioProject {
 				savePreferences: false,
 				unlinkComponentInstances: true,
 				directlyDragCurves: true,
-				canvasDisplayModeFilled: true,
+				canvasDisplayModeFilled: false,
 				showNonCharPoints: false,
 				itemChooserPageSize: 256,
 				previewText: false,
@@ -127,6 +132,9 @@ export class GlyphrStudioProject {
 		this.ligatures = {};
 		this.kerning = {};
 		this.components = {};
+		this.alternates = {};
+		this.variableAxes = {};
+		this.stylisticSets = {};
 
 		// ---------------------------------------------------------------
 		// Handle passed object
@@ -190,6 +198,7 @@ export class GlyphrStudioProject {
 		// log(`\nStarting components - passed:`);
 		// log(newProject.components);
 		this.hydrateProjectItems(Glyph, newProject.components, 'Component');
+		this.hydrateProjectItems(Glyph, newProject.alternates, 'Alternate');
 		// log('finished hydrating components - result:');
 		// log(this.components);
 
@@ -214,6 +223,32 @@ export class GlyphrStudioProject {
 		// log('finished hydrating kern pairs - result:');
 		// log(this.kerning);
 
+		// Variable axes and stylistic sets are flat metadata, so they
+		// don't go through hydrateProjectItems like glyph-based items do.
+		if (newProject.variableAxes) {
+			for (const key of Object.keys(newProject.variableAxes)) {
+				this.variableAxes[key] = new VariableAxis(newProject.variableAxes[key]);
+			}
+		}
+		if (newProject.stylisticSets) {
+			for (const key of Object.keys(newProject.stylisticSets)) {
+				this.stylisticSets[key] = new StylisticSet(newProject.stylisticSets[key]);
+			}
+		}
+
+		// Projects created by the first stylistic-set implementation stored
+		// alternates in Components. Move referenced items into their dedicated
+		// collection while preserving their IDs and outlines.
+		for (const set of Object.values(this.stylisticSets)) {
+			for (const alternateID of set.alternates) {
+				if (!this.alternates[alternateID] && this.components[alternateID]) {
+					this.alternates[alternateID] = this.components[alternateID];
+					this.alternates[alternateID].objType = 'Alternate';
+					delete this.components[alternateID];
+				}
+			}
+		}
+
 		// log(`\n⮟this⮟`);
 		// log(this);
 		// log('GlyphrStudioProject.constructor', 'end');
@@ -235,7 +270,10 @@ export class GlyphrStudioProject {
 			glyphs: {},
 			ligatures: {},
 			components: {},
+			alternates: {},
 			kerning: {},
+			variableAxes: {},
+			stylisticSets: {},
 		};
 
 		// Overwriting characterRanges with .save() version
@@ -272,7 +310,10 @@ export class GlyphrStudioProject {
 		iterator(this.glyphs, 'glyphs');
 		iterator(this.ligatures, 'ligatures');
 		iterator(this.components, 'components');
+		iterator(this.alternates, 'alternates');
 		iterator(this.kerning, 'kerning');
+		iterator(this.variableAxes, 'variableAxes');
+		iterator(this.stylisticSets, 'stylisticSets');
 
 		return savedProject;
 	}
@@ -299,7 +340,9 @@ export class GlyphrStudioProject {
 		id = '' + id;
 		let result;
 
-		if (this.ligatures && id.startsWith('liga-')) {
+		if (this.alternates && this.alternates[id]) {
+			result = this.alternates[id];
+		} else if (this.ligatures && id.startsWith('liga-')) {
 			// log(`detected LIGATURE`);
 			result = this.ligatures[id] || false;
 			if (!result && forceCreateItem) {
@@ -386,6 +429,10 @@ export class GlyphrStudioProject {
 		if (objType === 'Component') {
 			destination = this.components;
 			if (!newID) newID = makeComponentID();
+		}
+		if (objType === 'Alternate') {
+			destination = this.alternates;
+			if (!newID) newID = `alt-${Date.now()}`;
 		}
 		if (objType === 'KernGroup') {
 			destination = this.kerning;
@@ -527,6 +574,7 @@ export class GlyphrStudioProject {
 			else if (id.startsWith('liga-')) result = 'Ligature';
 			else if (id.startsWith('comp-')) result = 'Component';
 			else if (id.startsWith('kern-')) result = 'Kern group';
+			else if (id.startsWith('alt-')) result = 'Alternate';
 			else result = 'Item';
 		}
 		// log(`Returning: ${result}`);
@@ -757,6 +805,12 @@ export class GlyphrStudioProject {
 			result = fun(this.components[id]);
 			aggregate = aggregate.concat(result);
 			// counter++;
+		}
+
+		// Stylistic alternates
+		for (const id of Object.keys(this.alternates)) {
+			result = fun(this.alternates[id]);
+			aggregate = aggregate.concat(result);
 		}
 
 		// Ligatures

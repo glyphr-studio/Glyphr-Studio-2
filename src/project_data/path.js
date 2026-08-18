@@ -51,6 +51,7 @@ export class Path extends GlyphElement {
 		hLock = false,
 		transformOrigin = '',
 		ratioLock = false,
+		borderRadius = 0,
 		parent = false,
 	} = {}) {
 		// log(`Path.constructor`, 'start');
@@ -63,6 +64,7 @@ export class Path extends GlyphElement {
 		this.hLock = hLock;
 		this.transformOrigin = transformOrigin;
 		this.ratioLock = ratioLock;
+		this.borderRadius = borderRadius;
 		this.parent = parent;
 		this.link = false;
 
@@ -97,6 +99,7 @@ export class Path extends GlyphElement {
 			re.transformOrigin = this.transformOrigin;
 		}
 		if (this.ratioLock) re.ratioLock = true;
+		if (this.borderRadius) re.borderRadius = this.borderRadius;
 
 		this.pathPoints.forEach((pp) => {
 			re.pathPoints.push(pp.save(verbose));
@@ -127,6 +130,7 @@ export class Path extends GlyphElement {
 		if (this.wLock) re += `${ind}wLock: ${this.wLock}\n`;
 		if (this.hLock) re += `${ind}hLock: ${this.hLock}\n`;
 		if (this.ratioLock) re += `${ind}ratioLock: ${this.ratioLock}\n`;
+		if (this.borderRadius) re += `${ind}borderRadius: ${this.borderRadius}\n`;
 
 		re += `${ind}pathPoints: [\n`;
 		this.pathPoints.forEach((pp, i) => {
@@ -208,6 +212,14 @@ export class Path extends GlyphElement {
 	get width() {
 		const w = numSan(this.maxes.xMax - this.maxes.xMin);
 		return Math.max(w, 0);
+	}
+
+	/**
+	 * Get border radius
+	 * @returns {Number}
+	 */
+	get borderRadius() {
+		return Number(this._borderRadius || 0);
 	}
 
 	/**
@@ -365,6 +377,16 @@ export class Path extends GlyphElement {
 	}
 
 	/**
+	 * set borderRadius
+	 * @param {Number} radius
+	 */
+	set borderRadius(radius) {
+		radius = Math.max(0, Number(radius) || 0);
+		this._borderRadius = radius;
+		if (radius > 0) this.applyRoundedRectangleRadius(radius);
+	}
+
+	/**
 	 * set xLock
 	 * @param {Boolean} xLock
 	 */
@@ -476,6 +498,42 @@ export class Path extends GlyphElement {
 		if (propertyName === 'y') this.yLock = false;
 		if (propertyName === 'width') this.wLock = false;
 		if (propertyName === 'height') this.hLock = false;
+	}
+
+	applyRoundedRectangleRadius(radius = this.borderRadius) {
+		if (!this.pathPoints.length || radius <= 0) return;
+		const maxes = this.maxes;
+		if (!maxes || !Number.isFinite(maxes.xMin) || !Number.isFinite(maxes.xMax)) return;
+
+		const lx = maxes.xMin;
+		const ty = maxes.yMax;
+		const rx = maxes.xMax;
+		const by = maxes.yMin;
+		const clampedRadius = Math.max(0, Math.min(radius, (rx - lx) / 2, (ty - by) / 2));
+		if (!clampedRadius) return;
+
+		const k = clampedRadius * 0.5522847498;
+		const makePoint = (x, y, h1, h2) =>
+			new PathPoint({
+				p: new ControlPoint({ coord: { x, y } }),
+				h1: h1
+					? new ControlPoint({ coord: { x: h1[0], y: h1[1] } })
+					: new ControlPoint({ use: false }),
+				h2: h2
+					? new ControlPoint({ coord: { x: h2[0], y: h2[1] } })
+					: new ControlPoint({ use: false }),
+			});
+
+		this.pathPoints = [
+			makePoint(lx + clampedRadius, ty, [lx + clampedRadius - k, ty]),
+			makePoint(rx - clampedRadius, ty, false, [rx - clampedRadius + k, ty]),
+			makePoint(rx, ty - clampedRadius, [rx, ty - clampedRadius + k]),
+			makePoint(rx, by + clampedRadius, false, [rx, by + clampedRadius - k]),
+			makePoint(rx - clampedRadius, by, [rx - clampedRadius + k, by]),
+			makePoint(lx + clampedRadius, by, false, [lx + clampedRadius - k, by]),
+			makePoint(lx, by + clampedRadius, [lx, by + clampedRadius - k]),
+			makePoint(lx, ty - clampedRadius, false, [lx, ty - clampedRadius + k]),
+		];
 	}
 
 	// --------------------------------------------------------------

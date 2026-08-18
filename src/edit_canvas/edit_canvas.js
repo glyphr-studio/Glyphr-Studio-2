@@ -2,7 +2,11 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, getColorFromRGBA, transparencyToAlpha } from '../common/colors.js';
 import { makeElement } from '../common/dom.js';
 import { clone } from '../common/functions.js';
-import { drawGlyph, drawGlyphOutlineMode } from '../display_canvas/draw_paths.js';
+import {
+	drawGlyph,
+	drawGlyphOutlineMode,
+	isCanvasDisplayModeOutlined,
+} from '../display_canvas/draw_paths.js';
 import { kernGroupSideMaxWidth } from '../project_editor/cross_item_actions.js';
 import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
 import { runQualityChecksForItem } from '../project_editor/quality_checks.js';
@@ -100,6 +104,10 @@ export class EditCanvas extends HTMLElement {
 					border-image: none;
 					outline: 0;
 				}
+				canvas {
+					touch-action: none;
+					overscroll-behavior: contain;
+				}
 				[contenteditable='true'] {
 					caret-color: transparent;
 				}
@@ -118,7 +126,8 @@ export class EditCanvas extends HTMLElement {
 			topic: '*',
 			subscriberID: `editCanvas-all`,
 			callback: () => {
-				this.redraw('subscription:editCanvas-all');
+				const activeCanvas = getCurrentProjectEditor().editCanvas;
+				if (activeCanvas?.redraw) activeCanvas.redraw('subscription:editCanvas-all');
 			},
 		});
 		// log(`EditCanvas.constructor`, 'end');
@@ -176,6 +185,7 @@ export class EditCanvas extends HTMLElement {
 		// log(`currentItemID: ${currentItemID}`);
 		const advanceWidth = currentItem?.advanceWidth || 0;
 		const itemXMax = Math.max(advanceWidth, currentItem?.maxes?.xMax || 0);
+		const canvasInk = '#f7f3ff';
 
 		if (currentItemID.startsWith('kern-')) {
 			if (requestAnimationFrame) requestAnimationFrame(redrawKernEdit);
@@ -202,10 +212,10 @@ export class EditCanvas extends HTMLElement {
 			}
 
 			// Draw glyphs
-			if (project.settings.app.canvasDisplayModeFilled) {
-				drawGlyph(currentItem, ctx, view);
-			} else {
+			if (isCanvasDisplayModeOutlined(project)) {
 				drawGlyphOutlineMode(currentItem, ctx, view);
+			} else {
+				drawGlyph(currentItem, ctx, view, 1, canvasInk);
 			}
 
 			// Draw selected shape
@@ -307,7 +317,7 @@ export class EditCanvas extends HTMLElement {
 						let thisView = clone(view);
 						thisView.dx += kernGroup.value * thisView.dz;
 						// log(thisView);
-						drawGlyph(drawItem, ctx, thisView, rightAlpha);
+						drawGlyph(drawItem, ctx, thisView, rightAlpha, canvasInk);
 					}
 				});
 
@@ -321,7 +331,7 @@ export class EditCanvas extends HTMLElement {
 						let thisView = clone(view);
 						thisView.dx -= drawItem.advanceWidth * thisView.dz;
 						// log(thisView);
-						drawGlyph(drawItem, ctx, thisView, leftAlpha);
+						drawGlyph(drawItem, ctx, thisView, leftAlpha, canvasInk);
 					}
 				});
 			}

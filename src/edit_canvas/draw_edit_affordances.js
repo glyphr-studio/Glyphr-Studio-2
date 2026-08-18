@@ -28,8 +28,8 @@ let rotateHandleHeight = 40;
 let accentBlue = accentColors.blue.l65;
 let accentGreen = accentColors.green.l65;
 let accentGray = accentColors.gray.l65;
-let pathFill = '#000';
-let pointFill = '#FFF';
+let pathFill = '#f7f3ff';
+let pointFill = '#171222';
 let multiSelectThickness = 3;
 
 // --------------------------------------------------------------

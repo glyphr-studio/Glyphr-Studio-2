@@ -1,22 +1,28 @@
 import { showAppErrorPage } from '../app/app.js';
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { makeAppTopBar } from '../app/menu.js';
+import { editorText } from '../app/editor_i18n.js';
+import { applyEditorTheme } from '../app/glass_theme.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { makeIcon } from '../common/graphics.js';
-import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
+import {
+	animateRemove,
+	closeEveryTypeOfDialog,
+	showMountedComponent,
+} from '../controls/dialogs/dialogs.js';
 import { makePage_About } from '../pages/about.js';
 import { makePage_Characters } from '../pages/characters.js';
-import { makePage_Components } from '../pages/components.js';
+import { makePage_ComponentsModern, makePage_LigaturesModern } from '../pages/collection_pages.js';
 import { makePage_GlobalActions } from '../pages/global_actions.js';
 import { makePage_Help } from '../pages/help.js';
 import { makePage_Kerning } from '../pages/kerning.js';
-import { makePage_Ligatures } from '../pages/ligatures.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { makePage_Overview } from '../pages/overview.js';
+import { makePage_OverviewModern } from '../pages/overview_modern.js';
 import { makePage_Settings } from '../pages/settings.js';
+import { makePage_VariableSets } from '../pages/variable_sets.js';
 import { makeSingleItemTypeChooserContent } from '../panels/item_chooser.js';
+import { makeEditorSidebar, makeEditorTopBar } from './editor_chrome.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -35,7 +41,7 @@ export class Navigator {
 	get tableOfContents() {
 		return {
 			Overview: {
-				pageMaker: makePage_Overview,
+				pageMaker: makePage_OverviewModern,
 				iconName: 'page_overview',
 			},
 			'Design glyphs': {
@@ -46,11 +52,15 @@ export class Navigator {
 				iconName: 'page_characters',
 			},
 			Ligatures: {
-				pageMaker: makePage_Ligatures,
+				pageMaker: makePage_LigaturesModern,
 				iconName: 'page_ligatures',
 			},
+			'Variable sets': {
+				pageMaker: makePage_VariableSets,
+				iconName: 'page_components',
+			},
 			Components: {
-				pageMaker: makePage_Components,
+				pageMaker: makePage_ComponentsModern,
 				iconName: 'page_components',
 			},
 			Refine: {
@@ -100,6 +110,18 @@ export class Navigator {
 		// log(`this.panel: ${this.panel}`);
 		// log(`editor.selectedItemID: ${getCurrentProjectEditor().selectedItemID}`);
 
+		const editor = getCurrentProjectEditor();
+		// The alternate editor (Variable sets > edit an alternate) subscribes
+		// its own edit-canvas and panel to global topics like
+		// 'whichShapeIsSelected'. Unless we're navigating to that same view,
+		// those subscriptions need to be torn down here - otherwise they keep
+		// firing after their DOM is gone, rebuilding a panel for whatever
+		// item is selected elsewhere and crashing if it has no `.shapes`.
+		if (!(this.page === 'Variable sets' && editor.variableSetsView === 'alternate')) {
+			editor.unsubscribe({ idToRemove: 'alternate.panel' });
+			editor.unsubscribe({ idToRemove: 'alternate.editCanvas' });
+		}
+
 		closeEveryTypeOfDialog();
 		const wrapper = document.querySelector('#app__wrapper');
 
@@ -109,9 +131,9 @@ export class Navigator {
 		if (wrapper) {
 			try {
 				const pageContent = this.makePageContent();
-				wrapper.innerHTML = '';
-				wrapper.appendChild(makeAppTopBar());
-				wrapper.appendChild(pageContent);
+				wrapper.classList.add('app__wrapper--editor');
+				applyEditorTheme(/** @type {HTMLElement} */ (wrapper));
+				wrapper.replaceChildren(makeEditorTopBar(), makeEditorSidebar(), pageContent);
 			} catch (e) {
 				console.warn(`Navigation failed:`, e);
 				showAppErrorPage(`Oops, navigation failed!`, e);
@@ -120,6 +142,7 @@ export class Navigator {
 		} else {
 			if (!test) console.warn(`Navigation failed: app__wrapper could not be found.`);
 		}
+		if (!test) getGlyphrStudioApp().syncHashFromEditor(getCurrentProjectEditor());
 		// log(`Navigator.navigate`, 'end');
 	}
 
@@ -153,6 +176,7 @@ export class Navigator {
 
 			pageContent = this.tableOfContents[this.page].pageMaker();
 		}
+		decorateEditorPage(pageContent, this.page);
 		// Append results
 		editorContent.appendChild(pageContent);
 
@@ -179,8 +203,43 @@ export class Navigator {
 	 */
 	get isOnEditCanvasPage() {
 		const nh = this.page;
-		return nh === 'Characters' || nh === 'Components' || nh === 'Kerning' || nh === 'Ligatures';
+		return (
+			nh === 'Characters' ||
+			nh === 'Components' ||
+			nh === 'Kerning' ||
+			nh === 'Ligatures' ||
+			(nh === 'Variable sets' && getCurrentProjectEditor().variableSetsView === 'alternate')
+		);
 	}
+}
+
+function decorateEditorPage(pageContent, pageName) {
+	pageContent
+		.querySelectorAll('[data-nav-type="PAGE"], [data-nav-type="PANEL"]')
+		.forEach((control) => control.remove());
+
+	if (
+		pageContent.querySelector(
+			'.editor-content-header, .variable-sets__header, .editor-page__context-bar'
+		)
+	)
+		return;
+	const localizedKeys = {
+		Overview: 'overview',
+		'Variable sets': 'variableSets',
+		'Live preview': 'preview',
+		'Global actions': 'globalActions',
+		Help: 'help',
+		Settings: 'settings',
+	};
+	const title = localizedKeys[pageName] ? editorText(localizedKeys[pageName]) : pageName;
+	const header = makeElement({
+		tag: 'header',
+		className: 'editor-content-header',
+		innerHTML: `<div><span>${title}</span><h1>${title}</h1></div>`,
+	});
+	pageContent.classList.add('editor-content-page-shell');
+	pageContent.prepend(header);
 }
 
 // --------------------------------------------------------------
@@ -211,6 +270,26 @@ export function makeNavButtonContent(title, superTitle) {
 	`;
 }
 
+/**
+ * New item selector used by edit workspaces. It deliberately does not use
+ * the legacy EDITING navigation contract.
+ */
+export function makeItemSelectorButton(title) {
+	return `
+		<button data-nav-type="ITEM" class="editor-page__item-selector liquid-glass" id="editor-item-selector" type="button">
+			${makeItemSelectorContent(title)}
+		</button>
+	`;
+}
+
+export function makeItemSelectorContent(title) {
+	return `
+		<span class="editor-page__item-selector-label">${editorText('editing')}</span>
+		<strong title="${title}">${title}</strong>
+		<span class="editor-page__item-selector-action">${editorText('chooseItem')}</span>
+	`;
+}
+
 export function toggleNavDropdown(parentElement) {
 	closeAllNavMenus();
 	showNavDropdown(parentElement);
@@ -224,7 +303,10 @@ export function toggleNavDropdown(parentElement) {
  */
 export function closeAllNavMenus(isChooserMenu = false) {
 	// log(`closeAllNavMenus`, 'start');
-	let navMenus = document.querySelectorAll('nav');
+	// Only the legacy dropdown navs (nav-dropdown-page / -chooser / -panel) are
+	// transient popovers meant to be closed here. The persistent sidebar nav
+	// (editor_chrome.js) is also a <nav> element but must never be hidden by this.
+	let navMenus = document.querySelectorAll('nav[id^="nav-dropdown"]');
 	// log(navMenus);
 	navMenus.forEach((elem) => {
 		if (isChooserMenu) {
@@ -241,7 +323,6 @@ export function showNavDropdown(parentElement) {
 	let size = '500px';
 	let navID;
 	let rect = parentElement.getBoundingClientRect();
-	let parentStyle = getComputedStyle(parentElement);
 	let top = rect.top + rect.height - 3;
 
 	let dropdownContent = makeElement({ tag: 'h3', content: 'Uninitialized' });
@@ -254,7 +335,7 @@ export function showNavDropdown(parentElement) {
 		navID = 'nav-dropdown-page';
 	}
 
-	if (dropdownType === 'EDITING') {
+	if (dropdownType === 'ITEM') {
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();
 		dropdownContent = makeSingleItemTypeChooserContent(editor.nav.page, (itemID) => {
@@ -282,19 +363,44 @@ export function showNavDropdown(parentElement) {
 		navID = 'nav-dropdown-panel';
 	}
 
-	let dropDown = makeElement({
-		tag: 'nav',
-		id: navID,
-		attributes: { tabindex: '-1' },
-		style: `
-			left: ${rect.left + 1}px;
+	let dropDown = document.querySelector(`#${navID}`);
+	if (!dropDown) {
+		dropDown = makeElement({
+			tag: 'nav',
+			id: navID,
+			attributes: { tabindex: '-1' },
+		});
+	}
+	dropDown.classList.toggle('nav-dropdown-chooser', navID === 'nav-dropdown-chooser');
+	dropDown.replaceChildren();
+	const viewportPadding = 12;
+	const requestedWidth = size.endsWith('%')
+		? (window.innerWidth * parseFloat(size)) / 100
+		: parseFloat(size);
+	const dropdownWidth = Math.min(
+		window.innerWidth - viewportPadding * 2,
+		Math.max(rect.width, requestedWidth || rect.width)
+	);
+	const left = Math.min(
+		Math.max(viewportPadding, rect.left),
+		window.innerWidth - dropdownWidth - viewportPadding
+	);
+	const spaceBelow = window.innerHeight - top - viewportPadding;
+	const spaceAbove = rect.top - viewportPadding;
+	const openAbove = spaceBelow < 280 && spaceAbove > spaceBelow;
+	if (openAbove) top = Math.max(viewportPadding, rect.top - Math.min(560, spaceAbove));
+	dropDown.setAttribute(
+		'style',
+		`
+			position: fixed;
+			left: ${left}px;
 			top: ${top}px;
-			min-width: ${size};
-			max-width: 60%;
-			background-color: ${parentStyle.backgroundColor};
-			border-color: ${parentStyle.backgroundColor};
-		`,
-	});
+			width: ${dropdownWidth}px;
+			min-width: ${Math.min(rect.width, dropdownWidth)}px;
+			max-width: calc(100vw - ${viewportPadding * 2}px);
+			max-height: ${Math.max(180, openAbove ? spaceAbove : spaceBelow)}px;
+		`
+	);
 
 	addAsChildren(dropDown, dropdownContent);
 	// log(`dropDown:`);
@@ -305,6 +411,8 @@ export function showNavDropdown(parentElement) {
 	// let appWrapper = document.querySelector('#app__wrapper');
 	// appWrapper.appendChild(dropDown).focus();
 	insertAfter(parentElement, dropDown);
+	showMountedComponent(dropDown);
+	dropDown.focus();
 
 	// log(`showNavDropdown`, 'end');
 }

@@ -66,7 +66,7 @@ function makeLicenseInfo() {
 		<br>
 		<div class="page__card">
 			<h3>Glyphr Studio</h3>
-			<a href="https://www.glyphrstudio.com/" target="_blank">glyphrstudio.com</a>
+			<a href="https://www.glyphrstudio.com/">glyphrstudio.com</a>
 			<br><br>
 			The Glyphr Studio App is licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>,
@@ -80,7 +80,7 @@ function makeLicenseInfo() {
 		<h2>Fonts you create</h2>
 		<p>
 			Any font you create belongs 100% to you, and you must decide how to license it.<br>
-			You can find out <a href="https://www.glyphrstudio.com/help/about/licensing.html" target="_blank">
+			You can find out <a href="https://www.glyphrstudio.com/help/about/licensing.html">
 			more about licensing on the Help site</a>.
 		</p>
 
@@ -180,7 +180,7 @@ function makeVersionInfo() {
 
 			<h2>More details</h2>
 			<p>
-				More information about this and past versions of the Glyphr Studio app can be found on the <a href="https://www.glyphrstudio.com/blog/" target="_blank">Glyphr Studio Blog</a>, the <a href="https://github.com/glyphr-studio/Glyphr-Studio-2/releases" target="_blank">Glyphr Studio 2 GitHub > Releases</a> page, or the <a href="https://www.glyphrstudio.com/help/about/updates.html" target="_blank">Glyphr Studio 2 Help > Updates</a> page.
+				More information about this and past versions of the Glyphr Studio app can be found on the <a href="https://www.glyphrstudio.com/blog/">Glyphr Studio Blog</a>, the <a href="https://github.com/glyphr-studio/Glyphr-Studio-2/releases" target="_blank">Glyphr Studio 2 GitHub > Releases</a> page, or the <a href="https://www.glyphrstudio.com/help/about/updates.html">Glyphr Studio 2 Help > Updates</a> page.
 			</p>
 
 
@@ -219,9 +219,9 @@ export function makeContributeContent() {
 					<strong>Send Feedback</strong> -
 					Use new features and let us know if you run into issues.  Follow us on
 					<a href="https://typo.social/@glyphrstudio" target="_blank">Mastodon</a>,
-					<a href="https://bsky.app/profile/glyphrstudio.com" target="_blank">Bluesky</a>, or
+					<a href="https://bsky.app/profile/glyphrstudio.com">Bluesky</a>, or
 					<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">Reddit</a>.
-					Read the <a href="http://www.glyphrstudio.com/blog/" target="_blank">blog</a>,
+					Read the <a href="http://www.glyphrstudio.com/blog/">blog</a>,
 					and participate in discussions. Be vocal, and let us know what we should do next!
 					<br>
 				</li>
@@ -255,23 +255,23 @@ function makeContactInfo() {
 			<div class="about-page__contact-table">
 				<h2>Web</h2>
 				<span>Main site:</span>
-				<a href="https://www.glyphrstudio.com" target="_blank">glyphrstudio.com</a>
+				<a href="https://www.glyphrstudio.com">glyphrstudio.com</a>
 
 				<span>Email:</span>
 				${emailLink()}
 
 				<span>Help for Glyphr Studio v2:</span>
-				<a href="https://www.glyphrstudio.com/help" target="_blank">glyphrstudio.com/help</a>
+				<a href="https://www.glyphrstudio.com/help">glyphrstudio.com/help</a>
 
 				<span>Blog:</span>
-				<a href="http://www.glyphrstudio.com/blog/" target="_blank">glyphrstudio.com/blog</a>
+				<a href="http://www.glyphrstudio.com/blog/">glyphrstudio.com/blog</a>
 
 				<h2>Socials</h2>
 				<span>Mastodon:</span>
 				<a href="https://typo.social/@glyphrstudio" target="_blank">@glyphrstudio@typo.social</a>
 
 				<span>Bluesky:</span>
-				<a href="https://bsky.app/profile/glyphrstudio.com" target="_blank">@glyphrstudio.com</a>
+				<a href="https://bsky.app/profile/glyphrstudio.com">@glyphrstudio.com</a>
 
 				<span>Reddit:</span>
 				<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">reddit.com/r/GlyphrStudio</a>
@@ -307,7 +307,7 @@ function makeFamilyInfo() {
 					Convert fonts to JSON, make edits, then convert them back!
 					Font Flux JS is a JavaScript library for parsing OpenType/TrueType font binaries into structured JSON, then exporting that JSON back into a valid font binary. Every table is fully parsed into human-readable fields!
 					<br/><br/>
-					<a href="https://www.glyprstudio.com/font-flux-js" target="_blank">glyphrstudio.com/font-flux-js</a>
+					<a href="https://www.glyphrstudio.com/font-flux-js">glyphrstudio.com/font-flux-js</a>
 					<br/>
 					<a href="https://www.github.com/mattlag/font-flux-js" target="_blank">github.com/mattlag/font-flux-js</a>
 				</p>
@@ -321,7 +321,7 @@ function makeFamilyInfo() {
 					Useful for typeface designers, or regular humans looking for funky glyphs.
 					Unicode Ninja provides quick access to information about characters you know about, and easily discover characters you don't know about.
 					<br/><br/>
-					<a href="https://www.glyprstudio.com/unicodeninja" target="_blank">glyphrstudio.com/unicodeninja</a>
+					<a href="https://www.glyphrstudio.com/unicodeninja">glyphrstudio.com/unicodeninja</a>
 					<br/>
 					<a href="https://www.github.com/mattlag/unicodeninja" target="_blank">github.com/mattlag/unicodeninja</a>
 				</p>
@@ -335,7 +335,7 @@ function makeFamilyInfo() {
 					Useful for comparing different versions of a font, trying to identify what exactly is
 					making it work (or not).
 					<br/><br/>
-					<a href="https://www.glyprstudio.com/fontdiff" target="_blank">glyphrstudio.com/fontdiff</a>
+					<a href="https://www.glyphrstudio.com/fontdiff">glyphrstudio.com/fontdiff</a>
 					<br/>
 					<a href="https://www.github.com/mattlag/fontdiff" target="_blank">github.com/mattlag/fontdiff</a>
 				</p>

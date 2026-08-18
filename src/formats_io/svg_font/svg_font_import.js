@@ -415,10 +415,10 @@ function getKernMembersByUnicodeID(ids, chars, arr, limit) {
 						// log(`Comparing idHex: ${idHex} with charHex: ${charHex}`);
 						if (charHex !== false && idHex === charHex) {
 							if (Number(charHex) < limit) arr = arr.concat(charHex);
+						}
 					}
 				}
 			}
-		}
 		}
 	}
 

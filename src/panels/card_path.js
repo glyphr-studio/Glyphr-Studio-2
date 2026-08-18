@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
+import { applyPathWeight } from '../edit_canvas/tools/path_weight.js';
 import { makeActionsArea_Path } from './actions.js';
 import {
 	makeInputs_position,
@@ -29,20 +30,19 @@ export function makeCard_pathAttributes(path) {
 	let nameLabel = makeSingleLabel('path name');
 	let nameInput = makeSingleInput(path, 'name', 'currentPath', 'input');
 
-	// Winding
+	// Shape style
 	let windingInfo = makeElement({
 		tag: 'label',
 		className: 'info',
 		innerHTML: `
-			<span>winding</span>
+			<span>shape style</span>
 			<info-bubble>
-				<h1>Winding</h1>
-				Ordered Path Points that make up a path outline have either a clockwise or counter-clockwise direction.
-				This path direction is also known as a path&rsquo;s &ldquo;winding&rdquo;.
-				Paths with the same winding will visually combine, opposite windings will cut-out.
+				<h1>Shape style</h1>
+				Outlined and Filled identify the two directions used by font paths.
+				Paths with the same style visually combine, while opposite styles create cut-outs.
 				<br><br>
 				For example, to create the glyph &lsquo;o&rsquo;, draw two overlapping oval paths.
-				If the outside oval has a clockwise winding, select the inside oval and change it&rsquo;s winding to counter-clockwise.
+				Set the outside oval to Outlined, then select the inside oval and change it to Filled.
 				This will result in the inside oval appearing transparent (or cutting out) in relation to the outside oval.
 				<br><br>
 				<div style="display: grid; gap: 10px; grid-template-columns: 1fr 1fr; width: 350px;">
@@ -65,7 +65,7 @@ export function makeCard_pathAttributes(path) {
 
 	let windingToggle = makeElement({
 		tag: 'option-toggle',
-		innerHTML: `<option>Clockwise</option><option>Counter-clockwise</option>`,
+		innerHTML: `<option>Outlined</option><option>Filled</option>`,
 		attributes: {
 			'selected-name': getWindingName(path.winding),
 			'selected-value': getWindingName(path.winding),
@@ -87,6 +87,11 @@ export function makeCard_pathAttributes(path) {
 		},
 	});
 
+	// Border radius and shape sizing
+	let borderRadiusLabel = makeSingleLabel('border radius');
+	let borderRadiusInput = makeSingleInput(path, 'borderRadius', 'currentPath', 'input-number');
+	let weightInputs = makePathWeightInputs([path]);
+
 	// Position and Size
 	let positionInputs = makeInputs_position(path);
 	let sizeInputs = makeInputs_size(path);
@@ -97,6 +102,9 @@ export function makeCard_pathAttributes(path) {
 		nameInput,
 		windingInfo,
 		windingToggle,
+		borderRadiusLabel,
+		borderRadiusInput,
+		weightInputs,
 		positionInputs,
 		sizeInputs,
 	]);
@@ -111,8 +119,8 @@ function getWindingName(winding) {
 	// log(`getWindingName`, 'start');
 	// log(`winding: ${winding}`);
 	let name = 'Unknown';
-	if (winding > 0) name = 'Counter-clockwise';
-	if (winding < 0) name = 'Clockwise';
+	if (winding > 0) name = 'Filled';
+	if (winding < 0) name = 'Outlined';
 	// log(`returning name: ${name}`);
 	// log(`getWindingName`, 'end');
 	return name;
@@ -127,7 +135,38 @@ export function makeCard_multiSelectPathAttributes(virtualGlyph) {
 
 	addAsChildren(multiPathCard, makeInputs_position(virtualGlyph));
 	addAsChildren(multiPathCard, makeInputs_size(virtualGlyph));
+	addAsChildren(multiPathCard, makePathWeightInputs(virtualGlyph.shapes));
 	addAsChildren(multiPathCard, makeActionsArea_Path());
 
 	return multiPathCard;
+}
+
+function makePathWeightInputs(paths) {
+	const label = makeSingleLabel(
+		'weight',
+		`Apply weight directly to the selected character path outlines.<br><br>
+		Positive values make paths heavier and negative values make them lighter.`
+	);
+	const controls = makeElement({
+		className: 'doubleInput',
+		innerHTML: `
+			<input-number value="20" id="path-weight-input"></input-number>
+			<span></span>
+			<fancy-button secondary id="path-weight-apply">Apply</fancy-button>
+		`,
+	});
+	const input = controls.querySelector('#path-weight-input');
+	controls.querySelector('#path-weight-apply').addEventListener('click', () => {
+		const editor = getCurrentProjectEditor();
+		const amount = Number(input.getAttribute('value'));
+		const changedPaths = applyPathWeight(paths, amount);
+		if (!changedPaths) return;
+		editor.history.addState(
+			`Changed weight for ${changedPaths} character ${changedPaths === 1 ? 'path' : 'paths'}`
+		);
+		editor.publish('currentItem', editor.selectedItem);
+		editor.publish('currentPath', paths[0]);
+		editor.editCanvas.redraw('path weight changed');
+	});
+	return [label, controls];
 }

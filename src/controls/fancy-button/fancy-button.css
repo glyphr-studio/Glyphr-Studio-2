@@ -12,6 +12,7 @@
 	margin-right: 8px;
 	display: inline-block;
 	width: max-content;
+	max-width: 100%;
 	min-width: 40px;
 	--fancy-gradient: linear-gradient(
 		135deg,
@@ -22,8 +23,8 @@
 		var(--blue-l55),
 		var(--purple-l45)
 	);
-	--fancy-animation: gradFade 120s linear infinite;
-	--fancy-background-size: 500% 500%;
+	--fancy-animation: none;
+	--fancy-background-size: 100% 100%;
 }
 
 @keyframes gradFade {
@@ -54,16 +55,23 @@
 	top: 0px;
 	left: 0px;
 	margin: 0px;
-	padding: 2px;
+	padding: 1px;
 	height: 100%;
 	width: 100%;
+	min-height: 40px;
 	border-style: solid;
 	border-width: 0px;
-	border-radius: 5px;
+	border-radius: 13px;
 	animation: var(--fancy-animation);
-	box-shadow: var(--l2-shadow);
-	background: var(--fancy-gradient);
+	box-shadow: 0 10px 24px rgba(68, 31, 154, 0.24), inset 0 1px rgba(255, 255, 255, 0.14);
+	background: linear-gradient(135deg, #8a55ff, #5b2fd4);
 	background-size: var(--fancy-background-size);
+	transition: transform 100ms ease, box-shadow 100ms ease, background 100ms ease;
+}
+
+.wrapper:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 14px 30px rgba(68, 31, 154, 0.32), inset 0 1px rgba(255, 255, 255, 0.18);
 }
 
 .wrapper:hover,
@@ -80,34 +88,37 @@
 .buttonContent {
 	display: flex;
 	align-items: center;
-	padding: 0px;
-	border-radius: 3px;
-	background-color: transparent;
+	justify-content: center;
+	padding: 0px 4px;
+	border-radius: 12px;
+	background-color: rgba(21, 16, 34, 0.38);
 	width: 100%;
 	height: 100%;
 }
 
 .buttonText {
 	display: inline-block;
-	width: max-content;
+	width: auto;
+	max-width: 100%;
 	height: max-content;
 	margin: 5px 10px;
 	color: white;
+	font-family: var(--app-ui-font, var(--font-library-font, Arial, sans-serif));
+	font-weight: 650;
 	animation: var(--fancy-animation);
 	background-color: transparent;
+	white-space: normal;
 }
 
 /* Secondary */
 .wrapper[secondary] .buttonContent {
-	background-color: rgba(255, 255, 255, 0.95);
+	background-color: rgba(25, 19, 40, 0.96);
 }
 
 .wrapper[secondary] .buttonText {
-	background: var(--fancy-gradient);
-	background-size: var(--fancy-background-size);
-	-webkit-background-clip: text;
-	background-clip: text;
-	-webkit-text-fill-color: transparent;
+	background: none;
+	color: #e6dcff;
+	-webkit-text-fill-color: currentColor;
 }
 
 .wrapper:hover .buttonContent,
@@ -117,29 +128,23 @@
 
 .wrapper[secondary]:hover .buttonContent,
 .wrapper[secondary]:active .buttonContent {
-	background-color: white;
+	background-color: var(--fancy-secondary-hover, white);
 }
 
 /* Minimal */
 .wrapper[minimal] {
 	padding: 1px;
 	box-shadow: var(--l1-shadow);
-	background: linear-gradient(135deg,
-		var(--blue-l85),
-		var(--blue-l90)
-	);
+	background: linear-gradient(135deg, var(--blue-l85), var(--blue-l90));
 	animation: var(--fancy-animation);
 }
 
 .wrapper[minimal] .buttonContent {
-	background-color: rgba(255, 255, 255, 0.95);
+	background-color: var(--fancy-secondary-surface, rgba(255, 255, 255, 0.95));
 }
 
 .wrapper[minimal] .buttonText {
-	background: linear-gradient(135deg,
-		var(--blue-l70),
-		var(--blue-l90)
-	);
+	background: linear-gradient(135deg, var(--blue-l70), var(--blue-l90));
 	background-size: var(--fancy-background-size);
 	-webkit-background-clip: text;
 	background-clip: text;
@@ -149,23 +154,17 @@
 .wrapper[minimal]:hover,
 .wrapper[minimal]:active {
 	box-shadow: var(--l2-shadow);
-	background: linear-gradient(135deg,
-		var(--blue-l65),
-		var(--blue-l70)
-	);
+	background: linear-gradient(135deg, var(--blue-l65), var(--blue-l70));
 }
 
 .wrapper[minimal]:hover .buttonContent,
 .wrapper[minimal]:active .buttonContent {
-	background-color: white;
+	background-color: var(--fancy-secondary-hover, white);
 }
 
 .wrapper[minimal]:hover .buttonText,
 .wrapper[minimal]:active .buttonText {
-	background: linear-gradient(135deg,
-		var(--blue-l40),
-		var(--blue-l70)
-	);
+	background: linear-gradient(135deg, var(--blue-l40), var(--blue-l70));
 	background-size: var(--fancy-background-size);
 	-webkit-background-clip: text;
 	background-clip: text;
@@ -174,9 +173,7 @@
 
 /* Danger */
 .wrapper[danger] {
-	background: linear-gradient(135deg,
-			var(--orange-l50),
-			var(--red));
+	background: linear-gradient(135deg, var(--orange-l50), var(--red));
 	animation: var(--fancy-animation);
 }
 

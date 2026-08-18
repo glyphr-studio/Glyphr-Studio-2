@@ -15,7 +15,8 @@ import { makePanel, refreshPanel } from '../panels/panels.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import {
 	makeNavButton,
-	makeNavButtonContent,
+	makeItemSelectorButton,
+	makeItemSelectorContent,
 	toggleNavDropdown,
 } from '../project_editor/navigator.js';
 
@@ -84,11 +85,7 @@ export function makePage_Kerning() {
 	}
 
 	const selectedKernGroup = editor.selectedKernGroup;
-	const l2Button = makeNavButton({
-		level: 'l2',
-		superTitle: 'EDITING',
-		title: selectedKernGroup.name,
-	});
+	const l2Button = makeItemSelectorButton(selectedKernGroup.name);
 	const l3Button = makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel });
 
 	navArea.appendChild(textToNode(l2Button));
@@ -103,7 +100,7 @@ export function makePage_Kerning() {
 	canvasArea.appendChild(editCanvas);
 
 	// Kern Selector
-	let l2 = content.querySelector('#nav-button-l2');
+	let l2 = content.querySelector('#editor-item-selector');
 	l2.addEventListener('click', function () {
 		toggleNavDropdown(l2);
 	});
@@ -112,7 +109,7 @@ export function makePage_Kerning() {
 		subscriberID: 'nav.kernChooserButton',
 		callback: () => {
 			if (editor.selectedKernGroup) {
-				l2.innerHTML = makeNavButtonContent(editor.selectedKernGroup?.name, 'EDITING');
+				l2.innerHTML = makeItemSelectorContent(editor.selectedKernGroup?.name);
 			}
 		},
 	});
@@ -712,7 +709,7 @@ export function makeCharChip(charID) {
 		attributes: { title: title },
 	});
 
-	if(!exists) {
+	if (!exists) {
 		chip.classList.add('warning');
 		chip.setAttribute('title', `${title}\nWarning: This character does not exist in the project.`);
 	}

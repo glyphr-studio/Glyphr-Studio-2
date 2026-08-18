@@ -74,7 +74,7 @@ export function handleKeyPress(event) {
 	// o
 	if (ehd.isCtrlDown && key === 'o') {
 		cancelDefaultEventActions(event);
-		window.open('http://glyphrstudio.com/app', '_blank');
+		window.location.href = 'https://glyphrstudio.com/app/';
 	}
 
 	// q
@@ -213,8 +213,9 @@ export function handleKeyPress(event) {
 		// o, q - new oval
 		if (key === 'o' || key === 'q') selectTool('newOval');
 
-		// h, w - new path
-		if (key === 'h' || key === 'w') selectTool('newPath');
+		// w - new path; h - handwriting
+		if (key === 'w') selectTool('newPath');
+		if (key === 'h') selectTool('handwriting');
 
 		// u, e - path add point
 		if (key === 'u' || key === 'e') selectTool('pathAddPoint');

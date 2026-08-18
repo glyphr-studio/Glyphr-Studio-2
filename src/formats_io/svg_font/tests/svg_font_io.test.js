@@ -36,6 +36,4 @@ describe('SVG Font', () => {
 		const kernValues = kerns.map((kern) => kern.value).sort((a, b) => a - b);
 		expect(kernValues).toEqual([100, 100, 100, 200, 200, 200, 300, 300, 300]);
 	});
-
-
 });

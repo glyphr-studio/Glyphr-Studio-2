@@ -18,12 +18,16 @@ export function updateCursor(tool) {
 		if (tool === 'newRectangle') {
 			// log('setting cursor to crosshairSquare');
 			setCursor('crosshairSquare');
-		} else if (tool === 'newOval') {
+		} else if (tool === 'newOval' || tool === 'newCircle') {
 			// log('setting cursor to crosshairCircle');
 			setCursor('crosshairCircle');
+		} else if (tool === 'measure') {
+			setCursor('crosshair');
 		} else if (tool === 'newPath') {
 			// log('setting cursor to penPlus');
 			setCursor('penPlus');
+		} else if (tool === 'handwriting') {
+			setCursor('crosshair');
 		} else if (tool === 'pathEdit') {
 			// log('setting cursor to pen');
 			setCursor('pen');

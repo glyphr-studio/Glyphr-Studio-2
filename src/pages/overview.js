@@ -39,7 +39,10 @@ export function makePage_Overview() {
 		editor.selectedItemID = itemID;
 		// log(`editor.selectedItemID: ${editor.selectedItemID}`);
 
-		if (itemID.startsWith('glyph-')) editor.nav.page = 'Characters';
+		if (itemID.startsWith('glyph-')) {
+			editor.nav.page = 'Characters';
+			editor.characterView = 'edit';
+		}
 		else if (itemID.startsWith('liga-')) editor.nav.page = 'Ligatures';
 		else if (itemID.startsWith('comp-')) editor.nav.page = 'Components';
 		else if (itemID.startsWith('kern-')) editor.nav.page = 'Kerning';
@@ -80,9 +83,9 @@ export function makePage_Overview() {
 		<h2>Welcome to Glyphr Studio!</h2>
 		<p>
 			You can stay up to date on the latest news over at the
-			<a href="https://www.glyphrstudio.com/blog" target="_blank">Glyphr Studio Blog</a>.
+			<a href="https://www.glyphrstudio.com/blog">Glyphr Studio Blog</a>.
 			We also have a
-			<a href="https://www.glyphrstudio.com/help/tutorial" target="_blank">tutorial</a>
+			<a href="https://www.glyphrstudio.com/help/tutorial">tutorial</a>
 			over on the Help and Docs site that will help you walk through some of the key steps
 			to designing your first font.
 			<br><br>

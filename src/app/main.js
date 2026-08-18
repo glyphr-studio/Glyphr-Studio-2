@@ -11,7 +11,11 @@ import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 
 /* Other stuff */
 import asciiLogo from '../common/graphics/ascii-wordmark-vertical.txt?raw';
-import { closeAllInfoBubbles, closeAllOptionChoosers } from '../controls/dialogs/dialogs.js';
+import {
+	closeAllInfoBubbles,
+	closeAllOptionChoosers,
+	initializeComponentDOM,
+} from '../controls/dialogs/dialogs.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { closeAllNavMenus } from '../project_editor/navigator.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
@@ -20,7 +24,7 @@ import { GlyphrStudioApp, showAppErrorPage } from './app.js';
 /**
  * First function to run when the browser starts
  */
-export function glyphrStudioOnLoad() {
+export async function glyphrStudioOnLoad() {
 	console.info(`%c${asciiLogo}\n`, 'color: hsl(200, 100%, 41%);');
 	try {
 		const app = getGlyphrStudioApp();
@@ -40,9 +44,10 @@ export function glyphrStudioOnLoad() {
 
 		if (passPreChecks()) {
 			registerCustomComponents();
+			initializeComponentDOM();
 			addGlobalEventListeners();
 			// Load project
-			app.setUp();
+			await app.setUp();
 			// log(app);
 		} else {
 			// log('did NOT pass pre-checks');
@@ -96,7 +101,7 @@ function registerCustomComponents() {
 function addGlobalEventListeners() {
 	// if (!getGlyphrStudioApp().settings.dev.mode) {
 	window.addEventListener('mouseup', (event) => {
-		let navElement = document.querySelector('nav');
+		let navElement = document.querySelector('nav[id^="nav-dropdown"]');
 
 		// @ts-expect-error 'property does exist'
 		if (!(navElement && navElement.contains(event.target))) {

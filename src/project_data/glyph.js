@@ -24,6 +24,7 @@ import { Path } from './path.js';
  *   Glyphs (Characters)
  *   Ligatures
  *   Components
+ *   Stylistic alternates
  */
 export class Glyph extends GlyphElement {
 	/**
@@ -102,7 +103,7 @@ export class Glyph extends GlyphElement {
 		const re = {
 			id: this.id,
 		};
-		if (this.objType === 'Component') re.name = this.name;
+		if (this.objType === 'Component' || this.objType === 'Alternate') re.name = this.name;
 
 		if (this.advanceWidth !== 0) re.advanceWidth = this.advanceWidth;
 		if (this.transformOrigin && this.transformOrigin !== 'baseline-left') {

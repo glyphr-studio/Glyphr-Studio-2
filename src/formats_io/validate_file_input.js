@@ -34,18 +34,23 @@ let postValidationCallback;
 export async function validateSingleFileInput(fileInput, callback) {
 	// log(`validateSingleFileInput`, 'start');
 
-	if(!fileInput) {
+	if (!fileInput) {
 		return failWithError('The file could not be read. [FR-NULL]');
 	}
 
 	postValidationCallback = callback;
 	let file;
-	// @ts-expect-error 'property does exist'
-	if (window.showOpenFilePicker && window.showSaveFilePicker) {
+	if (typeof fileInput.getFile === 'function') {
 		validationResult.fileHandle = fileInput;
 		file = await fileInput.getFile();
+	} else if (typeof fileInput.getAsFile === 'function') {
+		file = fileInput.getAsFile();
 	} else {
 		file = fileInput;
+	}
+
+	if (!file || typeof file.name !== 'string') {
+		return failWithError('The file could not be read. [FR-NAME]');
 	}
 	// log(file);
 	validationResult.fileName = file.name;
@@ -106,7 +111,7 @@ function readerValidateFont() {
 	let font = false;
 
 	try {
-		// @ts-expect-error 'property does exist'
+		// 'property does exist'
 		font = FontFlux.open(file);
 		// log(font);
 	} catch (e) {

@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main';
+import { editorText } from '../app/editor_i18n.js';
 import { addAsChildren, makeElement } from '../common/dom';
 import { redrawLivePreviewPageDisplayCanvas } from '../pages/live_preview';
 import {
@@ -16,14 +17,14 @@ export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 	let basicOptionsCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: '<h3>Options</h3>',
+		innerHTML: `<h3>${editorText('previewOptions')}</h3>`,
 	});
 
 	// Show
 	let pageOptionsCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: '<h3>Show</h3>',
+		innerHTML: `<h3>${editorText('previewDisplay')}</h3>`,
 	});
 
 	addAsChildren(pageOptionsCard, makeTextBlockOptions_pageOptions(textBlockOptions));
@@ -51,43 +52,59 @@ export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 
 	let sampleTextHeader = makeElement({
 		className: 'panel__card no-card',
-		innerHTML: '<h3>Sample text</h3>',
+		innerHTML: `<h3>${editorText('sampleText')}</h3>`,
 	});
 
 	// Pangrams
 	let pangramCard = makeElement({
 		tag: 'div',
 		className: 'panel__card full-width',
-		innerHTML: '<h3>Pangrams</h3>',
+		innerHTML: `<h3>${editorText('pangrams')}</h3>`,
 	});
 
-	addAsChildren(pangramCard, [
-		makeButton('the five boxing wizards jump quickly'),
-		makeButton('pack my box with five dozen liquor jugs'),
-		makeButton('the quick brown fox jumps over a lazy dog'),
-		makeButton('amazingly few discotheques provide jukeboxes'),
-		makeButton('quick enemy movement will jeopardize six of the gunboats'),
-	]);
+	pangramCard.appendChild(
+		makeButtonList('panel__pangram-list', [
+			makeButton('the five boxing wizards jump quickly'),
+			makeButton('pack my box with five dozen liquor jugs'),
+			makeButton('the quick brown fox jumps over a lazy dog'),
+			makeButton('amazingly few discotheques provide jukeboxes'),
+			makeButton('quick enemy movement will jeopardize six of the gunboats'),
+		])
+	);
 
 	// Glyph sets
 	let glyphSetsCard = makeElement({
 		tag: 'div',
 		className: 'panel__card full-width',
-		innerHTML: '<h3>Glyph sets</h3>',
+		innerHTML: `<h3>${editorText('glyphSets')}</h3>`,
 	});
 
-	addAsChildren(glyphSetsCard, [
-		makeButton('abcdefghijklmnopqrstuvwxyz'),
-		makeButton('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
-		makeButton('0123456789'),
-		makeSymbolButton(),
-		makeButton('All upper case letter permutations', makePermutations(true)),
-		makeButton('All lower case letter permutations', makePermutations(false)),
-	]);
+	glyphSetsCard.appendChild(
+		makeButtonList('panel__glyph-set-list', [
+			makeButton('abcdefghijklmnopqrstuvwxyz'),
+			makeButton('ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+			makeButton('0123456789'),
+			makeSymbolButton(),
+			makeButton(editorText('uppercasePairs'), makePermutations(true)),
+			makeButton(editorText('lowercasePairs'), makePermutations(false)),
+		])
+	);
 
 	let result = [basicOptionsCard, pageOptionsCard, sampleTextHeader, pangramCard, glyphSetsCard];
 	if (showPopOutCard) result.splice(2, 0, makeLivePreviewPopOutCard());
 	return result;
+}
+
+/**
+ * Wraps a set of sample-text buttons in a styled flex-wrap list.
+ * @param {String} className - class to add to the wrapper, for per-list styling
+ * @param {Array<Element>} buttons - buttons to add to the list
+ * @returns {Element}
+ */
+function makeButtonList(className, buttons) {
+	let wrapper = makeElement({ className: `panel__button-list ${className}` });
+	addAsChildren(wrapper, buttons);
+	return wrapper;
 }
 
 function makeButton(text, chars) {
@@ -197,25 +214,13 @@ function makePermutations(upper) {
 function makeTextBlockOptions_basicOptions(textBlockOptions, onFlavorChange) {
 	// Render flavor
 	let flavorLabel = makeSingleLabel(
-		'Render flavor:',
-		`Choose how the live preview is rendered:
-		<br><br>
-		<b>Glyphr Studio</b> &ndash; draws your glyph outlines directly to a
-		canvas, exactly as you've designed them. Best for inspecting your work
-		with bounding boxes, baselines, and other guides.
-		<br><br>
-		<b>OTF</b> &ndash; generates a temporary OpenType (PostScript / cubic
-		outlines) font from your project and renders it as live, editable text,
-		showing how your font behaves once exported.
-		<br><br>
-		<b>TTF</b> &ndash; generates a temporary TrueType (quadratic outlines)
-		font and renders it as live, editable text, showing how your font behaves
-		once exported.`
+		`${editorText('renderFlavor')}:`,
+		editorText('renderFlavorHelp')
 	);
 	let flavorChooser = makeRenderFlavorChooser(textBlockOptions, onFlavorChange);
 
 	// Text
-	let textLabel = makeSingleLabel('Text:');
+	let textLabel = makeSingleLabel(`${editorText('previewText')}:`);
 	let textInput = makeElement({
 		tag: 'textarea',
 		id: 'textBlockTextInput',
@@ -230,7 +235,7 @@ function makeTextBlockOptions_basicOptions(textBlockOptions, onFlavorChange) {
 	});
 
 	// Font size
-	let fontSizeLabel = makeSingleLabel('Font size:');
+	let fontSizeLabel = makeSingleLabel(`${editorText('fontSize')}:`);
 	let fontSizeInput = makeElement({
 		tag: 'input-number',
 		id: 'fontSizeInput',
@@ -249,7 +254,7 @@ function makeTextBlockOptions_basicOptions(textBlockOptions, onFlavorChange) {
 	});
 
 	// Line gap
-	let lineGapLabel = makeSingleLabel('Line gap:');
+	let lineGapLabel = makeSingleLabel(`${editorText('lineGap')}:`);
 	let lineGapInput = makeElement({
 		tag: 'input-number',
 		attributes: { value: textBlockOptions.lineGap },
@@ -261,13 +266,13 @@ function makeTextBlockOptions_basicOptions(textBlockOptions, onFlavorChange) {
 	});
 
 	// Preview kerning
-	let kerningLabel = makeSingleLabel('Preview kerning:');
+	let kerningLabel = makeSingleLabel(`${editorText('previewKerning')}:`);
 	let kerningToggle = makeDirectCheckbox(textBlockOptions, 'enableKerning', () => {
 		redrawAllLivePreviews();
 	});
 
 	// Preview ligatures
-	let ligatureLabel = makeSingleLabel('Preview ligatures:');
+	let ligatureLabel = makeSingleLabel(`${editorText('previewLigatures')}:`);
 	let ligatureToggle = makeDirectCheckbox(textBlockOptions, 'enableLigatures', () => {
 		redrawAllLivePreviews();
 	});
@@ -327,7 +332,7 @@ function makeRenderFlavorChooser(textBlockOptions, onFlavorChange) {
 }
 
 function makeTextBlockOptions_pageOptions(textBlockOptions) {
-	let glyphOutlineLabel = makeSingleLabel('Glyph bounding box:');
+	let glyphOutlineLabel = makeSingleLabel(`${editorText('glyphBoundingBox')}:`);
 	let glyphOutlineToggle = makeDirectCheckbox(
 		textBlockOptions,
 		'showCharacterExtras',
@@ -337,13 +342,13 @@ function makeTextBlockOptions_pageOptions(textBlockOptions) {
 		}
 	);
 
-	let baselineLabel = makeSingleLabel('Baselines:');
+	let baselineLabel = makeSingleLabel(`${editorText('baselines')}:`);
 	let baselineToggle = makeDirectCheckbox(textBlockOptions, 'showLineExtras', (newValue) => {
 		textBlockOptions.showLineExtras = newValue;
 		redrawAllLivePreviews();
 	});
 
-	let pageOutlineLabel = makeSingleLabel('Page outline:');
+	let pageOutlineLabel = makeSingleLabel(`${editorText('pageOutline')}:`);
 	let pageOutlineToggle = makeDirectCheckbox(textBlockOptions, 'showPageExtras', (newValue) => {
 		textBlockOptions.showPageExtras = newValue;
 		redrawAllLivePreviews();

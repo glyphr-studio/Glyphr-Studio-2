@@ -1,9 +1,9 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { editorText } from '../app/editor_i18n.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { FontPreview } from '../controls/font-preview/font_preview.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { makePanel_LivePreview } from '../panels/live_preview.js';
-import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
  * Page > Live preview
@@ -21,15 +21,36 @@ export function makePage_LivePreview() {
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
+		className: 'live-preview-page',
 		innerHTML: `
-		<div class="content__page">
-			<div class="content-page__left-area">
-				<div class="content-page__nav-area">
-					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Live preview' })}
+		<header class="editor-content-header">
+			<div>
+				<span>${editorText('preview')}</span>
+				<h1>${editorText('livePreviewTitle')}</h1>
+				<p>${editorText('livePreviewBody')}</p>
+			</div>
+		</header>
+		<div class="live-preview-page__workspace">
+			<section class="live-preview-page__stage liquid-glass" aria-label="${editorText('previewCanvas')}">
+				<div class="live-preview-page__stage-header">
+					<div>
+						<span>${editorText('previewCanvas')}</span>
+						<strong>${editorText('livePreview')}</strong>
+					</div>
+					<span class="live-preview-page__status">${editorText('updatesLive')}</span>
+				</div>
+				<div class="live-preview-page__canvas-wrapper"></div>
+			</section>
+			<aside class="live-preview-page__settings liquid-glass" aria-label="${editorText(
+				'previewSettings'
+			)}">
+				<div class="live-preview-page__settings-header">
+					<span>${editorText('preview')}</span>
+					<h2>${editorText('previewSettings')}</h2>
+					<p>${editorText('previewSettingsBody')}</p>
 				</div>
 				<div id="content-page__panel"></div>
-			</div>
-			<div class="live-preview-page__canvas-wrapper"></div>
+			</aside>
 		</div>
 		`,
 	});
@@ -40,12 +61,6 @@ export function makePage_LivePreview() {
 	canvasWrapper.appendChild(makeLivePreviewRenderer(livePreviewOptions));
 
 	window.addEventListener('resize', livePreviewPageWindowResize);
-
-	// Page Selector
-	let l1 = content.querySelector('#nav-button-l1');
-	l1.addEventListener('click', function () {
-		toggleNavDropdown(l1);
-	});
 
 	let panelArea = content.querySelector('#content-page__panel');
 	addAsChildren(panelArea, makePanel_LivePreview(editor.livePreviewPageOptions));

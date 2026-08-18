@@ -63,7 +63,11 @@ export function makeCard_Move() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Move all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Move all glyphs',
+	});
 	button.addEventListener('click', () => {
 		/**@type {HTMLInputElement} */
 		const moveXInput = document.querySelector('#moveX');
@@ -127,7 +131,11 @@ export function makeCard_ScaleVertical() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Scale all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Scale all glyphs',
+	});
 	button.addEventListener('click', () => {
 		/** @type {HTMLInputElement} */
 		const scaleVerticalInput = document.querySelector('#scaleVertical');
@@ -195,7 +203,11 @@ export function makeCard_ScaleHorizontal() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Scale all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Scale all glyphs',
+	});
 	button.addEventListener('click', () => {
 		/** @type {HTMLInputElement} */
 		const scaleHorizontalInput = document.querySelector('#scaleHorizontal');
@@ -277,7 +289,11 @@ export function makeCard_Resize() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Re-size all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Re-size all glyphs',
+	});
 	button.addEventListener('click', () => {
 		// log('updateAllGlyphSizesByEm', 'start');
 		/** @type {HTMLInputElement} */
@@ -364,7 +380,11 @@ export function makeCard_Skew() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Skew all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Skew all glyphs',
+	});
 	button.addEventListener('click', () => {
 		/** @type {HTMLInputElement} */
 		const skewAngleInput = document.querySelector('#skewAngle');
@@ -415,7 +435,8 @@ export function makeCard_Flatten() {
 	card.appendChild(effect);
 
 	let button = makeElement({
-		tag: 'fancy-button', attributes: {'secondary': ''},
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
 		content: 'Convert Component Instances to Paths',
 	});
 	button.addEventListener('click', () => {
@@ -490,7 +511,11 @@ export function makeCard_SideBearings() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Update Side Bearings' });
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Update Side Bearings',
+	});
 	button.addEventListener('click', () => {
 		// log('updateSideBearings', 'start');
 		/** @type {HTMLInputElement} */
@@ -566,7 +591,8 @@ export function makeCard_Round() {
 	card.appendChild(effect);
 
 	let button = makeElement({
-		tag: 'fancy-button', attributes: {'secondary': ''},
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
 		content: 'Round values',
 	});
 	button.addEventListener('click', () => {
@@ -615,7 +641,8 @@ export function makeCard_RemoveItems() {
 	card.appendChild(options);
 
 	let button = makeElement({
-		tag: 'fancy-button', attributes: {'secondary': ''},
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
 		content: 'Remove items',
 	});
 	button.style.marginTop = '0';
@@ -678,7 +705,11 @@ export function makeCard_Monospace() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Convert project to Monospace' });
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Convert project to Monospace',
+	});
 	button.addEventListener('click', () => {
 		// log('convertProjectToMonospace', 'start');
 
@@ -751,7 +782,11 @@ export function makeCard_AllCaps() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Convert project to All Caps' });
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Convert project to All Caps',
+	});
 	button.addEventListener('click', async () => {
 		// log('convertProjectToAllCaps', 'start');
 		const project = getCurrentProject();
@@ -876,7 +911,11 @@ export function makeCard_Diacritics() {
 	});
 	card.appendChild(effect);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Generate Diacritical Glyphs' });
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Generate Diacritical Glyphs',
+	});
 	button.addEventListener('click', () => {
 		let range = getUnicodeBlockByName('Latin-1 Supplement');
 		let rangeBeginHex = '0x0';
@@ -947,7 +986,11 @@ export function makeCard_DiacriticsAdvanced() {
 	});
 	card.appendChild(effect);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Generate Diacritical Glyphs' });
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Generate Diacritical Glyphs',
+	});
 	button.addEventListener('click', () => {
 		let project = getCurrentProject();
 		let rangeSupplement = getUnicodeBlockByName('Latin-1 Supplement');

@@ -98,11 +98,11 @@ describe('isMaxes', () => {
 	});
 
 	it('should return false for a nearly-Maxes-like object', () => {
-		expect(isMaxes({ xMin: 1, xMax: 3, yMin: 2})).toBe(false);
+		expect(isMaxes({ xMin: 1, xMax: 3, yMin: 2 })).toBe(false);
 	});
 
 	it('should return false for random objects', () => {
-		expect(isMaxes({'name': 'value'})).toBe(false);
+		expect(isMaxes({ name: 'value' })).toBe(false);
 	});
 });
 

@@ -1,7 +1,15 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
+import { charToHex } from '../../common/character_ids.js';
+import { editorText } from '../../app/editor_i18n.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round, valuesAreClose } from '../../common/functions.js';
+import {
+	hideMountedComponent,
+	makeGlassButton,
+	showGlassModal,
+	showToast,
+} from '../../controls/dialogs/dialogs.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';
 import { ComponentInstance } from '../../project_data/component_instance.js';
 import { Glyph } from '../../project_data/glyph.js';
@@ -9,6 +17,7 @@ import { Path } from '../../project_data/path.js';
 import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
 import { updateCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
+import { eventHandlerData } from '../events.js';
 import { stopCreatingNewPath } from './new_path.js';
 
 // --------------------------------------------------------------
@@ -39,12 +48,17 @@ export function makeEditToolsButtons() {
 
 	// Button data
 	let toolButtonData = {
-		newRectangle: { title: 'New rectangle', disabled: false },
-		newOval: { title: 'New oval', disabled: false },
-		newPath: { title: 'New path', disabled: false },
-		pathAddPoint: { title: 'Add path point', disabled: false },
-		pathEdit: { title: 'Path edit', disabled: false },
-		resize: { title: 'Resize', disabled: false },
+		resize: { title: editorText('selectTool'), disabled: false },
+		pathEdit: { title: editorText('nodeTool'), disabled: false },
+		handwriting: { title: editorText('drawTool'), disabled: false },
+		pathAddPoint: { title: editorText('penTool'), disabled: false },
+		newRectangle: { title: editorText('rectangleTool'), disabled: false },
+		newOval: { title: editorText('ovalTool'), disabled: false },
+		newCircle: { title: editorText('circleTool'), disabled: false },
+		newPath: { title: editorText('curveTool'), disabled: false },
+		text: { title: editorText('textTool'), disabled: false },
+		pan: { title: editorText('panTool'), disabled: false },
+		measure: { title: editorText('measureTool'), disabled: false },
 	};
 
 	// Disable pen and add path point buttons for certain conditions
@@ -74,14 +88,20 @@ export function makeEditToolsButtons() {
 			tag: 'button',
 			title: toolButtonData[buttonName].title,
 			className: 'editor-page__tool',
-			innerHTML: makeToolButtonSVG({
+			innerHTML: `${makeToolButtonSVG({
 				name: buttonName,
 				selected: isSelected,
 				disabled: toolButtonData[buttonName].disabled,
-			}),
+			})}<span class="editor-page__tool-label">${toolButtonData[buttonName].title}</span>`,
 		});
 
-		newToolButton.addEventListener('click', () => selectTool(buttonName));
+		if (toolButtonData[buttonName].disabled) {
+			newToolButton.setAttribute('disabled', '');
+		} else if (buttonName === 'text') {
+			newToolButton.addEventListener('click', openTextInsertModal);
+		} else {
+			newToolButton.addEventListener('click', () => selectTool(buttonName));
+		}
 
 		if (isSelected) newToolButton.classList.add('editor-page__tool-selected');
 
@@ -91,7 +111,11 @@ export function makeEditToolsButtons() {
 			callback: (newSelectedTool) => {
 				let isSelected = newSelectedTool === buttonName;
 				newToolButton.classList.toggle('editor-page__tool-selected', isSelected);
-				newToolButton.innerHTML = makeToolButtonSVG({ name: buttonName, selected: isSelected });
+				newToolButton.innerHTML = `${makeToolButtonSVG({
+					name: buttonName,
+					selected: isSelected,
+					disabled: toolButtonData[buttonName].disabled,
+				})}<span class="editor-page__tool-label">${toolButtonData[buttonName].title}</span>`;
 			},
 		});
 
@@ -99,34 +123,183 @@ export function makeEditToolsButtons() {
 	});
 
 	// Put it all together
-	let content = [];
-
 	const onGlyphEditPage = editor.nav.page === 'Characters';
 	const onComponentPage = editor.nav.page === 'Components';
 	const onLigaturesPage = editor.nav.page === 'Ligatures';
+	const onStylisticAlternatePage =
+		editor.nav.page === 'Variable sets' && editor.variableSetsView === 'alternate';
 	const selectedItem = editor.selectedItem;
 
-	if (onGlyphEditPage || onLigaturesPage) {
-		content.push(toolButtonElements.newRectangle);
-		content.push(toolButtonElements.newOval);
-		content.push(toolButtonElements.newPath);
+	if (!(onGlyphEditPage || onComponentPage || onLigaturesPage || onStylisticAlternatePage)) {
+		// log('makeEditToolsButtons', 'end');
+		return [];
 	}
 
-	if (onComponentPage && selectedItem && !selectedItem.pathPoints) {
-		content.push(toolButtonElements.newRectangle);
-		content.push(toolButtonElements.newOval);
-		content.push(toolButtonElements.newPath);
+	// Every modern editable glyph container exposes a shapes collection,
+	// including component roots and stylistic alternates.
+	const canAddShapes = Array.isArray(selectedItem?.shapes);
+
+	const column = makeElement({ className: 'editor-page__tool-column liquid-glass' });
+
+	/**
+	 * Adds a labelled group of tool buttons to the column.
+	 * @param {Array} buttons - tool button elements
+	 */
+	const addGroup = (buttons) => {
+		const group = makeElement({ className: 'editor-page__tool-group' });
+		buttons.filter(Boolean).forEach((button) => group.appendChild(button));
+		if (group.children.length) column.appendChild(group);
+	};
+
+	addGroup([toolButtonElements.resize, toolButtonElements.pathEdit]);
+
+	if (canAddShapes) {
+		addGroup([
+			toolButtonElements.handwriting,
+			toolButtonElements.pathAddPoint,
+			toolButtonElements.newPath,
+		]);
+		addGroup([
+			toolButtonElements.newRectangle,
+			toolButtonElements.newOval,
+			toolButtonElements.newCircle,
+			toolButtonElements.text,
+		]);
+	} else {
+		addGroup([toolButtonElements.pathAddPoint]);
 	}
 
-	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
-		content.push(toolButtonElements.pathAddPoint);
-		content.push(makeElement({ tag: 'div', style: 'height: 20px;' }));
-		content.push(toolButtonElements.pathEdit);
-		content.push(toolButtonElements.resize);
-	}
+	addGroup([toolButtonElements.pan, toolButtonElements.measure]);
 
 	// log('makeEditToolsButtons', 'end');
-	return content;
+	return canAddShapes ? [column, makeToolOptions()] : [column];
+}
+
+function openTextInsertModal() {
+	const editor = getCurrentProjectEditor();
+	const body = makeElement({ className: 'editor-text-insert' });
+	const label = makeElement({ tag: 'label', content: editorText('textToInsert') });
+	const input = /** @type {HTMLTextAreaElement} */ (
+		makeElement({ tag: 'textarea', className: 'editor-text-insert__input' })
+	);
+	input.rows = 3;
+	input.placeholder = 'Aa';
+	label.appendChild(input);
+	body.appendChild(label);
+
+	let layer;
+	const insertButton = makeGlassButton(
+		editorText('insert'),
+		() => {
+			const text = input.value;
+			if (!text) return;
+			let offsetX = 0;
+			let offsetY = 0;
+			const addedShapes = [];
+			for (const character of [...text]) {
+				if (character === '\n') {
+					offsetX = 0;
+					offsetY -= editor.project.totalVertical;
+					continue;
+				}
+				const glyph = editor.project.glyphs[`glyph-${charToHex(character)}`];
+				if (!glyph) {
+					offsetX += editor.project.defaultAdvanceWidth;
+					continue;
+				}
+				glyph.shapes.forEach((shape) => {
+					if (shape.objType !== 'Path') return;
+					const copy = new Path(shape.save(true));
+					copy.name = `${character} text outline`;
+					copy.updateShapePosition(offsetX, offsetY);
+					addedShapes.push(editor.selectedItem.addOneShape(copy));
+				});
+				offsetX += glyph.advanceWidth || editor.project.defaultAdvanceWidth;
+			}
+			if (!addedShapes.length) {
+				showToast(editorText('noTextOutlines'));
+				return;
+			}
+			editor.multiSelect.shapes.clear();
+			addedShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+			editor.history.addState(editorText('insertedTextHistory'));
+			hideMountedComponent(layer);
+		},
+		true
+	);
+	layer = showGlassModal({
+		title: editorText('insertText'),
+		description: editorText('insertTextBody'),
+		bodyNode: body,
+		componentName: 'insert-text',
+		actions: [
+			makeGlassButton(editorText('cancel'), () => hideMountedComponent(layer)),
+			insertButton,
+		],
+	});
+	window.setTimeout(() => input.focus(), 0);
+}
+
+function makeToolOptions() {
+	const editor = getCurrentProjectEditor();
+	const wrapper = makeElement({ className: 'editor-page__tool-options liquid-glass' });
+	const controls = [
+		{
+			key: 'borderRadius',
+			label: editorText('borderRadius'),
+			min: 0,
+			max: 1000,
+			tools: ['newRectangle'],
+		},
+		{
+			key: 'shapeWeight',
+			label: editorText('weight'),
+			min: 0,
+			max: 1000,
+			tools: ['newRectangle', 'newOval'],
+		},
+		{
+			key: 'handwritingWeight',
+			label: editorText('weight'),
+			min: 1,
+			max: 1000,
+			tools: ['handwriting'],
+		},
+	];
+
+	controls.forEach((control) => {
+		const label = makeElement({
+			tag: 'label',
+			className: 'editor-page__tool-option',
+			attributes: { 'data-tools': control.tools.join(' ') },
+			innerHTML: `<span>${control.label}</span><input type="number" min="${control.min}" max="${
+				control.max
+			}" step="1" value="${editor.toolOptions[control.key]}">`,
+		});
+		label.querySelector('input').addEventListener('input', (event) => {
+			const input = event.currentTarget;
+			editor.toolOptions[control.key] = Math.min(
+				control.max,
+				Math.max(control.min, Number(input.value) || control.min)
+			);
+		});
+		wrapper.appendChild(label);
+	});
+
+	const updateVisibility = (tool) => {
+		const visible = ['newRectangle', 'newOval', 'handwriting'].includes(tool);
+		wrapper.classList.toggle('editor-page__tool-options-visible', visible);
+		wrapper.querySelectorAll('[data-tools]').forEach((control) => {
+			control.hidden = !control.dataset.tools.split(' ').includes(tool);
+		});
+	};
+	updateVisibility(editor.selectedTool);
+	editor.subscribe({
+		topic: 'whichToolIsSelected',
+		subscriberID: 'tools.options',
+		callback: updateVisibility,
+	});
+	return wrapper;
 }
 
 /**
@@ -138,12 +311,12 @@ export function makeViewToolsButtons() {
 
 	// Button data
 	let viewButtonTitles = {
-		displayMode: 'Toggle fill / outline display mode',
-		pan: 'Pan the edit canvas',
-		zoom1to1: 'Zoom so 1 pixel = 1 em',
-		zoomEm: 'Zoom to fit a full Em',
-		zoomIn: 'Zoom in 10%',
-		zoomOut: 'Zoom out 10%',
+		displayMode: editorText('fillOutline'),
+		pan: editorText('panTool'),
+		zoom1to1: editorText('zoomOne'),
+		zoomEm: editorText('zoomFit'),
+		zoomIn: editorText('zoomIn'),
+		zoomOut: editorText('zoomOut'),
 	};
 
 	let viewButtonElements = {};
@@ -156,8 +329,8 @@ export function makeViewToolsButtons() {
 		let isSelected = editor.selectedTool === buttonName;
 		let buttonNameSVG = buttonName;
 		if (buttonName === 'displayMode') {
-			if (displayMode) buttonNameSVG = 'displayModeFilled';
-			else buttonNameSVG = 'displayModeOutlined';
+			if (displayMode) buttonNameSVG = 'displayModeOutlined';
+			else buttonNameSVG = 'displayModeFilled';
 		}
 		let newToolButton = makeElement({
 			tag: 'button',
@@ -191,7 +364,7 @@ export function makeViewToolsButtons() {
 				callback: () => {
 					let buttonSVG = 'displayModeOutlined';
 					const displayMode = getCurrentProject().settings.app.canvasDisplayModeFilled;
-					if (displayMode) buttonSVG = 'displayModeFilled';
+					if (!displayMode) buttonSVG = 'displayModeFilled';
 					newToolButton.innerHTML = makeToolButtonSVG({ name: buttonSVG, selected: false });
 				},
 			});
@@ -251,21 +424,96 @@ export function makeViewToolsButtons() {
 		// log(`Live Preview Pop Out CLICK HANDLER`, 'end');
 	});
 
+	const mobilePropertiesButton = makeElement({
+		tag: 'button',
+		className: 'editor-page__tool editor-page__mobile-properties-button',
+		title: editorText('properties'),
+		innerHTML: makeToolButtonSVG({ name: 'properties', selected: false }),
+	});
+	mobilePropertiesButton.setAttribute('type', 'button');
+	mobilePropertiesButton.setAttribute('aria-label', editorText('properties'));
+	mobilePropertiesButton.setAttribute('aria-expanded', 'false');
+
+	const setMobilePropertiesOpen = (open) => {
+		const page = document.querySelector('#app__page');
+		const panel = page?.querySelector('.editor-page__left-area');
+		const scrim = page?.querySelector('.editor-page__mobile-properties-scrim');
+		if (!panel) return;
+		panel.classList.toggle('editor-page__left-area--mobile-open', open);
+		scrim?.classList.toggle('editor-page__mobile-properties-scrim--visible', open);
+		if (open) panel.setAttribute('aria-hidden', 'false');
+		else panel.removeAttribute('aria-hidden');
+		mobilePropertiesButton.setAttribute('aria-expanded', String(open));
+	};
+
+	mobilePropertiesButton.addEventListener('click', () => {
+		const page = document.querySelector('#app__page');
+		const panel = page?.querySelector('.editor-page__left-area');
+		if (!page || !panel) return;
+
+		let scrim = page.querySelector('.editor-page__mobile-properties-scrim');
+		if (!scrim) {
+			scrim = makeElement({ className: 'editor-page__mobile-properties-scrim' });
+			page.appendChild(scrim);
+			scrim.addEventListener('click', () => setMobilePropertiesOpen(false));
+		}
+
+		let close = panel.querySelector('.editor-page__properties-close');
+		if (!close) {
+			close = makeElement({
+				tag: 'button',
+				className: 'editor-page__properties-close',
+				innerHTML:
+					'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>',
+			});
+			close.setAttribute('type', 'button');
+			close.setAttribute('aria-label', editorText('close'));
+			close.addEventListener('click', () => setMobilePropertiesOpen(false));
+			panel.appendChild(close);
+		}
+
+		setMobilePropertiesOpen(!panel.classList.contains('editor-page__left-area--mobile-open'));
+	});
+
+	// Live x/y readout of the cursor position over the canvas
+	let positionReadout = makeElement({
+		className: 'editor-page__position-readout',
+		title: 'Cursor position on the canvas',
+		content: '&ndash;, &ndash;',
+	});
+	const updatePositionReadout = () => {
+		if (!positionReadout.isConnected) {
+			document.removeEventListener('mousemove', updatePositionReadout);
+			return;
+		}
+		if (!eventHandlerData.isMouseOverCanvas) return;
+		positionReadout.innerHTML = `${round(cXsX(eventHandlerData.mousePosition.x), 0)}, ${round(
+			cYsY(eventHandlerData.mousePosition.y),
+			0
+		)}`;
+	};
+	document.addEventListener('mousemove', updatePositionReadout);
+
 	// Put it all together
 	let responsiveGroup = makeElement({ className: 'editor-page__responsive-group' });
 
 	addAsChildren(responsiveGroup, [
-		makeElement({ tag: 'div', content: '&emsp;' }),
 		viewButtonElements.zoomOut,
 		zoomReadout,
 		viewButtonElements.zoomIn,
-		makeElement({ tag: 'div', content: '&emsp;' }),
-		viewButtonElements.displayMode,
 		viewButtonElements.zoom1to1,
+		viewButtonElements.zoomEm,
+		makeElement({ className: 'editor-page__view-bar-divider' }),
+		positionReadout,
+		makeElement({ className: 'editor-page__view-bar-divider' }),
+		viewButtonElements.displayMode,
+		livePreviewPopOut,
+		mobilePropertiesButton,
 	]);
 
+	// Pan now lives in the left tool column, so it isn't repeated here
 	// log(`makeViewToolsButtons`, 'end');
-	return [viewButtonElements.pan, responsiveGroup, viewButtonElements.zoomEm, livePreviewPopOut];
+	return [responsiveGroup];
 }
 
 /**
@@ -573,12 +821,52 @@ export function isSideBearingHere(cx, cy, item) {
 
 let icons = {};
 
+const modernToolIcons = {
+	resize: '<path d="M4 9V4h5M15 9V4h-5M4 15v5h5M15 15v5h-5M7 7l10 10M17 7 7 17"></path>',
+	pathEdit:
+		'<path d="M5 18c4-1 5-5 6-9M11 9l3-5 3 3-5 3M4 18h4"></path><circle cx="5" cy="18" r="1.5"></circle><circle cx="11" cy="9" r="1.5"></circle>',
+	handwriting: '<path d="M3 17c3-10 5-10 5-3 0 5 3 4 4 0 1-5 3-4 3 0 0 3 2 3 4 0"></path>',
+	pathAddPoint:
+		'<path d="M4 17c3-9 7-12 13-10"></path><circle cx="8" cy="11" r="2"></circle><path d="M17 13v7M13.5 16.5h7"></path>',
+	newPath:
+		'<path d="M4 18c1-9 4-14 9-14 4 0 5 4 4 8"></path><circle cx="4" cy="18" r="1.5"></circle><circle cx="13" cy="4" r="1.5"></circle><path d="M17 15v6M14 18h6"></path>',
+	newRectangle:
+		'<rect x="4" y="5" width="14" height="13" rx="2"></rect><path d="M18 14h4M20 12v4"></path>',
+	newOval: '<ellipse cx="11" cy="12" rx="7" ry="6"></ellipse><path d="M18 5h4M20 3v4"></path>',
+	newCircle: '<circle cx="11" cy="12" r="7"></circle><path d="M18 5h4M20 3v4"></path>',
+	text: '<path d="M5 5h14M12 5v14M8 19h8"></path><rect x="3" y="3" width="18" height="18" rx="3"></rect>',
+	pan: '<path d="M8 11V6a2 2 0 0 1 4 0v4-6a2 2 0 0 1 4 0v6-4a2 2 0 0 1 4 0v8c0 5-3 8-8 8-3 0-5-1-7-4l-3-5a2 2 0 0 1 3-2l3 3"></path>',
+	measure: '<path d="M4 17 17 4l3 3L7 20zM13 8l3 3M10 11l2 2M7 14l3 3"></path>',
+	zoomEm:
+		'<rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M8 15V9h4M8 12h3M14 15V9l2 3 2-3v6"></path>',
+	displayModeFilled:
+		'<path d="M3 12s3-6 9-6 9 6 9 6-3 6-9 6-9-6-9-6Z"></path><circle cx="12" cy="12" r="3"></circle>',
+	displayModeOutlined:
+		'<path d="M3 12s3-6 9-6 9 6 9 6-3 6-9 6-9-6-9-6Z"></path><circle cx="12" cy="12" r="3"></circle>',
+	zoom1to1:
+		'<rect x="3" y="3" width="18" height="18" rx="3"></rect><path d="M8 9l2-2v10M15 9l2-2v10"></path>',
+	zoomIn: '<circle cx="10" cy="10" r="6"></circle><path d="M14.5 14.5 20 20M10 7v6M7 10h6"></path>',
+	zoomOut: '<circle cx="10" cy="10" r="6"></circle><path d="M14.5 14.5 20 20M7 10h6"></path>',
+	openLivePreview:
+		'<rect x="3" y="5" width="14" height="12" rx="2"></rect><path d="M9 17v3h10V9h-2"></path>',
+	closeLivePreview:
+		'<rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="m8 8 8 8M16 8l-8 8"></path>',
+	kern: '<path d="M4 18 9 6l5 12M6 14h6M15 7h6M18 4v6"></path>',
+	properties:
+		'<path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle>',
+};
+
 /**
  * Makes a SVG icon based on options
  * @param {Object} oa - options
  * @returns {String} - SVG code
  */
 export function makeToolButtonSVG(oa) {
+	if (modernToolIcons[oa.name]) {
+		return `<svg class="editor-tool-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${
+			modernToolIcons[oa.name]
+		}</svg>`;
+	}
 	// log(`makeToolButtonSVG`, 'start');
 	// log(`oa.name: ${oa.name}`);
 	let colorOutline = accentColors.blue.l25;
@@ -603,7 +891,7 @@ export function makeToolButtonSVG(oa) {
 	}
 
 	innerHTML += `
-		<g pointer-events="none" fill="${colorOutline}">
+		<g pointer-events="none" color="${colorOutline}" fill="${colorOutline}">
 		${icon.outline}
 		</g>
 	`;
@@ -621,6 +909,26 @@ export function makeToolButtonSVG(oa) {
 	// log(`makeToolButtonSVG`, 'end');
 	return content;
 }
+
+// Net-new tools use stroked paths rather than the hand-plotted rect
+// grids the original icons use. `currentColor` picks up the `color`
+// attribute makeToolButtonSVG sets on the wrapping <g>.
+icons.newCircle = {
+	outline: `<circle cx="10" cy="10" r="7.5" fill="none" stroke="currentColor" stroke-width="1.5"></circle>`,
+};
+
+icons.text = {
+	outline: `
+		<path d="M3 3.5h14M10 3.5v13M6.5 16.5h7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"></path>
+	`,
+};
+
+icons.measure = {
+	outline: `
+		<path d="M2 12.5 12.5 2l5.5 5.5L7.5 18z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+		<path d="M5.5 9.5l2 2M8 7l3 3M10.5 4.5l2 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+	`,
+};
 
 // Arrow
 icons.resize = {
@@ -882,6 +1190,14 @@ icons.newPath = {
 		<rect x="13" y="11" width="1" height="2"></rect>
 		<rect x="13" y="6" width="1" height="2"></rect>
 		<rect x="14" y="8" width="1" height="3"></rect>
+	`,
+};
+
+icons.handwriting = {
+	fill: '',
+	outline: `
+		<path d="M2 15 C5 4, 7 4, 7 11 C7 16, 10 16, 11 10 C12 5, 14 7, 14 12 C14 15, 16 15, 18 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+		<circle cx="17" cy="4" r="2"></circle>
 	`,
 };
 

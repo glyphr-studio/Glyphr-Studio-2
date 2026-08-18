@@ -1,0 +1,422 @@
+/* --------------------------------------------------------
+	Editor chrome - glass top bar and persistent sidebar
+-------------------------------------------------------- */
+
+#app__wrapper.app__wrapper--editor {
+	/* Light defaults - overridden below for [data-theme='dark'] and the
+	   system preference, same pattern as the --glass-* tokens in glass.css. */
+	--enabled-resting-text: #211b35;
+	--enabled-resting-lightText: #6b6478;
+	--enabled-resting-border: rgba(83, 54, 150, 0.28);
+	--enabled-resting-fill: #211b35;
+	--enabled-resting-background: rgba(255, 255, 255, 0.6);
+	--enabled-restingLight-text: #211b35;
+	--enabled-restingLight-lightText: #6b6478;
+	--enabled-restingLight-border: rgba(83, 54, 150, 0.22);
+	--enabled-restingLight-fill: #211b35;
+	--enabled-restingLight-background: rgba(255, 255, 255, 0.75);
+	--enabled-focus-text: #3a2a6b;
+	--enabled-focus-lightText: #5b4a8f;
+	--enabled-focus-border: #6d3bf1;
+	--enabled-focus-fill: #3a2a6b;
+	--enabled-focus-background: rgba(109, 59, 241, 0.12);
+	--enabled-active-text: #2b1e57;
+	--enabled-active-lightText: #4a3a7a;
+	--enabled-active-border: #5b2fd4;
+	--enabled-active-fill: #2b1e57;
+	--enabled-active-background: rgba(109, 59, 241, 0.2);
+	--disabled-text: #8a8595;
+	--disabled-text-light: #a8a3b3;
+	--disabled-text-dark: #726d7c;
+	--disabled-border: rgba(120, 112, 140, 0.25);
+	--disabled-fill: #a8a3b3;
+	--disabled-background: rgba(0, 0, 0, 0.045);
+	--fancy-secondary-surface: rgba(255, 255, 255, 0.96);
+	--fancy-secondary-hover: #ece5fb;
+	grid-template-rows: 82px minmax(0, 1fr);
+	grid-template-columns: max-content minmax(0, 1fr);
+	background: radial-gradient(circle at 8% 0%, rgba(118, 70, 255, 0.08), transparent 28rem),
+		radial-gradient(circle at 94% 10%, rgba(49, 121, 255, 0.06), transparent 25rem),
+		linear-gradient(145deg, #f8f6fc 0%, #f1eef9 48%, #f6eff9 100%);
+}
+
+#app__wrapper.app__wrapper--editor[data-theme='dark'] {
+	--enabled-resting-text: #f7f3ff;
+	--enabled-resting-lightText: #c8bedb;
+	--enabled-resting-border: rgba(177, 151, 255, 0.42);
+	--enabled-resting-fill: #f7f3ff;
+	--enabled-resting-background: rgba(21, 17, 39, 0.9);
+	--enabled-restingLight-text: #f7f3ff;
+	--enabled-restingLight-lightText: #c8bedb;
+	--enabled-restingLight-border: rgba(177, 151, 255, 0.34);
+	--enabled-restingLight-fill: #f7f3ff;
+	--enabled-restingLight-background: rgba(24, 19, 45, 0.92);
+	--enabled-focus-text: #ffffff;
+	--enabled-focus-lightText: #e2d9f3;
+	--enabled-focus-border: #a98aff;
+	--enabled-focus-fill: #ffffff;
+	--enabled-focus-background: #28203f;
+	--enabled-active-text: #ffffff;
+	--enabled-active-lightText: #e2d9f3;
+	--enabled-active-border: #b79cff;
+	--enabled-active-fill: #ffffff;
+	--enabled-active-background: #332653;
+	--disabled-text: #8f849f;
+	--disabled-text-light: #746b81;
+	--disabled-text-dark: #a69bb4;
+	--disabled-border: rgba(143, 132, 159, 0.3);
+	--disabled-fill: #746b81;
+	--disabled-background: rgba(16, 13, 28, 0.72);
+	--fancy-secondary-surface: rgba(20, 15, 36, 0.96);
+	--fancy-secondary-hover: #2e214a;
+	background: radial-gradient(circle at 8% 0%, rgba(118, 70, 255, 0.22), transparent 28rem),
+		linear-gradient(145deg, #090713, #111022 55%, #17091d);
+}
+
+@media (prefers-color-scheme: dark) {
+	#app__wrapper.app__wrapper--editor[data-theme='system'] {
+		--enabled-resting-text: #f7f3ff;
+		--enabled-resting-lightText: #c8bedb;
+		--enabled-resting-border: rgba(177, 151, 255, 0.42);
+		--enabled-resting-fill: #f7f3ff;
+		--enabled-resting-background: rgba(21, 17, 39, 0.9);
+		--enabled-restingLight-text: #f7f3ff;
+		--enabled-restingLight-lightText: #c8bedb;
+		--enabled-restingLight-border: rgba(177, 151, 255, 0.34);
+		--enabled-restingLight-fill: #f7f3ff;
+		--enabled-restingLight-background: rgba(24, 19, 45, 0.92);
+		--enabled-focus-text: #ffffff;
+		--enabled-focus-lightText: #e2d9f3;
+		--enabled-focus-border: #a98aff;
+		--enabled-focus-fill: #ffffff;
+		--enabled-focus-background: #28203f;
+		--enabled-active-text: #ffffff;
+		--enabled-active-lightText: #e2d9f3;
+		--enabled-active-border: #b79cff;
+		--enabled-active-fill: #ffffff;
+		--enabled-active-background: #332653;
+		--disabled-text: #8f849f;
+		--disabled-text-light: #746b81;
+		--disabled-text-dark: #a69bb4;
+		--disabled-border: rgba(143, 132, 159, 0.3);
+		--disabled-fill: #746b81;
+		--disabled-background: rgba(16, 13, 28, 0.72);
+		--fancy-secondary-surface: rgba(20, 15, 36, 0.96);
+		--fancy-secondary-hover: #2e214a;
+		background: radial-gradient(circle at 8% 0%, rgba(118, 70, 255, 0.22), transparent 28rem),
+			linear-gradient(145deg, #090713, #111022 55%, #17091d);
+	}
+}
+
+.app__wrapper--editor #app__main-content {
+	grid-row: 2;
+	grid-column: 2;
+	min-width: 0;
+	width: auto;
+	overflow: hidden;
+	padding-right: 12px;
+	padding-bottom: 12px;
+}
+
+/* --------------------------------------------------------
+	Top bar
+-------------------------------------------------------- */
+
+#editor-chrome__top-bar {
+	grid-row: 1;
+	grid-column: 1 / -1;
+	z-index: 500;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px clamp(14px, 2vw, 28px);
+	color: var(--glass-ink);
+	background: transparent;
+}
+
+#editor-chrome__top-bar *,
+#editor-chrome__sidebar-wrapper * {
+	font-family: var(--font-library-font, FiraGo, sans-serif);
+}
+
+.editor-chrome__topbar-left {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+}
+
+.editor-chrome__topbar-spacer {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.editor-chrome__menu-pill,
+.editor-chrome__project-pill,
+.editor-chrome__actions {
+	height: 56px;
+	min-height: 56px;
+	border-radius: 50px;
+	display: flex;
+	align-items: center;
+}
+
+.editor-chrome__menu-pill {
+	width: 56px;
+	min-width: 56px;
+	justify-content: center;
+}
+
+.editor-chrome__project-pill {
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 0;
+	padding: 6px 22px;
+	min-width: 0;
+	max-width: 40vw;
+	cursor: pointer;
+}
+
+.editor-chrome__project-pill:hover,
+.editor-chrome__project-pill:focus {
+	background: var(--glass-surface-strong);
+}
+
+.editor-chrome__project-label {
+	font-size: 10px;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+	color: var(--glass-muted);
+	line-height: 1.2;
+}
+
+.editor-chrome__project-name {
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--glass-ink);
+	line-height: 1.3;
+	max-width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.editor-chrome__actions {
+	gap: 4px;
+	padding: 6px 10px;
+}
+
+.editor-chrome__icon-button {
+	display: grid;
+	place-items: center;
+	width: 42px;
+	height: 42px;
+	padding: 0;
+	margin: 0;
+	border: none;
+	border-radius: 50%;
+	background: transparent;
+	box-shadow: none;
+	color: var(--glass-ink);
+	cursor: pointer;
+}
+
+.editor-chrome__icon-button:hover,
+.editor-chrome__icon-button:focus {
+	background: var(--glass-surface-strong);
+	box-shadow: none;
+}
+
+.editor-chrome__icon-button svg {
+	width: 21px;
+	height: 21px;
+	fill: none;
+	stroke: var(--glass-ink);
+	stroke-width: 1.6;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.editor-chrome__icon-button:hover svg,
+.editor-chrome__icon-button:focus svg {
+	stroke: var(--glass-ink);
+}
+
+/* --------------------------------------------------------
+	Sidebar
+-------------------------------------------------------- */
+
+#editor-chrome__sidebar-wrapper {
+	grid-row: 2;
+	grid-column: 1;
+	min-height: 0;
+	padding: 0 6px 12px clamp(14px, 2vw, 28px);
+	color: var(--glass-ink);
+}
+
+.editor-chrome__sidebar {
+	width: 232px;
+	height: 100%;
+	max-height: 100%;
+	overflow-y: auto;
+	border-radius: 20px;
+	padding: 12px 10px;
+}
+
+.editor-chrome__sidebar-nav {
+	display: grid;
+	gap: 4px;
+}
+
+.editor-chrome__sidebar-button {
+	display: grid;
+	grid-template-columns: 22px minmax(0, 1fr);
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	padding: 11px 14px;
+	margin: 0;
+	text-align: left;
+	font-size: 14px;
+	border: 1px solid transparent;
+	border-radius: 12px;
+	background: transparent;
+	box-shadow: none;
+	color: var(--glass-ink);
+	cursor: pointer;
+}
+
+.editor-chrome__sidebar-button span {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.editor-chrome__sidebar-button svg {
+	width: 20px;
+	height: 20px;
+	fill: none;
+	stroke: var(--glass-ink);
+	stroke-width: 1.6;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.editor-chrome__sidebar-button:hover,
+.editor-chrome__sidebar-button:focus {
+	background: var(--glass-surface-strong);
+	border-color: var(--glass-border);
+	box-shadow: none;
+}
+
+.editor-chrome__sidebar-button:hover svg,
+.editor-chrome__sidebar-button:focus svg {
+	stroke: var(--glass-ink);
+}
+
+.editor-chrome__sidebar-button--selected,
+.editor-chrome__sidebar-button--selected:hover,
+.editor-chrome__sidebar-button--selected:focus {
+	background: var(--glass-purple);
+	border-color: var(--glass-purple);
+	color: white;
+	font-weight: 600;
+}
+
+.editor-chrome__sidebar-button--selected svg,
+.editor-chrome__sidebar-button--selected:hover svg,
+.editor-chrome__sidebar-button--selected:focus svg {
+	stroke: white;
+}
+
+.editor-chrome__sidebar-toggle,
+.editor-chrome__sidebar-scrim {
+	display: none;
+}
+
+#editor-chrome__sidebar-wrapper.editor-chrome__sidebar-wrapper--collapsed {
+	width: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+/* --------------------------------------------------------
+	Responsive - collapse the sidebar into a drawer
+-------------------------------------------------------- */
+
+@media (max-width: 1188px) {
+	#app__wrapper.app__wrapper--editor {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.app__wrapper--editor #app__main-content {
+		grid-column: 1;
+		padding-left: 12px;
+	}
+
+	#editor-chrome__sidebar-wrapper {
+		grid-row: 1;
+		grid-column: 1;
+		z-index: 900;
+		padding: 0;
+		pointer-events: none;
+	}
+
+	.editor-chrome__sidebar-toggle {
+		display: grid;
+		place-items: center;
+		position: fixed;
+		left: clamp(14px, 2vw, 28px);
+		bottom: 20px;
+		width: 52px;
+		height: 52px;
+		padding: 0;
+		border-radius: 50%;
+		pointer-events: auto;
+		cursor: pointer;
+	}
+
+	.editor-chrome__sidebar-toggle svg {
+		width: 22px;
+		height: 22px;
+		fill: none;
+		stroke: var(--glass-ink);
+		stroke-width: 1.6;
+		stroke-linecap: round;
+	}
+
+	.editor-chrome__sidebar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 901;
+		height: 100vh;
+		border-radius: 0 20px 20px 0;
+		padding-top: 24px;
+		transform: translateX(-105%);
+		transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+		pointer-events: auto;
+	}
+
+	.editor-chrome__sidebar-scrim {
+		display: block;
+		position: fixed;
+		inset: 0;
+		z-index: 900;
+		background: var(--glass-modal-scrim);
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 180ms ease;
+		pointer-events: auto;
+	}
+
+	.editor-chrome__sidebar--open .editor-chrome__sidebar {
+		transform: none;
+	}
+
+	.editor-chrome__sidebar--open .editor-chrome__sidebar-scrim {
+		opacity: 1;
+		visibility: visible;
+	}
+}

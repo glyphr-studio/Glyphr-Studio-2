@@ -1,7 +1,10 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { editorText } from '../app/editor_i18n.js';
+import { hexesToChars } from '../common/character_ids.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
+import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { showAddComponentDialog } from '../pages/components.js';
 import { makeKernGroupCharChips, showAddEditKernGroupDialog } from '../pages/kerning.js';
 import { showAddLigatureDialog } from '../pages/ligatures.js';
@@ -29,6 +32,9 @@ export function makeAllItemTypeChooserContent(
 	wrapper.appendChild(header);
 
 	let show = itemType || editor.nav.page;
+	if (show !== 'Ligatures' && show !== 'Components') {
+		header.appendChild(makeCharacterSearchBox(editor));
+	}
 	if (show === 'Ligatures' && countItems(editor.project.ligatures) > 0) {
 		// Ligature Chooser
 		wrapper.appendChild(makeLigatureChooserTileGrid(editor));
@@ -90,6 +96,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 		let header = makeElement({ tag: 'div', className: 'item-chooser__header' });
 		wrapper.appendChild(header);
 		header.appendChild(makeRangeChooser());
+		header.appendChild(makeCharacterSearchBox());
 		wrapper.appendChild(makeCharacterChooserTileGrid());
 	}
 
@@ -225,6 +232,64 @@ function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjec
 	// log(`addRangeOptionsToOptionChooser`, 'end');
 }
 
+/**
+ * Current filter text for the character chooser. Kept at module scope so
+ * it survives the tile-grid rebuilds that the range chooser triggers.
+ */
+let characterSearchTerm = '';
+
+/**
+ * Makes the search box that filters the character tile grid. Matches
+ * against the character itself, its hex ID, and its Unicode name.
+ * @param {Object =} editor - ProjectEditor to filter for
+ * @returns {Element}
+ */
+export function makeCharacterSearchBox(editor = getCurrentProjectEditor()) {
+	const wrapper = makeElement({ tag: 'label', className: 'item-chooser__search' });
+	const input = /** @type {HTMLInputElement} */ (
+		makeElement({
+			tag: 'input',
+			attributes: {
+				type: 'search',
+				placeholder: editorText('searchCharacters'),
+				'aria-label': editorText('searchCharacters'),
+			},
+		})
+	);
+	input.value = characterSearchTerm;
+
+	input.addEventListener('input', () => {
+		characterSearchTerm = input.value.trim();
+		editor.chooserPage.characters = 0;
+		const tileGrid = document.querySelector('.item-chooser__tile-grid');
+		if (!tileGrid) return;
+		const parent = tileGrid.parentElement;
+		tileGrid.remove();
+		parent.appendChild(makeCharacterChooserTileGrid(editor));
+	});
+
+	wrapper.appendChild(input);
+	return wrapper;
+}
+
+/**
+ * Applies the current search term to a list of character hex IDs.
+ * @param {Array} rangeArray - character hex IDs
+ * @returns {Array} - filtered hex IDs
+ */
+function filterCharactersBySearch(rangeArray) {
+	if (!characterSearchTerm) return rangeArray;
+	const term = characterSearchTerm.toLowerCase();
+	return rangeArray.filter((charID) => {
+		const hex = `${charID}`;
+		if (hex.toLowerCase().includes(term)) return true;
+		const character = hexesToChars(hex) || '';
+		if (character && character.toLowerCase() === term) return true;
+		const name = getUnicodeName(hex) || '';
+		return name.toLowerCase().includes(term);
+	});
+}
+
 function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(`makeCharacterChooserTileGrid`, 'start');
 	// console.time('makeCharacterChooserTileGrid');
@@ -234,7 +299,7 @@ function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor()) {
 
 	const isPrimaryProject = editor === getCurrentProjectEditor();
 	let tileGrid = makeElement({ tag: 'div', className: 'item-chooser__tile-grid' });
-	let rangeArray = editor.selectedCharacterRange.getMemberIDs();
+	let rangeArray = filterCharactersBySearch(editor.selectedCharacterRange.getMemberIDs() || []);
 
 	if (rangeArray?.length) {
 		const pagedCharacters = getItemsFromPage(rangeArray, editor.chooserPage.characters, editor);
@@ -274,7 +339,9 @@ function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor()) {
 		tileGrid.appendChild(
 			makeElement({
 				tag: 'i',
-				content: `No characters in this range.<br><br>If this is a range of Control Characters, make sure they are enabled in: Settings > App > Show non-graphic control characters.`,
+				content: characterSearchTerm
+					? `No characters in this range match &ldquo;${characterSearchTerm}&rdquo;.`
+					: `No characters in this range.<br><br>If this is a range of Control Characters, make sure they are enabled in: Settings > App > Show non-graphic control characters.`,
 			})
 		);
 	}
