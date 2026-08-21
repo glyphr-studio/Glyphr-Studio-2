@@ -101,6 +101,7 @@ export function makeInputs_size(item, disabled = false) {
 			});
 			option.addEventListener('click', () => {
 				item.transformOrigin = origin;
+				addAttributeHistory(item, 'transform origin');
 				getCurrentProjectEditor().publish('editCanvasView', item);
 			});
 			transformInput.appendChild(option);
@@ -159,6 +160,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			}
 			const editor = getCurrentProjectEditor();
 			topics.forEach((topic) => editor.publish(topic, item));
+			addAttributeHistory(item, `${property} lock`);
 			// log(`makeSingleInput LOCK event`, 'end');
 		});
 	}
@@ -206,6 +208,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			// log(`MAKE SINGLE INPUT EVENT ${property} set to ${newValue}`);
 			// log(`item[property]: ${item[property]}`);
 		}
+		addAttributeHistory(item, property);
 
 		// log(`topics: ${topics}`);
 		if (item.objType === 'VirtualGlyph') {
@@ -302,6 +305,7 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 				item.parent.reconcileHandle(item.type);
 			}
 		}
+		addAttributeHistory(item, property);
 		// log(`makeSingleCheckbox CHANGE event listener`, 'end');
 	});
 
@@ -327,6 +331,33 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 
 	// log(`makeSingleCheckbox`, 'end');
 	return newCheckbox;
+}
+
+function addAttributeHistory(item, property) {
+	const editor = getCurrentProjectEditor();
+	const projectItemTypes = [
+		'Glyph',
+		'Ligature',
+		'Component',
+		'Path',
+		'ControlPoint',
+		'KernGroup',
+		'ComponentInstance',
+		'VirtualGlyph',
+		'VirtualShape',
+	];
+	if (!projectItemTypes.includes(item.objType)) return;
+
+	if (item.objType === 'ControlPoint' && property === 'use') {
+		const handleNumber = item.type.replace('h', '');
+		const state = item.use ? 'on' : 'off';
+		editor.history.addState(`Control Point: toggled handle ${handleNumber} ${state}`);
+		return;
+	}
+
+	const target =
+		item.objType === 'VirtualGlyph' || item.objType === 'VirtualShape' ? editor.selectedItem : item;
+	editor.history.addState(`Changed ${property} for: ${target.name || target.objType}`);
 }
 
 function toggleHandleInputs(handle, show) {
