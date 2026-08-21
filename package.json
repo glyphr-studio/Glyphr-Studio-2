@@ -31,7 +31,7 @@
 		"typescript-eslint": "^8.61.1",
 		"vi-canvas-mock": "^1.0.0",
 		"vite": ">=7.3.2",
-		"vitest": "^4.1.8"
+		"vitest": "^4.1.10"
 	},
 	"bugs": {
 		"url": "https://github.com/glyphr-studio/Glyphr-Studio-2/issues"
