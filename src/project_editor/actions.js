@@ -507,7 +507,7 @@ export function showDialogChooseOtherItem(actionName = '') {
 				closeEveryTypeOfDialog();
 				showToast(`Component instance linked from<br>${otherItem.name}`);
 			} else {
-				editor.history.queue.shift();
+				editor.history.discardLatestState();
 				closeEveryTypeOfDialog();
 				showError(`
 				Cannot add ${thisItem.name} to ${otherItem.name} as a component instance.
@@ -542,7 +542,7 @@ export function showDialogChooseOtherItem(actionName = '') {
 				closeEveryTypeOfDialog();
 				showToast(`Component was linked to<br>${destinationItem.name}`);
 			} else {
-				editor.history.queue.shift();
+				editor.history.discardLatestState();
 				closeEveryTypeOfDialog();
 				showError(`
 				Cannot add ${thisItem.name} to ${destinationItem.name} as a component instance.

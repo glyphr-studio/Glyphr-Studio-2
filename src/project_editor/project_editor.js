@@ -194,7 +194,7 @@ export class ProjectEditor {
 		this.history = new History();
 		this.history.queue = [];
 		this.history.initialTimeStamp = new Date().getTime();
-		this.history.initialProject = project;
+		this.history.initialize(project);
 	}
 
 	// --------------------------------------------------------------

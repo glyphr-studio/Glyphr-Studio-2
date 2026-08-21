@@ -17,6 +17,45 @@ export class History {
 		this.redoQueue = [];
 		this.initialTimeStamp = 0;
 		this.initialProject = {};
+		this.projectID = false;
+		this.storageReady = Promise.resolve();
+		this.storageDirty = false;
+		this.storageWrite = Promise.resolve();
+	}
+
+	initialize(project) {
+		this.projectID = project.settings.project.id;
+		this.initialProject = new GlyphrStudioProject(project.save());
+		this.storageDirty = false;
+		this.storageReady = loadHistory(this.projectID)
+			.then((snapshot) => {
+				if (this.storageDirty || !snapshot || snapshot.version !== HISTORY_FORMAT_VERSION) return;
+				const initialProject = new GlyphrStudioProject(snapshot.initialProject);
+				const queue = (snapshot.queue || []).map(deserializeHistoryEntry);
+				const redoQueue = (snapshot.redoQueue || []).map((entries) =>
+					entries.map(deserializeHistoryEntry)
+				);
+				this.initialTimeStamp = snapshot.initialTimeStamp;
+				this.initialProject = initialProject;
+				this.queue = queue;
+				this.redoQueue = redoQueue;
+				if (getCurrentProjectEditor()?.history === this) refreshPanel();
+			})
+			.catch(() => undefined);
+	}
+
+	persist() {
+		if (!this.projectID) return;
+		this.storageDirty = true;
+		const snapshot = {
+			projectID: this.projectID,
+			version: HISTORY_FORMAT_VERSION,
+			initialTimeStamp: this.initialTimeStamp,
+			initialProject: this.initialProject.save(),
+			queue: this.queue.map(serializeHistoryEntry),
+			redoQueue: this.redoQueue.map((entries) => entries.map(serializeHistoryEntry)),
+		};
+		this.storageWrite = this.storageWrite.then(() => saveHistory(snapshot)).catch(() => undefined);
 	}
 
 	/**
@@ -41,6 +80,7 @@ export class History {
 		const entry = makeHistoryEntry({ title: title, itemWasDeleted: itemWasDeleted });
 		this.queue.unshift(entry);
 		this.redoQueue = [];
+		this.persist();
 		this.updateAfterSaveState();
 		// log(this);
 		// log(`History.addState`, 'end');
@@ -66,6 +106,7 @@ export class History {
 		}
 		this.queue.unshift(entry);
 		this.redoQueue = [];
+		this.persist();
 		this.updateAfterSaveState();
 	}
 
@@ -86,6 +127,12 @@ export class History {
 			entry.page = editor.nav.page;
 		}
 		this.queue.unshift(entry);
+		this.persist();
+	}
+
+	discardLatestState() {
+		this.queue.shift();
+		this.persist();
 	}
 
 	/**
@@ -254,6 +301,7 @@ export class History {
 
 		// Save undone state for redo
 		this.redoQueue.unshift(redoEntries);
+		this.persist();
 
 		// Finalize UI stuff
 		if (editor.nav.panel === 'History') refreshPanel();
@@ -313,6 +361,7 @@ export class History {
 		for (let i = entries.length - 1; i >= 0; i--) {
 			this.queue.unshift(entries[i]);
 		}
+		this.persist();
 
 		editor.setProjectAsUnsaved();
 		if (editor.nav.panel === 'History') refreshPanel();
@@ -357,4 +406,74 @@ function makeHistoryEntry({ title = '', itemWasDeleted = false, wholeProjectSave
 	};
 
 	return newEntry;
+}
+
+function serializeHistoryEntry(entry) {
+	return {
+		timeStamp: entry.timeStamp,
+		itemID: entry.itemID,
+		itemState: entry.itemState.save(),
+		title: entry.title,
+		page: entry.page,
+		itemWasDeleted: entry.itemWasDeleted,
+		wholeProjectSave: entry.wholeProjectSave,
+	};
+}
+
+function deserializeHistoryEntry(entry) {
+	let itemState;
+	if (entry.wholeProjectSave) itemState = new GlyphrStudioProject(entry.itemState);
+	else if (entry.page === 'Kerning') itemState = new KernGroup(entry.itemState);
+	else itemState = new Glyph(entry.itemState);
+
+	return { ...entry, itemState };
+}
+
+// --------------------------------------------------------------
+// History storage
+// --------------------------------------------------------------
+
+const DATABASE_NAME = 'GlyphrStudio';
+const DATABASE_VERSION = 1;
+const STORE_NAME = 'history';
+const HISTORY_FORMAT_VERSION = 2;
+
+function openDatabase() {
+	return new Promise((resolve, reject) => {
+		if (!globalThis.indexedDB) {
+			reject(new Error('IndexedDB is not available'));
+			return;
+		}
+
+		const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
+		request.onupgradeneeded = () => {
+			if (!request.result.objectStoreNames.contains(STORE_NAME)) {
+				request.result.createObjectStore(STORE_NAME, { keyPath: 'projectID' });
+			}
+		};
+		request.onsuccess = () => resolve(request.result);
+		request.onerror = () => reject(request.error);
+	});
+}
+
+function runTransaction(mode, callback) {
+	return openDatabase().then(
+		(db) =>
+			new Promise((resolve, reject) => {
+				const transaction = db.transaction(STORE_NAME, mode);
+				const request = callback(transaction.objectStore(STORE_NAME));
+				request.onsuccess = () => resolve(request.result);
+				request.onerror = () => reject(request.error);
+				transaction.onabort = () => reject(transaction.error);
+				transaction.oncomplete = () => db.close();
+			})
+	);
+}
+
+export function loadHistory(projectID) {
+	return runTransaction('readonly', (store) => store.get(projectID));
+}
+
+export function saveHistory(snapshot) {
+	return runTransaction('readwrite', (store) => store.put(snapshot));
 }
