@@ -1,4 +1,4 @@
-import { insertAfter, makeElement } from '../../common/dom.js';
+import { getComponentDOM, makeElement } from '../../common/dom.js';
 import { closeAllNavMenus } from '../../project_editor/navigator.js';
 import { closeAllOptionChoosers, makeContextMenu } from '../dialogs/dialogs.js';
 import style from './option-chooser.css?inline';
@@ -171,16 +171,13 @@ export class OptionChooser extends HTMLElement {
 			}
 		});
 
+		// #context-menu is position:fixed, so its coordinates are always
+		// relative to the viewport - no need to compensate for scrolling or
+		// positioned ancestors (e.g. the #nav-dropdown-chooser drawer).
 		let entryPointRect = this.getBoundingClientRect();
-		// Something strange happens to placement if the dropdown is in a nav element
-		let navRect = document.querySelector('#nav-dropdown-chooser')?.getBoundingClientRect();
-
-		let left = entryPointRect.x - (navRect ? navRect.x : 0);
-		let top = entryPointRect.y + entryPointRect.height - (navRect ? navRect.y : 0);
-		left = Math.max(left, 0);
-		top = Math.max(top, 0);
-		let parentHeight = navRect ? navRect.height : window.innerHeight;
-		let maxHeight = parentHeight - top - 10;
+		let left = Math.max(entryPointRect.x, 0);
+		let top = Math.max(entryPointRect.y + entryPointRect.height, 0);
+		let maxHeight = window.innerHeight - top - 10;
 
 		// log(`showing options at ${left} / ${top}`);
 		// log(`maxHeight: ${maxHeight}`);
@@ -189,8 +186,12 @@ export class OptionChooser extends HTMLElement {
 		closeAllOptionChoosers();
 		closeAllNavMenus(true);
 		this.setAttribute('deployed', '');
-		insertAfter(
-			this,
+		// Mount at the top-level component root rather than next to this
+		// element: a `.liquid-glass` ancestor's backdrop-filter (or an
+		// animating ancestor's transform) creates its own containing block
+		// for position:fixed descendants, which would silently re-anchor
+		// the menu away from the viewport coordinates computed above.
+		getComponentDOM().appendChild(
 			makeContextMenu(optionRows, left, top - 1, entryPointRect.width, maxHeight, true)
 		);
 

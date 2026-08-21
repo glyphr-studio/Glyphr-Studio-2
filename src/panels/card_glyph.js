@@ -213,7 +213,8 @@ export function getAdjacentItem(item, delta) {
 	const thisID = item.id;
 
 	let collection = {};
-	if (item?.id?.startsWith('glyph-')) collection = project.glyphs;
+	if (item?.objType === 'Alternate') collection = project.alternates;
+	else if (item?.id?.startsWith('glyph-')) collection = project.glyphs;
 	else if (item?.id?.startsWith('liga-')) collection = project.ligatures;
 	else if (item?.id?.startsWith('comp-')) collection = project.components;
 	else if (item?.id?.startsWith('kern-')) collection = project.kerning;

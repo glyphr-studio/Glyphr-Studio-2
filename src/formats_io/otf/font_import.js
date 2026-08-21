@@ -8,6 +8,7 @@ import { isUIUpdateDue, resetUIUpdateThrottle } from '../../common/functions.js'
 import { updateProgressIndicator } from '../../controls/progress-indicator/progress_indicator.js';
 import { sortCharacterRanges } from '../../pages/settings_project.js';
 import { Glyph } from '../../project_data/glyph.js';
+import { makeVariableAxisID, VariableAxis } from '../../project_data/variable_axis.js';
 import { ProjectEditor } from '../../project_editor/project_editor.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../svg_outlines/svg_outline_import.js';
 import { importGlyphs } from './tables/glyphs.js';
@@ -115,6 +116,23 @@ export async function ioFont_importFont(importedFont, testing = false, importedF
 
 	// Kern data
 	project.kerning = await importGposKernGroups(importedFont, gposKernGroups);
+
+	// Preserve fvar axes even when the imported font does not include editable
+	// interpolation masters. Glyphr Studio can edit and re-export this design-
+	// space metadata, including custom four-character axes.
+	project.variableAxes = {};
+	(importedFont.axes || []).forEach((axis) => {
+		const variableAxis = new VariableAxis({
+			tag: axis.tag,
+			name: axis.name,
+			min: axis.min,
+			defaultValue: axis.default,
+			max: axis.max,
+			value: axis.default,
+		});
+		const axisID = makeVariableAxisID(project.variableAxes, variableAxis.tag);
+		project.variableAxes[axisID] = variableAxis;
+	});
 
 	// Metadata
 	importTable_head(importedFont, project);

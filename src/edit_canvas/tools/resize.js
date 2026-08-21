@@ -247,7 +247,7 @@ export class Tool_Resize {
 			}
 		}
 
-		if(oldSBH !== this.sideBearingHover) editor.publish('editCanvasView', editor.selectedItem);
+		if (oldSBH !== this.sideBearingHover) editor.publish('editCanvasView', editor.selectedItem);
 
 		checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 

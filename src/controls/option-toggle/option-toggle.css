@@ -16,8 +16,8 @@
 }
 
 .wrapper:focus {
-		outline: var(--global-focus-style);
-		outline-offset: -1px;
+	outline: var(--global-focus-style);
+	outline-offset: -1px;
 }
 
 .wrapper:hover,
@@ -37,8 +37,8 @@
 .wrapper:active[disabled] {
 	background-color: var(--disabled-background);
 	border-color: var(--disabled-border);
-		color: var(--disabled-text);
-			text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+	color: var(--disabled-text);
+	text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
 }
 
 .selection-display {
@@ -54,7 +54,7 @@
 	line-height: 24px;
 	padding: 1px 8px 0px 8px;
 	text-align: left;
-	font-family: monospace;
+	font-family: var(--app-ui-font, var(--font-library-font, Arial, sans-serif));
 }
 
 .selection-display .prefix {

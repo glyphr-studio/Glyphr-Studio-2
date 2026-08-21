@@ -1,8 +1,13 @@
-import { beforeEach, describe, it } from 'vitest';
+import { beforeAll, beforeEach, describe, it } from 'vitest';
+import { GlyphTile } from '../../controls/glyph-tile/glyph_tile.js';
 import { Navigator } from '../navigator.js';
 
 describe('Navigator: Page Navigation', () => {
 	let navigator;
+
+	beforeAll(() => {
+		if (!customElements.get('glyph-tile')) customElements.define('glyph-tile', GlyphTile);
+	});
 
 	beforeEach(() => {
 		navigator = new Navigator();
@@ -21,7 +26,7 @@ describe('Navigator: Page Navigation', () => {
 		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
-		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Characters');
+		expect(pageContent.querySelector('h1').textContent).toBe('Character overview');
 	});
 
 	it('Navigate to page: Ligatures', () => {
@@ -29,7 +34,7 @@ describe('Navigator: Page Navigation', () => {
 		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
-		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Ligatures');
+		expect(pageContent.querySelector('h1').textContent).toBe('Ligature overview');
 	});
 
 	it('Navigate to page: Components', () => {
@@ -37,7 +42,7 @@ describe('Navigator: Page Navigation', () => {
 		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
-		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Components');
+		expect(pageContent.querySelector('h1').textContent).toBe('Component overview');
 	});
 
 	it('Navigate to page: Kerning', () => {
@@ -45,7 +50,7 @@ describe('Navigator: Page Navigation', () => {
 		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
-		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Kerning');
+		expect(pageContent.querySelector('h1').textContent).toBe('Kerning');
 	});
 
 	// it('Navigate to page: Live preview', () => {
@@ -61,7 +66,7 @@ describe('Navigator: Page Navigation', () => {
 		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
-		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Global actions');
+		expect(pageContent.querySelector('h1').textContent).toBe('Global Actions');
 	});
 
 	it('Navigate to page: Settings', () => {
@@ -69,7 +74,7 @@ describe('Navigator: Page Navigation', () => {
 		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
-		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Settings');
+		expect(pageContent.querySelector('h1').textContent).toBe('Settings');
 	});
 
 	it('Navigate to page: Help', () => {
@@ -77,7 +82,7 @@ describe('Navigator: Page Navigation', () => {
 		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
-		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('Help');
+		expect(pageContent.querySelector('h1').textContent).toBe('Help');
 	});
 
 	it('Navigate to page: About', () => {
@@ -85,7 +90,7 @@ describe('Navigator: Page Navigation', () => {
 		navigator.navigate(true);
 		const pageContent = navigator.makePageContent();
 		expect(pageContent.id).toBe('app__main-content');
-		expect(pageContent.querySelector('.nav-button__title').innerHTML).toBe('About');
+		expect(pageContent.querySelector('h1').textContent).toBe('About');
 	});
 });
 

@@ -76,11 +76,20 @@ export function handleMouseEvents(event) {
 			case 'newPath':
 				ehd.currentToolHandler = editor.eventHandlers.tool_addPath;
 				break;
+			case 'handwriting':
+				ehd.currentToolHandler = editor.eventHandlers.tool_handwriting;
+				break;
 			case 'newRectangle':
 				ehd.currentToolHandler = editor.eventHandlers.tool_addRectOval;
 				break;
 			case 'newOval':
 				ehd.currentToolHandler = editor.eventHandlers.tool_addRectOval;
+				break;
+			case 'newCircle':
+				ehd.currentToolHandler = editor.eventHandlers.tool_addRectOval;
+				break;
+			case 'measure':
+				ehd.currentToolHandler = editor.eventHandlers.tool_measure;
 				break;
 			case 'kern':
 				ehd.currentToolHandler = editor.eventHandlers.tool_kern;

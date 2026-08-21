@@ -11,6 +11,42 @@ import { eventHandlerData } from '../events.js';
 import { addPathToCurrentItem, switchToolTo } from './tools.js';
 
 /**
+ * Tools that produce a curved outline rather than a rectangle.
+ * @param {String} tool - selected tool name
+ * @returns {Boolean}
+ */
+export function isRoundTool(tool) {
+	return tool === 'newOval' || tool === 'newCircle';
+}
+
+/**
+ * Display name for the shape a tool creates.
+ * @param {String} tool - selected tool name
+ * @returns {String}
+ */
+export function newBasicPathName(tool) {
+	if (tool === 'newCircle') return 'Circle';
+	if (tool === 'newOval') return 'Oval';
+	return 'Rectangle';
+}
+
+/**
+ * The circle tool is the oval tool with its bounds forced square, so a
+ * drag always produces a true circle. Squares off around the drag
+ * origin, using the larger of the two drag dimensions.
+ * @param {Object} maxes - bounds being dragged out
+ * @param {Number} firstX - x the drag started at
+ * @param {Number} firstY - y the drag started at
+ */
+function constrainMaxesToSquare(maxes, firstX, firstY) {
+	const size = Math.max(maxes.xMax - maxes.xMin, maxes.yMax - maxes.yMin);
+	if (maxes.xMin === firstX) maxes.xMax = firstX + size;
+	else maxes.xMin = firstX - size;
+	if (maxes.yMin === firstY) maxes.yMax = firstY + size;
+	else maxes.yMin = firstY - size;
+}
+
+/**
 	// ----------------------------------------------------------------
 	// New Basic Path - adds many points to a new path
 	// ----------------------------------------------------------------
@@ -18,6 +54,26 @@ import { addPathToCurrentItem, switchToolTo } from './tools.js';
 export class Tool_NewBasicPath {
 	constructor() {
 		this.dragging = false;
+	}
+	makePaths(maxes, name) {
+		const editor = getCurrentProjectEditor();
+		const radius = editor.toolOptions.borderRadius;
+		const weight = editor.toolOptions.shapeWeight;
+		const makePath = isRoundTool(editor.selectedTool) ? ovalPathFromMaxes : rectPathFromMaxes;
+		const outer = makePath(maxes, name, radius);
+		if (!weight) return [outer];
+
+		const inset = Math.min(weight, (maxes.xMax - maxes.xMin) / 2, (maxes.yMax - maxes.yMin) / 2);
+		const innerMaxes = {
+			xMin: maxes.xMin + inset,
+			xMax: maxes.xMax - inset,
+			yMin: maxes.yMin + inset,
+			yMax: maxes.yMax - inset,
+		};
+		if (innerMaxes.xMin >= innerMaxes.xMax || innerMaxes.yMin >= innerMaxes.yMax) return [outer];
+		const inner = makePath(innerMaxes, `${name} cutout`, Math.max(0, radius - inset));
+		inner.reverseWinding();
+		return [outer, inner];
 	}
 	mousedown() {
 		// log(`Tool_NewBasicPath.mousedown`, 'start');
@@ -32,13 +88,10 @@ export class Tool_NewBasicPath {
 
 		// This is the fake path that shows up in the layers panel
 		// while dragging is happening
-		if (editor.selectedTool === 'newOval') {
-			// log(`making Oval path`);
-			ehd.newBasicPath = ovalPathFromMaxes(ehd.newBasicPathMaxes, `New oval`);
-		} else {
-			// log(`making Rectangle path`);
-			ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New rectangle`);
-		}
+		ehd.newBasicPath = this.makePaths(
+			ehd.newBasicPathMaxes,
+			newBasicPathName(editor.selectedTool)
+		)[0];
 
 		this.dragging = true;
 		ehd.firstX = cXsX(ehd.mousePosition.x);
@@ -65,15 +118,15 @@ export class Tool_NewBasicPath {
 			ehd.newBasicPathMaxes.xMin = Math.min(ehd.firstX, cXsX(ehd.mousePosition.x));
 			ehd.newBasicPathMaxes.yMax = Math.max(ehd.firstY, cYsY(ehd.mousePosition.y));
 			ehd.newBasicPathMaxes.yMin = Math.min(ehd.firstY, cYsY(ehd.mousePosition.y));
+			if (editor.selectedTool === 'newCircle') {
+				constrainMaxesToSquare(ehd.newBasicPathMaxes, ehd.firstX, ehd.firstY);
+			}
 			// log(`ehd.newBasicPathMaxes afters ${JSON.stringify(ehd.newBasicPathMaxes)}`);
 
-			if (editor.selectedTool === 'newOval') {
-				// log(`making Oval path`);
-				ehd.newBasicPath = ovalPathFromMaxes(ehd.newBasicPathMaxes, `New oval`);
-			} else {
-				// log(`making Rectangle path`);
-				ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New rectangle`);
-			}
+			ehd.newBasicPath = this.makePaths(
+				ehd.newBasicPathMaxes,
+				newBasicPathName(editor.selectedTool)
+			)[0];
 
 			ehd.undoQueueHasChanged = true;
 			editor.publish('currentPath', ehd.newBasicPath);
@@ -103,20 +156,19 @@ export class Tool_NewBasicPath {
 			}
 
 			// Update the fake ... path with new data
-			if (editor.selectedTool === 'newOval') {
-				// log(`making Oval path`);
-				path = ovalPathFromMaxes(ehd.newBasicPathMaxes, `Oval ${count}`);
-			} else {
-				// log(`making Rectangle path`);
-				path = rectPathFromMaxes(ehd.newBasicPathMaxes, `Rectangle ${count}`);
-			}
+			const paths = this.makePaths(
+				ehd.newBasicPathMaxes,
+				`${newBasicPathName(editor.selectedTool)} ${count}`
+			);
 
 			ehd.newBasicPathMaxes = false;
 			ehd.newBasicPath = false;
-			path = addPathToCurrentItem(path);
+			const addedPaths = paths.map((newPath) => addPathToCurrentItem(newPath));
+			path = addedPaths[0];
 			// log(`\n⮟Added path⮟`);
 			// log(path);
 			editor.multiSelect.shapes.select(path);
+			addedPaths.slice(1).forEach((addedPath) => editor.multiSelect.shapes.add(addedPath));
 			switchToolTo('resize');
 		} else {
 			// log(`New path too small`);
@@ -147,7 +199,7 @@ export class Tool_NewBasicPath {
  * @param {String} name
  * @returns {Path}
  */
-export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
+export function rectPathFromMaxes(maxes = {}, name = 'Rectangle', borderRadius = 0) {
 	// log(`rectPathFromMaxes`, 'start');
 	// log(JSON.stringify(maxes));
 	let fontSettings = getCurrentProject().settings.font;
@@ -159,6 +211,9 @@ export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
 	let by = isVal(maxes.yMin) ? maxes.yMin : 0;
 
 	// log(`lx: ${lx}, ty: ${ty}, rx: ${rx}, by: ${by}`);
+
+	const radius = Math.max(0, Math.min(borderRadius, (rx - lx) / 2, (ty - by) / 2));
+	if (radius) return roundedRectPath(lx, ty, rx, by, radius, name);
 
 	// First Point
 	let Pul = new ControlPoint({ coord: { x: lx, y: ty } });
@@ -188,6 +243,31 @@ export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
 	// log(`rectPathFromMaxes`, 'end');
 
 	return newPath;
+}
+
+function roundedRectPath(lx, ty, rx, by, radius, name) {
+	const k = radius * 0.5522847498;
+	const point = (x, y, h1, h2) =>
+		new PathPoint({
+			p: new ControlPoint({ coord: { x, y } }),
+			h1: h1
+				? new ControlPoint({ coord: { x: h1[0], y: h1[1] } })
+				: new ControlPoint({ use: false }),
+			h2: h2
+				? new ControlPoint({ coord: { x: h2[0], y: h2[1] } })
+				: new ControlPoint({ use: false }),
+		});
+	const points = [
+		point(lx + radius, ty, [lx + radius - k, ty]),
+		point(rx - radius, ty, false, [rx - radius + k, ty]),
+		point(rx, ty - radius, [rx, ty - radius + k]),
+		point(rx, by + radius, false, [rx, by + radius - k]),
+		point(rx - radius, by, [rx - radius + k, by]),
+		point(lx + radius, by, false, [lx + radius - k, by]),
+		point(lx, by + radius, [lx, by + radius - k]),
+		point(lx, ty - radius, false, [lx, ty - radius + k]),
+	];
+	return new Path({ name, pathPoints: points });
 }
 
 /**

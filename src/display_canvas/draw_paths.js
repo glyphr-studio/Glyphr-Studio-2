@@ -64,6 +64,11 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
  * @param {Object} ctx - canvas context
  * @param {Object} view - x/y/z view object
  */
+export function isCanvasDisplayModeOutlined(projectOrSettings = getCurrentProject()) {
+	const settings = projectOrSettings?.settings?.app || projectOrSettings;
+	return !!settings?.canvasDisplayModeFilled;
+}
+
 export function drawGlyphOutlineMode(glyph, ctx, view = { x: 0, y: 0, z: 1 }) {
 	// log('drawGlyphOutlineMode', 'start');
 	// log(glyph.name);

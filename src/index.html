@@ -22,6 +22,8 @@
 		<meta name="viewport" content="width=device-width" />
 		<link rel="shortcut icon" href="./common/graphics/logo-icon-color.ico" />
 		<link rel="manifest" href="manifest.json" />
+		<!-- Please keep beautiful CSS please-->
+		<link rel="stylesheet" href="https://api.munetios.com/beautiful-css/beautiful.css" />
 		<script src="app/main.js" type="module"></script>
 		<script type="module">
 			import { glyphrStudioOnLoad, getGlyphrStudioApp, log } from './app/main.js';
@@ -60,7 +62,7 @@
 			}
 
 			#app__landing-page {
-				font-family: sans-serif;
+				font-family: 'Fira Sans', 'Google Sans Flex', sans-serif;
 				opacity: 1;
 				visibility: visible;
 				transition: opacity 500ms ease-out;
@@ -132,6 +134,7 @@
 		<link rel="stylesheet" type="text/css" href="./app/app.css" />
 		<link rel="stylesheet" type="text/css" href="./common/resets.css" />
 		<link rel="stylesheet" type="text/css" href="./common/colors.css" />
+		<link rel="stylesheet" type="text/css" href="./common/glass.css" />
 		<link rel="stylesheet" type="text/css" href="./controls/dialogs/dialogs.css" />
 		<link rel="stylesheet" type="text/css" href="./controls/fancy-slider/fancy-slider.css" />
 		<link rel="stylesheet" type="text/css" href="./controls/tabs/tab-control.css" />
@@ -141,8 +144,10 @@
 			href="./controls/progress-indicator/progress-indicator.css"
 		/>
 		<link rel="stylesheet" type="text/css" href="./project_editor/nav.css" />
+		<link rel="stylesheet" type="text/css" href="./project_editor/editor-chrome.css" />
 		<link rel="stylesheet" type="text/css" href="./pages/editor-pages.css" />
 		<link rel="stylesheet" type="text/css" href="./pages/content-pages.css" />
+		<link rel="stylesheet" type="text/css" href="./pages/variable-sets.css" />
 		<link rel="stylesheet" type="text/css" href="./app/app-pages.css" />
 		<link rel="stylesheet" type="text/css" href="./panels/panels.css" />
 	</head>
@@ -188,7 +193,7 @@
 				<div
 					style="margin: auto; font-size: 16px; text-align: center; color: rgba(255, 255, 255, 0.8)"
 				>
-					It looks like Glyphr Studio failed to load. Bummer.
+					Oops, Something went wrong while loading Glyphr Studio
 					<br />
 					Try using the latest version of FireFox, Edge, or Chrome.
 					<br /><br />
@@ -203,5 +208,10 @@
 		</div>
 
 		<div id="app__wrapper"></div>
+		<div
+			id="app__component-dom"
+			class="app__component-dom"
+			aria-label="Application components"
+		></div>
 	</body>
 </html>

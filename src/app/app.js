@@ -1,6 +1,11 @@
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
-import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
+import {
+	closeEveryTypeOfDialog,
+	hideMountedComponent,
+	showMountedComponent,
+	showToast,
+} from '../controls/dialogs/dialogs.js';
 import { parseSemVer } from '../formats_io/validate_file_input.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
@@ -18,6 +23,15 @@ import {
 	setCurrentProjectEditor,
 } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
+import { clearAutoSaves, getAutoSave, getAutoSaves, setAutoSave } from './project_storage.js';
+import { makeProjectHash, parseAppHash } from './routing.js';
+
+const APP_UI_FONTS = {
+	'fira-sans': "FiraGo, 'Fira Sans', Tahoma, sans-serif",
+	'google-sans-flex': "'Google Sans Flex', 'Google Sans', Arial, sans-serif",
+	'open-sans': "'Open Sans', Arial, sans-serif",
+	system: "system-ui, -apple-system, 'Segoe UI', sans-serif",
+};
 
 /**
  * Creates a new Glyphr Studio Application
@@ -32,7 +46,7 @@ export class GlyphrStudioApp {
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Live preview', // {Sentence case page name} navigate straight to a page
+				currentPage: false, // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Sentence case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
@@ -44,7 +58,7 @@ export class GlyphrStudioApp {
 				testOnLoad: function () {}, // code to run on load
 				testOnRedraw: function () {}, // code to run on Edit Canvas redraw
 			},
-			telemetry: true, // Load google analytics
+			telemetry: false, // Load Google Analytics only after the user opts in
 		};
 
 		// Version
@@ -59,13 +73,16 @@ export class GlyphrStudioApp {
 
 		// Current import target
 		this._editorImportTarget = undefined;
+		this._applyingHashRoute = false;
+		this._lastAppliedHash = '';
+		this._autoSaveQueues = new Map();
 		this.temp = {};
 	}
 
 	/**
 	 * Starts up the app
 	 */
-	setUp() {
+	async setUp() {
 		// log(`GlyphrStudioApp.setUp`, 'start');
 		let editor = addProjectEditorAndSetAsImportTarget();
 
@@ -109,16 +126,16 @@ export class GlyphrStudioApp {
 		// log(editor);
 		// log(editor.nav.page);
 
-		if (this.settings.telemetry && !dev.mode) {
+		await this.migrateAutoSavesToIndexedDB();
+		this.settings.telemetry = this.getLocalStorage()?.googleTelemetry === true;
+		this.applyUIFont(this.getLocalStorage()?.openProjectUIFont || 'fira-sans');
+		if (this.settings.telemetry) {
 			addTelemetry();
 		}
 
-		// Load the Open Project page
-		if (dev.mode && dev.currentPage) {
-			editor.navigate();
-		} else {
-			this.appPageNavigate(makePage_OpenProject);
-		}
+		this.startHashRouting();
+		if (!window.location.hash) this.setHash('#/', true);
+		await this.applyHashRoute();
 		this.fadeOutLandingPage();
 
 		// Final dev mode stuff
@@ -204,9 +221,112 @@ export class GlyphrStudioApp {
 			id: 'app__main-content',
 		});
 		mainContent.appendChild(pageMaker());
-		const wrapper = document.querySelector('#app__wrapper');
-		wrapper.innerHTML = '';
-		wrapper.appendChild(mainContent);
+		const wrapper = /** @type {HTMLElement | null} */ (document.querySelector('#app__wrapper'));
+		if (!wrapper) return;
+		// App pages sit above the editor, so drop the editor's chrome grid
+		wrapper.classList.remove('app__wrapper--editor');
+		[...wrapper.children].forEach((child) =>
+			hideMountedComponent(/** @type {HTMLElement} */ (child))
+		);
+		wrapper.prepend(mainContent);
+		showMountedComponent(mainContent);
+	}
+
+	setHash(hash, replace = false) {
+		if (window.location.hash === hash) return;
+		const method = replace ? 'replaceState' : 'pushState';
+		window.history[method](null, '', hash);
+	}
+
+	navigateHome(replace = false, page = 'my-fonts') {
+		this.appPageNavigate(() => makePage_OpenProject(false, page));
+		const hash = page === 'my-fonts' ? '#/' : `#/${page}`;
+		this.setHash(hash, replace);
+		this._lastAppliedHash = hash;
+	}
+
+	syncHashFromEditor(editor = this.selectedProjectEditor, replace = false) {
+		if (this._applyingHashRoute || !editor?.project) return;
+		const hash = makeProjectHash(editor);
+		this.setHash(hash, replace);
+		this._lastAppliedHash = hash;
+	}
+
+	async applyHashRoute() {
+		const hash = window.location.hash || '#/';
+		const route = parseAppHash(hash);
+		this._applyingHashRoute = true;
+
+		try {
+			if (route.type === 'home') {
+				this.navigateHome(hash !== '#/');
+				return;
+			}
+			if (route.type === 'library') {
+				this.navigateHome(false, route.page);
+				return;
+			}
+
+			let editor = this.projectEditors.find(
+				(candidate) => candidate.project.settings.project.id === route.projectID
+			);
+			if (!editor) {
+				let savedProject;
+				try {
+					savedProject = await getAutoSave(route.projectID);
+				} catch {
+					this.navigateHome(true);
+					return;
+				}
+				if (!savedProject?.project) {
+					this.navigateHome(true);
+					showToast(`Failed to load project because it doesn't exist.`);
+					return;
+				}
+				editor = this.projectEditors[0] || new ProjectEditor();
+				if (!this.projectEditors.includes(editor)) this.projectEditors.push(editor);
+				editor.project = importGlyphrProjectFromText(savedProject.project);
+				editor.project.settings.app.autoSave = this.getLocalStorage().openProjectAutoSave !== false;
+			}
+
+			this.selectedProjectEditor = editor;
+			editor.nav.page = route.page;
+			if (route.page === 'Characters') editor.characterView = route.glyphID ? 'edit' : 'overview';
+			if (route.page === 'Ligatures') {
+				editor.ligatureView = route.ligatureID ? 'edit' : 'overview';
+				if (route.ligatureID) editor.selectedLigatureID = route.ligatureID;
+			}
+			if (route.page === 'Components') {
+				editor.componentView = route.componentID ? 'edit' : 'overview';
+				if (route.componentID) editor.selectedComponentID = route.componentID;
+			}
+			if (route.page === 'Variable sets') {
+				editor.variableSetsView = route.alternateID ? 'alternate' : 'overview';
+				editor.selectedStylisticSetID = route.stylisticSetID || false;
+				if (route.alternateID) editor.selectedAlternateID = route.alternateID;
+			}
+			if (route.glyphID) editor.selectedGlyphID = route.glyphID;
+			editor.navigate();
+			this._lastAppliedHash = hash;
+		} finally {
+			this._applyingHashRoute = false;
+		}
+	}
+
+	startHashRouting() {
+		if (this._hashRouteHandler) return;
+		this._hashRouteHandler = () => {
+			if (window.location.hash === this._lastAppliedHash) return;
+			this.applyHashRoute();
+		};
+		window.addEventListener('hashchange', this._hashRouteHandler);
+		window.addEventListener('popstate', this._hashRouteHandler);
+		window.addEventListener('glyphr:route-selection-change', (event) => {
+			const routeEvent = /** @type {CustomEvent} */ (event);
+			if (routeEvent.detail?.editor === this.selectedProjectEditor) {
+				this.syncHashFromEditor(routeEvent.detail.editor);
+			}
+		});
 	}
 
 	/**
@@ -253,7 +373,7 @@ export class GlyphrStudioApp {
 	 * Wrapper to write a key/value pair to the
 	 * Glyphr Studio area of local storage
 	 * @param {String} key - what part to set
-	 * @param {String} newData - value to set
+	 * @param {*} newData - value to set
 	 */
 	setLocalStorage(key, newData) {
 		// log(`GlyphrStudioApp.setLocalStorage`, 'start');
@@ -266,10 +386,7 @@ export class GlyphrStudioApp {
 		try {
 			window.localStorage.setItem('GlyphrStudio', JSON.stringify(data));
 		} catch {
-			showToast(
-				`There is not enough space for this project to be auto-saved. The auto-save option has been turned off in Settings > App.`
-			);
-			getCurrentProject().settings.app.autoSave = false;
+			showToast(`Failed to update settings. Please try again.`);
 		}
 
 		// log(`\n⮟window.localStorage⮟`);
@@ -278,21 +395,63 @@ export class GlyphrStudioApp {
 	}
 
 	/**
-	 * Counts how many projects are saved locally
-	 * @returns {Number}
+	 * Enables or disables the optional Google telemetry integration.
+	 * @param {Boolean} enabled - whether telemetry is allowed
 	 */
-	countLocalStorageProjects() {
-		const data = this.getLocalStorage();
-		return countItems(data.autoSaves);
+	setGoogleTelemetry(enabled) {
+		this.settings.telemetry = !!enabled;
+		this.setLocalStorage('googleTelemetry', this.settings.telemetry);
+
+		if (this.settings.telemetry) addTelemetry();
+		else disableTelemetry();
+	}
+
+	applyUIFont(fontID = 'fira-sans') {
+		const fontFamily = APP_UI_FONTS[fontID] || APP_UI_FONTS['fira-sans'];
+		document.documentElement.style.setProperty('--app-ui-font', fontFamily);
+		document.documentElement.style.setProperty('--font-library-font', fontFamily);
 	}
 
 	/**
-	 * Automatically writes the current state to the
-	 * local storage for the current project
+	 * Moves legacy project backups to IndexedDB without moving app settings.
 	 */
-	addAutoSaveState() {
+	async migrateAutoSavesToIndexedDB() {
+		const localData = this.getLocalStorage();
+		const localSaves = localData?.autoSaves;
+		if (!localSaves || typeof localSaves !== 'object') return;
+
+		try {
+			await Promise.all(Object.values(localSaves).map((saveData) => setAutoSave(saveData)));
+			delete localData.autoSaves;
+			window.localStorage.setItem('GlyphrStudio', JSON.stringify(localData));
+		} catch (error) {
+			console.error('Could not migrate auto-saved projects to IndexedDB.', error);
+			showToast('Failed to migrate auto-saved projects to IndexedDB.');
+		}
+	}
+
+	/**
+	 * Counts how many projects are saved locally
+	 * @returns {Promise<Number>}
+	 */
+	async countAutoSavedProjects() {
+		return countItems(await getAutoSaves());
+	}
+
+	getAutoSaves() {
+		return getAutoSaves();
+	}
+
+	clearAutoSaves() {
+		return clearAutoSaves();
+	}
+
+	/**
+	 * Automatically writes the current project state to IndexedDB.
+	 */
+	async addAutoSaveState(project = getCurrentProject()) {
 		// log(`addAutoSaveState`, 'start');
-		const projectData = getCurrentProject().save();
+		const projectData = project.save();
 		const metadata = projectData.settings.project;
 		const saveData = {
 			time: new Date().getTime(),
@@ -302,20 +461,35 @@ export class GlyphrStudioApp {
 		};
 		// log(`metadata.name: ${metadata.name}`);
 		// log(`metadata.id: ${metadata.id}`);
-		let newSaves = this.getLocalStorage()?.autoSaves || {};
-		newSaves[metadata.id] = saveData;
+		const previousSave = this._autoSaveQueues.get(metadata.id) || Promise.resolve();
+		const pendingSave = previousSave.catch(() => undefined).then(() => setAutoSave(saveData));
+		this._autoSaveQueues.set(metadata.id, pendingSave);
+		try {
+			await pendingSave;
+		} catch {
+			showToast(
+				`Failed to save project data. Please try again or check your storage settings. The auto-save option has been turned off in Settings > App.`
+			);
+			project.settings.app.autoSave = false;
+		} finally {
+			if (this._autoSaveQueues.get(metadata.id) === pendingSave) {
+				this._autoSaveQueues.delete(metadata.id);
+			}
+		}
 		// log(`\n⮟newSaves⮟`);
-		// log(newSaves);
-		this.setLocalStorage('autoSaves', newSaves);
 		// log(`addAutoSaveState`, 'end');
 	}
 }
 
 /**
- * Conditionally load Google Telemetry
+ * Conditionally load Google Telemetry when user setting is on
  */
 function addTelemetry() {
+	window['ga-disable-G-L8S3D8WCC9'] = false;
+	if (document.querySelector('#glyphr-studio-google-telemetry')) return;
+
 	let gScript = document.createElement('script');
+	gScript.setAttribute('id', 'glyphr-studio-google-telemetry');
 	gScript.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=G-L8S3D8WCC9');
 	gScript.setAttribute('async', '');
 	document.head.appendChild(gScript);
@@ -328,6 +502,14 @@ function addTelemetry() {
 	}
 	gtag('js', new Date());
 	gtag('config', 'G-L8S3D8WCC9');
+}
+
+/**
+ * Stops Google telemetry for the current page.
+ */
+function disableTelemetry() {
+	window['ga-disable-G-L8S3D8WCC9'] = true;
+	document.querySelector('#glyphr-studio-google-telemetry')?.remove();
 }
 
 // --------------------------------------------------------------

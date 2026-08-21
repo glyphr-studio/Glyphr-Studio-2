@@ -5,6 +5,8 @@ import { handleDropSVGonEditCanvas } from './events_drag_drop_paste.js';
 import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
 import { handleMouseEvents, handleMouseWheel } from './events_mouse.js';
 import { Tool_Kern } from './tools/kern.js';
+import { Tool_Measure } from './tools/measure.js';
+import { Tool_Handwriting } from './tools/handwriting.js';
 import { Tool_NewBasicPath } from './tools/new_basic_path.js';
 import { Tool_NewPath } from './tools/new_path.js';
 import { Tool_Pan } from './tools/pan.js';
@@ -64,6 +66,8 @@ export function initEventHandlers(canvas) {
 	editor.eventHandlers.tool_pathEdit = new Tool_PathEdit();
 	editor.eventHandlers.tool_pathAddPoint = new Tool_PathAddPoint();
 	editor.eventHandlers.tool_kern = new Tool_Kern();
+	editor.eventHandlers.tool_handwriting = new Tool_Handwriting();
+	editor.eventHandlers.tool_measure = new Tool_Measure();
 
 	// Mouse Event Listeners
 	canvas.addEventListener('mousedown', handleMouseEvents, false);
@@ -72,6 +76,7 @@ export function initEventHandlers(canvas) {
 	canvas.addEventListener('mouseover', handleMouseOverCanvas);
 	canvas.addEventListener('mouseout', handleMouseLeaveCanvas);
 	canvas.addEventListener('wheel', handleMouseWheel, { passive: false, capture: false });
+	initializeTouchEditing(canvas);
 	canvas.addEventListener('drop', handleDropSVGonEditCanvas, false);
 	canvas.addEventListener('dragenter', handleDragEnterCanvas, false);
 	canvas.addEventListener('dragover', cancelDefaultEventActions, false);
@@ -81,6 +86,170 @@ export function initEventHandlers(canvas) {
 	document.addEventListener('keydown', handleKeyPress, false);
 	document.addEventListener('keyup', handleKeyUp, false);
 	// log(`initEventHandlers`, 'end');
+}
+
+/**
+ * Adds direct-manipulation editing for touch screens. A moving finger uses
+ * the selected drawing/editing tool, a short hold switches temporarily to
+ * pan, and two fingers pan and pinch-zoom the canvas.
+ * @param {HTMLCanvasElement} canvas - edit canvas element
+ */
+function initializeTouchEditing(canvas) {
+	const state = {
+		mode: 'idle',
+		startedTool: false,
+		longPressTimer: 0,
+		startPoint: false,
+		lastPoint: false,
+		lastDistance: 0,
+		lastCenter: false,
+	};
+
+	const pointFromTouch = (touch) => {
+		const rect = canvas.getBoundingClientRect();
+		return { x: touch.clientX - rect.left, y: touch.clientY - rect.top };
+	};
+	const distanceBetween = (first, second) =>
+		Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+	const centerBetween = (first, second) => {
+		const rect = canvas.getBoundingClientRect();
+		return {
+			x: (first.clientX + second.clientX) / 2 - rect.left,
+			y: (first.clientY + second.clientY) / 2 - rect.top,
+		};
+	};
+	const mouseLikeEvent = (type, point, sourceEvent) => ({
+		type,
+		button: 0,
+		offsetX: point.x,
+		offsetY: point.y,
+		layerX: point.x,
+		layerY: point.y,
+		clientX: point.x,
+		clientY: point.y,
+		ctrlKey: sourceEvent.ctrlKey || false,
+		metaKey: sourceEvent.metaKey || false,
+		shiftKey: sourceEvent.shiftKey || false,
+		altKey: sourceEvent.altKey || false,
+		preventDefault: () => sourceEvent.preventDefault(),
+		stopPropagation: () => sourceEvent.stopPropagation(),
+	});
+	const clearLongPress = () => {
+		if (state.longPressTimer) window.clearTimeout(state.longPressTimer);
+		state.longPressTimer = 0;
+	};
+	const finishCurrentGesture = (sourceEvent) => {
+		clearLongPress();
+		if (!state.lastPoint) return;
+		const upEvent = mouseLikeEvent('mouseup', state.lastPoint, sourceEvent);
+		if (state.mode === 'long-pan') togglePanOff(upEvent);
+		else if (state.startedTool || state.mode === 'tool') handleMouseEvents(upEvent);
+		state.startedTool = false;
+	};
+
+	canvas.addEventListener(
+		'touchstart',
+		(event) => {
+			event.preventDefault();
+			event.stopPropagation();
+			if (event.touches.length >= 2) {
+				finishCurrentGesture(event);
+				const first = event.touches[0];
+				const second = event.touches[1];
+				state.mode = 'pinch';
+				state.lastDistance = distanceBetween(first, second);
+				state.lastCenter = centerBetween(first, second);
+				return;
+			}
+
+			const point = pointFromTouch(event.touches[0]);
+			state.mode = 'pending';
+			state.startPoint = point;
+			state.lastPoint = point;
+			state.startedTool = false;
+			clearLongPress();
+			state.longPressTimer = window.setTimeout(() => {
+				if (state.mode !== 'pending') return;
+				state.mode = 'long-pan';
+				togglePanOn(mouseLikeEvent('mousedown', state.startPoint, event));
+			}, 360);
+		},
+		{ passive: false }
+	);
+
+	canvas.addEventListener(
+		'touchmove',
+		(event) => {
+			event.preventDefault();
+			event.stopPropagation();
+			if (event.touches.length >= 2) {
+				clearLongPress();
+				const first = event.touches[0];
+				const second = event.touches[1];
+				const nextDistance = distanceBetween(first, second);
+				const nextCenter = centerBetween(first, second);
+				if (state.mode !== 'pinch') {
+					finishCurrentGesture(event);
+					state.mode = 'pinch';
+					state.lastDistance = nextDistance;
+					state.lastCenter = nextCenter;
+					return;
+				}
+				const editor = getCurrentProjectEditor();
+				const scale = state.lastDistance ? nextDistance / state.lastDistance : 1;
+				if (Number.isFinite(scale) && scale > 0) editor.updateViewZoom(scale, nextCenter);
+				if (state.lastCenter) {
+					const view = editor.view;
+					editor.view = {
+						dx: view.dx + nextCenter.x - state.lastCenter.x,
+						dy: view.dy + nextCenter.y - state.lastCenter.y,
+					};
+					editor.publish('editCanvasView', editor.view);
+				}
+				state.lastDistance = nextDistance;
+				state.lastCenter = nextCenter;
+				return;
+			}
+
+			if (!event.touches.length || state.mode === 'pinch') return;
+			const point = pointFromTouch(event.touches[0]);
+			state.lastPoint = point;
+			if (state.mode === 'long-pan') {
+				handleMouseEvents(mouseLikeEvent('mousemove', point, event));
+				return;
+			}
+
+			const moved = Math.hypot(point.x - state.startPoint.x, point.y - state.startPoint.y);
+			if (state.mode === 'pending' && moved > 5) {
+				clearLongPress();
+				state.mode = 'tool';
+				handleMouseEvents(mouseLikeEvent('mousedown', state.startPoint, event));
+				state.startedTool = true;
+			}
+			if (state.mode === 'tool') handleMouseEvents(mouseLikeEvent('mousemove', point, event));
+		},
+		{ passive: false }
+	);
+
+	const endTouch = (event) => {
+		event.preventDefault();
+		event.stopPropagation();
+		if (state.mode === 'pending' && state.lastPoint) {
+			clearLongPress();
+			handleMouseEvents(mouseLikeEvent('mousedown', state.lastPoint, event));
+			state.startedTool = true;
+			state.mode = 'tool';
+		}
+		if (state.mode !== 'pinch') finishCurrentGesture(event);
+		state.mode = 'idle';
+		state.startedTool = false;
+		state.startPoint = false;
+		state.lastPoint = false;
+		state.lastDistance = 0;
+		state.lastCenter = false;
+	};
+	canvas.addEventListener('touchend', endTouch, { passive: false });
+	canvas.addEventListener('touchcancel', endTouch, { passive: false });
 }
 
 /**

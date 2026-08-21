@@ -106,13 +106,18 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`\n⮟this.textBlockOptions⮟`);
 		// log(this.textBlockOptions);
 
-		// Put it all together
-		const shadow = this.attachShadow({ mode: 'open' });
-		const styles = makeElement({ tag: 'style', innerHTML: style });
-		shadow.appendChild(styles);
+		// Put it all together. Some navigations reuse the same custom element instance,
+		// so re-creating the shadow root would throw a NotSupportedError.
+		let shadow = this.shadowRoot;
+		if (!shadow) {
+			shadow = this.attachShadow({ mode: 'open' });
+			const styles = makeElement({ tag: 'style', innerHTML: style });
+			shadow.appendChild(styles);
+		}
 
-		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
-		shadow.appendChild(this.canvas);
+		const existingCanvas = shadow.querySelector('#mainDisplayCanvas');
+		this.canvas = existingCanvas || makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
+		if (!existingCanvas) shadow.appendChild(this.canvas);
 
 		// @ts-expect-error 'property does exist'
 		this.ctx = this.canvas.getContext('2d');
@@ -153,7 +158,9 @@ export class DisplayCanvas extends HTMLElement {
 		// log(this.textBlockOptions);
 		// log(`this.parentElement`);
 		// log(this.parentElement);
-		const clientRect = this?.parentElement?.getClientRects()[0];
+		const clientRect = this?.parentElement?.getBoundingClientRect?.();
+		const clientWidth = Number.isFinite(clientRect?.width) ? clientRect.width : 1000;
+		const clientHeight = Number.isFinite(clientRect?.height) ? clientRect.height : 1000;
 		// log(clientRect);
 		const pageHeight = this.textBlockOptions.pageHeight;
 		const pageWidth = this.textBlockOptions.pageWidth;
@@ -171,14 +178,14 @@ export class DisplayCanvas extends HTMLElement {
 			// keeps the 'gs' and 'otf'/'ttf' previews the same element height.
 			newHeight += this.textBlockOptions.pagePadding * 2 + EXTRA_TOP_PADDING;
 		} else if (pageHeight === 'fit') {
-			newHeight = clientRect.height;
+			newHeight = clientHeight;
 		} else if (!isNaN(parseInt(pageHeight))) {
 			newHeight = parseInt(pageHeight);
 		}
 
 		// Widths
 		if (pageWidth === 'fit') {
-			newWidth = clientRect.width;
+			newWidth = clientWidth;
 		} else if (!isNaN(parseInt(pageWidth))) {
 			newWidth = parseInt(pageWidth);
 		}
@@ -233,7 +240,9 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	calculatePageMaxes() {
 		// log(`DisplayCanvas.calculatePageMaxes`, 'start');
-		const clientRect = this?.parentElement?.getClientRects()[0];
+		const clientRect = this?.parentElement?.getBoundingClientRect?.();
+		const clientWidth = Number.isFinite(clientRect?.width) ? clientRect.width : 1000;
+		const clientHeight = Number.isFinite(clientRect?.height) ? clientRect.height : 1000;
 		const pagePadding = this.textBlockOptions.pagePadding;
 		const pageHeight = this.textBlockOptions.pageHeight;
 		const pageWidth = this.textBlockOptions.pageWidth;
@@ -249,14 +258,14 @@ export class DisplayCanvas extends HTMLElement {
 		if (pageHeight === 'auto') {
 			maxes.yMax = Infinity;
 		} else if (pageHeight === 'fit') {
-			maxes.yMax = clientRect.height - pagePadding;
+			maxes.yMax = clientHeight - pagePadding;
 		} else if (!isNaN(parseInt(pageHeight))) {
 			maxes.yMax = parseInt(pageHeight);
 		}
 
 		// Widths
 		if (pageWidth === 'fit') {
-			maxes.xMax = clientRect.width - pagePadding;
+			maxes.xMax = clientWidth - pagePadding;
 		} else if (!isNaN(parseInt(pageWidth))) {
 			maxes.xMax = parseInt(pageWidth);
 		}
@@ -498,9 +507,13 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
 
 		if (item) {
-			ctx.fillStyle = uiColors.enabled.resting.text;
+			const canvasHost = ctx.canvas?.getRootNode?.()?.host || ctx.canvas;
+			const themedInk = canvasHost
+				? getComputedStyle(canvasHost).getPropertyValue('--display-canvas-ink').trim()
+				: '';
+			ctx.fillStyle = themedInk || uiColors.enabled.resting.text;
 			ctx.strokeStyle = 'transparent';
-			drawGlyph(item, ctx, view, 1);
+			drawGlyph(item, ctx, view, 1, ctx.fillStyle);
 		}
 
 		// log(`displayCanvas.drawDisplayCharacter`, 'end');

@@ -18,7 +18,8 @@ import { makePanel, refreshPanel } from '../panels/panels.js';
 import { Glyph } from '../project_data/glyph.js';
 import {
 	makeNavButton,
-	makeNavButtonContent,
+	makeItemSelectorButton,
+	makeItemSelectorContent,
 	toggleNavDropdown,
 } from '../project_editor/navigator.js';
 
@@ -87,11 +88,7 @@ export function makePage_Ligatures() {
 	}
 
 	const selectedLigature = editor.selectedLigature;
-	const l2Button = makeNavButton({
-		level: 'l2',
-		superTitle: 'EDITING',
-		title: selectedLigature.name,
-	});
+	const l2Button = makeItemSelectorButton(selectedLigature.name);
 	const l3Button = makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel });
 
 	navArea.appendChild(textToNode(l2Button));
@@ -106,7 +103,7 @@ export function makePage_Ligatures() {
 	canvasArea.appendChild(editCanvas);
 
 	// Ligature Selector
-	let l2 = content.querySelector('#nav-button-l2');
+	let l2 = content.querySelector('#editor-item-selector');
 	l2.addEventListener('click', function () {
 		toggleNavDropdown(l2);
 	});
@@ -115,7 +112,7 @@ export function makePage_Ligatures() {
 		subscriberID: 'nav.ligatureChooserButton',
 		callback: () => {
 			if (editor.selectedLigature) {
-				l2.innerHTML = makeNavButtonContent(editor.selectedLigature?.name, 'EDITING');
+				l2.innerHTML = makeItemSelectorContent(editor.selectedLigature?.name);
 			}
 		},
 	});

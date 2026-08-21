@@ -815,7 +815,6 @@ export class Segment extends GlyphElement {
 	 * @returns {Segment}
 	 */
 	makeSegmentOffset(offsetDistance = 100, samples = 100) {
-
 		function getTangent(seg, t) {
 			const mt = 1 - t;
 			const dx =

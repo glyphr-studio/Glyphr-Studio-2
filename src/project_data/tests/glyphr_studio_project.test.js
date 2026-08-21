@@ -5,6 +5,9 @@ import {
 	merge,
 	validateItemID,
 } from '../glyphr_studio_project.js';
+import { Glyph } from '../glyph.js';
+import { StylisticSet } from '../stylistic_set.js';
+import { VariableAxis } from '../variable_axis.js';
 
 describe('GlyphrStudioProject Tests', () => {
 	// Mock data for testing
@@ -59,6 +62,38 @@ describe('GlyphrStudioProject Tests', () => {
 		expect(savedProject.settings.app.guides.custom).toEqual([]);
 		expect(savedProject.settings.app.livePreviews).toEqual([]);
 		expect(savedProject.settings.font.family).toBe('My Font');
+	});
+
+	it('round-trips variable axes, stylistic sets, and blank alternates', () => {
+		const project = new GlyphrStudioProject(mockProjectData);
+		project.variableAxes['axis-wght'] = new VariableAxis({
+			tag: 'wght',
+			name: 'Weight',
+			min: 100,
+			defaultValue: 400,
+			max: 900,
+			value: 650,
+		});
+		project.alternates['alt-ss01-1'] = new Glyph({
+			id: 'alt-ss01-1',
+			name: 'A alt 1',
+			objType: 'Alternate',
+			advanceWidth: 600,
+			shapes: [],
+		});
+		project.stylisticSets['sset-1'] = new StylisticSet({
+			name: 'A alternates',
+			baseItemID: 'glyph-0x41',
+			alternates: ['alt-ss01-1'],
+			feature: 'ss01',
+		});
+
+		const restored = new GlyphrStudioProject(project.save());
+		expect(restored.variableAxes['axis-wght'].value).toBe(650);
+		expect(restored.stylisticSets['sset-1'].alternates).toEqual(['alt-ss01-1']);
+		expect(restored.alternates['alt-ss01-1'].name).toBe('A alt 1');
+		expect(restored.alternates['alt-ss01-1'].shapes).toEqual([]);
+		expect(restored.alternates['alt-ss01-1'].advanceWidth).toBe(600);
 	});
 
 	// Test the totalVertical getter of GlyphrStudioProject class

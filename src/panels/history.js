@@ -84,10 +84,16 @@ export function makePanel_History() {
 				className:
 					'history-list__title' +
 					(isCurrent ? ' history-list__title--current' : ' history-list__title--clickable'),
-				innerHTML: isCurrent ? `${title} <span class="history-list__current-tag">current</span>` : title,
+				innerHTML: isCurrent
+					? `${title} <span class="history-list__current-tag">current</span>`
+					: title,
 				attributes: isCurrent
 					? {}
-					: { title: `Click to revert to this point (undo ${stepsToUndo} step${stepsToUndo > 1 ? 's' : ''})` },
+					: {
+							title: `Click to revert to this point (undo ${stepsToUndo} step${
+								stepsToUndo > 1 ? 's' : ''
+							})`,
+					  },
 			});
 			if (!isCurrent) {
 				titleEl.addEventListener('click', () => {

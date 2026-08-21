@@ -161,7 +161,7 @@ export class ControlPoint extends GlyphElement {
 			let dx = position - this.x;
 			// log(`dx: ${dx}`);
 
-			if(this.parent) {
+			if (this.parent) {
 				this.parent.updatePathPointPosition('p', dx, 0);
 			} else {
 				this.coord.x = position;
@@ -183,7 +183,7 @@ export class ControlPoint extends GlyphElement {
 	set y(position) {
 		if (this.type === 'p') {
 			let dy = position - this.y;
-			if(this.parent) {
+			if (this.parent) {
 				this.parent.updatePathPointPosition('p', 0, dy);
 			} else {
 				this.coord.y = position;

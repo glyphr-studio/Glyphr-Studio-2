@@ -27,7 +27,8 @@
 * {
 	margin: 0;
 	padding: 0;
-	font-family: FiraGo, Tahoma, Verdana, sans-serif;
+	font-family: var(--app-ui-font, FiraGo, Tahoma, Verdana, sans-serif);
+	font-feature-settings: 'ss01' 1;
 	font-size: 14px;
 	font-weight: normal;
 	text-align: left;
@@ -135,7 +136,8 @@ p {
 	margin-top: 4px;
 }
 
-p, li {
+p,
+li {
 	line-height: 1.3em;
 }
 
@@ -209,15 +211,14 @@ label:hover {
 
 input,
 textarea {
-	border: none;
 	padding: 0px 0px 0px 4px;
 	height: 24px;
 	text-align: left;
 	font-family: monospace;
-	background-color: var(--enabled-restingLight-background);
-	color: var(--enabled-restingLight-text);
-	border: 1px solid var(--enabled-restingLight-border);
-	border-radius: 4px;
+	background-color: var(--glass-surface, var(--enabled-restingLight-background));
+	color: var(--glass-ink, var(--enabled-restingLight-text));
+	border: 1px solid var(--glass-border, var(--enabled-restingLight-border));
+	border-radius: 8px;
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	-ms-user-select: text;
@@ -226,22 +227,19 @@ textarea {
 
 input:hover,
 textarea:hover {
-	background-color: var(--enabled-focus-background);
-	color: var(--enabled-focus-text);
-	border-color: var(--enabled-focus-border);
+	border-color: var(--glass-purple, var(--enabled-focus-border));
 }
 
 input:focus,
 textarea:focus {
-	background-color: var(--enabled-focus-background);
-	color: var(--enabled-focus-text);
-	border-color: var(--enabled-focus-border);
+	background-color: var(--glass-surface-strong, var(--enabled-focus-background));
+	border-color: var(--glass-purple, var(--enabled-focus-border));
 }
 
 textarea:hover::-webkit-resizer,
 textarea:focus::-webkit-resizer {
 	display: block;
-	border: 2px outset var(--enabled-focus-background);
+	border: 2px outset var(--glass-purple, var(--enabled-focus-background));
 }
 
 info-bubble {
@@ -267,16 +265,8 @@ input[type='image'] {
 input[type='number'] {
 	text-align: right;
 	width: 70px;
-	border: 1px solid white;
-	border: 1px solid var(--gray-l90);
+	border: 1px solid var(--glass-border, var(--gray-l90));
 	cursor: default;
-}
-
-input[type='text'][disabled='disabled'],
-input[type='number'][disabled='disabled'] {
-	background-color: var(--gray-l90);
-	border: 1px solid var(--gray-l90);
-	color: var(--gray-l65);
 }
 
 input[type='checkbox'] {
@@ -355,37 +345,69 @@ edit-canvas:focus-visible {
 /* --------------------------------------------------------------
 // Button
 // ------------------------------------------------------------*/
-
+/*
 button,
 button:active,
 button:hover,
-button:focus {
-	text-align: center;
-	padding: 4px 8px;
+button:focus,
+textarea,
+textarea:active,
+textarea:hover,
+textarea:focus,
+input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='reset']),
+input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='reset']):active,
+input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='reset']):hover,
+input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='reset']):focus,
+select,
+select:active,
+select:hover,
+select:focus {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	text-align: left;
+	padding: 6px 10px;
 	margin: 2px 0px;
 	cursor: pointer;
-	border-radius: 4px;
-	border: 1px solid var(--gray-l90);
-	background-color: var(--gray-l90);
-	color: var(--enabled-text);
-	box-shadow: var(--l1-shadow);
+	border-radius: 10px;
+	border: 1px solid rgba(114, 92, 173, 0.38);
+	background: rgba(255, 255, 255, 0.18);
+	color: var(--enabled-restingLight-text, #2a2540);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 8px 20px rgba(41, 29, 66, 0.08);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
 }
 
-button:hover {
-	color: var(--enabled-focus-text);
-	border-color: var(--blue-l85);
-	box-shadow: var(--l1-shadow);
+button:hover,
+textarea:hover,
+input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='reset']):hover,
+select:hover {
+	border-color: rgba(122, 94, 216, 0.62);
+	background: rgba(255, 255, 255, 0.24);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 10px 22px rgba(41, 29, 66, 0.12);
+}
+
+button:focus,
+textarea:focus,
+input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='reset']):focus,
+select:focus {
+	outline: var(--global-focus-style);
+	outline-offset: -1px;
+	border-color: rgba(122, 94, 216, 0.75);
 }
 
 button[disabled],
 button[disabled]:active,
 button[disabled]:hover,
-button[disabled]:hover,
-button[disabled]:focus {
-	background-color: var(--gray-l95);
-	border-color: var(--gray-l95);
-	color: var(--disabled-text);
+button[disabled]:focus,
+textarea[disabled],
+input[disabled],
+select[disabled] {
+	background: rgba(180, 176, 196, 0.2);
+	border-color: rgba(180, 176, 196, 0.3);
+	color: var(--disabled-text, #8a8798);
 	cursor: default;
+	box-shadow: none;
 }
 
 .button__call-to-action,
@@ -399,3 +421,4 @@ button[disabled]:focus {
 .button__call-to-action:hover {
 	color: white;
 }
+*/

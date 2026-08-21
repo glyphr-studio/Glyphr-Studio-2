@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { duplicates } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
+import { clearAutoKernCache } from '../display_canvas/text_block.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { KernGroup } from '../project_data/kern_group.js';
@@ -25,6 +26,8 @@ export function glyphChanged(glyph) {
 	// log(`glyphChanged`, 'start');
 	// log(glyph);
 	if (glyph?.cache) glyph.cache = {};
+	// Automatic kern values are derived from outlines, so any edit invalidates them
+	clearAutoKernCache();
 	if (glyph.constructor.name !== 'Glyph') {
 		// log(`glyphChanged`, 'end');
 		return;

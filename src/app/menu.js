@@ -1,4 +1,4 @@
-import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
+import { addAsChildren, getComponentDOM, makeElement } from '../common/dom.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
 import {
 	closeEveryTypeOfDialog,
@@ -85,116 +85,16 @@ function makeMenu(menuName) {
 		innerHTML: menuName,
 		className: 'menu-entry-point',
 	});
-	const editor = getCurrentProjectEditor();
+
 	if (menuName === 'File') {
-		/** @type {Array} */
-		let fileMenuData = [];
-		// Preferred font export format (the format that was imported, or 'otf'
-		// for new projects) drives the file name preview and the Ctrl+E note.
-		const preferredExportFormat = getPreferredExportFormat();
-		if (typeof editor.loadedFileHandle === 'object') {
-			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
-
-			// @ts-expect-error 'property does exist'
-			if (typeof editor?.loadedFileHandle?.name === 'string') {
-				// @ts-expect-error 'property does exist'
-				projectDisplayName = editor.loadedFileHandle.name;
-			}
-
-			fileMenuData.push(
-				{
-					child: makeElement({
-						tag: 'h2',
-						content: projectDisplayName,
-					}),
-					className: 'spanAll',
-				},
-				{
-					name: 'Save this project file',
-					icon: 'command_save',
-					note: ['Ctrl', 's'],
-					onClick: () => editor.saveProjectFile(),
-				},
-				{
-					name: 'Save a copy of this project file',
-					icon: 'command_save',
-					onClick: () => editor.saveProjectFile(true),
-				}
-			);
-		} else {
-			fileMenuData.push(
-				{
-					child: makeElement({
-						tag: 'h2',
-						content: makeFileName('gs2', true),
-					}),
-					className: 'spanAll',
-				},
-				{
-					name: 'Save project file (to downloads folder)',
-					icon: 'command_save',
-					note: ['Ctrl', 's'],
-					onClick: () => editor.saveProjectFile(),
-				}
-			);
-		}
-		fileMenuData = fileMenuData.concat([
-			{ name: 'hr' },
-			{
-				child: makeElement({
-					tag: 'h2',
-					content:
-						`${editor.project.settings.font.family}-${editor.project.settings.font.style}.${preferredExportFormat}`.replaceAll(
-							' ',
-							''
-						),
-				}),
-				className: 'spanAll',
-			},
-			{
-				name: 'Export OTF file',
-				icon: 'command_export',
-				note: preferredExportFormat === 'otf' ? ['Ctrl', 'e'] : false,
-				onClick: ioFont_exportOTF,
-			},
-			{
-				name: 'Export TTF file',
-				icon: 'command_export',
-				note: preferredExportFormat === 'ttf' ? ['Ctrl', 'e'] : false,
-				onClick: ioFont_exportTTF,
-			},
-			{
-				name: 'Export WOFF file',
-				icon: 'command_export',
-				note: preferredExportFormat === 'woff' ? ['Ctrl', 'e'] : false,
-				onClick: ioFont_exportWOFF,
-			},
-			{
-				name: 'Export WOFF2 file',
-				icon: 'command_export',
-				note: preferredExportFormat === 'woff2' ? ['Ctrl', 'e'] : false,
-				onClick: ioFont_exportWOFF2,
-			},
-			{ name: 'hr' },
-			{
-				child: makeElement({
-					tag: 'h2',
-					content: makeFileName('svg'),
-				}),
-				className: 'spanAll',
-			},
-			{
-				name: 'Export SVG font file',
-				icon: 'command_export',
-				note: ['Ctrl', 'g'],
-				onClick: ioSVG_exportSVGfont,
-			},
-		]);
+		const fileMenuData = getFileMenuData();
 		entryPoint.addEventListener('click', (event) => {
 			// @ts-expect-error 'property does exist'
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
-			insertAfter(entryPoint, makeContextMenu(fileMenuData, rect.x, rect.y + rect.height));
+			getComponentDOM().appendChild(
+				makeContextMenu(fileMenuData, rect.x, rect.y + rect.height)
+			);
 		});
 	}
 
@@ -203,51 +103,9 @@ function makeMenu(menuName) {
 			// @ts-expect-error 'property does exist'
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
-			let menuRows = makeContextMenu(
-				[
-					{
-						child: makeProjectPreviewRow(0),
-						className: 'spanAll',
-					},
-					{
-						child: makeProjectPreviewRow(1),
-						className: 'spanAll',
-					},
-					{
-						name: 'Cross-project actions',
-						icon: 'command_crossProjectActions',
-						onClick: () => {
-							getGlyphrStudioApp().appPageNavigate(makePage_CrossProjectActions);
-						},
-						disabled: getGlyphrStudioApp().projectEditors.length === 1,
-					},
-					{
-						name: 'Learn more about working with two projects',
-						icon: 'command_newTab',
-						onClick: () => {
-							window.open(
-								'https://www.glyphrstudio.com/help/getting-started/working-with-multiple-projects.html',
-								'_blank'
-							);
-						},
-					},
-					{
-						name: 'hr',
-					},
-					{
-						name: 'Open a separate project in a new window',
-						icon: 'command_newTab',
-						onClick: () => {
-							window.open('https://glyphrstudio.com/app/', '_blank');
-						},
-					},
-				],
-				rect.x,
-				rect.y + rect.height,
-				500
+			getComponentDOM().appendChild(
+				makeContextMenu(getProjectsMenuData(), rect.x, rect.y + rect.height, 500)
 			);
-
-			insertAfter(entryPoint, menuRows);
 		});
 	}
 
@@ -256,45 +114,211 @@ function makeMenu(menuName) {
 			// @ts-expect-error 'property does exist'
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
-			insertAfter(
-				entryPoint,
-				makeContextMenu(
-					[
-						{
-							name: 'External Help & Documentation site',
-							icon: 'command_newTab',
-							onClick: () => {
-								window.open('https://glyphrstudio.com/help/', '_blank');
-							},
-						},
-						{ name: 'hr' },
-						{
-							name: 'In-app help',
-							icon: 'command_help',
-							onClick: () => {
-								let editor = getCurrentProjectEditor();
-								editor.nav.page = 'Help';
-								editor.navigate();
-							},
-						},
-						{
-							name: 'About Glyphr Studio',
-							icon: 'command_info',
-							onClick: () => {
-								let editor = getCurrentProjectEditor();
-								editor.nav.page = 'About';
-								editor.navigate();
-							},
-						},
-					],
-					rect.x,
-					rect.y + rect.height
-				)
+			getComponentDOM().appendChild(
+				makeContextMenu(getHelpMenuData(), rect.x, rect.y + rect.height)
 			);
 		});
 	}
 
 	return entryPoint;
+}
+
+/**
+ * Rows for the File menu - save and export commands.
+ * @returns {Array}
+ */
+export function getFileMenuData() {
+	const editor = getCurrentProjectEditor();
+	/** @type {Array} */
+	let fileMenuData = [];
+	// Preferred font export format (the format that was imported, or 'otf'
+	// for new projects) drives the file name preview and the Ctrl+E note.
+	const preferredExportFormat = getPreferredExportFormat();
+	if (typeof editor.loadedFileHandle === 'object') {
+		let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
+
+		// @ts-expect-error 'property does exist'
+		if (typeof editor?.loadedFileHandle?.name === 'string') {
+			// @ts-expect-error 'property does exist'
+			projectDisplayName = editor.loadedFileHandle.name;
+		}
+
+		fileMenuData.push(
+			{
+				child: makeElement({
+					tag: 'h2',
+					content: projectDisplayName,
+				}),
+				className: 'spanAll',
+			},
+			{
+				name: 'Save this project file',
+				icon: 'command_save',
+				note: ['Ctrl', 's'],
+				onClick: () => editor.saveProjectFile(),
+			},
+			{
+				name: 'Save a copy of this project file',
+				icon: 'command_save',
+				onClick: () => editor.saveProjectFile(true),
+			}
+		);
+	} else {
+		fileMenuData.push(
+			{
+				child: makeElement({
+					tag: 'h2',
+					content: makeFileName('gs2', true),
+				}),
+				className: 'spanAll',
+			},
+			{
+				name: 'Save project file (to downloads folder)',
+				icon: 'command_save',
+				note: ['Ctrl', 's'],
+				onClick: () => editor.saveProjectFile(),
+			}
+		);
+	}
+	fileMenuData = fileMenuData.concat([
+		{ name: 'hr' },
+		{
+			child: makeElement({
+				tag: 'h2',
+				content:
+					`${editor.project.settings.font.family}-${editor.project.settings.font.style}.${preferredExportFormat}`.replaceAll(
+						' ',
+						''
+					),
+			}),
+			className: 'spanAll',
+		},
+		{
+			name: 'Export OTF file',
+			icon: 'command_export',
+			note: preferredExportFormat === 'otf' ? ['Ctrl', 'e'] : false,
+			onClick: ioFont_exportOTF,
+		},
+		{
+			name: 'Export TTF file',
+			icon: 'command_export',
+			note: preferredExportFormat === 'ttf' ? ['Ctrl', 'e'] : false,
+			onClick: ioFont_exportTTF,
+		},
+		{
+			name: 'Export WOFF file',
+			icon: 'command_export',
+			note: preferredExportFormat === 'woff' ? ['Ctrl', 'e'] : false,
+			onClick: ioFont_exportWOFF,
+		},
+		{
+			name: 'Export WOFF2 file',
+			icon: 'command_export',
+			note: preferredExportFormat === 'woff2' ? ['Ctrl', 'e'] : false,
+			onClick: ioFont_exportWOFF2,
+		},
+		{ name: 'hr' },
+		{
+			child: makeElement({
+				tag: 'h2',
+				content: makeFileName('svg'),
+			}),
+			className: 'spanAll',
+		},
+		{
+			name: 'Export SVG font file',
+			icon: 'command_export',
+			note: ['Ctrl', 'g'],
+			onClick: ioSVG_exportSVGfont,
+		},
+	]);
+	return fileMenuData;
+}
+
+/**
+ * Rows for the File menu, limited to the font export commands.
+ * @returns {Array}
+ */
+export function getExportMenuData() {
+	return getFileMenuData().filter((row) => row?.name?.startsWith?.('Export'));
+}
+
+/**
+ * Rows for the Projects menu - switching between the two open projects.
+ * @returns {Array}
+ */
+export function getProjectsMenuData() {
+	return [
+		{
+			child: makeProjectPreviewRow(0),
+			className: 'spanAll',
+		},
+		{
+			child: makeProjectPreviewRow(1),
+			className: 'spanAll',
+		},
+		{
+			name: 'Cross-project actions',
+			icon: 'command_crossProjectActions',
+			onClick: () => {
+				getGlyphrStudioApp().appPageNavigate(makePage_CrossProjectActions);
+			},
+			disabled: getGlyphrStudioApp().projectEditors.length === 1,
+		},
+		{
+			name: 'Learn more about working with two projects',
+			icon: 'command_newTab',
+			onClick: () => {
+				window.location.href =
+					'https://www.glyphrstudio.com/help/getting-started/working-with-multiple-projects.html';
+			},
+		},
+		{
+			name: 'hr',
+		},
+		{
+			name: 'Open Glyphr Studio',
+			icon: 'command_newTab',
+			onClick: () => {
+				window.location.href = 'https://glyphrstudio.com/app/';
+			},
+		},
+	];
+}
+
+/**
+ * Rows for the Help menu.
+ * @returns {Array}
+ */
+export function getHelpMenuData() {
+	return [
+		{
+			name: 'External Help & Documentation site',
+			icon: 'command_newTab',
+			onClick: () => {
+				window.location.href = 'https://glyphrstudio.com/help/';
+			},
+		},
+		{ name: 'hr' },
+		{
+			name: 'In-app help',
+			icon: 'command_help',
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				editor.nav.page = 'Help';
+				editor.navigate();
+			},
+		},
+		{
+			name: 'About Glyphr Studio',
+			icon: 'command_info',
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				editor.nav.page = 'About';
+				editor.navigate();
+			},
+		},
+	];
 }
 
 /**

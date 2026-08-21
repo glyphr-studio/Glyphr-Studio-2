@@ -153,7 +153,7 @@ export class GlyphElement {
 				if (typeof elem !== 'function') {
 					if (typeof elem === 'object') {
 						re += `${ind}${key}: ${JSON.stringify(elem)}\n`;
-					} else if (elem){
+					} else if (elem) {
 						re += `${ind}${key}: ${elem}\n`;
 					}
 				}

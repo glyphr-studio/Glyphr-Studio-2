@@ -387,8 +387,7 @@ export class TextBlock {
 
 			currentX = upmMaxes.xMin;
 			// currentX = 0;
-			currentBaselineY =
-				upmMaxes.yMin + firstBaselineOffset + currentLine * upmMaxes.lineHeight;
+			currentBaselineY = upmMaxes.yMin + firstBaselineOffset + currentLine * upmMaxes.lineHeight;
 			this.pixelHeight = currentLine * upmMaxes.lineHeight * scale;
 			// log(`================ END textBlockNumber: ${textBlockNumber}`);
 		}
@@ -465,8 +464,67 @@ export function calculateKernOffset(c1, c2) {
 		}
 	}
 
+	// No explicit kern group covers this pair
 	// log('calculateKernOffset', 'end');
-	return 0;
+	return calculateAutoKernOffset(c1, c2);
+}
+
+// --------------------------------------------------------------
+// Automatic kerning
+// --------------------------------------------------------------
+
+/**
+ * Auto-kern values depend on glyph outlines, which are expensive to
+ * measure, so results are memoized. Any edit that could change an
+ * outline should call clearAutoKernCache().
+ * @type {Map<String, Number>}
+ */
+const autoKernCache = new Map();
+
+/**
+ * Throws away memoized automatic kern values.
+ */
+export function clearAutoKernCache() {
+	autoKernCache.clear();
+}
+
+/**
+ * Calculates a kern value for a pair that has no explicit kern group,
+ * by comparing the visual gap between the two outlines against a target
+ * gap derived from the font's UPM. Gated on the `autoKerning` project
+ * setting, and returns 0 when it is off.
+ * @param {String} c1 - hex ID of the left character
+ * @param {String} c2 - hex ID of the right character
+ * @returns {Number} - kern value in Em units
+ */
+export function calculateAutoKernOffset(c1, c2) {
+	const project = getCurrentProject();
+	if (!project?.settings?.project?.autoKerning) return 0;
+
+	const cacheKey = `${c1}|${c2}`;
+	if (autoKernCache.has(cacheKey)) return autoKernCache.get(cacheKey);
+
+	let result = 0;
+	try {
+		const left = project.getItem(`glyph-${c1}`);
+		const right = project.getItem(`glyph-${c2}`);
+
+		// Blank glyphs (like a space) carry their own spacing already
+		if (left?.shapes?.length && right?.shapes?.length) {
+			const upm = Number(project.settings.font.upm) || 1000;
+			const targetGap = upm * 0.02;
+			const limit = upm * 0.05;
+			const rightSideBearing = left.advanceWidth - left.maxes.xMax;
+			const leftSideBearing = right.maxes.xMin;
+			const actualGap = rightSideBearing + leftSideBearing;
+			result = Math.round(Math.max(-limit, Math.min(limit, targetGap - actualGap)));
+		}
+	} catch {
+		result = 0;
+	}
+
+	autoKernCache.set(cacheKey, result);
+	return result;
 }
 
 /**

@@ -86,6 +86,7 @@ export class History {
 			entry.page = editor.nav.page;
 		}
 		this.queue.unshift(entry);
+		this.updateAfterSaveState();
 	}
 
 	/**
@@ -106,11 +107,7 @@ export class History {
 
 		if (editor.project.settings.app.autoSave) {
 			const app = getGlyphrStudioApp();
-			if (app.settings.dev.mode) {
-				if (app.settings.dev.autoSave) app.addAutoSaveState();
-			} else {
-				app.addAutoSaveState();
-			}
+			void app.addAutoSaveState(editor.project);
 		}
 	}
 

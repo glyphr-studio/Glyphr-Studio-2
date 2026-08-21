@@ -1,15 +1,12 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { editorText } from '../app/editor_i18n.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { closeAllInfoBubbles } from '../controls/dialogs/dialogs.js';
 import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
-import {
-	makeNavButton,
-	makeNavButtonContent,
-	toggleNavDropdown,
-} from '../project_editor/navigator.js';
+import { makeAllItemTypeChooserContent } from '../panels/item_chooser.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 
 /**
@@ -18,31 +15,26 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
  * @returns {Element} - page content
  */
 export function makePage_Characters() {
-	// log(`makePage_Characters`, 'start');
 	/** @type {ProjectEditor} */
 	const editor = getCurrentProjectEditor();
-	// log('current ProjectEditor');
-	// log(editor);
-	// log(editor.nav);
-	// log(`editor.selectedGlyphID: ${editor.selectedGlyphID}`);
-	// log(`editor.selectedItemID: ${editor.selectedItemID}`);
-	// log(`editor.nav.panel: ${editor.nav.panel}`);
+	if (editor.characterView !== 'edit') return makeCharacterOverview(editor);
 
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
 		innerHTML: `
 		<div class="editor__page">
-			<div class="editor-page__left-area">
-				<div class="editor-page__nav-area">
-					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Characters' })}
-					${makeNavButton({
-						level: 'l2',
-						superTitle: 'EDITING',
-						title: getItemNameWithFallback(editor.selectedGlyphID),
-					})}
-					${makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel })}
+			<div class="editor-page__context-bar liquid-glass">
+				<button type="button" class="editor-page__back-button" aria-label="${editorText(
+					'backToCharacters'
+				)}">&#8592;<span>${editorText('backToCharacters')}</span></button>
+				<div class="editor-page__context-copy">
+					<span>${editorText('editCharacter')}</span>
+					<strong>${getItemNameWithFallback(editor.selectedGlyphID)}</strong>
 				</div>
+			</div>
+			<div class="editor-page__left-area">
+				<h2 class="editor-page__panel-title">${editorText('properties')}</h2>
 				<div id="editor-page__panel"></div>
 			</div>
 			<div class="editor-page__tools-area"></div>
@@ -58,28 +50,9 @@ export function makePage_Characters() {
 
 	if (editor.showPageTransitions) content.classList.add('app__page-animation');
 
-	// Page Selector
-	let l1 = content.querySelector('#nav-button-l1');
-	l1.addEventListener('click', function () {
-		toggleNavDropdown(l1);
-	});
-	// Glyph Selector
-	let l2 = content.querySelector('#nav-button-l2');
-	l2.addEventListener('click', function () {
-		toggleNavDropdown(l2);
-	});
-	editor.subscribe({
-		topic: 'whichGlyphIsSelected',
-		subscriberID: 'nav.glyphChooserButton',
-		callback: (newGlyphID) => {
-			l2.innerHTML = makeNavButtonContent(getItemNameWithFallback(newGlyphID), 'EDITING');
-		},
-	});
-
-	// Panel Selector
-	let l3 = content.querySelector('#nav-button-l3');
-	l3.addEventListener('click', function () {
-		toggleNavDropdown(l3);
+	content.querySelector('.editor-page__back-button').addEventListener('click', () => {
+		editor.characterView = 'overview';
+		editor.navigate();
 	});
 
 	// Panel
@@ -136,7 +109,40 @@ export function makePage_Characters() {
 		});
 	});
 
-	// log(`makePage_Characters`, 'end');
+	return content;
+}
+
+/**
+ * Character browsing is a separate page state from glyph editing. This keeps
+ * the Characters destination useful as an overview instead of immediately
+ * dropping users into whichever glyph happened to be selected last.
+ * @param {ProjectEditor} editor - current project editor
+ * @returns {HTMLElement}
+ */
+function makeCharacterOverview(editor) {
+	const content = makeElement({ tag: 'div', id: 'app__page', className: 'characters-overview' });
+	const heading = makeElement({
+		tag: 'header',
+		className: 'editor-content-header',
+		innerHTML: `<div><span>${editorText('characters')}</span><h1>${editorText(
+			'characterOverviewTitle'
+		)}</h1><p>${editorText('characterOverviewBody')}</p></div>`,
+	});
+
+	const browser = makeElement({ className: 'characters-overview__browser liquid-glass' });
+	browser.appendChild(
+		makeAllItemTypeChooserContent(
+			(itemID) => {
+				editor.characterView = 'edit';
+				editor.selectedGlyphID = itemID;
+			},
+			'Characters',
+			editor
+		)
+	);
+
+	content.append(heading, browser);
+	if (editor.showPageTransitions) content.classList.add('app__page-animation');
 	return content;
 }
 
@@ -148,7 +154,7 @@ export function makePage_Characters() {
 export function getItemNameWithFallback(itemID) {
 	// log(`getItemNameWithFallback`, 'start');
 	// log(`itemID: ${itemID}`);
-	if(!itemID) return '[no id]';
+	if (!itemID) return '[no id]';
 	const editor = getCurrentProjectEditor();
 	let charName = editor.project.getItemName(itemID, true);
 

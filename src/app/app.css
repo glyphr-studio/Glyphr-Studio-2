@@ -28,9 +28,16 @@
 
 #app__page {
 	height: 100%;
-	width: 100%;
+	width: 99%;
 	min-height: 100%;
-	min-width: 100%;
+	min-width: 99%;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+.font-library {
+	width: 100% !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
 }
 
 .app__page-animation {
@@ -216,4 +223,11 @@
 .project-preview__secondary:hover h3 {
 	opacity: 1;
 	border-color: var(--blue-l80);
+}
+.app__component-dom {
+	display: contents;
+}
+
+.app__component-dom > [hidden] {
+	display: none !important;
 }

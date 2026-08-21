@@ -3,6 +3,7 @@ import { addAsChildren, makeElement, textToNode } from '../common/dom';
 import { closeEveryTypeOfDialog, showModalDialog } from '../controls/dialogs/dialogs';
 import { panoseData } from '../lib/panose';
 import { makeOneSettingsRow } from './settings';
+import { settingsText } from './settings_i18n.js';
 
 let workingPanoseValue;
 /**
@@ -15,11 +16,8 @@ export function makeSettingsTabContentFont() {
 		className: 'settings-page__tab-content settings-table',
 		id: 'tab-content__font',
 		innerHTML: `
-			<h1>Font metadata</h1>
-			<p>
-				These settings will be exported with any font you save,
-				and will be used around Glyphr Studio while you are making edits.
-			</p>
+			<h1>${settingsText('chrome.fontMetadataTitle')}</h1>
+			<p>${settingsText('chrome.fontMetadataBody')}</p>
 		`,
 	});
 
@@ -30,14 +28,14 @@ export function makeSettingsTabContentFont() {
 		makeOneSettingsRow('font', 'description'),
 		makeOneSettingsRow('font', 'panose'),
 		makePanoseLauncherRow(),
-		textToNode('<h2>Font metrics</h2>'),
-		textToNode('<h3>Key metrics</h3>'),
+		textToNode(`<h2>${settingsText('chrome.fontMetricsTitle')}</h2>`),
+		textToNode(`<h3>${settingsText('chrome.keyMetricsTitle')}</h3>`),
 		makeOneSettingsRow('font', 'upm'),
 		makeOneSettingsRow('font', 'ascent'),
 		makeOneSettingsRow('font', 'descent'),
 		makeOneSettingsRow('font', 'capHeight'),
 		makeOneSettingsRow('font', 'xHeight'),
-		textToNode('<h3>Other metrics</h3>'),
+		textToNode(`<h3>${settingsText('chrome.otherMetricsTitle')}</h3>`),
 		makeOneSettingsRow('font', 'overshoot'),
 		makeOneSettingsRow('font', 'lineGap'),
 		makeOneSettingsRow('font', 'weight'),
@@ -45,7 +43,7 @@ export function makeSettingsTabContentFont() {
 		makeOneSettingsRow('font', 'italicAngle'),
 		makeOneSettingsRow('font', 'underlinePosition'),
 		makeOneSettingsRow('font', 'underlineThickness'),
-		textToNode('<h2>Links</h2>'),
+		textToNode(`<h2>${settingsText('chrome.linksTitle')}</h2>`),
 		makeOneSettingsRow('font', 'designer'),
 		makeOneSettingsRow('font', 'designerURL'),
 		makeOneSettingsRow('font', 'manufacturer'),
@@ -54,7 +52,7 @@ export function makeSettingsTabContentFont() {
 		makeOneSettingsRow('font', 'licenseURL'),
 		makeOneSettingsRow('font', 'copyright'),
 		makeOneSettingsRow('font', 'trademark'),
-		textToNode('<h2>Properties for SVG Fonts</h2>'),
+		textToNode(`<h2>${settingsText('chrome.svgPropertiesTitle')}</h2>`),
 		makeOneSettingsRow('font', 'variant'),
 		makeOneSettingsRow('font', 'stemv'),
 		makeOneSettingsRow('font', 'stemh'),
@@ -73,7 +71,7 @@ export function makeSettingsTabContentFont() {
  * @returns {Array}
  */
 function makePanoseLauncherRow() {
-	const button = makeElement({ tag: 'a', content: 'Launch the interactive PANOSE builder' });
+	const button = makeElement({ tag: 'a', content: settingsText('chrome.launchPanoseBuilder') });
 	button.addEventListener('click', showPanoseBuilderDialog);
 	return [
 		textToNode('<span></span>'),
@@ -90,19 +88,15 @@ function showPanoseBuilderDialog() {
 	workingPanoseValue = getCurrentProject().settings.font.panose.split(' ');
 	let dialogWrapper = makeElement({
 		innerHTML: `
-			<h1>PANOSE builder</h1>
-			<p>
-				PANOSE is a system that uses ten digits to describe the font's visual style.  A good overview can be found on <a href="https://monotype.github.io/panose/pan1.htm" target="_blank">Monotype's GitHub page</a>. Each digit has a special meaning based on its position. There are many details that will go into choosing the right values for each digit, so having the PANOSE reference website open will help you choose.
-				<br><br>
-				This builder only contains the value names for each digit. Once you are done deciding which digit goes in each spot, the result will be saved back to the Settings page.
-			</p>
+			<h1>${settingsText('chrome.panoseBuilderTitle')}</h1>
+			<p>${settingsText('chrome.panoseBuilderBody')}</p>
 			<div class="settings-page__panose-builder-table">
-				<div class="list__column-header">value</div>
-				<div class="list__column-header">name</div>
-				<div class="list__column-header">options</div>
+				<div class="list__column-header">${settingsText('chrome.panoseValueCol')}</div>
+				<div class="list__column-header">${settingsText('chrome.panoseNameCol')}</div>
+				<div class="list__column-header">${settingsText('chrome.panoseOptionsCol')}</div>
 
 				<div id="panose-0-value" class="panose-value">#</div>
-				<div id="panose-0-name" class="panose-name">Family Kind</div>
+				<div id="panose-0-name" class="panose-name">${settingsText('chrome.familyKind')}</div>
 				<option-chooser id="panose-0-chooser"></option-chooser>
 
 				<div id="panose-1-value" class="panose-value">#</div>
@@ -142,8 +136,10 @@ function showPanoseBuilderDialog() {
 				<option-chooser id="panose-9-chooser"></option-chooser>
 			</div>
 			<br><br>
-			<fancy-button id="panose-builder__save-button">Save</fancy-button>
-			<fancy-button id="panose-builder__cancel-button" secondary>Cancel</fancy-button>
+			<fancy-button id="panose-builder__save-button">${settingsText('chrome.save')}</fancy-button>
+			<fancy-button id="panose-builder__cancel-button" secondary>${settingsText(
+				'cancel'
+			)}</fancy-button>
 	`,
 	});
 
@@ -184,7 +180,7 @@ function refreshPanoseBuilderTable() {
 		rowValue = document.getElementById(`panose-${row}-value`);
 		rowValue.innerHTML = workingPanoseValue[row];
 		if (row === 0) {
-			document.getElementById(`panose-0-name`).innerHTML = 'Family Kind';
+			document.getElementById(`panose-0-name`).innerHTML = settingsText('chrome.familyKind');
 			chooser = document.getElementById(`panose-0-chooser`);
 			chooser.innerHTML = '';
 			addAsChildren(chooser, makePanoseOptions(panoseData.map((value) => value.name)));

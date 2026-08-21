@@ -87,7 +87,7 @@ describe('ControlPoint', () => {
 
 	it('rotate', () => {
 		const cp = new ControlPoint({ coord: { x: 100, y: 100 } });
-		cp.rotate((Math.PI / 2), { x: 50, y: 50 });
+		cp.rotate(Math.PI / 2, { x: 50, y: 50 });
 		expect(cp.x).toEqual(0);
 		expect(cp.y).toEqual(100);
 	});

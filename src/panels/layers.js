@@ -16,7 +16,7 @@ export function makePanel_Layers() {
 	const editor = getCurrentProjectEditor();
 	const project = getCurrentProject();
 	let selected = editor.selectedItem;
-	let paths = selected.shapes;
+	let paths = selected?.shapes || [];
 
 	// log(`\n⮟eventHandlerData⮟`);
 	// log(eventHandlerData);

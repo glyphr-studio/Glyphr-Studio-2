@@ -11,5 +11,5 @@ export const unicodeBlocksSIP = [
 export const unicodeBlocksSIPUnallocated = [
 	{ begin: 0x2a6e0, end: 0x2a6ff, name: 'SIP: Unallocated Block 1' },
 	{ begin: 0x2fa20, end: 0x2ffff, name: 'SIP: Unallocated Block 3' },
-	{ begin: 0x2EE60, end: 0x2F7FF, name: 'SIP: Unallocated Block 2' },
+	{ begin: 0x2ee60, end: 0x2f7ff, name: 'SIP: Unallocated Block 2' },
 ];

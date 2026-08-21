@@ -1,0 +1,183 @@
+/* --------------------------------------------------------
+	Page > Variable & Stylistic sets
+-------------------------------------------------------- */
+
+.variable-sets__page {
+	height: 100%;
+	overflow-y: auto;
+	padding: 4px 4px 40px 4px;
+	display: grid;
+	gap: 20px;
+	align-content: start;
+	color: var(--glass-ink);
+}
+
+.variable-sets__header h1 {
+	margin: 0 0 6px 0;
+	color: var(--glass-ink);
+}
+
+.variable-sets__header p,
+.variable-sets__empty {
+	margin: 0;
+	max-width: 70ch;
+	color: var(--glass-muted);
+}
+
+.variable-sets__section {
+	border-radius: 18px;
+	padding: 22px 24px;
+	display: grid;
+	gap: 16px;
+	align-content: start;
+}
+
+.variable-sets__section-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.variable-sets__section-header h2 {
+	margin: 0;
+	color: var(--glass-ink);
+}
+
+.variable-sets__section-header-actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.variable-sets__hint {
+	margin: -8px 0 0;
+	max-width: 70ch;
+	color: var(--glass-muted);
+	font-size: 13px;
+}
+
+.variable-sets__axis-list,
+.variable-sets__set-list {
+	display: grid;
+	gap: 14px;
+}
+
+.variable-sets__axis-row,
+.variable-sets__set-row {
+	display: grid;
+	gap: 12px;
+	padding: 16px 18px;
+	border-radius: 14px;
+	border: 1px solid var(--glass-border);
+	background: var(--glass-surface-strong);
+}
+
+.variable-sets__axis-title,
+.variable-sets__set-title {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.variable-sets__axis-title strong,
+.variable-sets__set-title strong {
+	font-size: 15px;
+	color: var(--glass-ink);
+}
+
+.variable-sets__axis-title code,
+.variable-sets__set-title code {
+	padding: 2px 8px;
+	border-radius: 6px;
+	border: 1px solid var(--glass-border);
+	background: var(--glass-surface);
+	color: var(--glass-purple);
+	font-size: 12px;
+}
+
+.variable-sets__set-base {
+	color: var(--glass-muted);
+	font-size: 13px;
+}
+
+.variable-sets__axis-title .glass-button,
+.variable-sets__set-title .glass-button {
+	margin-left: auto;
+	padding: 6px 14px;
+	font-size: 13px;
+}
+
+.variable-sets__axis-numbers {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+	gap: 12px;
+}
+
+.variable-sets__field {
+	display: grid;
+	gap: 5px;
+}
+
+.variable-sets__field span {
+	font-size: 12px;
+	color: var(--glass-muted);
+}
+
+.variable-sets__field input,
+.variable-sets__field select {
+	width: 100%;
+	height: 34px;
+	padding: 4px 8px;
+	border-radius: 8px;
+	border: 1px solid var(--glass-border);
+	background: var(--glass-surface-strong-solid);
+	color: var(--glass-ink);
+}
+
+.variable-sets__axis-slider {
+	padding-top: 2px;
+}
+
+.variable-sets__form {
+	display: grid;
+	gap: 14px;
+}
+
+.variable-sets__alternates {
+	display: grid;
+	gap: 8px;
+	justify-items: start;
+}
+
+.variable-sets__alternate {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	width: 100%;
+	padding: 8px 12px;
+	border-radius: 10px;
+	border: 1px solid var(--glass-border);
+	background: var(--glass-surface);
+}
+
+.variable-sets__alternate span {
+	flex: 1 1 auto;
+	min-width: 0;
+	color: var(--glass-ink);
+	font-size: 14px;
+}
+
+.variable-sets__alternate .glass-button {
+	padding: 5px 12px;
+	font-size: 12px;
+}
+
+.variable-sets__chooser {
+	max-height: 55vh;
+	overflow-y: auto;
+}

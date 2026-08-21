@@ -56,7 +56,8 @@
 	min-width: 50px;
 	padding: 4px 8px 4px 2px;
 	text-align: right;
-	font-family: monospace;
+	font-family: var(--app-ui-font, var(--font-library-font, Arial, sans-serif));
+	font-variant-numeric: proportional-nums;
 }
 
 .numberInput:hover,
@@ -91,7 +92,7 @@
 	/* grid-template-rows: 1fr 1px 1fr; */
 	grid-template-rows: 13px 1px 12px;
 	background-color: transparent;
-	border:0;
+	border: 0;
 	width: 24px;
 	height: 26px;
 }
@@ -263,4 +264,53 @@
 .lock:focus[disabled] svg,
 .lock:active[disabled] svg {
 	fill: var(--fill-disabled);
+}
+
+/* Glass control surface - reacts to the app's light/dark theme */
+.numberInput {
+	background-color: var(--glass-surface);
+	border-color: var(--glass-border);
+	border-radius: 10px 0 0 10px;
+	color: var(--glass-ink);
+}
+
+.numberInput:hover,
+.numberInput:active,
+.numberInput:focus {
+	background-color: var(--glass-surface-strong);
+	border-color: var(--glass-purple);
+	color: var(--glass-ink);
+}
+
+.arrow {
+	background-color: var(--glass-surface);
+	border-color: var(--glass-border);
+}
+
+.arrowSeparator {
+	background-color: var(--glass-border);
+}
+
+.arrow svg,
+.arrow:hover svg,
+.arrow:focus svg,
+.arrow:active svg {
+	fill: var(--glass-ink);
+}
+
+.arrow:hover,
+.arrow:focus,
+.arrow:active {
+	background-color: rgba(111, 61, 243, 0.24);
+	border-color: var(--glass-purple);
+}
+
+.lock {
+	border-color: var(--glass-border);
+	border-radius: 0 10px 10px 0;
+	background-color: var(--glass-surface);
+}
+
+.lock svg {
+	fill: var(--glass-ink);
 }

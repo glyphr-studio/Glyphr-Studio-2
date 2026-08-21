@@ -13,7 +13,8 @@ import { makePanel, refreshPanel } from '../panels/panels.js';
 import { Glyph } from '../project_data/glyph.js';
 import {
 	makeNavButton,
-	makeNavButtonContent,
+	makeItemSelectorButton,
+	makeItemSelectorContent,
 	toggleNavDropdown,
 } from '../project_editor/navigator.js';
 
@@ -82,11 +83,7 @@ export function makePage_Components() {
 	}
 
 	const selectedComponent = editor.selectedComponent;
-	const l2Button = makeNavButton({
-		level: 'l2',
-		superTitle: 'EDITING',
-		title: selectedComponent.name,
-	});
+	const l2Button = makeItemSelectorButton(selectedComponent.name);
 	const l3Button = makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel });
 
 	navArea.appendChild(textToNode(l2Button));
@@ -101,7 +98,7 @@ export function makePage_Components() {
 	canvasArea.appendChild(editCanvas);
 
 	// Component Selector
-	let l2 = content.querySelector('#nav-button-l2');
+	let l2 = content.querySelector('#editor-item-selector');
 	l2.addEventListener('click', function () {
 		toggleNavDropdown(l2);
 	});
@@ -110,7 +107,7 @@ export function makePage_Components() {
 		subscriberID: 'nav.componentChooserButton',
 		callback: () => {
 			if (editor.selectedComponent) {
-				l2.innerHTML = makeNavButtonContent(editor.selectedComponent?.name, 'EDITING');
+				l2.innerHTML = makeItemSelectorContent(editor.selectedComponent?.name);
 			}
 		},
 	});
@@ -182,7 +179,7 @@ export function makePage_Components() {
 		subscriberID: 'ComponentsPage.l2Nav',
 		callback: () => {
 			if (editor.selectedComponent) {
-				l2.innerHTML = makeNavButtonContent(editor.selectedComponent?.name, 'EDITING');
+				l2.innerHTML = makeItemSelectorContent(editor.selectedComponent?.name);
 			}
 		},
 	});

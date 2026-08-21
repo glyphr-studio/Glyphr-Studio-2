@@ -160,9 +160,10 @@ const FONT_PREVIEW_STYLE = `
 		color: inherit;
 		resize: none;
 		overflow: hidden;
-		white-space: pre-wrap;
-		overflow-wrap: break-word;
-		word-break: break-word;
+		white-space: var(--font-preview-white-space, pre-wrap);
+		overflow-wrap: var(--font-preview-overflow-wrap, break-word);
+		word-break: var(--font-preview-word-break, break-word);
+		text-align: var(--font-preview-text-align, left);
 	}
 
 	.font-preview__text:focus {

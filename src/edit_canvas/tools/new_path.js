@@ -105,9 +105,8 @@ export class Tool_NewPath {
 		const editor = getCurrentProjectEditor();
 
 		if (this.dragging) {
-
-					// log(`\n⮟this.currentPoint⮟`);
-					// log(this.currentPoint);
+			// log(`\n⮟this.currentPoint⮟`);
+			// log(this.currentPoint);
 			// avoid really small handles
 			if (
 				Math.abs(sXcX(this.currentPoint.p.x) - ehd.mousePosition.x) > canvasUIPointSize ||

@@ -7,9 +7,17 @@ import { addAsChildren, makeElement } from '../../common/dom.js';
  * @param {Number} min - min value for the slider
  * @param {Number} max - max value for the slider
  * @param {Number} step - how big each step is
+ * @param {Function | false} commitCallback - called when a slider interaction is committed
  * @returns {Element}
  */
-export function makeFancySlider(initialValue = 50, callback, min = 0, max = 100, step = 1) {
+export function makeFancySlider(
+	initialValue = 50,
+	callback,
+	min = 0,
+	max = 100,
+	step = 1,
+	commitCallback = false
+) {
 	// log('makeFancySlider', 'start');
 
 	let wrapper = makeElement({ className: 'fancy-slider__wrapper' });
@@ -40,6 +48,9 @@ export function makeFancySlider(initialValue = 50, callback, min = 0, max = 100,
 		const normalizedCurrentValue = (value / (max - min)) * 100;
 		bar.setAttribute('style', `accent-color: hsl(${normalizedCurrentValue + 200}, 100%, 40%);`);
 		if (callback) callback(value);
+	});
+	bar.addEventListener('change', (event) => {
+		if (commitCallback) commitCallback(Number(event.target.value));
 	});
 
 	addAsChildren(wrapper, [bar, sliderReadout]);

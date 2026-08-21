@@ -37,6 +37,51 @@ dialog {
 	color: var(--green-l10);
 }
 
+#toast,
+#toast[fancy] {
+	position: fixed;
+	top: 20px;
+	left: auto;
+	right: 20px;
+	z-index: 9000;
+	width: max-content;
+	max-width: min(560px, calc(100vw - 32px));
+	min-height: 46px;
+	margin: 0;
+	padding: 12px 22px;
+	color: var(--glass-ink);
+	background: var(--glass-surface);
+	border: 1px solid var(--glass-border);
+	border-radius: 50px;
+	box-shadow: 0 16px 42px rgba(27, 10, 63, 0.3), inset 0 1px rgba(255, 255, 255, 0.22);
+	backdrop-filter: blur(3px);
+	-webkit-backdrop-filter: blur(3px);
+	font-family: var(--font-library-font, FiraGo, sans-serif);
+	font-size: 14px;
+	font-weight: 650;
+	line-height: 1.45;
+	text-align: center;
+	transform: none;
+	animation: toast-liquid-in 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+#toast a,
+#toast[fancy] a {
+	color: var(--glass-purple);
+	text-decoration: underline;
+}
+
+@keyframes toast-liquid-in {
+	from {
+		opacity: 0;
+		transform: translateY(-10px) scale(0.97);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
 #notation {
 	display: none;
 	position: absolute;
@@ -110,23 +155,28 @@ dialog {
 	border-color: var(--red);
 }
 
-/* Context Menu */
+/* Context Menu  claude do not edit */
 #context-menu {
 	display: grid;
 	grid-template-columns: 24px 1fr min-content min-content;
 	column-gap: 0px;
-	row-gap: 5px;
+	row-gap: 3px;
 	width: fit-content;
 	height: min-content;
 	overflow-y: auto;
-	padding: 10px;
-	position: absolute;
+	padding: 8px;
+	color: var(--glass-ink);
+	position: fixed;
 	z-index: 2030;
-	background-color: var(--enabled-resting-background);
-	border: 1px solid var(--enabled-focus-border);
-	border-radius: 0px 4px 4px 4px;
-	box-shadow: var(--l3-shadow-down);
+
+	border: 1px solid var(--glass-border-solid);
+	border-radius: 0px 12px 12px 12px;
+	box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px rgba(255, 255, 255, 0.08);
+	backdrop-filter: blur(2px);
+	-webkit-backdrop-filter: blur(2px);
 	animation: var(--animate-fade-in-slide-down);
+	background-color: rgba(255, 255, 255, 0.1) !important;
+	color: white !important;
 }
 
 /* .context-menu__dropdown {} */
@@ -142,16 +192,25 @@ dialog {
 	display: contents;
 	padding: 5px 10px 5px 5px;
 	height: fit-content;
-	border-radius: 4px;
+	border-radius: 8px;
 }
 
 .context-menu-row:hover > span,
+.context-menu-row:hover > .row-name,
 .context-menu-row:hover > .row-notes,
 .context-menu-row:hover > .row-notes span,
 .context-menu-row:hover > .row-notes code {
-	background-color: var(--enabled-focus-background);
-	color: var(--blue-l45);
+	background-color: rgba(109, 59, 241, 0.24);
+	color: var(--glass-ink);
 	cursor: pointer;
+}
+
+.context-menu-row:hover > .row-name {
+	border-radius: 8px 0px 0px 8px;
+}
+
+.context-menu-row:hover > .row-notes {
+	border-radius: 0px 8px 8px 0px;
 }
 
 .context-menu-row:hover > .row-icon {
@@ -245,81 +304,126 @@ dialog {
 }
 
 /* Modal dialog */
-#modal-dialog {
-	display: block;
-	position: absolute;
+.modal-dialog {
+	display: flex;
+	position: fixed;
+	align-items: center;
+	justify-content: center;
 	text-align: center;
 	border-width: 0px;
-	padding: 0px auto;
+	padding: 24px;
 	left: 0px;
 	top: 0px;
 	width: 100vw;
 	height: 100vh;
 	z-index: 2000;
 	backdrop-filter: blur(2px);
-	background-color: rgba(255, 255, 255, 0.75);
+	-webkit-backdrop-filter: blur(2px);
+	background-color: rgba(7, 5, 12, 0.76);
 	animation: var(--animate-fade-in);
+	pointer-events: auto;
 }
 
 .modal-dialog__content {
 	display: grid;
-	grid-template-rows: 30px 1fr;
+	grid-template-rows: 52px minmax(0, 1fr);
 	width: clamp(500px, 66vw, 1000px);
 	max-height: calc(100vh - 80px);
 	overflow-y: hidden;
-	margin: 40px auto;
+	backdrop-filter: blur(2px);
+	margin: 0;
 	text-align: left;
-	background-color: var(--enabled-focus-background);
-	border: 1px solid var(--blue-l60);
-	border-radius: 8px;
-	box-shadow: var(--l3-shadow-down);
+	background: var(--glass-surface-strong-solid);
+	border: 1px solid var(--glass-border-solid);
+	border-radius: 22px;
+	box-shadow: 0 30px 90px rgba(0, 0, 0, 0.62), inset 0 1px rgba(255, 255, 255, 0.1);
 	animation: var(--animate-fade-in-slide-down);
+	color: var(--glass-ink);
+	pointer-events: auto;
+}
+
+@media (max-width: 640px) {
+	.modal-dialog,
+	.glass-modal-layer {
+		align-items: flex-end;
+		padding: 12px;
+	}
+
+	.modal-dialog__content,
+	.glass-modal {
+		width: 100%;
+		max-height: calc(100vh - 24px);
+		border-radius: 18px;
+	}
 }
 
 .modal-dialog__header {
-	margin: 4px;
-	height: 20px;
+	margin: 0;
+	height: 52px;
 	display: grid;
-	grid-template-columns: 1fr 20px;
+	grid-template-columns: 1fr 38px;
+	align-items: center;
+	padding: 8px 10px 6px 18px;
+	border-bottom: 1px solid rgba(214, 192, 255, 0.12);
 }
 
 .modal-dialog__body {
 	display: block;
 	max-height: calc(100vh - 120px);
 	overflow-y: auto;
-	padding: 0px 20px 20px 20px;
+	padding: 20px 24px 24px;
 }
 
 .modal-dialog__body h2 {
 	margin-bottom: 10px;
 }
 
+#components__new-component-input {
+	display: block;
+	width: 100%;
+	max-width: 360px;
+	height: 40px;
+	padding: 0 14px;
+	font-family: var(--app-ui-font, var(--font-library-font, Arial, sans-serif));
+	font-size: 15px;
+	border-radius: 11px;
+}
+
 .modal-dialog__close-button {
-	background-color: var(--blue-l95);
-	border-color: var(--blue-l85);
-	color: var(--blue-l50);
-	text-align: center;
-	width: 20px;
-	height: 20px;
-	line-height: 14px;
-	font-size: 1.2em;
-	padding: 0px 0px 2px 0px;
-	margin: 0px;
+	display: grid;
+	place-items: center;
+	background: var(--glass-surface);
+	border: 1px solid var(--glass-border);
+	border-radius: 11px;
+	color: var(--glass-ink);
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	margin: 0;
+}
+
+.modal-dialog__close-button svg {
+	width: 18px;
+	height: 18px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
 }
 
 .modal-dialog__close-button:hover {
-	background-color: var(--blue-l90);
-	color: var(--blue-l30);
-	border-color: var(--blue-l70);
+	background: rgba(109, 59, 241, 0.2);
+	color: var(--glass-ink);
+	border-color: rgba(174, 139, 255, 0.62);
 	cursor: pointer;
-	padding: 0px 0px 2px 0px;
+	padding: 0;
 	margin: 0px;
 }
 
 .modal-dialog__close-button:active,
 .modal-dialog__close-button:focus {
-	background-color: var(--blue-l90);
-	color: var(--blue-l50);
+	background: rgba(109, 59, 241, 0.24);
+	color: var(--glass-ink);
 	cursor: pointer;
 	padding: 0px;
 	margin: 0px;
