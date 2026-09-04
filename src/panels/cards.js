@@ -213,6 +213,13 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 		}
 		addAttributeHistory(item, property);
 
+		// Special Case: gridDivisions property
+		if (property === 'gridDivisions') {
+			if(newValue < 1) newValue = 1;
+			item[property] = newValue;
+			editor.publish('editCanvasView', item);
+		}
+
 		// log(`topics: ${topics}`);
 		topics.forEach((topic) => editor.publish(topic, item));
 

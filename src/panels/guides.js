@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeRandomSaturatedColor, parseColorString, rgbToHex } from '../common/colors.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
+import { round } from '../common/functions.js';
 import { makeIcon } from '../common/graphics.js';
 import { makeFancySlider } from '../controls/fancy-slider/fancy_slider.js';
 import {
@@ -25,6 +26,7 @@ export function makePanel_Guides() {
 	const guides = getCurrentProject().settings.app.guides;
 	const showSystem = guides.systemShowGuides;
 	const showCustom = guides.customShowGuides;
+	const showGrid = guides.gridShow;
 	addAsChildren(viewOptionsCard, [
 		makeDirectCheckbox(guides, 'drawGuidesOnTop', refreshGuideChange),
 		makeElement({
@@ -40,7 +42,7 @@ export function makePanel_Guides() {
 	});
 	addAsChildren(viewOptionsCard, [
 		systemShowGuidesCheckbox,
-		makeElement({ tag: 'h4', content: 'Key metrics guides' }),
+		makeElement({ tag: 'h4', content: 'Show: Key metrics guides' }),
 	]);
 	if (showSystem) {
 		addAsChildren(viewOptionsCard, [
@@ -63,7 +65,7 @@ export function makePanel_Guides() {
 	});
 	addAsChildren(viewOptionsCard, [
 		customShowGuidesCheckbox,
-		makeElement({ tag: 'h4', content: 'Custom guides' }),
+		makeElement({ tag: 'h4', content: 'Show: Custom guides' }),
 	]);
 	if (showCustom) {
 		addAsChildren(viewOptionsCard, [
@@ -76,12 +78,33 @@ export function makePanel_Guides() {
 			makeElement(),
 			makeSingleLabel('Show labels'),
 			makeDirectCheckbox(guides, 'customShowLabels', refreshGuideChange),
+			rowPad(),
+		]);
+	}
+
+	const gridShowCheckbox = makeDirectCheckbox(guides, 'gridShow');
+	gridShowCheckbox.addEventListener('change', () => {
+		getCurrentProjectEditor().navigate();
+	});
+	addAsChildren(viewOptionsCard, [
+		gridShowCheckbox,
+		makeElement({ tag: 'h4', content: 'Show: Grid' }),
+	]);
+	if (showGrid) {
+		addAsChildren(viewOptionsCard, [
+			makeElement(),
+			makeSingleLabel('Transparency'),
+			makeFancySlider(guides.gridTransparency, (newValue) => {
+				guides.gridTransparency = newValue;
+				getCurrentProjectEditor().editCanvas.redraw('guides grid transparency');
+			}),
 		]);
 	}
 
 	let result = [viewOptionsCard];
 	if (showSystem) result.push(makeSystemGuidesCard());
 	if (showCustom) result.push(makeCustomGuidesCard());
+	if (showGrid) result.push(makeGridCard());
 	return result;
 }
 
@@ -272,4 +295,54 @@ function makeCustomGuideRow(guide, number) {
 	valueInput.setAttribute('title', 'Guide line position');
 
 	return [viewCheckbox, nameInput, deleteButton, colorButton, angleButton, valueInput];
+}
+
+function makeGridCard() {
+	const guides = getCurrentProject().settings.app.guides;
+	const gridCard = makeElement({
+		className: 'panel__card guides-card__grid',
+		innerHTML: '<h3>Grid</h3>',
+	});
+
+	const gridSquareSize = makeElement({
+		tag: 'code',
+		innerHTML:
+			'' +
+			round(getCurrentProjectEditor().project.settings.font.upm / guides.gridDivisions, 2) +
+			' Em',
+	});
+	// gridSquareSize.setAttribute('disabled', 'disabled');
+
+	const valueInput = makeSingleInput(guides, 'gridDivisions', 'editCanvasView', 'input-number');
+	valueInput.addEventListener('change', () => {
+		gridSquareSize.innerHTML =
+			'' + round(getCurrentProjectEditor().project.settings.font.upm / valueInput.value, 2) + ' Em';
+	});
+	const divisionsContainer = makeElement({
+		tag: 'span',
+		className: 'divisions-container',
+	});
+	addAsChildren(divisionsContainer, [valueInput, gridSquareSize]);
+	valueInput.setAttribute('title', 'Grid divisions');
+	addAsChildren(gridCard, [
+		makeElement(),
+		makeSingleLabel(
+			'Grid divisions',
+			'For the Em square of this font, how many divisions should the grid have?'
+		),
+		divisionsContainer,
+		makeElement(),
+		makeSingleLabel(
+			'Grid square size',
+			'The size of each square in the grid, based on the number of divisions and the UPM of this font.'
+		),
+		gridSquareSize,
+		makeSingleLabel(
+			'Snap path points',
+			'Snap path points to grid intersections when moving or creating points.'
+		),
+		makeDirectCheckbox(guides, 'gridSnap', undefined),
+		rowPad(),
+	]);
+	return gridCard;
 }
