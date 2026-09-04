@@ -135,7 +135,9 @@ export function publish(topic, data) {
 		) {
 			// log(`Calling callbacks for ${topic}`);
 			callCallbacksByTopic('currentItem', data);
-			callCallbacksByTopic('currentVirtualGlyph', data);
+			const virtualGlyph =
+				this.multiSelect.shapes.length > 1 ? this.multiSelect.shapes.virtualGlyph : data;
+			callCallbacksByTopic('currentVirtualGlyph', virtualGlyph);
 			callCallbacksByTopic(specificItem, data);
 			let singlePath = this.multiSelect.shapes.singleton;
 			let singlePoint = this.multiSelect.points.singleton;

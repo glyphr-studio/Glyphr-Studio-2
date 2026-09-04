@@ -40,6 +40,7 @@ export function makeCard_glyphAttributes(glyph) {
 		onClick: () => {
 			let editor = getCurrentProjectEditor();
 			editor.selectedItem.advanceWidth = editor.selectedItem.maxes.xMax;
+			editor.history.addState('Auto-fit advance width');
 			editor.publish('currentItem', editor.selectedItem);
 		},
 	});

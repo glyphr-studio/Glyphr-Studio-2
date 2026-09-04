@@ -46,6 +46,7 @@ export function makeInputs_position(
 
 export function makeInputs_size(item, disabled = false) {
 	// log(`makeInputs_size`, 'start');
+	// log(`item.objType: ${item.objType}`);
 	let returnControls = [];
 	let thisTopic = `current${item.objType}`;
 
@@ -101,12 +102,15 @@ export function makeInputs_size(item, disabled = false) {
 			});
 			option.addEventListener('click', () => {
 				item.transformOrigin = origin;
+				addAttributeHistory(item, 'transform origin');
 				getCurrentProjectEditor().publish('editCanvasView', item);
 			});
 			transformInput.appendChild(option);
 		});
 
 		// Ratio lock checkbox
+		// log(`item.ratioLock: ${item.ratioLock}`);
+		// log(`thisTopic: ${thisTopic}`);
 		let ratioLockLabel = makeSingleLabel(
 			'lock aspect ratio',
 			`
@@ -159,6 +163,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			}
 			const editor = getCurrentProjectEditor();
 			topics.forEach((topic) => editor.publish(topic, item));
+			addAttributeHistory(item, `${property} lock`);
 			// log(`makeSingleInput LOCK event`, 'end');
 		});
 	}
@@ -206,15 +211,11 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			// log(`MAKE SINGLE INPUT EVENT ${property} set to ${newValue}`);
 			// log(`item[property]: ${item[property]}`);
 		}
+		addAttributeHistory(item, property);
 
 		// log(`topics: ${topics}`);
-		if (item.objType === 'VirtualGlyph') {
-			topics.forEach((topic) => editor.publish(topic, editor.selectedItem));
-		} else if (item.objType === 'VirtualShape') {
-			topics.forEach((topic) => editor.publish(topic, editor.selectedItem));
-		} else {
-			topics.forEach((topic) => editor.publish(topic, item));
-		}
+		topics.forEach((topic) => editor.publish(topic, item));
+
 		// log(`makeSingleInput.changeHappened event`, 'end');
 	}
 
@@ -277,7 +278,7 @@ export function addAttributeListener(element, listenFor = [], callback) {
 
 export function makeSingleCheckbox(item, property, thisTopic) {
 	// log(`makeSingleCheckbox`, 'start');
-	// log(`item.type: ${item.type}`);
+	// log(`item.objType: ${item.objType}`);
 	// log(`property: ${property}`);
 	// log(`thisTopic: ${thisTopic}`);
 
@@ -289,12 +290,18 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 	});
 	// @ts-expect-error 'property does exist'
 	if (item[property]) newCheckbox.checked = true;
+	// @ts-expect-error 'property does exist'
+	// log(`newCheckbox.checked: ${newCheckbox.checked}`);
 
 	newCheckbox.addEventListener('change', (event) => {
 		// log(`makeSingleCheckbox CHANGE event listener`, 'start');
+		// log(`item`);
+		// log(item);
+		// log(`INITIAL STATE item.${property}: ${item[property]}`);
 		// @ts-expect-error 'property does exist'
 		let newValue = event.target.checked;
 		item[property] = !!newValue;
+		// log(`CHANGED STATE item.${property}: ${item[property]}`);
 		if (thisTopic) {
 			getCurrentProjectEditor().publish(thisTopic, item);
 			if (property === 'use') {
@@ -302,6 +309,8 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 				item.parent.reconcileHandle(item.type);
 			}
 		}
+		addAttributeHistory(item, property);
+		// log(`FINAL STATE item.${property}: ${item[property]}`);
 		// log(`makeSingleCheckbox CHANGE event listener`, 'end');
 	});
 
@@ -311,13 +320,17 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 			subscriberID: `attributesPanel.${thisTopic}.${property}`,
 			callback: (changedItem) => {
 				// log(`makeSingleCheckbox SUBSCRIBER callback`, 'start');
+				// log(`changedItem:`);
+				// log(changedItem);
 				if (changedItem[property]) {
 					// @ts-expect-error 'property does exist'
 					newCheckbox.checked = true;
+					// log(`changedItem.${property}: ${changedItem[property]}`);
 					if (property === 'use') toggleHandleInputs(item.type, true);
 				} else {
 					// @ts-expect-error 'property does exist'
 					newCheckbox.checked = false;
+					// log(`changedItem.${property}: ${changedItem[property]}`);
 					if (property === 'use') toggleHandleInputs(item.type, false);
 				}
 				// log(`makeSingleCheckbox SUBSCRIBER callback`, 'end');
@@ -327,6 +340,33 @@ export function makeSingleCheckbox(item, property, thisTopic) {
 
 	// log(`makeSingleCheckbox`, 'end');
 	return newCheckbox;
+}
+
+function addAttributeHistory(item, property) {
+	const editor = getCurrentProjectEditor();
+	const projectItemTypes = [
+		'Glyph',
+		'Ligature',
+		'Component',
+		'Path',
+		'ControlPoint',
+		'KernGroup',
+		'ComponentInstance',
+		'VirtualGlyph',
+		'VirtualShape',
+	];
+	if (!projectItemTypes.includes(item.objType)) return;
+
+	if (item.objType === 'ControlPoint' && property === 'use') {
+		const handleNumber = item.type.replace('h', '');
+		const state = item.use ? 'on' : 'off';
+		editor.history.addState(`Control Point: toggled handle ${handleNumber} ${state}`);
+		return;
+	}
+
+	const target =
+		item.objType === 'VirtualGlyph' || item.objType === 'VirtualShape' ? editor.selectedItem : item;
+	editor.history.addState(`Changed ${property} for: ${target.name || target.objType}`);
 }
 
 function toggleHandleInputs(handle, show) {

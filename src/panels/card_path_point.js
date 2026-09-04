@@ -29,15 +29,18 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 		makePointTypeButton('symmetric', selectedPoint.type === 'symmetric', () => {
 			selectedPoint.type = 'symmetric';
 			selectedPoint.makeSymmetric();
+			editor.history.addState(`Changed point ${selectedPoint.pointNumber + 1} to symmetric`);
 			editor.publish('currentPathPoint', selectedPoint);
 		}),
 		makePointTypeButton('flat', selectedPoint.type === 'flat', () => {
 			selectedPoint.type = 'flat';
 			selectedPoint.makeFlat();
+			editor.history.addState(`Changed point ${selectedPoint.pointNumber + 1} to flat`);
 			editor.publish('currentPathPoint', selectedPoint);
 		}),
 		makePointTypeButton('corner', selectedPoint.type === 'corner', () => {
 			selectedPoint.type = 'corner';
+			editor.history.addState(`Changed point ${selectedPoint.pointNumber + 1} to corner`);
 			editor.publish('currentPathPoint', selectedPoint);
 		}),
 	]);
