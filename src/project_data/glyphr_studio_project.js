@@ -77,7 +77,7 @@ export class GlyphrStudioProject {
 					customTransparency: 70,
 					custom: [],
 					gridShow: false,
-					gridTransparency: 70,
+					gridTransparency: 90,
 					gridDivisions: 10,
 					gridSnap: false,
 				},

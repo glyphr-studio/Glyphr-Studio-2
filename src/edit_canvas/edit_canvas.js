@@ -4,7 +4,7 @@ import { makeElement } from '../common/dom.js';
 import { clone } from '../common/functions.js';
 import { drawGlyph, drawGlyphOutlineMode } from '../display_canvas/draw_paths.js';
 import { kernGroupSideMaxWidth } from '../project_editor/cross_item_actions.js';
-import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
+import { gridColor, guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
 import { runQualityChecksForItem } from '../project_editor/quality_checks.js';
 import { drawCharacterKernExtra, drawContextCharacters } from './context_characters.js';
 import {
@@ -197,9 +197,9 @@ export class EditCanvas extends HTMLElement {
 			const guidesSettings = editor.project.settings.app.guides;
 			if (!guidesSettings.drawGuidesOnTop) {
 				// if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
+				if (guidesSettings.gridShow) drawGrid();
 				if (guidesSettings.systemShowGuides) drawSystemGuidelines();
 				if (guidesSettings.customShowGuides) drawCustomGuidelines();
-				if (guidesSettings.gridShow) drawGrid();
 			}
 
 			// Draw glyphs
@@ -250,9 +250,9 @@ export class EditCanvas extends HTMLElement {
 			// Guides (if draw on top)
 			if (guidesSettings.drawGuidesOnTop) {
 				// if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
+				if (guidesSettings.gridShow) drawGrid();
 				if (guidesSettings.systemShowGuides) drawSystemGuidelines();
 				if (guidesSettings.customShowGuides) drawCustomGuidelines();
-				if (guidesSettings.gridShow) drawGrid();
 			}
 
 			const contextCharacterSettings = editor.project.settings.app.contextCharacters;
@@ -461,15 +461,15 @@ export class EditCanvas extends HTMLElement {
 			let y0 = Math.floor(cYsY(height) / gridSquareSize) * gridSquareSize;
 			let y1 = Math.ceil(cYsY(0) / gridSquareSize) * gridSquareSize;
 
-			setSystemGuideColor(
-				'medium',
-				transparencyToAlpha(editor.project.settings.app.guides.gridTransparency)
-			);
+			// log(`fill: ${fill}`);
+			let alpha = transparencyToAlpha(editor.project.settings.app.guides.gridTransparency);
+			const fill = getColorFromRGBA(gridColor, alpha);
+			ctx.fillStyle = fill;
 			for (let x = x0; x <= x1; x += gridSquareSize) {
-				ctx.fillRect(sXcX(x), 0, 1, height);
+				ctx.fillRect(Math.floor(sXcX(x)), 0, 1, height);
 			}
 			for (let y = y0; y <= y1; y += gridSquareSize) {
-				ctx.fillRect(0, sYcY(y), width, 1);
+				ctx.fillRect(0, Math.floor(sYcY(y)), width, 1);
 			}
 		}
 

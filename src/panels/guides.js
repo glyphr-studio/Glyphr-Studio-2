@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeRandomSaturatedColor, parseColorString, rgbToHex } from '../common/colors.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
+import { round } from '../common/functions.js';
 import { makeIcon } from '../common/graphics.js';
 import { makeFancySlider } from '../controls/fancy-slider/fancy_slider.js';
 import {
@@ -41,7 +42,7 @@ export function makePanel_Guides() {
 	});
 	addAsChildren(viewOptionsCard, [
 		systemShowGuidesCheckbox,
-		makeElement({ tag: 'h4', content: 'Key metrics guides' }),
+		makeElement({ tag: 'h4', content: 'Show: Key metrics guides' }),
 	]);
 	if (showSystem) {
 		addAsChildren(viewOptionsCard, [
@@ -64,7 +65,7 @@ export function makePanel_Guides() {
 	});
 	addAsChildren(viewOptionsCard, [
 		customShowGuidesCheckbox,
-		makeElement({ tag: 'h4', content: 'Custom guides' }),
+		makeElement({ tag: 'h4', content: 'Show: Custom guides' }),
 	]);
 	if (showCustom) {
 		addAsChildren(viewOptionsCard, [
@@ -77,6 +78,7 @@ export function makePanel_Guides() {
 			makeElement(),
 			makeSingleLabel('Show labels'),
 			makeDirectCheckbox(guides, 'customShowLabels', refreshGuideChange),
+			rowPad(),
 		]);
 	}
 
@@ -86,7 +88,7 @@ export function makePanel_Guides() {
 	});
 	addAsChildren(viewOptionsCard, [
 		gridShowCheckbox,
-		makeElement({ tag: 'h4', content: 'Grid guide' }),
+		makeElement({ tag: 'h4', content: 'Show: Grid' }),
 	]);
 	if (showGrid) {
 		addAsChildren(viewOptionsCard, [
@@ -95,7 +97,7 @@ export function makePanel_Guides() {
 			makeFancySlider(guides.gridTransparency, (newValue) => {
 				guides.gridTransparency = newValue;
 				getCurrentProjectEditor().editCanvas.redraw('guides grid transparency');
-			})
+			}),
 		]);
 	}
 
@@ -303,28 +305,42 @@ function makeGridCard() {
 	});
 
 	const gridSquareSize = makeElement({
-		tag:'i',
-		innerHTML : "Grid square size: " + getCurrentProjectEditor().project.settings.font.upm / guides.gridDivisions + " units",
+		tag: 'code',
+		innerHTML:
+			'' +
+			round(getCurrentProjectEditor().project.settings.font.upm / guides.gridDivisions, 2) +
+			' Em',
 	});
-	const valueInput = makeSingleInput(guides, 'gridDivisions', 'editCanvasView', 'input-number', ['change']);
+	// gridSquareSize.setAttribute('disabled', 'disabled');
+
+	const valueInput = makeSingleInput(guides, 'gridDivisions', 'editCanvasView', 'input-number');
 	valueInput.addEventListener('change', () => {
-		gridSquareSize.innerHTML = "Grid square size: " + getCurrentProjectEditor().project.settings.font.upm / valueInput.value + " units";
+		gridSquareSize.innerHTML =
+			'' + round(getCurrentProjectEditor().project.settings.font.upm / valueInput.value, 2) + ' Em';
 	});
 	const divisionsContainer = makeElement({
 		tag: 'span',
 		className: 'divisions-container',
 	});
-	addAsChildren(divisionsContainer, [
-		valueInput,
-		gridSquareSize,
-	]);
+	addAsChildren(divisionsContainer, [valueInput, gridSquareSize]);
 	valueInput.setAttribute('title', 'Grid divisions');
 	addAsChildren(gridCard, [
 		makeElement(),
-		makeSingleLabel('Grid divisions'),
+		makeSingleLabel(
+			'Grid divisions',
+			'For the Em square of this font, how many divisions should the grid have?'
+		),
 		divisionsContainer,
 		makeElement(),
-		makeSingleLabel('Snapping'),
+		makeSingleLabel(
+			'Grid square size',
+			'The size of each square in the grid, based on the number of divisions and the UPM of this font.'
+		),
+		gridSquareSize,
+		makeSingleLabel(
+			'Snap path points',
+			'Snap path points to grid intersections when moving or creating points.'
+		),
 		makeDirectCheckbox(guides, 'gridSnap', undefined),
 		rowPad(),
 	]);

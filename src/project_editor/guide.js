@@ -59,3 +59,4 @@ export const defaultCustomGuideColor = 'rgb(127, 0, 255)';
 export const guideColorLight = 'rgb(227, 190, 171)';
 export const guideColorMedium = 'rgb(212, 154, 125)';
 export const guideColorDark = 'rgb(191, 106, 64)';
+export const gridColor = 'rgb(96, 96, 136)';
