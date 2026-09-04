@@ -14,8 +14,8 @@ import {
 // --------------------------------------------------------------
 
 export function makeCard_pathAttributes(path) {
-	// log(`makeCard_pathAttributes`, 'start');
-	// log(path);
+	log(`makeCard_pathAttributes`, 'start');
+	log(path);
 
 	// `ident` is a unique ID per object for debugging
 	let pathCard = makeElement({
@@ -25,7 +25,7 @@ export function makeCard_pathAttributes(path) {
 	});
 
 	// Path name
-	// log(`path.name: ${path.name}`);
+	log(`path.name: ${path.name}`);
 	let nameLabel = makeSingleLabel('path name');
 	let nameInput = makeSingleInput(path, 'name', 'currentPath', 'input');
 
@@ -119,6 +119,7 @@ function getWindingName(winding) {
 }
 
 export function makeCard_multiSelectPathAttributes(virtualGlyph) {
+	// log(`makeCard_multiSelectPathAttributes`, 'start');
 	let multiPathCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
@@ -129,5 +130,6 @@ export function makeCard_multiSelectPathAttributes(virtualGlyph) {
 	addAsChildren(multiPathCard, makeInputs_size(virtualGlyph));
 	addAsChildren(multiPathCard, makeActionsArea_Path());
 
+	// log(`makeCard_multiSelectPathAttributes`, 'end');
 	return multiPathCard;
 }
