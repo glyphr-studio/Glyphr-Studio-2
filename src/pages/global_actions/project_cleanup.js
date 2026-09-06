@@ -40,23 +40,23 @@ export function makeCard_Flatten() {
 	button.addEventListener('click', () => {
 		glyphIterator({
 			title: 'Converting Component Instances to Paths',
-			action: (workingItem) => {
+			action: (/** @type {Glyph} */ glyph) => {
 				// log(`Global Action: Flatten`, 'start');
 				// log(workingItem);
 				const editor = getCurrentProjectEditor();
 				let newShapes = new Glyph();
-				workingItem.shapes.forEach((shape) => {
+				glyph.shapes.forEach((shape) => {
 					if (shape.objType === 'ComponentInstance') {
 						const rootItem = editor.project.getItem(shape.link);
 						copyShapesFromTo(shape.transformedGlyph, newShapes);
-						removeLinkFromUsedIn(rootItem, workingItem.id);
+						removeLinkFromUsedIn(rootItem, glyph.id);
 					} else {
 						newShapes.addOneShape(new Path(shape));
 					}
 				});
-				workingItem.shapes = [];
-				newShapes.shapes.forEach((shape) => workingItem.addOneShape(shape));
-				workingItem.changed();
+				glyph.shapes = [];
+				newShapes.shapes.forEach((shape) => glyph.addOneShape(shape));
+				glyph.changed();
 				// log(`Global Action: Flatten`, 'end');
 			},
 		});
@@ -97,11 +97,10 @@ export function makeCard_Round() {
 	button.addEventListener('click', () => {
 		glyphIterator({
 			title: 'Rounding point values',
-			action: (workingItem) => {
-				workingItem.roundAll();
-				if (workingItem.advanceWidth)
-					workingItem.advanceWidth = Math.round(workingItem.advanceWidth);
-				workingItem.changed();
+			action: (/** @type {Glyph} */ glyph) => {
+				glyph.roundAll();
+				if (glyph.advanceWidth) glyph.advanceWidth = Math.round(glyph.advanceWidth);
+				glyph.changed();
 				// log(`Global Action: Flatten`, 'end');
 			},
 		});
@@ -149,17 +148,17 @@ export function makeCard_RemoveItems() {
 	button.addEventListener('click', () => {
 		glyphIterator({
 			title: 'Removing items',
-			action: (workingItem) => {
-				const project = workingItem.parent;
+			action: (/** @type {Glyph} */ glyph) => {
+				const project = glyph.parent;
 				if (project) {
 					const unlinkComponentInstances = project.settings.app.unlinkComponentInstances;
-					resolveItemLinks(workingItem, unlinkComponentInstances);
-					if (workingItem.objType === 'Component') {
-						delete project.components[workingItem.id];
-					} else if (workingItem.objType === 'Ligature') {
-						delete project.ligatures[workingItem.id];
-					} else if (workingItem.objType === 'Glyph') {
-						delete project.glyphs[workingItem.id];
+					resolveItemLinks(glyph, unlinkComponentInstances);
+					if (glyph.objType === 'Component') {
+						delete project.components[glyph.id];
+					} else if (glyph.objType === 'Ligature') {
+						delete project.ligatures[glyph.id];
+					} else if (glyph.objType === 'Glyph') {
+						delete project.glyphs[glyph.id];
 					}
 				}
 			},
@@ -203,11 +202,11 @@ export function makeCard_UnitePaths() {
 	button.addEventListener('click', () => {
 		glyphIterator({
 			title: 'Combining paths',
-			action: (/** @type {Glyph} */ workingItem) => {
-				const project = workingItem.parent;
+			action: (/** @type {Glyph} */ glyph) => {
+				const project = glyph.parent;
 				if (project) {
 					// Merge paths
-					workingItem.uniteAll();
+					glyph.uniteAll();
 				}
 			},
 		});

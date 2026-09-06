@@ -69,18 +69,18 @@ export function makeCard_Diacritics() {
 		function processOneDiacriticItem() {
 			// log(`processOneDiacriticItem - currentItemHex = ${currentItemHex}`);
 			sourceArray = findMappedValue(unicodeDiacriticsMapSimple, '' + currentItemHex);
-			let currentItem = project.getItem(`glyph-${currentItemHex}`, true);
+			let glyph = project.getItem(`glyph-${currentItemHex}`, true);
 
 			if (sourceArray) {
 				// Cleanup target glyph
-				resolveItemLinks(currentItem, project.settings.app.unlinkComponentInstances);
+				resolveItemLinks(glyph, project.settings.app.unlinkComponentInstances);
 				if (project.settings.app.removeExisting) {
-					project.glyphs[currentItem.id].shapes = [];
+					project.glyphs[glyph.id].shapes = [];
 				}
 
 				showToast(`Adding diacritical ${currentItemHex}`, 10000);
-				insertComponentInstance(`glyph-${validateAsHex(sourceArray[0])}`, currentItem.id, true);
-				insertComponentInstance(`glyph-${validateAsHex(sourceArray[1])}`, currentItem.id, false);
+				insertComponentInstance(`glyph-${validateAsHex(sourceArray[0])}`, glyph.id, true);
+				insertComponentInstance(`glyph-${validateAsHex(sourceArray[1])}`, glyph.id, false);
 			}
 
 			currentItemDec++;
@@ -159,21 +159,21 @@ export function makeCard_DiacriticsAdvanced() {
 		function processOneItem() {
 			// log(`processOneItem - currentItemHex = ${currentItemHex}`);
 			sourceArray = findMappedValue(unicodeDiacriticsMapAdvanced, currentItemHex);
-			let currentItem = project.getItem(`glyph-${currentItemHex}`, true);
+			let glyph = project.getItem(`glyph-${currentItemHex}`, true);
 			let sourceID1 = `glyph-${validateAsHex(sourceArray[0])}`;
 			let sourceID2 = `glyph-${validateAsHex(sourceArray[1])}`;
 
 			if (sourceArray) {
-				showToast(`Adding diacritical ${currentItem.id}`, 10000);
-				resolveItemLinks(currentItem, project.settings.app.unlinkComponentInstances);
+				showToast(`Adding diacritical ${glyph.id}`, 10000);
+				resolveItemLinks(glyph, project.settings.app.unlinkComponentInstances);
 				if (project.settings.app.removeExisting) {
-					project.glyphs[currentItem.id].shapes = [];
+					project.glyphs[glyph.id].shapes = [];
 				}
-				insertComponentInstance(sourceID1, currentItem.id, true);
-				insertComponentInstance(sourceID2, currentItem.id, false);
+				insertComponentInstance(sourceID1, glyph.id, true);
+				insertComponentInstance(sourceID2, glyph.id, false);
 				targetCenter = project.getItem(sourceID1).maxes.centerX;
 				currCenter = project.getItem(sourceID2).maxes.centerX;
-				project.getItem(currentItem.id).shapes[1].updateShapePosition(targetCenter - currCenter, 0);
+				project.getItem(glyph.id).shapes[1].updateShapePosition(targetCenter - currCenter, 0);
 			}
 
 			currentItemDec++;

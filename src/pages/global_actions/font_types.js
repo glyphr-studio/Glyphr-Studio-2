@@ -1,18 +1,15 @@
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex } from '../../common/character_ids.js';
-import {  addAsChildren, makeElement, textToNode } from '../../common/dom.js';
+import { addAsChildren, makeElement } from '../../common/dom.js';
 import { remove } from '../../common/functions.js';
 import { showToast } from '../../controls/dialogs/dialogs.js';
 import { getUnicodeBlockByName } from '../../lib/unicode/unicode_blocks.js';
-import {
-	findMappedValue,
-	unicodeLowercaseMap,
-} from '../../lib/unicode/unicode_mappings.js';
+import { findMappedValue, unicodeLowercaseMap } from '../../lib/unicode/unicode_mappings.js';
 import { CharacterRange } from '../../project_data/character_range.js';
 import { Glyph } from '../../project_data/glyph.js';
 import {
 	insertComponentInstance,
-  resolveItemLinks,
+	resolveItemLinks,
 } from '../../project_editor/cross_item_actions.js';
 import { addRangeToSelectedFilterInputs, glyphIterator } from './page.js';
 import { addCharacterRangeToCurrentProject } from '../settings_project.js';
@@ -52,7 +49,11 @@ export function makeCard_Monospace() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Convert project to Monospace' });
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Convert project to Monospace',
+	});
 	button.addEventListener('click', () => {
 		// log('convertProjectToMonospace', 'start');
 
@@ -68,7 +69,7 @@ export function makeCard_Monospace() {
 			glyphIterator({
 				title: 'Converting to Monospace',
 				includeComponents: false,
-				action: (glyph) => {
+				action: (/** @type {Glyph} */ glyph) => {
 					glyph.advanceWidth = width;
 				},
 			});
@@ -106,17 +107,17 @@ export function makeCard_AllCaps() {
 	});
 	card.appendChild(effect);
 
-  const options = makeElement({ className: 'settings-table' });
-  addAsChildren(options, [
-    makeOneSettingsRow('app', 'unlinkComponentInstances', undefined, true),
-    makeOneSettingsRow('app', 'removeExisting', undefined, true)
-  ]);
-  options.style.marginTop = '10px';
-  card.appendChild(options);
+	const options = makeElement({ className: 'settings-table' });
+	addAsChildren(options, [
+		makeOneSettingsRow('app', 'unlinkComponentInstances', undefined, true),
+		makeOneSettingsRow('app', 'removeExisting', undefined, true),
+	]);
+	options.style.marginTop = '10px';
+	card.appendChild(options);
 
 	let rangeSettings = makeElement({
 		className: 'settings-table',
-    innerHTML: `
+		innerHTML: `
       <h3>Ranges</h3>
 			<input type="checkbox" id="allCapsBasic" checked="true"/>
 			<label for="allCapsBasic">Basic Latin</label>
@@ -131,10 +132,14 @@ export function makeCard_AllCaps() {
 			<label for="allCapsLatinB">Latin Extended B</label>
 			<span></span>
 		`,
-  });
+	});
 	card.appendChild(rangeSettings);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Convert project to All Caps' });
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Convert project to All Caps',
+	});
 	button.addEventListener('click', async () => {
 		// log('convertProjectToAllCaps', 'start');
 		const project = getCurrentProject();
@@ -147,32 +152,32 @@ export function makeCard_AllCaps() {
 				if (!item) {
 					project.addItemByType(new Glyph(), 'Glyph', itemID);
 				}
-      }
+			}
 
 			glyphIterator({
 				title: 'Converting ' + range.name + ' to All Caps',
 				includeComponents: false,
 				includeLigatures: false,
 				// filter: { begin: range.begin, end: range.end }, // TODO fix filtering
-				action: (item) => {
-					const hexID = Number(remove(item.id, 'glyph-'));
+				action: (/** @type {Glyph} */ glyph) => {
+					const hexID = Number(remove(glyph.id, 'glyph-'));
 					if (range.isWithinRange(hexID)) {
 						// log(`glyphIterator>ConvertToAllCaps>Action`, 'start');
-						let destinationItemHex = findMappedValue(unicodeLowercaseMap, item.id.substring(6));
+						let destinationItemHex = findMappedValue(unicodeLowercaseMap, glyph.id.substring(6));
 						// log(`destinationItemHex: ${destinationItemHex}`);
 						destinationItemHex = decToHex(parseInt(destinationItemHex));
 						// log(`destinationItemHex: ${destinationItemHex}`);
-            let destinationItem = project.getItem(`glyph-${destinationItemHex}`);
+						let destinationItem = project.getItem(`glyph-${destinationItemHex}`);
 
-            if (destinationItemHex) {
-              // Cleanup smallcaps glyphs
-              const unlinkComponentInstances = project.settings.app.unlinkComponentInstances;
-              resolveItemLinks(destinationItem, unlinkComponentInstances);
-              if (document.querySelector('removeExisting')) {
-                delete project.glyphs[destinationItem.id];
-              }
+						if (destinationItemHex) {
+							// Cleanup smallcaps glyphs
+							const unlinkComponentInstances = project.settings.app.unlinkComponentInstances;
+							resolveItemLinks(destinationItem, unlinkComponentInstances);
+							if (document.querySelector('removeExisting')) {
+								delete project.glyphs[destinationItem.id];
+							}
 
-							insertComponentInstance(item.id, destinationItem.id, true);
+							insertComponentInstance(glyph.id, destinationItem.id, true);
 						}
 						// log(`glyphIterator>ConvertToAllCaps>Action`, 'end');
 					}

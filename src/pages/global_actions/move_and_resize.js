@@ -1,9 +1,8 @@
-import {  makeElement } from '../../common/dom.js';
+import { makeElement } from '../../common/dom.js';
 import { showToast } from '../../controls/dialogs/dialogs.js';
-import {
-	getComponentInstancesFromRoot,
-} from '../../project_editor/cross_item_actions.js';
-import {  glyphIterator } from './page.js';
+import { Glyph } from '../../project_data/glyph.js';
+import { getComponentInstancesFromRoot } from '../../project_editor/cross_item_actions.js';
+import { glyphIterator } from './page.js';
 
 // --------------------------------------------------------------
 // Move
@@ -44,7 +43,11 @@ export function makeCard_Move() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Move all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Move all glyphs',
+	});
 	button.addEventListener('click', () => {
 		/**@type {HTMLInputElement} */
 		const moveXInput = document.querySelector('#moveX');
@@ -55,7 +58,7 @@ export function makeCard_Move() {
 
 		glyphIterator({
 			title: 'Moving glyph',
-			action: (glyph) => {
+			action: (/** @type {Glyph} */ glyph) => {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				glyph.shapes.forEach((shape) => {
 					if (shape.objType !== 'ComponentInstance') {
@@ -115,7 +118,11 @@ export function makeCard_ScaleHorizontal() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Scale all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Scale all glyphs',
+	});
 	button.addEventListener('click', () => {
 		/** @type {HTMLInputElement} */
 		const scaleHorizontalInput = document.querySelector('#scaleHorizontal');
@@ -127,7 +134,7 @@ export function makeCard_ScaleHorizontal() {
 
 		glyphIterator({
 			title: 'Horizontally scaling glyph',
-			action: (glyph, otherScaledItems) => {
+			action: (/** @type {Glyph} */ glyph, otherScaledItems) => {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let newWidth = (glyph.maxes.xMax - glyph.maxes.xMin) * scaleHorizontal;
 				glyph.setGlyphSize({
@@ -180,7 +187,11 @@ export function makeCard_ScaleVertical() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Scale all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Scale all glyphs',
+	});
 	button.addEventListener('click', () => {
 		/** @type {HTMLInputElement} */
 		const scaleVerticalInput = document.querySelector('#scaleVertical');
@@ -188,7 +199,7 @@ export function makeCard_ScaleVertical() {
 
 		glyphIterator({
 			title: 'Vertically scaling glyph',
-			action: (glyph, otherScaledItems) => {
+			action: (/** @type {Glyph} */ glyph, otherScaledItems) => {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				const newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
 				glyph.setGlyphSize({
@@ -258,7 +269,11 @@ export function makeCard_Resize() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Re-size all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Re-size all glyphs',
+	});
 	button.addEventListener('click', () => {
 		// log('updateAllGlyphSizesByEm', 'start');
 		/** @type {HTMLInputElement} */
@@ -286,7 +301,7 @@ export function makeCard_Resize() {
 
 		glyphIterator({
 			title: 'Re-sizing glyph',
-			action: (glyph, otherResizedItems) => {
+			action: (/** @type {Glyph} */ glyph, otherResizedItems) => {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				glyph.updateGlyphSize({
 					width: resizeW,
@@ -348,7 +363,11 @@ export function makeCard_Skew() {
 	});
 	card.appendChild(table);
 
-	const button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Skew all glyphs' });
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Skew all glyphs',
+	});
 	button.addEventListener('click', () => {
 		/** @type {HTMLInputElement} */
 		const skewAngleInput = document.querySelector('#skewAngle');
@@ -360,7 +379,7 @@ export function makeCard_Skew() {
 
 		glyphIterator({
 			title: 'Skewing glyphs',
-			action: (glyph) => {
+			action: (/** @type {Glyph} */ glyph) => {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				const oldRSB = glyph.rightSideBearing;
 				glyph.skewAngle(skewAngle);
@@ -416,7 +435,11 @@ export function makeCard_SideBearings() {
 	});
 	card.appendChild(table);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Update Side Bearings' });
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Update Side Bearings',
+	});
 	button.addEventListener('click', () => {
 		// log('updateSideBearings', 'start');
 		/** @type {HTMLInputElement} */
@@ -444,7 +467,7 @@ export function makeCard_SideBearings() {
 				glyphIterator({
 					title: 'Updating Side Bearings',
 					includeComponents: false,
-					action: (glyph) => {
+					action: (/** @type {Glyph} */ glyph) => {
 						if (glyph.shapes.length) {
 							if (leftCheckbox && !isNaN(left)) {
 								glyph.leftSideBearing = left;
