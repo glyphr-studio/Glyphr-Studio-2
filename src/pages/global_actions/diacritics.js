@@ -1,6 +1,6 @@
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex, validateAsHex } from '../../common/character_ids.js';
-import { makeElement } from '../../common/dom.js';
+import { addAsChildren, makeElement } from '../../common/dom.js';
 import { showToast } from '../../controls/dialogs/dialogs.js';
 import { getUnicodeBlockByName } from '../../lib/unicode/unicode_blocks.js';
 import {
@@ -10,9 +10,10 @@ import {
 } from '../../lib/unicode/unicode_mappings.js';
 import {
 	insertComponentInstance,
+	resolveItemLinks,
 } from '../../project_editor/cross_item_actions.js';
+import { makeOneSettingsRow } from '../settings.js';
 import { addCharacterRangeToCurrentProject } from '../settings_project.js';
-
 
 // --------------------------------------------------------------
 // Diacritics
@@ -38,8 +39,21 @@ export function makeCard_Diacritics() {
 	});
 	card.appendChild(effect);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Generate Diacritical Glyphs' });
+	const options = makeElement({ className: 'settings-table' });
+	addAsChildren(options, [
+		makeOneSettingsRow('app', 'unlinkComponentInstances', undefined, true),
+		makeOneSettingsRow('app', 'removeExisting', undefined, true),
+	]);
+	options.style.marginTop = '10px';
+	card.appendChild(options);
+
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Generate Diacritical Glyphs',
+	});
 	button.addEventListener('click', () => {
+		let project = getCurrentProject();
 		let range = getUnicodeBlockByName('Latin-1 Supplement');
 		let rangeBeginHex = '0x0';
 		let currentItemDec = 0;
@@ -51,17 +65,22 @@ export function makeCard_Diacritics() {
 		let rangeEndDec = 0;
 		if (range && range.end) rangeEndDec = Number(decToHex(range.end));
 		let sourceArray;
-		// const project = getCurrentProject();
 
 		function processOneDiacriticItem() {
 			// log(`processOneDiacriticItem - currentItemHex = ${currentItemHex}`);
 			sourceArray = findMappedValue(unicodeDiacriticsMapSimple, '' + currentItemHex);
-			let currentItemID = `glyph-${currentItemHex}`;
+			let currentItem = project.getItem(`glyph-${currentItemHex}`, true);
 
 			if (sourceArray) {
+				// Cleanup target glyph
+				resolveItemLinks(currentItem, project.settings.app.unlinkComponentInstances);
+				if (project.settings.app.removeExisting) {
+					project.glyphs[currentItem.id].shapes = [];
+				}
+
 				showToast(`Adding diacritical ${currentItemHex}`, 10000);
-				insertComponentInstance(`glyph-${validateAsHex(sourceArray[0])}`, currentItemID, true);
-				insertComponentInstance(`glyph-${validateAsHex(sourceArray[1])}`, currentItemID, false);
+				insertComponentInstance(`glyph-${validateAsHex(sourceArray[0])}`, currentItem.id, true);
+				insertComponentInstance(`glyph-${validateAsHex(sourceArray[1])}`, currentItem.id, false);
 			}
 
 			currentItemDec++;
@@ -109,7 +128,19 @@ export function makeCard_DiacriticsAdvanced() {
 	});
 	card.appendChild(effect);
 
-	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Generate Diacritical Glyphs' });
+	const options = makeElement({ className: 'settings-table' });
+	addAsChildren(options, [
+		makeOneSettingsRow('app', 'unlinkComponentInstances', undefined, true),
+		makeOneSettingsRow('app', 'removeExisting', undefined, true),
+	]);
+	options.style.marginTop = '10px';
+	card.appendChild(options);
+
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Generate Diacritical Glyphs',
+	});
 	button.addEventListener('click', () => {
 		let project = getCurrentProject();
 		let rangeSupplement = getUnicodeBlockByName('Latin-1 Supplement');
@@ -128,17 +159,21 @@ export function makeCard_DiacriticsAdvanced() {
 		function processOneItem() {
 			// log(`processOneItem - currentItemHex = ${currentItemHex}`);
 			sourceArray = findMappedValue(unicodeDiacriticsMapAdvanced, currentItemHex);
-			let currentItemID = `glyph-${currentItemHex}`;
+			let currentItem = project.getItem(`glyph-${currentItemHex}`, true);
 			let sourceID1 = `glyph-${validateAsHex(sourceArray[0])}`;
 			let sourceID2 = `glyph-${validateAsHex(sourceArray[1])}`;
 
 			if (sourceArray) {
-				showToast(`Adding diacritical ${currentItemHex}`, 10000);
-				insertComponentInstance(sourceID1, currentItemID, true);
-				insertComponentInstance(sourceID2, currentItemID, false);
+				showToast(`Adding diacritical ${currentItem.id}`, 10000);
+				resolveItemLinks(currentItem, project.settings.app.unlinkComponentInstances);
+				if (project.settings.app.removeExisting) {
+					project.glyphs[currentItem.id].shapes = [];
+				}
+				insertComponentInstance(sourceID1, currentItem.id, true);
+				insertComponentInstance(sourceID2, currentItem.id, false);
 				targetCenter = project.getItem(sourceID1).maxes.centerX;
 				currCenter = project.getItem(sourceID2).maxes.centerX;
-				project.getItem(currentItemID).shapes[1].updateShapePosition(targetCenter - currCenter, 0);
+				project.getItem(currentItem.id).shapes[1].updateShapePosition(targetCenter - currCenter, 0);
 			}
 
 			currentItemDec++;
