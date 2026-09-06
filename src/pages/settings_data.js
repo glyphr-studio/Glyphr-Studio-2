@@ -205,8 +205,13 @@ export default {
 			type: `Boolean`,
 		},
 		unlinkComponentInstances: {
-			label: `Unlink component instances when deleting their root`,
+			label: `Unlink component instances`,
 			description: `When selected, this option will unlink component instances and turn them into normal paths if their component root is deleted (the glyph will look the same, but some component instances will end up as stand-alone path objects).<br>If this option is unselected, component instances will be deleted when their component root is deleted (the glyph will look different because it will have less shapes).`,
+			type: `Boolean`,
+    },
+    removeExisting: {
+			label: `Remove existing items`,
+			description: `When selected, this option will clear any existing data on the target items, preventing layering on top of existing paths/components.`,
 			type: `Boolean`,
 		},
 		canvasDisplayModeFilled: {
