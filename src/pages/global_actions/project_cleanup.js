@@ -1,13 +1,10 @@
-import {  getCurrentProjectEditor } from '../../app/main.js';
+import { getCurrentProjectEditor } from '../../app/main.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { Path } from '../../project_data/path.js';
 import { copyShapesFromTo } from '../../project_editor/actions.js';
-import {
-	removeLinkFromUsedIn,
-	resolveItemLinks,
-} from '../../project_editor/cross_item_actions.js';
-import {  glyphIterator } from './page.js';
+import { removeLinkFromUsedIn, resolveItemLinks } from '../../project_editor/cross_item_actions.js';
+import { glyphIterator } from './page.js';
 import { makeOneSettingsRow } from '../settings.js';
 
 // --------------------------------------------------------------
@@ -36,7 +33,8 @@ export function makeCard_Flatten() {
 	card.appendChild(effect);
 
 	let button = makeElement({
-		tag: 'fancy-button', attributes: {'secondary': ''},
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
 		content: 'Convert Component Instances to Paths',
 	});
 	button.addEventListener('click', () => {
@@ -92,7 +90,8 @@ export function makeCard_Round() {
 	card.appendChild(effect);
 
 	let button = makeElement({
-		tag: 'fancy-button', attributes: {'secondary': ''},
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
 		content: 'Round values',
 	});
 	button.addEventListener('click', () => {
@@ -141,7 +140,8 @@ export function makeCard_RemoveItems() {
 	card.appendChild(options);
 
 	let button = makeElement({
-		tag: 'fancy-button', attributes: {'secondary': ''},
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
 		content: 'Remove items',
 	});
 	button.style.marginTop = '0';
@@ -161,6 +161,53 @@ export function makeCard_RemoveItems() {
 					} else if (workingItem.objType === 'Glyph') {
 						delete project.glyphs[workingItem.id];
 					}
+				}
+			},
+		});
+	});
+	card.appendChild(button);
+
+	return card;
+}
+
+// --------------------------------------------------------------
+// Unite paths
+// --------------------------------------------------------------
+/**
+ * Makes the content for the Remove Items global action card.
+ * @returns {Element}
+ */
+export function makeCard_UnitePaths() {
+	const card = makeElement({ className: 'global-actions__card' });
+
+	card.appendChild(makeElement({ tag: 'h2', content: 'Combine item paths' }));
+	let description = makeElement({
+		className: 'global-actions__description',
+		content: `This will run the "Combine item paths: Unite" action on all selected items.`,
+	});
+	card.appendChild(description);
+
+	let effect = makeElement({
+		className: 'global-actions__effect-description',
+		content: `Paths will be merged on the selected items.`,
+	});
+	card.appendChild(effect);
+
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Combine paths',
+	});
+	button.style.marginTop = '0';
+
+	button.addEventListener('click', () => {
+		glyphIterator({
+			title: 'Combining paths',
+			action: (/** @type {Glyph} */ workingItem) => {
+				const project = workingItem.parent;
+				if (project) {
+					// Merge paths
+					workingItem.uniteAll();
 				}
 			},
 		});

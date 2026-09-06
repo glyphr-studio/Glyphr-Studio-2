@@ -11,19 +11,22 @@ import {
 import { CharacterRange } from '../../project_data/character_range.js';
 import { glyphChanged } from '../../project_editor/cross_item_actions.js';
 import { makeNavButton, toggleNavDropdown } from '../../project_editor/navigator.js';
-import { makeCard_Diacritics } from './diacritics.js';
-import { makeCard_DiacriticsAdvanced } from './diacritics.js';
-import { makeCard_AllCaps } from './font_types.js';
-import { makeCard_Flatten } from './project_cleanup.js';
-import { makeCard_Monospace } from './font_types.js';
-import { makeCard_Move } from './move_and_resize.js';
-import { makeCard_RemoveItems } from './project_cleanup.js';
-import { makeCard_Resize } from './move_and_resize.js';
-import { makeCard_Round } from './project_cleanup.js';
-import { makeCard_ScaleHorizontal } from './move_and_resize.js';
-import { makeCard_ScaleVertical } from './move_and_resize.js';
-import { makeCard_SideBearings } from './move_and_resize.js';
-import { makeCard_Skew } from './move_and_resize.js';
+import { makeCard_DiacriticsAdvanced, makeCard_Diacritics } from './diacritics.js';
+import {
+	makeCard_Flatten,
+	makeCard_Round,
+	makeCard_RemoveItems,
+	makeCard_UnitePaths,
+} from './project_cleanup.js';
+import { makeCard_Monospace, makeCard_AllCaps } from './font_types.js';
+import {
+	makeCard_ScaleHorizontal,
+	makeCard_Skew,
+	makeCard_ScaleVertical,
+	makeCard_Move,
+	makeCard_Resize,
+	makeCard_SideBearings,
+} from './move_and_resize.js';
 
 import { updateAllCharacterRangeCounts } from '../settings_project.js';
 /**
@@ -123,6 +126,7 @@ export function makePage_GlobalActions() {
 		makeCard_Flatten(),
 		makeCard_Round(),
 		makeCard_RemoveItems(),
+		makeCard_UnitePaths(),
 		makeElement({ tag: 'h1', content: 'Font types' }),
 		makeCard_Monospace(),
 		makeCard_AllCaps(),
