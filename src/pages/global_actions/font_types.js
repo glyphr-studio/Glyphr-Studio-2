@@ -1,6 +1,6 @@
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex } from '../../common/character_ids.js';
-import {  makeElement } from '../../common/dom.js';
+import {  addAsChildren, makeElement, textToNode } from '../../common/dom.js';
 import { remove } from '../../common/functions.js';
 import { showToast } from '../../controls/dialogs/dialogs.js';
 import { getUnicodeBlockByName } from '../../lib/unicode/unicode_blocks.js';
@@ -12,9 +12,11 @@ import { CharacterRange } from '../../project_data/character_range.js';
 import { Glyph } from '../../project_data/glyph.js';
 import {
 	insertComponentInstance,
+  resolveItemLinks,
 } from '../../project_editor/cross_item_actions.js';
 import { addRangeToSelectedFilterInputs, glyphIterator } from './page.js';
 import { addCharacterRangeToCurrentProject } from '../settings_project.js';
+import { makeOneSettingsRow } from '../settings.js';
 
 // --------------------------------------------------------------
 // Monospace
@@ -104,9 +106,18 @@ export function makeCard_AllCaps() {
 	});
 	card.appendChild(effect);
 
-	let table = makeElement({
+  const options = makeElement({ className: 'settings-table' });
+  addAsChildren(options, [
+    makeOneSettingsRow('app', 'unlinkComponentInstances', undefined, true),
+    makeOneSettingsRow('app', 'removeExisting', undefined, true)
+  ]);
+  options.style.marginTop = '10px';
+  card.appendChild(options);
+
+	let rangeSettings = makeElement({
 		className: 'settings-table',
-		innerHTML: `
+    innerHTML: `
+      <h3>Ranges</h3>
 			<input type="checkbox" id="allCapsBasic" checked="true"/>
 			<label for="allCapsBasic">Basic Latin</label>
 			<span></span>
@@ -120,8 +131,8 @@ export function makeCard_AllCaps() {
 			<label for="allCapsLatinB">Latin Extended B</label>
 			<span></span>
 		`,
-	});
-	card.appendChild(table);
+  });
+	card.appendChild(rangeSettings);
 
 	let button = makeElement({ tag: 'fancy-button', attributes: {'secondary': ''}, content: 'Convert project to All Caps' });
 	button.addEventListener('click', async () => {
@@ -136,7 +147,7 @@ export function makeCard_AllCaps() {
 				if (!item) {
 					project.addItemByType(new Glyph(), 'Glyph', itemID);
 				}
-			}
+      }
 
 			glyphIterator({
 				title: 'Converting ' + range.name + ' to All Caps',
@@ -151,8 +162,17 @@ export function makeCard_AllCaps() {
 						// log(`destinationItemHex: ${destinationItemHex}`);
 						destinationItemHex = decToHex(parseInt(destinationItemHex));
 						// log(`destinationItemHex: ${destinationItemHex}`);
-						if (destinationItemHex) {
-							insertComponentInstance(item.id, `glyph-${destinationItemHex}`, true);
+            let destinationItem = project.getItem(`glyph-${destinationItemHex}`);
+
+            if (destinationItemHex) {
+              // Cleanup smallcaps glyphs
+              const unlinkComponentInstances = project.settings.app.unlinkComponentInstances;
+              resolveItemLinks(destinationItem, unlinkComponentInstances);
+              if (document.querySelector('removeExisting')) {
+                delete project.glyphs[destinationItem.id];
+              }
+
+							insertComponentInstance(item.id, destinationItem.id, true);
 						}
 						// log(`glyphIterator>ConvertToAllCaps>Action`, 'end');
 					}
