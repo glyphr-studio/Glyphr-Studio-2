@@ -18,7 +18,7 @@ export async function importLigatures(importedFont, fontLigatures) {
 		await updateFontImportProgressIndicator('ligature');
 		let thisLigature = false;
 		try {
-			thisLigature = importedFont.glyphs.get(liga.by);
+			thisLigature = findFontGlyph(importedFont, liga.by);
 		} catch {
 			console.warn(`Ligature import error: could not get ${liga.by} (${liga.sub})`);
 		}
@@ -56,9 +56,10 @@ function importOneLigature(otfLigature, importedFont, finalLigatures) {
 
 		// Convert font glyph index to decimal for gsub
 		let newGsub = [];
-		otfLigature.gsub.forEach((glyphID) => {
-			if (importedFont.glyphs.get(glyphID)?.unicode) {
-				newGsub.push(importedFont.glyphs.get(glyphID).unicode);
+		otfLigature.gsub.forEach((glyphReference) => {
+			const glyph = findFontGlyph(importedFont, glyphReference);
+			if (glyph?.unicode !== undefined) {
+				newGsub.push(glyph.unicode);
 			}
 		});
 
@@ -86,4 +87,30 @@ function importOneLigature(otfLigature, importedFont, finalLigatures) {
 		decrementItemTotal();
 	}
 	// log(`importOneLigature`, 'end');
+}
+
+/**
+ * Resolves a FontFlux glyph reference from either the array used by current
+ * releases or the Map-like collection used by older releases.
+ * @param {Object} importedFont - FontFlux font object
+ * @param {String|Number} reference - glyph name, unicode, or glyph index
+ * @returns {Object|undefined} matching glyph
+ */
+function findFontGlyph(importedFont, reference) {
+	const glyphs = importedFont?.glyphs;
+	if (!glyphs) return undefined;
+
+	if (typeof glyphs.get === 'function') {
+		return glyphs.get(reference) ?? glyphs.get(Number(reference));
+	}
+
+	if (!Array.isArray(glyphs)) return undefined;
+	if (typeof reference === 'number') {
+		return glyphs[reference] ?? glyphs.find((glyph) => glyph.unicode === reference);
+	}
+
+	return glyphs.find(
+		(glyph) =>
+			glyph.name === reference || glyph.name === String(reference) || glyph.unicode === Number(reference)
+	);
 }
