@@ -63,6 +63,7 @@ describe('Inter composite glyph import (correctness)', () => {
 			if ((result.ligatures[key].shapes?.length ?? 0) === 0) emptyLig++;
 		}
 		console.log(`Ligatures: ${totalLig} total, ${emptyLig} empty`);
+		expect(totalLig).toBeGreaterThan(0);
 		expect(emptyLig).toBe(0);
 	}, 30000);
 

@@ -24,6 +24,15 @@ import { importTable_post } from './tables/post.js';
  * @returns {Array} - Array of ligature objects {by: glyphIndex, sub: [glyphIndex1, glyphIndex2, ...]}
  */
 function extractLigaturesFromGSUB(importedFont) {
+	if (typeof importedFont?.listSubstitutions === 'function') {
+		return importedFont
+			.listSubstitutions({ type: 'ligature' })
+			.map((substitution) => ({
+				by: substitution.ligature,
+				sub: substitution.components,
+			}));
+	}
+
 	const ligatures = [];
 
 	if (!importedFont.features?.GSUB?.lookupList?.lookups) {
