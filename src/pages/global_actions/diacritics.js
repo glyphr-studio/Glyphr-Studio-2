@@ -8,6 +8,7 @@ import {
 	unicodeDiacriticsMapAdvanced,
 	unicodeDiacriticsMapSimple,
 } from '../../lib/unicode/unicode_mappings.js';
+import { copyShapesFromTo } from '../../project_editor/actions.js';
 import {
 	insertComponentInstance,
 	resolveItemLinks,
@@ -63,23 +64,29 @@ export function makeCard_Diacritics() {
 		function processOneDiacriticItem() {
 			// log(`processOneDiacriticItem - currentItemHex = ${currentItemHex}`);
 			sourceArray = findMappedValue(unicodeDiacriticsMapSimple, '' + currentItemHex);
-			let glyph = project.getItem(`glyph-${currentItemHex}`, true);
+			let destinationItem = project.getItem(`glyph-${currentItemHex}`, true);
+			const sourceOneItem = project.getItem(`glyph-${validateAsHex(sourceArray[0])}`);
+			const sourceTwoItem = project.getItem(`glyph-${validateAsHex(sourceArray[1])}`);
 
 			if (sourceArray) {
-				// Cleanup target glyph
-				/** @type {HTMLInputElement} */
-				const unlinkInstances = document.querySelector('#basic_unlinkComponentInstances');
-				resolveItemLinks(glyph, unlinkInstances.checked);
-
 				/** @type {HTMLInputElement} */
 				const removeExisting = document.querySelector('#basic_removeExisting');
 				if (removeExisting.checked) {
-					project.glyphs[glyph.id].shapes = [];
+					resolveItemLinks(destinationItem);
+					project.glyphs[destinationItem.id].shapes = [];
 				}
 
 				showToast(`Adding diacritical ${currentItemHex}`, 10000);
-				insertComponentInstance(`glyph-${validateAsHex(sourceArray[0])}`, glyph.id, true);
-				insertComponentInstance(`glyph-${validateAsHex(sourceArray[1])}`, glyph.id, false);
+
+				/** @type {HTMLInputElement} */
+				const unlinkInstances = document.querySelector('#basic_unlinkComponentInstances');
+				if (unlinkInstances.checked) {
+					copyShapesFromTo(sourceOneItem, destinationItem, true);
+					copyShapesFromTo(sourceTwoItem, destinationItem, false);
+				} else {
+					insertComponentInstance(sourceOneItem.id, destinationItem.id, true);
+					insertComponentInstance(sourceTwoItem.id, destinationItem.id, false);
+				}
 			}
 
 			currentItemDec++;
@@ -153,27 +160,35 @@ export function makeCard_DiacriticsAdvanced() {
 		function processOneItem() {
 			// log(`processOneItem - currentItemHex = ${currentItemHex}`);
 			sourceArray = findMappedValue(unicodeDiacriticsMapAdvanced, currentItemHex);
-			let glyph = project.getItem(`glyph-${currentItemHex}`, true);
-			let sourceID1 = `glyph-${validateAsHex(sourceArray[0])}`;
-			let sourceID2 = `glyph-${validateAsHex(sourceArray[1])}`;
+			let destinationItem = project.getItem(`glyph-${currentItemHex}`, true);
+			let sourceOneItem = project.getItem(`glyph-${validateAsHex(sourceArray[0])}`);
+			let sourceTwoItem = project.getItem(`glyph-${validateAsHex(sourceArray[1])}`);
 
 			if (sourceArray) {
-				showToast(`Adding diacritical ${glyph.id}`, 10000);
-				/** @type {HTMLInputElement} */
-				const unlinkInstances = document.querySelector('#advanced_unlinkComponentInstances');
-				resolveItemLinks(glyph, unlinkInstances.checked);
+				showToast(`Adding diacritical ${destinationItem.id}`, 10000);
 
 				/** @type {HTMLInputElement} */
-				const removeExisting = document.querySelector('#basic_removeExisting');
+				const removeExisting = document.querySelector('#advanced_removeExisting');
 				if (removeExisting.checked) {
-					project.glyphs[glyph.id].shapes = [];
+					resolveItemLinks(destinationItem);
+					destinationItem.shapes = [];
 				}
-				
-				insertComponentInstance(sourceID1, glyph.id, true);
-				insertComponentInstance(sourceID2, glyph.id, false);
-				targetCenter = project.getItem(sourceID1).maxes.centerX;
-				currCenter = project.getItem(sourceID2).maxes.centerX;
-				project.getItem(glyph.id).shapes[1].updateShapePosition(targetCenter - currCenter, 0);
+
+				/** @type {HTMLInputElement} */
+				const unlinkInstances = document.querySelector('#advanced_unlinkComponentInstances');
+				if (unlinkInstances.checked) {
+					copyShapesFromTo(sourceOneItem, destinationItem, true);
+					copyShapesFromTo(sourceTwoItem, destinationItem, false);
+				} else {
+					insertComponentInstance(sourceOneItem.id, destinationItem.id, true);
+					insertComponentInstance(sourceTwoItem.id, destinationItem.id, false);
+				}
+
+				targetCenter = project.getItem(sourceOneItem.id).maxes.centerX;
+				currCenter = project.getItem(sourceTwoItem.id).maxes.centerX;
+				project
+					.getItem(destinationItem.id)
+					.shapes[1].updateShapePosition(targetCenter - currCenter, 0);
 			}
 
 			currentItemDec++;

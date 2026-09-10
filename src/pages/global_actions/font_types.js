@@ -1,5 +1,5 @@
 import { getCurrentProject } from '../../app/main.js';
-import { decToHex } from '../../common/character_ids.js';
+import { decToHex, validateAsHex } from '../../common/character_ids.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { remove } from '../../common/functions.js';
 import { showToast } from '../../controls/dialogs/dialogs.js';
@@ -15,6 +15,7 @@ import { addRangeToSelectedFilterInputs, glyphIterator } from './page.js';
 import { addCharacterRangeToCurrentProject } from '../settings_project.js';
 import { makeOneSettingsRow } from '../settings.js';
 import { make_globalActionFontTypeSettingsTable } from './diacritics.js';
+import { copyShapesFromTo } from '../../project_editor/actions.js';
 
 // --------------------------------------------------------------
 // Monospace
@@ -155,11 +156,11 @@ export function makeCard_AllCaps() {
 				includeComponents: false,
 				includeLigatures: false,
 				// filter: { begin: range.begin, end: range.end }, // TODO fix filtering
-				action: (/** @type {Glyph} */ glyph) => {
-					const hexID = Number(remove(glyph.id, 'glyph-'));
+				action: (/** @type {Glyph} */ sourceItem) => {
+					const hexID = Number(remove(sourceItem.id, 'glyph-'));
 					if (range.isWithinRange(hexID)) {
 						// log(`glyphIterator>ConvertToAllCaps>Action`, 'start');
-						let destinationItemHex = findMappedValue(unicodeLowercaseMap, glyph.id.substring(6));
+						let destinationItemHex = findMappedValue(unicodeLowercaseMap, sourceItem.id.substring(6));
 						// log(`destinationItemHex: ${destinationItemHex}`);
 						destinationItemHex = decToHex(parseInt(destinationItemHex));
 						// log(`destinationItemHex: ${destinationItemHex}`);
@@ -168,16 +169,19 @@ export function makeCard_AllCaps() {
 						if (destinationItemHex) {
 							// Cleanup smallcaps glyphs
 							/** @type {HTMLInputElement} */
-							const allCapsUnlink = document.querySelector('#allCaps_unlinkComponentInstances');
-							resolveItemLinks(destinationItem, allCapsUnlink.checked);
-
-							/** @type {HTMLInputElement} */
 							const removeExisting = document.querySelector('#allCaps_removeExisting');
 							if (removeExisting.checked) {
-								delete project.glyphs[destinationItem.id];
+								resolveItemLinks(destinationItem);
+								destinationItem.shapes = [];
 							}
 
-							insertComponentInstance(glyph.id, destinationItem.id, true);
+							/** @type {HTMLInputElement} */
+							const unlinkInstances = document.querySelector('#allCaps_unlinkComponentInstances');
+							if (unlinkInstances.checked) {
+								copyShapesFromTo(sourceItem, destinationItem, true);
+							} else {
+								insertComponentInstance(sourceItem.id, destinationItem.id, true);
+							}
 						}
 						// log(`glyphIterator>ConvertToAllCaps>Action`, 'end');
 					}
