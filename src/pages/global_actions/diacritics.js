@@ -1,6 +1,6 @@
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex, validateAsHex } from '../../common/character_ids.js';
-import { addAsChildren, makeElement } from '../../common/dom.js';
+import { makeElement } from '../../common/dom.js';
 import { showToast } from '../../controls/dialogs/dialogs.js';
 import { getUnicodeBlockByName } from '../../lib/unicode/unicode_blocks.js';
 import {
@@ -12,7 +12,6 @@ import {
 	insertComponentInstance,
 	resolveItemLinks,
 } from '../../project_editor/cross_item_actions.js';
-import { makeOneSettingsRow } from '../settings.js';
 import { addCharacterRangeToCurrentProject } from '../settings_project.js';
 
 // --------------------------------------------------------------
@@ -39,12 +38,7 @@ export function makeCard_Diacritics() {
 	});
 	card.appendChild(effect);
 
-	const options = makeElement({ className: 'settings-table' });
-	addAsChildren(options, [
-		makeOneSettingsRow('app', 'unlinkComponentInstances', undefined, true),
-		makeOneSettingsRow('app', 'removeExisting', undefined, true),
-	]);
-	options.style.marginTop = '10px';
+	const options = make_globalActionFontTypeSettingsTable('basic');
 	card.appendChild(options);
 
 	let button = makeElement({
@@ -73,8 +67,13 @@ export function makeCard_Diacritics() {
 
 			if (sourceArray) {
 				// Cleanup target glyph
-				resolveItemLinks(glyph, project.settings.app.unlinkComponentInstances);
-				if (project.settings.app.removeExisting) {
+				/** @type {HTMLInputElement} */
+				const unlinkInstances = document.querySelector('#basic_unlinkComponentInstances');
+				resolveItemLinks(glyph, unlinkInstances.checked);
+
+				/** @type {HTMLInputElement} */
+				const removeExisting = document.querySelector('#basic_removeExisting');
+				if (removeExisting.checked) {
 					project.glyphs[glyph.id].shapes = [];
 				}
 
@@ -128,12 +127,7 @@ export function makeCard_DiacriticsAdvanced() {
 	});
 	card.appendChild(effect);
 
-	const options = makeElement({ className: 'settings-table' });
-	addAsChildren(options, [
-		makeOneSettingsRow('app', 'unlinkComponentInstances', undefined, true),
-		makeOneSettingsRow('app', 'removeExisting', undefined, true),
-	]);
-	options.style.marginTop = '10px';
+	const options = make_globalActionFontTypeSettingsTable('advanced');
 	card.appendChild(options);
 
 	let button = makeElement({
@@ -165,10 +159,16 @@ export function makeCard_DiacriticsAdvanced() {
 
 			if (sourceArray) {
 				showToast(`Adding diacritical ${glyph.id}`, 10000);
-				resolveItemLinks(glyph, project.settings.app.unlinkComponentInstances);
-				if (project.settings.app.removeExisting) {
+				/** @type {HTMLInputElement} */
+				const unlinkInstances = document.querySelector('#advanced_unlinkComponentInstances');
+				resolveItemLinks(glyph, unlinkInstances.checked);
+
+				/** @type {HTMLInputElement} */
+				const removeExisting = document.querySelector('#basic_removeExisting');
+				if (removeExisting.checked) {
 					project.glyphs[glyph.id].shapes = [];
 				}
+				
 				insertComponentInstance(sourceID1, glyph.id, true);
 				insertComponentInstance(sourceID2, glyph.id, false);
 				targetCenter = project.getItem(sourceID1).maxes.centerX;
@@ -192,4 +192,35 @@ export function makeCard_DiacriticsAdvanced() {
 	card.appendChild(button);
 
 	return card;
+}
+
+export function make_globalActionFontTypeSettingsTable(actionID = '') {
+	let table = makeElement({
+		innerHTML: `
+			<span style="margin-bottom: 5px; display: inline-block;">
+				<input type="checkbox" style="margin-right: 10px; position: relative; top: 5px;" id="${actionID}_unlinkComponentInstances">
+
+				<label style="display: inline-block;" for="${actionID}_unlinkComponentInstances">
+					Copy&nbsp;shapes&nbsp;instead&nbsp;of&nbsp;linking&nbsp;components&nbsp;
+				</label>
+
+				<info-bubble style="display: inline-block;">
+					When selected, this option will copy shapes from the source, instead of creating a Component Instance link. Any future changes to the root item will not carry over to the destination. If left unselected, Components will be used that will maintain a link from the root item to the destination.
+				</info-bubble>
+			</span>
+			<br>
+			<span style="margin-bottom: 5px; display: inline-block;">
+				<input type="checkbox" style="margin-right: 10px; position: relative; top: 5px;" id="${actionID}_removeExisting">
+
+				<label style="display: inline-block;" for="${actionID}_removeExisting">
+					Remove&nbsp;existing&nbsp;items&nbsp;
+				</label>
+
+				<info-bubble style="display: inline-block;">
+					When selected, this option will clear any existing data on the target items, preventing layering on top of existing paths/components.
+				</info-bubble>
+			</span>
+		`,
+	});
+	return table;
 }

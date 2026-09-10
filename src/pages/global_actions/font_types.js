@@ -14,6 +14,7 @@ import {
 import { addRangeToSelectedFilterInputs, glyphIterator } from './page.js';
 import { addCharacterRangeToCurrentProject } from '../settings_project.js';
 import { makeOneSettingsRow } from '../settings.js';
+import { make_globalActionFontTypeSettingsTable } from './diacritics.js';
 
 // --------------------------------------------------------------
 // Monospace
@@ -107,12 +108,7 @@ export function makeCard_AllCaps() {
 	});
 	card.appendChild(effect);
 
-	const options = makeElement({ className: 'settings-table' });
-	addAsChildren(options, [
-		makeOneSettingsRow('app', 'unlinkComponentInstances', undefined, true),
-		makeOneSettingsRow('app', 'removeExisting', undefined, true),
-	]);
-	options.style.marginTop = '10px';
+	const options = make_globalActionFontTypeSettingsTable('allCaps');
 	card.appendChild(options);
 
 	let rangeSettings = makeElement({
@@ -171,9 +167,13 @@ export function makeCard_AllCaps() {
 
 						if (destinationItemHex) {
 							// Cleanup smallcaps glyphs
-							const unlinkComponentInstances = project.settings.app.unlinkComponentInstances;
-							resolveItemLinks(destinationItem, unlinkComponentInstances);
-							if (document.querySelector('removeExisting')) {
+							/** @type {HTMLInputElement} */
+							const allCapsUnlink = document.querySelector('#allCaps_unlinkComponentInstances');
+							resolveItemLinks(destinationItem, allCapsUnlink.checked);
+
+							/** @type {HTMLInputElement} */
+							const removeExisting = document.querySelector('#allCaps_removeExisting');
+							if (removeExisting.checked) {
 								delete project.glyphs[destinationItem.id];
 							}
 
