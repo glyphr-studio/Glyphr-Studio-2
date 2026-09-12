@@ -165,6 +165,23 @@ export function getCurrentProjectEditor() {
 }
 
 /**
+ * Retrieve a configuration group.
+ *
+ * Groups:
+ * - `app`: User configs defining app/editor behavior.
+ * - `project`: Defines general project settings like name and enabled ranges. Uses active project.
+ * - `font`: Font-specific stuff like em and metadata. Uses active project.
+ * @param {string} groupName - Configuration group to target
+ */
+export function getConfigGroup(groupName) {
+	if (groupName == 'app') {
+		return GSApp.settings[groupName];
+	} else {
+		return getCurrentProject().settings[groupName];
+	}
+}
+
+/**
  * Sets the current Project Editor
  * @param {ProjectEditor} newEditor - one to set
  */
