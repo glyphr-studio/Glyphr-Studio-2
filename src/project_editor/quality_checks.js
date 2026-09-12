@@ -1,4 +1,4 @@
-import { getCurrentProject } from '../app/main';
+import { getConfigGroup, getCurrentProject } from '../app/main';
 import { calculateLength, clone, valuesAreClose } from '../common/functions';
 
 export const enabledQualityChecks = {
@@ -24,7 +24,7 @@ export function runQualityChecksForItem(item) {
 	}
 
 	const project = getCurrentProject();
-	const psa = project.settings.app;
+	const psa = getConfigGroup('app');
 
 	let pointsNearPoints = [];
 	let pointsNearHandles = [];

@@ -1,4 +1,8 @@
-import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../../app/main.js';
+import {
+	getConfigGroup,
+	getProjectEditorImportTarget,
+	setCurrentProjectEditor,
+} from '../../app/main.js';
 import {
 	charToHex,
 	hexesToChars,
@@ -77,7 +81,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 				// log(`UNI detected ${glyphName} hex is ${hex}`);
 				if (hex) {
 					uni = [hex];
-					project.settings.app.showNonCharPoints = true;
+					getConfigGroup('app').showNonCharPoints = true;
 				}
 			}
 			// log(`attributes.unicode: |${attributes.unicode}| parsed as ${uni}`);
@@ -108,7 +112,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 					// log(newGlyph);
 					finalGlyphs[`glyph-${single}`] = newGlyph;
 					if (getUnicodeName(single).startsWith('U+')) {
-						project.settings.app.showNonCharPoints = true;
+						getConfigGroup('app').showNonCharPoints = true;
 					}
 				} else {
 					// It's a LIGATURE
@@ -415,10 +419,10 @@ function getKernMembersByUnicodeID(ids, chars, arr, limit) {
 						// log(`Comparing idHex: ${idHex} with charHex: ${charHex}`);
 						if (charHex !== false && idHex === charHex) {
 							if (Number(charHex) < limit) arr = arr.concat(charHex);
+						}
 					}
 				}
 			}
-		}
 		}
 	}
 

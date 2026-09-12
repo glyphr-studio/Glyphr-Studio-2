@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CharacterRange, basicLatinOrder } from '../character_range.js';
+import { getGlyphrStudioApp } from '../../app/main.js';
 
 // --------------------------------------------------------------
 // CHECKLIST
@@ -17,6 +18,8 @@ import { CharacterRange, basicLatinOrder } from '../character_range.js';
 */
 
 describe('CharacterRange', () => {
+	// Needs to be initialized
+	let _app = getGlyphrStudioApp();
 	// Test the constructor
 	it('constructor', () => {
 		const range = new CharacterRange({ begin: 65, end: 90, name: 'Basic Latin' });

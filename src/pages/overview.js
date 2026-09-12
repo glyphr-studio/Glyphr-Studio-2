@@ -1,5 +1,5 @@
 import { emailLink } from '../app/app.js';
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getConfigGroup, getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { showModalDialog } from '../controls/dialogs/dialogs.js';
@@ -52,7 +52,7 @@ export function makePage_Overview() {
 
 	const project = getCurrentProject();
 	const rightArea = content.querySelector('.content-page__right-area');
-	let previewText = project.settings.app.previewText || 'Aa Bb Cc Xx Yy Zz';
+	let previewText = getConfigGroup('app').previewText || 'Aa Bb Cc Xx Yy Zz';
 
 	rightArea.appendChild(
 		makeElement({

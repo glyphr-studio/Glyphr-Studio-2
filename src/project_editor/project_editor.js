@@ -1,3 +1,4 @@
+import { getConfigGroup } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { clone, getFirstID, json, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
@@ -602,7 +603,7 @@ export class ProjectEditor {
 		// log(`itemPageName: ${itemPageName}`);
 
 		let id;
-		const unlinkComponentInstances = this.project.settings.app.unlinkComponentInstances;
+		const unlinkComponentInstances = getConfigGroup('app').unlinkComponentInstances;
 
 		if (itemPageName === 'Characters') {
 			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
@@ -886,7 +887,7 @@ export class ProjectEditor {
 			emWidth += kernGroupDisplayWidth(this.selectedItem);
 			emLeftOffset = kernGroupSideMaxWidth(this.selectedItem.leftGroup);
 			emLeftOffset -= this.selectedItem.value;
-		} else if (this.project.settings.app.contextCharacters.showCharacters) {
+		} else if (getConfigGroup('app').contextCharacters.showCharacters) {
 			// Context Characters
 			let ctxChars = this.selectedItem.contextCharacters;
 			// log(`ctxChars: ${ctxChars}`);
@@ -1025,7 +1026,7 @@ export class ProjectEditor {
 		) {
 			this._livePreviews = [];
 			if (this.project?.settings?.app?.livePreviews.length) {
-				this._livePreviews = this.project.settings.app.livePreviews.map(
+				this._livePreviews = getConfigGroup('app').livePreviews.map(
 					(preview) => new TextBlockOptions(preview)
 				);
 			}
@@ -1075,23 +1076,23 @@ export class ProjectEditor {
 	async saveProjectFile(saveAsCopy = false) {
 		// log(`ProjectEditor.saveProjectFile`, 'start');
 
-		// log('' + this.project.settings.app.formatSaveFile);
+		// log('' + getConfigGroup('app').formatSaveFile);
 
 		let saveData = this.project.save();
 
 		const defaultValues = new GlyphrStudioProject({});
 		saveData = removeDefaultValues(saveData, defaultValues, 'settings');
 
-		if (this.project.settings.app.saveLivePreviews) {
-			saveData.settings.app.livePreviews = [];
-			this.livePreviews.forEach((preview) => {
-				saveData.settings.app.livePreviews.push(preview.save());
-			});
-		} else {
-			delete saveData.settings.app.livePreviews;
-		}
+		// if (this.project.settings.app.saveLivePreviews) {
+		// 	saveData.settings.app.livePreviews = [];
+		// 	this.livePreviews.forEach((preview) => {
+		// 		saveData.settings.app.livePreviews.push(preview.save());
+		// 	});
+		// } else {
+		// 	delete saveData.settings.app.livePreviews;
+		// }
 
-		if (this.project.settings.app.formatSaveFile) saveData = json(saveData);
+		if (getConfigGroup('app').formatSaveFile) saveData = json(saveData);
 		else saveData = JSON.stringify(saveData);
 
 		// log('saveProjectFile - \n'+saveData);

@@ -1,5 +1,5 @@
 import { emailLink } from '../app/app.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getConfigGroup, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import donateKofiSrc from '../common/graphics/donate-kofi.png';
 import donatePaypalSrc from '../common/graphics/donate-paypal.png';
@@ -169,11 +169,9 @@ function makeVersionInfo() {
 
 			<div class="page__card">
 				<h3>This Glyphr Studio Project</h3>
-				<label>Project name:</label> ${editor.project.settings.project.name}<br>
-				<label>Unique project ID:</label> ${editor.project.settings.project.id}<br>
-				<label>Initially created with:</label> Version ${
-					editor.project.settings.project.initialVersion
-				}</span>
+				<label>Project name:</label> ${getConfigGroup('project').name}<br>
+				<label>Unique project ID:</label> ${getConfigGroup('project').id}<br>
+				<label>Initially created with:</label> Version ${getConfigGroup('project').initialVersion}</span>
 			</div>
 
 			<br><br>

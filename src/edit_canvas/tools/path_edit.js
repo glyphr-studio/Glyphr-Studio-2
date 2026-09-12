@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../../app/main.js';
+import { getConfigGroup, getCurrentProjectEditor } from '../../app/main.js';
 import { calculateAngle, radiansToNiceAngle } from '../../common/functions.js';
 import { refreshPanel } from '../../panels/panels.js';
 import { findAndCallHotspot } from '../context_characters.js';
@@ -208,9 +208,9 @@ export class Tool_PathEdit {
 						}
 					}
 				}
-				let guides = editor.project.settings.app.guides;
+				let guides = getConfigGroup('project').guides;
 				if (guides.gridShow && guides.gridSnap) {
-					let gridSquareSize = editor.project.settings.font.upm / guides.gridDivisions;
+					let gridSquareSize = getConfigGroup('font').upm / guides.gridDivisions;
 					const mouse = { x: cXsX(ehd.mousePosition.x), y: cYsY(ehd.mousePosition.y) };
 					const mouseSnapped = {
 						x: Math.round(mouse.x / gridSquareSize) * gridSquareSize,
@@ -297,7 +297,7 @@ export class Tool_PathEdit {
 			editor.publish('currentItem', editor.selectedItem);
 		} else {
 			const editor = getCurrentProjectEditor();
-			if (editor.project.settings.app.directlyDragCurves) {
+			if (getConfigGroup('app').directlyDragCurves) {
 				this.overCurve = false;
 				let singleShape = editor.multiSelect.shapes.singleton;
 				if (singleShape && singleShape.objType !== 'ComponentInstance') {

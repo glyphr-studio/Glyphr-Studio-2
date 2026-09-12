@@ -48,7 +48,7 @@ export function importGlyphrProjectFromText(importedProject) {
 	const newProject = new GlyphrStudioProject(importedProject);
 
 	// Pull system guide visibility from project
-	const projectSystemGuides = newProject?.settings?.app?.guides?.systemGuides;
+	const projectSystemGuides = newProject?.settings?.project?.guides?.systemGuides;
 	if (projectSystemGuides) {
 		// log(`\n⮟projectSystemGuides⮟`);
 		// log(projectSystemGuides);
@@ -173,9 +173,8 @@ function migrate__v1_13_2_to_v2_0_0(oldProject) {
 	});
 
 	// Metadata
-	const newPreferences = newProject.settings.app;
 	const newRanges = newProject.settings.project.characterRanges;
-	const newGuides = newProject.settings.app.guides;
+	const newGuides = newProject.settings.project.guides;
 	const newFont = newProject.settings.font;
 	const oldSettings = oldProject.projectsettings;
 	const oldRanges = oldProject.projectsettings.glyphrange;
@@ -199,12 +198,12 @@ function migrate__v1_13_2_to_v2_0_0(oldProject) {
 	if (oldRanges.latinextendedb) newRanges.push(unicodeRanges.latinExtendedB);
 	if (oldRanges.custom.length) oldRanges.custom.forEach((range) => newRanges.push(range));
 
-	// Preferences
+	// Preferences (No longer project-defined)
 	// newPreferences.showNonCharPoints = oldSettings.glyphrange.filternoncharpoints || true;
-	newPreferences.stopPageNavigation = oldSettings.stoppagenavigation || true;
-	newPreferences.formatSaveFile = oldSettings.formatsavefile || true;
-	newPreferences.contextCharacters.showGuides = oldSettings.showcontextglyphguides || true;
-	newPreferences.contextCharacters.transparency = oldColors.contextglyphtransparency || 90;
+	// newPreferences.stopPageNavigation = oldSettings.stoppagenavigation || true;
+	// newPreferences.formatSaveFile = oldSettings.formatsavefile || true;
+	// newPreferences.contextCharacters.showGuides = oldSettings.showcontextglyphguides || true;
+	// newPreferences.contextCharacters.transparency = oldColors.contextglyphtransparency || 90;
 
 	// Guides
 	newGuides.systemTransparency = oldColors.systemguidetransparency || 70;

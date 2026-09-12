@@ -37,8 +37,7 @@ describe('GlyphrStudioProject Tests', () => {
 		const project = new GlyphrStudioProject();
 		expect(project.settings.project.name).toBe('My Font');
 		expect(project.settings.project.characterRanges[0].name).toEqual('Basic Latin');
-		expect(project.settings.app.guides.custom).toEqual([]);
-		expect(project.settings.app.livePreviews).toEqual([]);
+		expect(project.settings.project.guides.custom).toEqual([]);
 		expect(project.settings.font.family).toBe('My Font');
 	});
 
@@ -56,8 +55,7 @@ describe('GlyphrStudioProject Tests', () => {
 				name: 'Basic Latin',
 			},
 		]);
-		expect(savedProject.settings.app.guides.custom).toEqual([]);
-		expect(savedProject.settings.app.livePreviews).toEqual([]);
+		expect(savedProject.settings.project.guides.custom).toEqual([]);
 		expect(savedProject.settings.font.family).toBe('My Font');
 	});
 

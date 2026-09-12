@@ -1,4 +1,9 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import {
+	getConfigGroup,
+	getCurrentProject,
+	getCurrentProjectEditor,
+	getGlyphrStudioApp,
+} from '../app/main.js';
 import { makeRandomSaturatedColor, parseColorString, rgbToHex } from '../common/colors.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { round } from '../common/functions.js';
@@ -23,7 +28,7 @@ export function makePanel_Guides() {
 		className: 'panel__card guides-card__view-options',
 		innerHTML: '<h3>View options</h3>',
 	});
-	const guides = getCurrentProject().settings.app.guides;
+	const guides = getConfigGroup('project').guides;
 	const showSystem = guides.systemShowGuides;
 	const showCustom = guides.customShowGuides;
 	const showGrid = guides.gridShow;
@@ -139,7 +144,7 @@ function makeSystemGuideRow(property, title, value = '0000', color) {
 	// Checkbox
 	const viewCheckbox = makeDirectCheckbox(systemGuides, property, (newValue) => {
 		const editor = getCurrentProjectEditor();
-		let shownGuides = editor.project.settings.app.guides.systemGuides;
+		let shownGuides = getConfigGroup('project').guides.systemGuides;
 		if (newValue) {
 			if (!shownGuides.includes(property)) {
 				shownGuides.push(property);
@@ -187,7 +192,7 @@ function makeCustomGuidesCard() {
 		innerHTML: '<h3>Custom guides</h3>',
 	});
 
-	const guides = getCurrentProject().settings.app.guides.custom;
+	const guides = getConfigGroup('project').guides.custom;
 
 	if (guides.length) {
 		guides.forEach((guide, number) => {
@@ -203,9 +208,9 @@ function makeCustomGuidesCard() {
 		innerHTML: 'Add a custom guide',
 	});
 	addGuideButton.addEventListener('click', () => {
-		getCurrentProject().settings.app.guides.custom.push(
-			new Guide({ visible: true, color: makeRandomSaturatedColor() })
-		);
+		getGlyphrStudioApp()
+			.getGroup('project')
+			.guides.custom.push(new Guide({ visible: true, color: makeRandomSaturatedColor() }));
 		refreshGuideChange();
 	});
 
@@ -229,7 +234,7 @@ function makeCustomGuideRow(guide, number) {
 	const deleteButton = makeActionButton({ iconName: 'delete', title: 'Delete guide' });
 	deleteButton.setAttribute('class', 'guide-delete-button');
 	deleteButton.addEventListener('click', () => {
-		const guides = getCurrentProject().settings.app.guides.custom;
+		const guides = getConfigGroup('project').guides.custom;
 		guides.splice(number, 1);
 		refreshGuideChange();
 	});
@@ -257,7 +262,7 @@ function makeCustomGuideRow(guide, number) {
 		angleButton.querySelector('g').setAttribute('fill', rgbString);
 
 		// Update guide
-		const guide = getCurrentProject().settings.app.guides.custom[number];
+		const guide = getConfigGroup('project').guides.custom[number];
 		guide.color = rgbString;
 		getCurrentProjectEditor().editCanvas.redraw('guides custom color change');
 	});
@@ -279,7 +284,7 @@ function makeCustomGuideRow(guide, number) {
 		});
 	}
 	angleButton.addEventListener('click', () => {
-		const guide = getCurrentProject().settings.app.guides.custom[number];
+		const guide = getConfigGroup('project').guides.custom[number];
 		if (guide.angle === 90) {
 			guide.angle = 0;
 			guide.name = guide.name.replace('Horizontal', 'Vertical');
@@ -298,7 +303,7 @@ function makeCustomGuideRow(guide, number) {
 }
 
 function makeGridCard() {
-	const guides = getCurrentProject().settings.app.guides;
+	const guides = getConfigGroup('project').guides;
 	const gridCard = makeElement({
 		className: 'panel__card guides-card__grid',
 		innerHTML: '<h3>Grid</h3>',

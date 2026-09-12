@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
+import { getConfigGroup, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round, valuesAreClose } from '../../common/functions.js';
@@ -148,7 +148,7 @@ export function makeViewToolsButtons() {
 
 	let viewButtonElements = {};
 	const editor = getCurrentProjectEditor();
-	const displayMode = getCurrentProject().settings.app.canvasDisplayModeFilled;
+	const displayMode = getConfigGroup('app').canvasDisplayModeFilled;
 
 	Object.keys(viewButtonTitles).forEach((buttonName) => {
 		// log(`buttonName: ${buttonName}`);
@@ -190,7 +190,7 @@ export function makeViewToolsButtons() {
 				subscriberID: `tools.displayMode`,
 				callback: () => {
 					let buttonSVG = 'displayModeOutlined';
-					const displayMode = getCurrentProject().settings.app.canvasDisplayModeFilled;
+					const displayMode = getConfigGroup('app').canvasDisplayModeFilled;
 					if (displayMode) buttonSVG = 'displayModeFilled';
 					newToolButton.innerHTML = makeToolButtonSVG({ name: buttonSVG, selected: false });
 				},
@@ -283,7 +283,7 @@ export function selectTool(tool) {
 		if (tool === 'zoomIn') editor.view = { dz: (editor.view.dz *= 1.1) };
 		if (tool === 'zoomOut') editor.view = { dz: (editor.view.dz *= 0.9) };
 		if (tool === 'displayMode') {
-			const appSettings = getCurrentProject().settings.app;
+			const appSettings = getConfigGroup('app');
 			appSettings.canvasDisplayModeFilled = !appSettings.canvasDisplayModeFilled;
 			// log(`canvasDisplayModeFilled: ${appSettings.canvasDisplayModeFilled}`);
 		}
@@ -396,7 +396,7 @@ export function checkForFirstShapeAutoRSB() {
 	const editor = getCurrentProjectEditor();
 	const selectedItem = editor.selectedItem;
 	if (selectedItem?.objType === 'Glyph' || selectedItem?.objType === 'Ligature') {
-		const autoRSB = editor.project.settings.app.autoRightBearingOnFirstShape;
+		const autoRSB = getConfigGroup('app').autoRightBearingOnFirstShape;
 		if (selectedItem.shapes.length === 1 && selectedItem.advanceWidth === 0 && autoRSB > -1) {
 			selectedItem.rightSideBearing = autoRSB;
 		}

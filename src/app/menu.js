@@ -17,7 +17,7 @@ import { ioSVG_exportSVGfont } from '../formats_io/svg_font/svg_font_export.js';
 import { makeFileName } from '../project_editor/file_io.js';
 import { emailLink } from './app.js';
 import { makePage_CrossProjectActions } from './cross_project_actions/cross_project_actions.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
+import { getConfigGroup, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
 
 // --------------------------------------------------------------
@@ -93,7 +93,7 @@ function makeMenu(menuName) {
 		// for new projects) drives the file name preview and the Ctrl+E note.
 		const preferredExportFormat = getPreferredExportFormat();
 		if (typeof editor.loadedFileHandle === 'object') {
-			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
+			let projectDisplayName = `${getConfigGroup('project').name} - Glyphr Studio Project.gs2`;
 
 			// @ts-expect-error 'property does exist'
 			if (typeof editor?.loadedFileHandle?.name === 'string') {
@@ -143,11 +143,9 @@ function makeMenu(menuName) {
 			{
 				child: makeElement({
 					tag: 'h2',
-					content:
-						`${editor.project.settings.font.family}-${editor.project.settings.font.style}.${preferredExportFormat}`.replaceAll(
-							' ',
-							''
-						),
+					content: `${getConfigGroup('font').family}-${
+						getConfigGroup('font').style
+					}.${preferredExportFormat}`.replaceAll(' ', ''),
 				}),
 				className: 'spanAll',
 			},
@@ -332,7 +330,7 @@ function makeProjectPreviewRow(projectID = 0) {
 			});
 		}
 		title.innerHTML = projectEditor.project.settings.project.name;
-		let previewText = projectEditor.project.settings.app.previewText || 'Aa Bb Cc Xx Yy Zz';
+		let previewText = getConfigGroup('app').previewText || 'Aa Bb Cc Xx Yy Zz';
 		thumbnail = makeElement({
 			tag: 'display-canvas',
 			attributes: {

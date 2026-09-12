@@ -1,10 +1,15 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getConfigGroup, getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, getColorFromRGBA, transparencyToAlpha } from '../common/colors.js';
 import { makeElement } from '../common/dom.js';
 import { clone } from '../common/functions.js';
 import { drawGlyph, drawGlyphOutlineMode } from '../display_canvas/draw_paths.js';
 import { kernGroupSideMaxWidth } from '../project_editor/cross_item_actions.js';
-import { gridColor, guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
+import {
+	gridColor,
+	guideColorDark,
+	guideColorLight,
+	guideColorMedium,
+} from '../project_editor/guide.js';
 import { runQualityChecksForItem } from '../project_editor/quality_checks.js';
 import { drawCharacterKernExtra, drawContextCharacters } from './context_characters.js';
 import {
@@ -194,7 +199,7 @@ export class EditCanvas extends HTMLElement {
 			const ehd = eventHandlerData;
 
 			// Guides
-			const guidesSettings = editor.project.settings.app.guides;
+			const guidesSettings = getConfigGroup('project').guides;
 			if (!guidesSettings.drawGuidesOnTop) {
 				// if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
 				if (guidesSettings.gridShow) drawGrid();
@@ -203,7 +208,7 @@ export class EditCanvas extends HTMLElement {
 			}
 
 			// Draw glyphs
-			if (project.settings.app.canvasDisplayModeFilled) {
+			if (getConfigGroup('app').canvasDisplayModeFilled) {
 				drawGlyph(currentItem, ctx, view);
 			} else {
 				drawGlyphOutlineMode(currentItem, ctx, view);
@@ -255,7 +260,7 @@ export class EditCanvas extends HTMLElement {
 				if (guidesSettings.customShowGuides) drawCustomGuidelines();
 			}
 
-			const contextCharacterSettings = editor.project.settings.app.contextCharacters;
+			const contextCharacterSettings = getConfigGroup('app').contextCharacters;
 			// Context characters
 			if (contextCharacterSettings.showCharacters) {
 				drawContextCharacters(ctx);
@@ -333,8 +338,8 @@ export class EditCanvas extends HTMLElement {
 
 		function drawSystemGuidelines(drawVerticals = true) {
 			// log(`drawSystemGuidelines`, 'start');
-			const alpha = transparencyToAlpha(project.settings.app.guides.systemTransparency);
-			const showLabels = project.settings.app.guides.systemShowLabels;
+			const alpha = transparencyToAlpha(getConfigGroup('project').guides.systemTransparency);
+			const showLabels = getConfigGroup('project').guides.systemShowLabels;
 			// Horizontals
 			let deltaY = 0;
 
@@ -433,7 +438,7 @@ export class EditCanvas extends HTMLElement {
 		}
 
 		function drawCustomGuidelines() {
-			const guides = getCurrentProject().settings.app.guides;
+			const guides = getConfigGroup('project').guides;
 
 			if (guides.custom) {
 				let alpha = transparencyToAlpha(guides.customTransparency);
@@ -455,14 +460,14 @@ export class EditCanvas extends HTMLElement {
 
 		function drawGrid() {
 			const gridSquareSize =
-				editor.project.settings.font.upm / editor.project.settings.app.guides.gridDivisions;
+				getConfigGroup('font').upm / getConfigGroup('project').guides.gridDivisions;
 			let x0 = Math.floor(cXsX(0) / gridSquareSize) * gridSquareSize;
 			let x1 = Math.ceil(cXsX(width) / gridSquareSize) * gridSquareSize;
 			let y0 = Math.floor(cYsY(height) / gridSquareSize) * gridSquareSize;
 			let y1 = Math.ceil(cYsY(0) / gridSquareSize) * gridSquareSize;
 
 			// log(`fill: ${fill}`);
-			let alpha = transparencyToAlpha(editor.project.settings.app.guides.gridTransparency);
+			let alpha = transparencyToAlpha(getConfigGroup('project').guides.gridTransparency);
 			const fill = getColorFromRGBA(gridColor, alpha);
 			ctx.fillStyle = fill;
 			for (let x = x0; x <= x1; x += gridSquareSize) {
