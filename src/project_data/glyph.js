@@ -9,6 +9,10 @@ import {
 	trim,
 } from '../common/functions.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
+import { combinePaths } from '../project_editor/boolean_combine.js';
+import {
+	makeGlyphWithResolvedLinks,
+} from '../project_editor/cross_item_actions.js';
 import { ComponentInstance } from './component_instance.js';
 import { GlyphElement } from './glyph_element.js';
 import { Maxes, getOverallMaxes, isAllZeros } from './maxes.js';
@@ -857,6 +861,28 @@ export class Glyph extends GlyphElement {
 				shape.roundAll(precision);
 			}
 		});
+		return this;
+	}
+
+	/**
+	 * Combine all glyph paths
+	 * @returns {Glyph} - reference to this glyph
+	 */
+	uniteAll() {
+		if (this.shapes) {
+			// Create a copy with resolved links and then combine its shapes
+			let resolved = makeGlyphWithResolvedLinks(this);
+			let combineResult = combinePaths(resolved.shapes, 'unite');
+
+			// If everything worked, delete original paths and add new ones
+			if (Array.isArray(combineResult)) {
+				this.shapes = [];
+				combineResult.forEach((shape) => this.shapes.push(shape));
+				// log(`Combine shapes for ${this.name}: unite complete!`, 2000);
+			} else {
+				// log(`Combine shapes error for ${this.name}:<br>${combineResult}`, 2000);
+			}
+		}
 		return this;
 	}
 
