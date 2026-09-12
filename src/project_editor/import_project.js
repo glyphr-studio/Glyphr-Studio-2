@@ -85,7 +85,7 @@ export function importGlyphrProjectFromText(importedProject) {
  */
 function migrate__v2_10_to_v2_11(project) {
 	project.settings.project.guides = project.settings.app.guides;
-	delete project.settings.app.guides;
+	delete project.settings.app;
 
 	return project;
 }
