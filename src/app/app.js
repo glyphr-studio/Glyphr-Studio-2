@@ -54,6 +54,7 @@ export class GlyphrStudioApp {
 				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
 				autoSave: false, // {bool} trigger auto saves
+				saveSettings: false, // {bool} enable settings persistent storage
 				selectFirstShape: false, // {bool} select the first shape
 				selectFirstPoint: false, // {bool} select the first path point
 				testActions: [], // {name: '', onClick: ()=>{}} adds test actions to the Glyph card
@@ -384,15 +385,17 @@ export class GlyphrStudioApp {
 	 * Updates the saved app settings.
 	 */
 	saveAppSettings() {
-		// log(`saveAppSettings`, 'start');
-		const settings = this.settings.app;
-		// log(`\n⮟oldSettings⮟`);
-		// log(settings);
-		let newSettings = this.getLocalStorage()?.appSettings || {};
-		newSettings = settings;
-		// log(`\n⮟newSettings⮟`);
-		// log(newSettings);
-		this.setLocalStorage('appSettings', newSettings);
+		if (!this.settings.dev.saveSettings) {
+			// log(`saveAppSettings`, 'start');
+			const settings = this.settings.app;
+			// log(`\n⮟oldSettings⮟`);
+			// log(settings);
+			let newSettings = this.getLocalStorage()?.appSettings || {};
+			newSettings = settings;
+			// log(`\n⮟newSettings⮟`);
+			// log(newSettings);
+			this.setLocalStorage('appSettings', newSettings);
+		}
 	}
 }
 
