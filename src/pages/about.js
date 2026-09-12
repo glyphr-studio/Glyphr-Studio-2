@@ -307,7 +307,7 @@ function makeFamilyInfo() {
 					Convert fonts to JSON, make edits, then convert them back!
 					Font Flux JS is a JavaScript library for parsing OpenType/TrueType font binaries into structured JSON, then exporting that JSON back into a valid font binary. Every table is fully parsed into human-readable fields!
 					<br/><br/>
-					<a href="https://www.glyprstudio.com/font-flux-js" target="_blank">glyphrstudio.com/font-flux-js</a>
+					<a href="https://www.glyphrstudio.com/font-flux-js" target="_blank">glyphrstudio.com/font-flux-js</a>
 					<br/>
 					<a href="https://www.github.com/mattlag/font-flux-js" target="_blank">github.com/mattlag/font-flux-js</a>
 				</p>
@@ -321,7 +321,7 @@ function makeFamilyInfo() {
 					Useful for typeface designers, or regular humans looking for funky glyphs.
 					Unicode Ninja provides quick access to information about characters you know about, and easily discover characters you don't know about.
 					<br/><br/>
-					<a href="https://www.glyprstudio.com/unicodeninja" target="_blank">glyphrstudio.com/unicodeninja</a>
+					<a href="https://www.glyphrstudio.com/unicodeninja" target="_blank">glyphrstudio.com/unicodeninja</a>
 					<br/>
 					<a href="https://www.github.com/mattlag/unicodeninja" target="_blank">github.com/mattlag/unicodeninja</a>
 				</p>
@@ -335,7 +335,7 @@ function makeFamilyInfo() {
 					Useful for comparing different versions of a font, trying to identify what exactly is
 					making it work (or not).
 					<br/><br/>
-					<a href="https://www.glyprstudio.com/fontdiff" target="_blank">glyphrstudio.com/fontdiff</a>
+					<a href="https://www.glyphrstudio.com/fontdiff" target="_blank">glyphrstudio.com/fontdiff</a>
 					<br/>
 					<a href="https://www.github.com/mattlag/fontdiff" target="_blank">github.com/mattlag/fontdiff</a>
 				</p>
