@@ -1,3 +1,4 @@
+import { getConfigGroup } from '../../../app/main';
 import { decToHex } from '../../../common/character_ids';
 import { isControlChar } from '../../../lib/unicode/unicode_blocks';
 import { Glyph } from '../../../project_data/glyph';
@@ -146,7 +147,7 @@ function importOneGlyph(
 
 			if (isNewSlot) {
 				if (isControlChar(unicodeHex) && unicodeHex !== '0x0') {
-					project.settings.app.showNonCharPoints = true;
+					getConfigGroup('app').showNonCharPoints = true;
 				}
 
 				if (!isNaN(Number(unicodeHex))) project.incrementRangeCountFor(Number(unicodeHex));

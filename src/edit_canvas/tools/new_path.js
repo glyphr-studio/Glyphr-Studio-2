@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
+import { getConfigGroup, getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { insertAfter, makeElement } from '../../common/dom.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
@@ -30,8 +30,8 @@ export class Tool_NewPath {
 		const msPoints = editor.multiSelect.points;
 
 		// New point
-		// log(`editor.project.settings.font.upm: ${editor.project.settings.font.upm}`);
-		let newPoint = new PathPoint({ projectUPM: editor.project.settings.font.upm });
+		// log(`getConfigGroup('font').upm: ${getConfigGroup('font').upm}`);
+		let newPoint = new PathPoint({ projectUPM: getConfigGroup('font').upm });
 		newPoint.p.x = cXsX(ehd.mousePosition.x);
 		newPoint.p.y = cYsY(ehd.mousePosition.y);
 
@@ -105,9 +105,8 @@ export class Tool_NewPath {
 		const editor = getCurrentProjectEditor();
 
 		if (this.dragging) {
-
-					// log(`\n⮟this.currentPoint⮟`);
-					// log(this.currentPoint);
+			// log(`\n⮟this.currentPoint⮟`);
+			// log(this.currentPoint);
 			// avoid really small handles
 			if (
 				Math.abs(sXcX(this.currentPoint.p.x) - ehd.mousePosition.x) > canvasUIPointSize ||

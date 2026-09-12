@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getConfigGroup, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
@@ -484,7 +484,7 @@ function addHideUIOverlay() {
 		//const scale = this.options.fontSize / this.project.totalVertical;
 		const fontSize = editor.project.totalVertical * editor.view.dz;
 		let text = editor.selectedItem.char;
-		if (editor.project.settings.app.contextCharacters.showCharacters) {
+		if (getConfigGroup('app').contextCharacters.showCharacters) {
 			text = editor.selectedItem.contextCharacters;
 		}
 		const advance = getItemStringAdvanceWidth(text) + 100;

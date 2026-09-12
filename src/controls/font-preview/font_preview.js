@@ -1,6 +1,6 @@
 /* global Buffer */
 import { FontFlux } from 'font-flux-js';
-import { getCurrentProject } from '../../app/main.js';
+import { getConfigGroup, getCurrentProject } from '../../app/main.js';
 import { charToHex } from '../../common/character_ids.js';
 import { makeElement } from '../../common/dom.js';
 import { caseCamelToKebab, caseKebabToCamel, round } from '../../common/functions.js';
@@ -75,7 +75,7 @@ export class FontPreviewBuilder {
 		const previewGlyphs = buildPreviewGlyphObjects(project, glyphMap, ligatures);
 		previewGlyphs.forEach((glyph) => font.addGlyph(glyph));
 
-		if (this.includeKerning && project.settings.app.exportKerning) {
+		if (this.includeKerning && getConfigGroup('app').exportKerning) {
 			writeGposKernDataToFont(font, project);
 		}
 

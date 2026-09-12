@@ -12,12 +12,29 @@ import * as config from './app_config.json';
 import { _DEV } from './dev_mode_includes.js';
 import {
 	addProjectEditorAndSetAsImportTarget,
+	getConfigGroup,
 	getCurrentProject,
 	getGlyphrStudioApp,
 	getProjectEditorImportTarget,
 	setCurrentProjectEditor,
 } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
+
+// Do some extra stuff during config assignments
+let timeoutId;
+const configHandler = {
+	set(target, key, value) {
+		let app = getGlyphrStudioApp();
+		// Storage saving with debouncing
+		window.clearTimeout(timeoutId);
+		timeoutId = window.setTimeout(() => {
+			app.saveAppSettings();
+		}, app.settings.settingsDebounceTime);
+
+		// log(`"${key}" changed from ${target[key]} to ${value}`);
+		return Reflect.set(target, key, value);
+	},
+};
 
 /**
  * Creates a new Glyphr Studio Application
@@ -38,6 +55,7 @@ export class GlyphrStudioApp {
 				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
 				autoSave: false, // {bool} trigger auto saves
+				saveSettings: false, // {bool} enable settings persistent storage
 				selectFirstShape: false, // {bool} select the first shape
 				selectFirstPoint: false, // {bool} select the first path point
 				testActions: [], // {name: '', onClick: ()=>{}} adds test actions to the Glyph card
@@ -45,6 +63,41 @@ export class GlyphrStudioApp {
 				testOnRedraw: function () {}, // code to run on Edit Canvas redraw
 			},
 			telemetry: true, // Load google analytics
+			storageWriteEnabled: true,
+			settingsDebounceTime: 1000, // Filter persistent saving rapid inputs by this
+			app: new Proxy(
+				{
+					stopPageNavigation: true,
+					formatSaveFile: false,
+					saveLivePreviews: true,
+					autoSave: true,
+					savePreferences: false,
+					unlinkComponentInstances: true,
+					directlyDragCurves: true,
+					canvasDisplayModeFilled: true,
+					showNonCharPoints: false,
+					itemChooserPageSize: 256,
+					previewText: false,
+					exportLigatures: true,
+					exportKerning: true,
+					exportUneditedItems: true,
+					moveShapesOnSVGDragDrop: false,
+					autoSideBearingsOnSVGDragDrop: 50,
+					autoRightBearingOnFirstShape: 50,
+					highlightPointsNearPoints: 2,
+					highlightPointsNearHandles: 2,
+					highlightPointsNearXZero: 2,
+					highlightPointsNearYZero: 2,
+					contextCharacters: {
+						showCharacters: false,
+						characterTransparency: 20,
+						showGuides: true,
+						guidesTransparency: 70,
+					},
+					livePreviews: [],
+				},
+				configHandler
+			),
 		};
 
 		// Version
@@ -66,6 +119,8 @@ export class GlyphrStudioApp {
 	 * Starts up the app
 	 */
 	setUp() {
+		this.loadAppSettings();
+
 		// log(`GlyphrStudioApp.setUp`, 'start');
 		let editor = addProjectEditorAndSetAsImportTarget();
 
@@ -260,6 +315,10 @@ export class GlyphrStudioApp {
 		// log(`key: ${key}`);
 		// log(`\n⮟data⮟`);
 		// log(newData);
+		// log(`Storage writing enabled: ${this.settings.storageWriteEnabled}`);
+		if (!this.settings.storageWriteEnabled) {
+			return new Error('Storage writes are disabled');
+		}
 
 		const data = this.getLocalStorage();
 		data[key] = newData;
@@ -267,14 +326,17 @@ export class GlyphrStudioApp {
 			window.localStorage.setItem('GlyphrStudio', JSON.stringify(data));
 		} catch {
 			showToast(
-				`There is not enough space for this project to be auto-saved. The auto-save option has been turned off in Settings > App.`
+				`There is not enough space in local storage. Auto-saves have been turned off in Settings > App and app setting changes will not persist.`
 			);
-			getCurrentProject().settings.app.autoSave = false;
+			this.settings.app.autoSave = false;
+			this.settings.storageWriteEnabled = false;
+			return new Error('Unable to write to storage');
 		}
 
 		// log(`\n⮟window.localStorage⮟`);
 		// log(window.localStorage);
 		// log(`GlyphrStudioApp.setLocalStorage`, 'end');
+		return true;
 	}
 
 	/**
@@ -308,6 +370,41 @@ export class GlyphrStudioApp {
 		// log(newSaves);
 		this.setLocalStorage('autoSaves', newSaves);
 		// log(`addAutoSaveState`, 'end');
+	}
+
+	/**
+	 * Loads the app settings saved in storage.
+	 */
+	loadAppSettings() {
+		// log(`getAppSettings`, 'start');
+		let newSettings = this.getLocalStorage()?.appSettings || {};
+		// log(`\n⮟newSettings⮟`);
+		// log(newSettings);
+		Object.assign(this.settings.app, newSettings);
+	}
+
+	/**
+	 * Updates the saved app settings.
+	 */
+	saveAppSettings() {
+		if (!this.settings.dev.saveSettings) {
+			// log(`saveAppSettings`, 'start');
+			const settings = this.settings.app;
+			// log(`\n⮟oldSettings⮟`);
+			// log(settings);
+			let newSettings = this.getLocalStorage()?.appSettings || {};
+			newSettings = settings;
+			// log(`\n⮟newSettings⮟`);
+			// log(newSettings);
+			this.setLocalStorage('appSettings', newSettings);
+		}
+	}
+	/**
+	 * Fully reset app configs, including stored
+	 */
+	resetAppSettings() {
+		this.setLocalStorage('appSettings', '');
+		this.settings.app = new GlyphrStudioApp().settings.app;
 	}
 }
 
@@ -347,7 +444,7 @@ export function updateWindowUnloadEvent() {
 		} else {
 			window.onbeforeunload = () => {};
 		}
-	} else if (project.settings.app.stopPageNavigation) {
+	} else if (getConfigGroup('app').stopPageNavigation) {
 		window.onbeforeunload = showBeforeUnloadConfirmation;
 	} else {
 		window.onbeforeunload = () => {};

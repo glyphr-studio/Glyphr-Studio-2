@@ -1,4 +1,4 @@
-import { getCurrentProject, getGlyphrStudioApp } from '../../app/main.js';
+import { getConfigGroup, getCurrentProject, getGlyphrStudioApp } from '../../app/main.js';
 import { decToHex, hexesToXMLHexes } from '../../common/character_ids.js';
 import { escapeXMLValues, round } from '../../common/functions.js';
 import { showToast } from '../../controls/dialogs/dialogs.js';
@@ -207,7 +207,7 @@ function ioSVG_makeAllGlyphs() {
 		con += ioSVG_makeOneGlyph(glyph.xg, glyph.xc);
 	});
 
-	if (project.settings.app.exportLigatures) {
+	if (getConfigGroup('app').exportLigatures) {
 		con += '\n';
 
 		con += '\t\t\t<!-- Ligatures -->\n';
@@ -279,7 +279,7 @@ function ioSVG_makeOneGlyph(gl, id, tag = 'glyph') {
 function ioSVG_makeAllKernPairs() {
 	// log('ioSVG_makeAllKernPairs', 'start');
 	const project = getCurrentProject();
-	if (!project.settings.app.exportKerning) return '';
+	if (!getConfigGroup('app').exportKerning) return '';
 
 	const kp = project.kerning;
 	let keys = Object.keys(kp);

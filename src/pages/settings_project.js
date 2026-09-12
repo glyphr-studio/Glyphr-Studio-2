@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getConfigGroup, getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex, hexesToChars } from '../common/character_ids.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { remove } from '../common/functions.js';
@@ -314,7 +314,7 @@ function makeHiddenRangesTable() {
 function removeCharacterRange(range, manageDialogs = true) {
 	const editor = getCurrentProjectEditor();
 	const fallback = areCharacterRangesEqual(range, editor.selectedCharacterRange);
-	const projectRanges = editor.project.settings.project.characterRanges;
+	const projectRanges = getConfigGroup('project').characterRanges;
 	let index = projectRanges.indexOf(range);
 	if (index > -1) {
 		let name = range.name;
@@ -865,7 +865,7 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 		ranges.push(newRange);
 
 		if (newRange.name.includes('Controls')) {
-			project.settings.app.showNonCharPoints = true;
+			getConfigGroup('app').showNonCharPoints = true;
 			// log(`clearing new range`);
 			newRange.cachedArray = false;
 		}

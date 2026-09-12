@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getConfigGroup, getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeFancySlider } from '../controls/fancy-slider/fancy_slider.js';
 import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window.js';
@@ -26,7 +26,7 @@ export function makePanel_ContextCharacters() {
 		the character you are currently editing.`,
 	});
 
-	const ccOptions = project.settings.app.contextCharacters;
+	const ccOptions = getConfigGroup('app').contextCharacters;
 	let toggleCheckboxLabel = makeSingleLabel('Show&nbsp;context&nbsp;characters&nbsp;&nbsp;');
 	let toggleCheckbox = makeDirectCheckbox(ccOptions, 'showCharacters', () => {
 		getCurrentProjectEditor().autoFitView();

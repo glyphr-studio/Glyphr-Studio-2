@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getConfigGroup, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import settingsData from '../pages/settings_data.js';
 import { enabledQualityChecks, runQualityChecksForItem } from '../project_editor/quality_checks.js';
@@ -64,13 +64,13 @@ function makeCard_PointsAndHandles() {
 		const input = makeElement({
 			tag: 'input-number',
 			attributes: {
-				value: editor.project.settings.app[checkName],
+				value: getConfigGroup('app')[checkName],
 			},
 		});
 
 		input.addEventListener('change', (event) => {
 			// @ts-expect-error 'property does exist'
-			editor.project.settings.app[checkName] = parseInt(event.target.value);
+			getConfigGroup('app')[checkName] = parseInt(event.target.value);
 			runQualityChecksForItem(editor.selectedItem);
 			editor.publish('qualityChecks', 'update');
 		});

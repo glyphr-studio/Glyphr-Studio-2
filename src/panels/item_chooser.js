@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getConfigGroup, getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
@@ -19,7 +19,7 @@ export function makeAllItemTypeChooserContent(
 	editor = getCurrentProjectEditor()
 ) {
 	// log(`makeAllItemTypeChooserContent`, 'start');
-	// log(`Project Name: ${editor.project.settings.project.name}`);
+	// log(`Project Name: ${getConfigGroup('project').name}`);
 	savedClickHandler = clickHandler;
 	savedRegisterSubscriptions = true;
 
@@ -99,7 +99,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 
 export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor(), rangeName = '') {
 	// log(`makeRangeAndItemTypeChooser`, 'start');
-	// log(`Project Name: ${editor.project.settings.project.name}`);
+	// log(`Project Name: ${getConfigGroup('project').name}`);
 
 	let componentCount = countItems(editor.project.components);
 	let ligatureCount = countItems(editor.project.ligatures);
@@ -193,9 +193,9 @@ function makeRangeChooser(editor = getCurrentProjectEditor()) {
 
 function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjectEditor()) {
 	// log(`addRangeOptionsToOptionChooser`, 'start');
-	// log(`Project Name: ${editor.project.settings.project.name}`);
+	// log(`Project Name: ${getConfigGroup('project').name}`);
 
-	let ranges = editor.project.settings.project.characterRanges;
+	let ranges = getConfigGroup('project').characterRanges;
 	let option;
 	ranges.forEach((range) => {
 		if (range.enabled) {
@@ -228,8 +228,8 @@ function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjec
 function makeCharacterChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(`makeCharacterChooserTileGrid`, 'start');
 	// console.time('makeCharacterChooserTileGrid');
-	// log(`Project Name: ${editor.project.settings.project.name}`);
-	// log(editor.project.settings.project.characterRanges);
+	// log(`Project Name: ${getConfigGroup('project').name}`);
+	// log(getConfigGroup('project').characterRanges);
 	// log(editor.selectedCharacterRange);
 
 	const isPrimaryProject = editor === getCurrentProjectEditor();
@@ -494,7 +494,7 @@ export function makeOneKernGroupRow(kernID, project = getCurrentProject()) {
 // --------------------------------------------------------------
 
 function getItemsFromPage(itemsArray = [], pageNumber = 0, editor = getCurrentProjectEditor()) {
-	const pageSize = parseInt(editor.project.settings.app.itemChooserPageSize) || 256;
+	const pageSize = parseInt(getConfigGroup('app').itemChooserPageSize) || 256;
 	if (itemsArray.length < pageSize) return itemsArray;
 	const startIndex = pageNumber * pageSize;
 	const endIndex = startIndex + pageSize;
@@ -510,7 +510,7 @@ function makePageControl(area, allItems = [], editor = getCurrentProjectEditor()
 		kerning: makeKernGroupChooserList,
 	};
 
-	const pageSize = parseInt(editor.project.settings.app.itemChooserPageSize) || 256;
+	const pageSize = parseInt(getConfigGroup('app').itemChooserPageSize) || 256;
 	const currentPage = editor.chooserPage[area];
 	const totalPages = Math.ceil(allItems.length / pageSize);
 	const previousButton = makeElement({

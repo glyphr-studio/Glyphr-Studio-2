@@ -1,5 +1,5 @@
 import { FontFlux, initWoff2 } from 'font-flux-js';
-import { getCurrentProject } from '../../app/main.js';
+import { getConfigGroup, getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { isUIUpdateDue, pause, resetUIUpdateThrottle, round } from '../../common/functions.js';
 import { closeAllToasts, showError, showToast } from '../../controls/dialogs/dialogs.js';
@@ -130,7 +130,7 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	// log(codePointGlyphIndexTable);
 
 	// Add Ligatures
-	let exportLigatures = project.settings.app.exportLigatures;
+	let exportLigatures = getConfigGroup('app').exportLigatures;
 	// log(`exportLigatures: ${exportLigatures}`);
 	if (exportLigatures) {
 		for (let l = 0; l < exportLists.ligatures.length; l++) {
@@ -226,7 +226,7 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 
 	// Write kern pair data first, before setting GSUB features
 	// This ensures the font's GPOS table is properly initialized
-	if (project.settings.app.exportKerning) {
+	if (getConfigGroup('app').exportKerning) {
 		writeGposKernDataToFont(font, project);
 	}
 
@@ -534,7 +534,7 @@ export function shouldExportItem(item) {
 	if (item.name === '.null') return false;
 
 	if (item.sessionState === 'new') {
-		return !!getCurrentProject().settings.app.exportUneditedItems;
+		return !!getConfigGroup('app').exportUneditedItems;
 	}
 	if (item) return true;
 	return false;
@@ -575,7 +575,7 @@ function populateExportList() {
 	// Add Ligatures
 	const exportLigatures = [];
 	// const ligWithCodePoint;
-	if (project.settings.app.exportLigatures) {
+	if (getConfigGroup('app').exportLigatures) {
 		for (const key of Object.keys(project.ligatures)) {
 			// log(project.ligatures[key]);
 			if (project.ligatures[key].gsub.length > 1) {

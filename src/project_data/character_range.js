@@ -1,4 +1,4 @@
-import { getCurrentProject } from '../app/main.js';
+import { getConfigGroup } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 
@@ -80,7 +80,7 @@ export class CharacterRange {
 	 */
 	*generator() {
 		// log(`CharacterRange.generator`, 'start');
-		const showNonCharPoints = getCurrentProject().settings.app.showNonCharPoints;
+		const showNonCharPoints = getConfigGroup('app').showNonCharPoints;
 		// log(`showNonCharPoints: ${showNonCharPoints}`);
 		if (this.begin <= 0x21 && (this.end === 0x7e || this.end === 0x7f)) {
 			let basicLatinIndex = 0;

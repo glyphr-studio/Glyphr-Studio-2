@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getConfigGroup, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { clone, remove, round, trim } from '../common/functions.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
@@ -43,29 +43,6 @@ export class GlyphrStudioProject {
 				// and the File menu preview default to that same format.
 				exportFormat: 'otf',
 				characterRanges: [],
-			},
-			app: {
-				stopPageNavigation: true,
-				formatSaveFile: false,
-				saveLivePreviews: true,
-				autoSave: true,
-				savePreferences: false,
-				unlinkComponentInstances: true,
-				directlyDragCurves: true,
-				canvasDisplayModeFilled: true,
-				showNonCharPoints: false,
-				itemChooserPageSize: 256,
-				previewText: false,
-				exportLigatures: true,
-				exportKerning: true,
-				exportUneditedItems: true,
-				moveShapesOnSVGDragDrop: false,
-				autoSideBearingsOnSVGDragDrop: 50,
-				autoRightBearingOnFirstShape: 50,
-				highlightPointsNearPoints: 2,
-				highlightPointsNearHandles: 2,
-				highlightPointsNearXZero: 2,
-				highlightPointsNearYZero: 2,
 				guides: {
 					drawGuidesOnTop: false,
 					systemShowGuides: true,
@@ -81,13 +58,6 @@ export class GlyphrStudioProject {
 					gridDivisions: 10,
 					gridSnap: false,
 				},
-				contextCharacters: {
-					showCharacters: false,
-					characterTransparency: 20,
-					showGuides: true,
-					guidesTransparency: 70,
-				},
-				livePreviews: [],
 			},
 			font: {
 				family: 'My Font',
@@ -153,11 +123,13 @@ export class GlyphrStudioProject {
 		// Guides
 		const newGuides = newProject?.settings?.app?.guides;
 		if (newGuides?.systemGuides) {
-			this.settings.app.guides.systemGuides = clone(newGuides.systemGuides);
+			this.settings.project.guides.systemGuides = clone(newGuides.systemGuides);
 		}
 		if (newGuides?.custom) {
-			this.settings.app.guides.custom = [];
-			newGuides.custom.forEach((guide) => this.settings.app.guides.custom.push(new Guide(guide)));
+			this.settings.project.guides.custom = [];
+			newGuides.custom.forEach((guide) =>
+				this.settings.project.guides.custom.push(new Guide(guide))
+			);
 		}
 
 		// Character Ranges
@@ -180,12 +152,12 @@ export class GlyphrStudioProject {
 		// Validate descent
 		this.settings.font.descent = -1 * Math.abs(this.settings.font.descent);
 
-		// Live Previews
-		const newPreviews = newProject?.settings?.app?.livePreviews;
-		if (newPreviews) {
-			this.settings.app.livePreviews = [];
-			this.settings.app.livePreviews = newPreviews.map((option) => new TextBlockOptions(option));
-		}
+		// // Live Previews
+		// const newPreviews = newProject?.settings?.app?.livePreviews;
+		// if (newPreviews) {
+		// 	this.settings.app.livePreviews = [];
+		// 	this.settings.app.livePreviews = newPreviews.map((option) => new TextBlockOptions(option));
+		// }
 
 		// log('finished merging settings - result:');
 		// log(this.settings);
@@ -248,16 +220,16 @@ export class GlyphrStudioProject {
 			savedProject.settings.project.characterRanges.push(range.save());
 		});
 
-		// Overwriting livePreviews with .save() version
-		savedProject.settings.app.livePreviews = [];
-		this.settings.app.livePreviews.forEach((preview) => {
-			savedProject.settings.app.livePreviews.push(preview.save());
-		});
+		// // Overwriting livePreviews with .save() version
+		// savedProject.settings.app.livePreviews = [];
+		// this.settings.app.livePreviews.forEach((preview) => {
+		// 	savedProject.settings.app.livePreviews.push(preview.save());
+		// });
 
 		// Overwriting guides with .save() version
-		savedProject.settings.app.guides.custom = [];
-		this.settings.app.guides.custom.forEach((guide) => {
-			savedProject.settings.app.guides.custom.push(guide.save());
+		savedProject.settings.project.guides.custom = [];
+		this.settings.project.guides.custom.forEach((guide) => {
+			savedProject.settings.project.guides.custom.push(guide.save());
 		});
 
 		/**
@@ -456,7 +428,7 @@ export class GlyphrStudioProject {
 		newParentRange.count = 1;
 		if (createAsHidden) newParentRange.enabled = false;
 		projectRanges.push(newParentRange);
-		if (unicodeNonCharPointNames[id] && id !== 0) this.settings.app.showNonCharPoints = true;
+		if (unicodeNonCharPointNames[id] && id !== 0) getConfigGroup('app').showNonCharPoints = true;
 		// log(`createRangeForHex`, 'end');
 	}
 

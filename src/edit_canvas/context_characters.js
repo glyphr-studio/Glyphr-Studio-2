@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
+import { getConfigGroup, getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import { charsToHexArray } from '../common/character_ids';
 import { accentColors, getColorFromRGBA, transparencyToAlpha } from '../common/colors';
 import { makeCrisp } from '../common/functions';
@@ -142,9 +142,9 @@ export function drawContextCharacters(ctx) {
 	}
 
 	// Draw label for selected item
-	if (project.settings.app.contextCharacters.showGuides) {
+	if (getConfigGroup('app').contextCharacters.showGuides) {
 		const item = editor.selectedItem;
-		const alpha = transparencyToAlpha(project.settings.app.contextCharacters.guidesTransparency);
+		const alpha = transparencyToAlpha(getConfigGroup('app').contextCharacters.guidesTransparency);
 		const textColor = getColorFromRGBA(contextCharacters.labelColors.selected, alpha);
 		drawCharacterNameExtra(
 			ctx,
@@ -207,7 +207,7 @@ export function shouldDrawContextCharacters() {
 	if (!item) return false;
 	if (!item.contextCharacters) return false;
 	if (item.contextCharacters === item.char) return false;
-	if (!editor.project.settings.app.contextCharacters.showCharacters) return false;
+	if (!getConfigGroup('app').contextCharacters.showCharacters) return false;
 	return true;
 }
 
@@ -267,7 +267,7 @@ function drawContextCharacterLeftLineExtras(ctx, char, block) {
 
 	const editor = getCurrentProjectEditor();
 	// Draw baseline from first char to selected item
-	if (editor.project.settings.app.contextCharacters.showGuides) {
+	if (getConfigGroup('app').contextCharacters.showGuides) {
 		drawBaseline(ctx, char.view.dx - 20, char.view.dy, editor.view.dx - char.view.dx + 20);
 	}
 
@@ -308,7 +308,7 @@ function drawContextCharacterRightLineExtras(ctx, char, block) {
 	const underlineWidth = rightHandAdvanceWidth * editor.view.dz;
 	// log(`underlineWidth: ${underlineWidth}`);
 
-	if (editor.project.settings.app.contextCharacters.showGuides) {
+	if (getConfigGroup('app').contextCharacters.showGuides) {
 		drawBaseline(ctx, char.view.dx, char.view.dy, underlineWidth + 20);
 	}
 
@@ -335,7 +335,7 @@ function drawContextCharacterRightLineExtras(ctx, char, block) {
  */
 function drawBaseline(ctx, x, y, width) {
 	// ctx.fillStyle = accentColors.gray.l90;
-	const transparency = getCurrentProject().settings.app.contextCharacters.guidesTransparency;
+	const transparency = getConfigGroup('app').contextCharacters.guidesTransparency;
 	const alpha = transparencyToAlpha(transparency);
 	ctx.fillStyle = getColorFromRGBA(guideColorDark, alpha);
 	ctx.fillRect(x, Math.ceil(y), width, 1);
@@ -350,7 +350,7 @@ function drawContextCharacterExtras(ctx, char) {
 	// log('drawContextCharacterExtras', 'start');
 	// log(char);
 
-	const appSettings = getCurrentProject().settings.app;
+	const appSettings = getConfigGroup('app');
 
 	if (appSettings.contextCharacters.showGuides) {
 		const alpha = transparencyToAlpha(appSettings.contextCharacters.guidesTransparency);
@@ -490,7 +490,7 @@ function drawSingleContextCharacter(ctx, charData) {
 			charData.item,
 			ctx,
 			charData.view,
-			transparencyToAlpha(getCurrentProject().settings.app.contextCharacters.characterTransparency)
+			transparencyToAlpha(getConfigGroup('app').contextCharacters.characterTransparency)
 		);
 	}
 	// log('drawSingleContextCharacter', 'end');
@@ -660,7 +660,7 @@ export function findAndUnderlineHotspot(cx, cy) {
 	const ctx = getCurrentProjectEditor().editCanvas.ctx;
 	// log(`${hs}`);
 	if (hs) {
-		const t = getCurrentProject().settings.app.contextCharacters.guidesTransparency;
+		const t = getConfigGroup('app').contextCharacters.guidesTransparency;
 		// var t2 = (((100 - t) / 2) + t);
 		const alpha = transparencyToAlpha(t);
 		const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);

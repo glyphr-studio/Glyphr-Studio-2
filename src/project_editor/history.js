@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getConfigGroup, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { refreshPanel } from '../panels/panels.js';
 import { Glyph } from '../project_data/glyph.js';
@@ -151,7 +151,7 @@ export class History {
 		const redoButton = document.querySelector('#actionButtonRedo');
 		if (redoButton) redoButton.setAttribute('disabled', 'disabled');
 
-		if (editor.project.settings.app.autoSave) {
+		if (getConfigGroup('app').autoSave) {
 			const app = getGlyphrStudioApp();
 			if (app.settings.dev.mode) {
 				if (app.settings.dev.autoSave) app.addAutoSaveState();

@@ -1,5 +1,5 @@
 import { updateWindowUnloadEvent } from '../app/app';
-import { getGlyphrStudioApp } from '../app/main';
+import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main';
 import { addAsChildren, makeElement, textToNode } from '../common/dom';
 import { showToast } from '../controls/dialogs/dialogs';
 import { makeOneSettingsRow } from './settings';
@@ -37,6 +37,23 @@ export function makeSettingsTabContentApp() {
 			onClick: () => {
 				getGlyphrStudioApp().setLocalStorage('autoSaves', '');
 				showToast('Auto-saved backups were deleted for this browser.');
+			},
+		}),
+		textToNode('<span></span>'),
+		textToNode('<label class="settings__label">Reset app settings:</label>'),
+		makeElement({
+			tag: 'info-bubble',
+			content: `Glyphr Studio uses your browser's local storage to keep app-specific settings. This is basically a "factory reset" button.`,
+		}),
+		makeElement({
+			tag: 'fancy-button',
+			attributes: { danger: '', style: 'height: 24px;' },
+			innerHTML: 'Delete',
+			onClick: () => {
+				getGlyphrStudioApp().resetAppSettings();
+				let editor = getCurrentProjectEditor();
+				editor.navigate();
+				showToast('App settings have been reset.');
 			},
 		}),
 		textToNode('<span></span>'),

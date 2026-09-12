@@ -1,8 +1,7 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getConfigGroup, getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { TabControl } from '../controls/tabs/tab_control.js';
-import { makeDirectCheckbox } from '../panels/cards.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeSettingsTabContentApp } from './settings_app.js';
 import settingsMap from './settings_data.js';
@@ -69,10 +68,10 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 	// log(`makeOneSettingsRow`, 'start');
 	// log(`groupName: ${groupName}`);
 	// log(`propertyName: ${propertyName}`);
-	const settings = getCurrentProject().settings;
+	const group = getConfigGroup(groupName);
 	const thisSetting = settingsMap[groupName][propertyName];
 	const settingType = thisSetting?.type;
-	const settingValue = settings[groupName][propertyName];
+	const settingValue = group[propertyName];
 	// log(`thisSetting: ${thisSetting}`);
 	// log(`settingValue: ${settingValue}`);
 
@@ -102,7 +101,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 			if (isNaN(newValue)) {
 				showToast(`Could not save value - needs to be a number.`);
 			} else {
-				settings[groupName][propertyName] = newValue;
+				group[propertyName] = newValue;
 			}
 			if (callback) callback();
 		});
@@ -117,15 +116,25 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 		input.addEventListener('change', (event) => {
 			// @ts-expect-error 'property does exist'
 			let newValue = sanitizeValueWithJSON(event.target.value);
-			settings[groupName][propertyName] = newValue;
+			group[propertyName] = newValue;
 			if (callback) callback();
 		});
 	}
 
 	if (settingType === 'Boolean') {
-		input = makeDirectCheckbox(settings[groupName], propertyName, callback);
-		if (propertyName === 'showNonCharPoints') {
-			input.addEventListener('change', () => {
+		input = makeElement({
+			tag: 'input',
+			attributes: { type: 'checkbox' },
+		});
+		// @ts-expect-error 'property does exist'
+		if (settingValue) input.checked = true;
+		input.addEventListener('change', (event) => {
+			// @ts-expect-error 'property does exist'
+			let newValue = event.target.checked;
+			group[propertyName] = !!newValue;
+			if (callback) callback(newValue);
+
+			if (propertyName === 'showNonCharPoints') {
 				const project = getCurrentProject();
 				// log(`Clearing all Character Range Caches`);
 				// log(`\n⮟project.settings.project.characterRanges⮟`);
@@ -134,8 +143,8 @@ export function makeOneSettingsRow(groupName, propertyName, callback, inputFirst
 					range.cachedArray = false;
 				});
 				getCurrentProjectEditor().selectedCharacterRange.cachedArray = false;
-			});
-		}
+			}
+		});
 	} else {
 		type = makeElement({
 			tag: 'pre',

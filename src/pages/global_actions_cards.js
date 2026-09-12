@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getConfigGroup, getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { remove } from '../common/functions.js';
@@ -626,7 +626,7 @@ export function makeCard_RemoveItems() {
 			action: (workingItem) => {
 				const project = workingItem.parent;
 				if (project) {
-					const unlinkComponentInstances = project.settings.app.unlinkComponentInstances;
+					const unlinkComponentInstances = getConfigGroup('app').unlinkComponentInstances;
 					resolveItemLinks(workingItem, unlinkComponentInstances);
 					if (workingItem.objType === 'Component') {
 						delete project.components[workingItem.id];
