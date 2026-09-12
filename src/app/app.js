@@ -399,6 +399,13 @@ export class GlyphrStudioApp {
 			this.setLocalStorage('appSettings', newSettings);
 		}
 	}
+	/**
+	 * Fully reset app configs, including stored
+	 */
+	resetAppSettings() {
+		this.setLocalStorage('appSettings', '');
+		this.settings.app = new GlyphrStudioApp().settings.app;
+	}
 }
 
 /**
