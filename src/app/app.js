@@ -24,11 +24,12 @@ import { makePage_OpenProject } from './open_project.js';
 let timeoutId;
 const configHandler = {
 	set(target, key, value) {
+		let app = getGlyphrStudioApp();
 		// Storage saving with debouncing
 		window.clearTimeout(timeoutId);
 		timeoutId = window.setTimeout(() => {
-			getGlyphrStudioApp().saveAppSettings();
-		}, 1000);
+			app.saveAppSettings();
+		}, app.settings.settingsDebounceTime);
 
 		// log(`"${key}" changed from ${target[key]} to ${value}`);
 		return Reflect.set(target, key, value);
@@ -63,6 +64,7 @@ export class GlyphrStudioApp {
 			},
 			telemetry: true, // Load google analytics
 			storageWriteEnabled: true,
+			settingsDebounceTime: 1000, // Filter persistent saving rapid inputs by this
 			app: new Proxy(
 				{
 					stopPageNavigation: true,
