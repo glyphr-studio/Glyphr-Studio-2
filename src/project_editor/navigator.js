@@ -9,7 +9,7 @@ import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialo
 import { makePage_About } from '../pages/about.js';
 import { makePage_Characters } from '../pages/characters.js';
 import { makePage_Components } from '../pages/components.js';
-import { makePage_GlobalActions } from '../pages/global_actions.js';
+import { makePage_GlobalActions } from '../pages/global_actions/page.js';
 import { makePage_Help } from '../pages/help.js';
 import { makePage_Kerning } from '../pages/kerning.js';
 import { makePage_Ligatures } from '../pages/ligatures.js';

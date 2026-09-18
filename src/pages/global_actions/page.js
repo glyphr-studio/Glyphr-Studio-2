@@ -1,32 +1,34 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { decToHex } from '../common/character_ids.js';
-import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
-import { remove } from '../common/functions.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
+import { decToHex } from '../../common/character_ids.js';
+import { addAsChildren, makeElement, textToNode } from '../../common/dom.js';
+import { remove } from '../../common/functions.js';
 import {
 	closeAllModalDialogs,
 	showError,
 	showModalDialog,
 	showToast,
-} from '../controls/dialogs/dialogs.js';
-import { CharacterRange } from '../project_data/character_range.js';
-import { glyphChanged } from '../project_editor/cross_item_actions.js';
-import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
+} from '../../controls/dialogs/dialogs.js';
+import { CharacterRange } from '../../project_data/character_range.js';
+import { glyphChanged } from '../../project_editor/cross_item_actions.js';
+import { makeNavButton, toggleNavDropdown } from '../../project_editor/navigator.js';
+import { makeCard_DiacriticsAdvanced, makeCard_Diacritics } from './diacritics.js';
 import {
-	makeCard_AllCaps,
-	makeCard_Diacritics,
-	makeCard_DiacriticsAdvanced,
 	makeCard_Flatten,
-	makeCard_Monospace,
-	makeCard_Move,
-	makeCard_RemoveItems,
-	makeCard_Resize,
 	makeCard_Round,
+	makeCard_RemoveItems,
+	makeCard_UnitePaths,
+} from './project_cleanup.js';
+import { makeCard_Monospace, makeCard_AllCaps } from './font_types.js';
+import {
 	makeCard_ScaleHorizontal,
-	makeCard_ScaleVertical,
-	makeCard_SideBearings,
 	makeCard_Skew,
-} from './global_actions_cards.js';
-import { updateAllCharacterRangeCounts } from './settings_project.js';
+	makeCard_ScaleVertical,
+	makeCard_Move,
+	makeCard_Resize,
+	makeCard_SideBearings,
+} from './move_and_resize.js';
+
+import { updateAllCharacterRangeCounts } from '../settings_project.js';
 /**
  * Page > Global Actions
  * Various actions that can be applied to all glyphs.
@@ -124,6 +126,7 @@ export function makePage_GlobalActions() {
 		makeCard_Flatten(),
 		makeCard_Round(),
 		makeCard_RemoveItems(),
+		makeCard_UnitePaths(),
 		makeElement({ tag: 'h1', content: 'Font types' }),
 		makeCard_Monospace(),
 		makeCard_AllCaps(),

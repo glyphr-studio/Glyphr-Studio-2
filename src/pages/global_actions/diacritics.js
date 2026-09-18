@@ -1,0 +1,241 @@
+import { getCurrentProject } from '../../app/main.js';
+import { decToHex, validateAsHex } from '../../common/character_ids.js';
+import { makeElement } from '../../common/dom.js';
+import { showToast } from '../../controls/dialogs/dialogs.js';
+import { getUnicodeBlockByName } from '../../lib/unicode/unicode_blocks.js';
+import {
+	findMappedValue,
+	unicodeDiacriticsMapAdvanced,
+	unicodeDiacriticsMapSimple,
+} from '../../lib/unicode/unicode_mappings.js';
+import { copyShapesFromTo } from '../../project_editor/actions.js';
+import {
+	insertComponentInstance,
+	resolveItemLinks,
+} from '../../project_editor/cross_item_actions.js';
+import { addCharacterRangeToCurrentProject } from '../settings_project.js';
+
+// --------------------------------------------------------------
+// Diacritics
+// --------------------------------------------------------------
+/**
+ * Makes the content for the Diacritics global action card.
+ * @returns {Element}
+ */
+export function makeCard_Diacritics() {
+	const card = makeElement({ className: 'global-actions__card' });
+
+	card.appendChild(makeElement({ tag: 'h2', content: 'Diacritical glyph generator (basic)' }));
+
+	let description = makeElement({
+		className: 'global-actions__description',
+		content: `The Latin Supplement character range is mostly made up of Latin-based diacritical (or accented) glyphs.  These are basically normal Latin glyphs, with accents.  Since most of the accents exist as stand-alone glyphs themselves in the Basic Latin range, diacritics in the Latin Supplement range are easy to create from merging two existing glyphs.<br><br><b>Please note</b> - The diacritical glyphs that are in the Basic Latin range are usually designed to be stand-alone. Simply combining them with base glyphs is a good start, but work will be needed to make the resulting character look nice. The "Advanced" Diacritical Glyph Generator below takes a little more work up front, but will probably yield better results.`,
+	});
+	card.appendChild(description);
+
+	let effect = makeElement({
+		className: 'global-actions__effect-description',
+		content: `The Latin Supplement character range will be enabled, and diacritical glyphs will be assembled as Component Instances from their respective glyphs in the Basic Latin range.`,
+	});
+	card.appendChild(effect);
+
+	const options = make_globalActionFontTypeSettingsTable('basic');
+	card.appendChild(options);
+
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Generate Diacritical Glyphs',
+	});
+	button.addEventListener('click', () => {
+		let project = getCurrentProject();
+		let range = getUnicodeBlockByName('Latin-1 Supplement');
+		let rangeBeginHex = '0x0';
+		let currentItemDec = 0;
+		if (range && range.begin) {
+			rangeBeginHex = range.beginHex;
+			currentItemDec = range.begin;
+		}
+		let currentItemHex = rangeBeginHex;
+		let rangeEndDec = 0;
+		if (range && range.end) rangeEndDec = Number(decToHex(range.end));
+		let sourceArray;
+
+		function processOneDiacriticItem() {
+			// log(`processOneDiacriticItem - currentItemHex = ${currentItemHex}`);
+			sourceArray = findMappedValue(unicodeDiacriticsMapSimple, '' + currentItemHex);
+			let destinationItem = project.getItem(`glyph-${currentItemHex}`, true);
+			const sourceOneItem = project.getItem(`glyph-${validateAsHex(sourceArray[0])}`);
+			const sourceTwoItem = project.getItem(`glyph-${validateAsHex(sourceArray[1])}`);
+
+			if (sourceArray) {
+				/** @type {HTMLInputElement} */
+				const removeExisting = document.querySelector('#basic_removeExisting');
+				if (removeExisting.checked) {
+					resolveItemLinks(destinationItem);
+					project.glyphs[destinationItem.id].shapes = [];
+				}
+
+				showToast(`Adding diacritical ${currentItemHex}`, 10000);
+
+				/** @type {HTMLInputElement} */
+				const unlinkInstances = document.querySelector('#basic_unlinkComponentInstances');
+				if (unlinkInstances.checked) {
+					copyShapesFromTo(sourceOneItem, destinationItem, true);
+					copyShapesFromTo(sourceTwoItem, destinationItem, false);
+				} else {
+					insertComponentInstance(sourceOneItem.id, destinationItem.id, true);
+					insertComponentInstance(sourceTwoItem.id, destinationItem.id, false);
+				}
+			}
+
+			currentItemDec++;
+
+			if (currentItemDec <= rangeEndDec) {
+				currentItemDec = Number(currentItemHex);
+				setTimeout(processOneDiacriticItem, 10);
+			} else {
+				showToast('Done!', 1000);
+			}
+		}
+
+		showToast('Starting to assemble Diacritical Glyphs', 10000);
+
+		addCharacterRangeToCurrentProject(range);
+
+		setTimeout(processOneDiacriticItem, 500);
+	});
+	card.appendChild(button);
+
+	return card;
+}
+
+// --------------------------------------------------------------
+// Diacritics Advanced
+// --------------------------------------------------------------
+/**
+ * Makes the content for the Diacritics Advanced global action card.
+ * @returns {Element}
+ */
+export function makeCard_DiacriticsAdvanced() {
+	const card = makeElement({ className: 'global-actions__card' });
+
+	card.appendChild(makeElement({ tag: 'h2', content: 'Diacritical glyph generator (advanced)' }));
+
+	let description = makeElement({
+		className: 'global-actions__description',
+		content: `The Latin Supplement and Latin Extended A character ranges are mostly made up of Latin-based diacritical glyphs.  There is also a character range called Combining Diacritical Marks <code>0x300</code> to <code>0x36F</code>. This range is designed to be used in combination with base glyphs from other ranges.  This action will combine glyphs from the Basic Latin range with their appropriate counterparts in the Combining Diacritical Marks range to yield the Latin Supplement and Latin Extended A ranges.<br><br><b>Before you begin</b> - Add the Combining Diacritical Marks range to your project, and design them.`,
+	});
+	card.appendChild(description);
+
+	let effect = makeElement({
+		className: 'global-actions__effect-description',
+		content: `The Latin Supplement and Latin Extended A character ranges will be enabled, and diacritical glyphs will be assembled as Component Instances from their respective glyphs from Basic Latin and Combining Diacritical Marks ranges.`,
+	});
+	card.appendChild(effect);
+
+	const options = make_globalActionFontTypeSettingsTable('advanced');
+	card.appendChild(options);
+
+	let button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Generate Diacritical Glyphs',
+	});
+	button.addEventListener('click', () => {
+		let project = getCurrentProject();
+		let rangeSupplement = getUnicodeBlockByName('Latin-1 Supplement');
+		addCharacterRangeToCurrentProject(rangeSupplement);
+		let rangeExtendedA = getUnicodeBlockByName('Latin Extended-A');
+		addCharacterRangeToCurrentProject(rangeExtendedA);
+		let range = { begin: 0, end: 0 };
+		if (rangeSupplement && rangeExtendedA)
+			range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
+		let currentItemDec = range.begin;
+		/** @type {String} */
+		let currentItemHex = decToHex(range.begin) || '0x0';
+		let sourceArray;
+		let targetCenter, currCenter;
+
+		function processOneItem() {
+			// log(`processOneItem - currentItemHex = ${currentItemHex}`);
+			sourceArray = findMappedValue(unicodeDiacriticsMapAdvanced, currentItemHex);
+			let destinationItem = project.getItem(`glyph-${currentItemHex}`, true);
+			let sourceOneItem = project.getItem(`glyph-${validateAsHex(sourceArray[0])}`);
+			let sourceTwoItem = project.getItem(`glyph-${validateAsHex(sourceArray[1])}`);
+
+			if (sourceArray) {
+				showToast(`Adding diacritical ${destinationItem.id}`, 10000);
+
+				/** @type {HTMLInputElement} */
+				const removeExisting = document.querySelector('#advanced_removeExisting');
+				if (removeExisting.checked) {
+					resolveItemLinks(destinationItem);
+					destinationItem.shapes = [];
+				}
+
+				/** @type {HTMLInputElement} */
+				const unlinkInstances = document.querySelector('#advanced_unlinkComponentInstances');
+				if (unlinkInstances.checked) {
+					copyShapesFromTo(sourceOneItem, destinationItem, true);
+					copyShapesFromTo(sourceTwoItem, destinationItem, false);
+				} else {
+					insertComponentInstance(sourceOneItem.id, destinationItem.id, true);
+					insertComponentInstance(sourceTwoItem.id, destinationItem.id, false);
+				}
+
+				targetCenter = project.getItem(sourceOneItem.id).maxes.centerX;
+				currCenter = project.getItem(sourceTwoItem.id).maxes.centerX;
+				project
+					.getItem(destinationItem.id)
+					.shapes[1].updateShapePosition(targetCenter - currCenter, 0);
+			}
+
+			currentItemDec++;
+
+			if (currentItemDec <= range.end) {
+				currentItemHex = decToHex(currentItemDec) || '0x0';
+				setTimeout(processOneItem, 10);
+			} else {
+				showToast('Done!', 1000);
+			}
+		}
+
+		showToast('Starting to assemble Diacritical Glyphs', 10000);
+		setTimeout(processOneItem, 500);
+	});
+	card.appendChild(button);
+
+	return card;
+}
+
+export function make_globalActionFontTypeSettingsTable(actionID = '') {
+	let table = makeElement({
+		innerHTML: `
+			<span style="margin-bottom: 5px; display: inline-block;">
+				<input type="checkbox" style="margin-right: 10px; position: relative; top: 5px;" id="${actionID}_unlinkComponentInstances">
+
+				<label style="display: inline-block;" for="${actionID}_unlinkComponentInstances">
+					Copy&nbsp;shapes&nbsp;instead&nbsp;of&nbsp;linking&nbsp;components&nbsp;
+				</label>
+
+				<info-bubble style="display: inline-block;">
+					When selected, this option will copy shapes from the source, instead of creating a Component Instance link. Any future changes to the root item will not carry over to the destination. If left unselected, Components will be used that will maintain a link from the root item to the destination.
+				</info-bubble>
+			</span>
+			<br>
+			<span style="margin-bottom: 5px; display: inline-block;">
+				<input type="checkbox" style="margin-right: 10px; position: relative; top: 5px;" id="${actionID}_removeExisting">
+
+				<label style="display: inline-block;" for="${actionID}_removeExisting">
+					Remove&nbsp;existing&nbsp;items&nbsp;
+				</label>
+
+				<info-bubble style="display: inline-block;">
+					When selected, this option will clear any existing data on the target items, preventing layering on top of existing paths/components.
+				</info-bubble>
+			</span>
+		`,
+	});
+	return table;
+}
