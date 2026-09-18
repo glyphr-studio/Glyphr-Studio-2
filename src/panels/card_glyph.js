@@ -20,9 +20,9 @@ import {
 // --------------------------------------------------------------
 
 export function makeCard_glyphAttributes(glyph) {
-	log(`makeCard_glyphAttributes`, 'start');
-	log(`glyph.id: ${glyph.id}`);
-	log(glyph);
+	// log(`makeCard_glyphAttributes`, 'start');
+	// log(`glyph.id: ${glyph.id}`);
+	// log(glyph);
 	// `ident` is a unique ID per object for debugging
 	let glyphCard = makeElement({
 		tag: 'div',
@@ -125,7 +125,7 @@ export function makeCard_glyphAttributes(glyph) {
 	addAsChildren(glyphCard, makeActionsArea_Glyph());
 	// log(`returning:`);
 	// log(glyphCard);
-	log(`makeCard_glyphAttributes`, 'end');
+	// log(`makeCard_glyphAttributes`, 'end');
 	return glyphCard;
 }
 
