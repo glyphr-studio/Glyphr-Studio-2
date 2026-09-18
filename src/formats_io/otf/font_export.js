@@ -221,9 +221,6 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	// log(`\n⮟font⮟`);
 	// log(font);
 
-	// log(`\n⮟ligatureSubstitutions⮟`);
-	// log(ligatureSubstitutions);
-
 	// Write kern pair data first, before setting GSUB features
 	// This ensures the font's GPOS table is properly initialized
 	if (project.settings.app.exportKerning) {
@@ -377,6 +374,19 @@ function makePostScriptName(family, style) {
 	return `${f}-${s}`.substring(0, 63);
 }
 
+function sanitizeInt(value, min, max, fallback = 0) {
+	const num = Number(value);
+	if (!Number.isFinite(num)) return fallback;
+	return Math.max(min, Math.min(max, Math.round(num)));
+}
+
+function sanitizeUnicodeCodePoint(value, fallback = 0) {
+	const num = Number(value);
+	if (!Number.isFinite(num)) return fallback;
+	const rounded = Math.round(num);
+	return Math.max(0, Math.min(0x10ffff, rounded));
+}
+
 /**
  * Computes coordinated OS/2 `fsSelection` and `head.macStyle` values from the
  * weight and italic angle, following the RIBBI convention (bold only for weight
@@ -465,16 +475,35 @@ export function createOptionsObject(project) {
 	const sourceProject = project || getCurrentProject();
 	const fontSettings = sourceProject.settings.font;
 
-	options.unitsPerEm = fontSettings.upm || 1000;
+	options.unitsPerEm = sanitizeInt(fontSettings.upm || 1000, 16, 16384, 1000);
 	// Calculate proportional defaults based on UPM if metrics are missing
 	// Standard OpenType proportions: ascender ~80% of UPM, descender ~20% of UPM
 	const defaultAscender = Math.round(options.unitsPerEm * 0.8);
 	const defaultDescender = Math.round(options.unitsPerEm * 0.2);
-	options.ascender = fontSettings.ascent || defaultAscender;
-	options.descender = -1 * Math.abs(fontSettings.descent || defaultDescender);
-	options.lineGap = fontSettings.lineGap || 0;
-	options.capHeight = fontSettings.capHeight || options.ascender;
-	options.xHeight = fontSettings.xHeight || Math.round(options.ascender * 0.7);
+	options.ascender = sanitizeInt(
+		fontSettings.ascent || defaultAscender,
+		-32768,
+		32767,
+		defaultAscender
+	);
+	options.descender =
+		-1 *
+		Math.abs(
+			sanitizeInt(fontSettings.descent || defaultDescender, -32768, 32767, defaultDescender)
+		);
+	options.lineGap = sanitizeInt(fontSettings.lineGap || 0, -32768, 32767, 0);
+	options.capHeight = sanitizeInt(
+		fontSettings.capHeight || options.ascender,
+		-32768,
+		32767,
+		options.ascender
+	);
+	options.xHeight = sanitizeInt(
+		fontSettings.xHeight || Math.round(options.ascender * 0.7),
+		-32768,
+		32767,
+		Math.round(options.ascender * 0.7)
+	);
 	// Name-table values must be strings. Legacy / imported projects may carry
 	// non-string metadata (e.g. a numeric `version: 1.003`), which would crash
 	// the downstream FontFlux name-table writer, so coerce each field here.
@@ -501,7 +530,7 @@ export function createOptionsObject(project) {
 	options.description = String(fontSettings.description || ' ');
 	options.copyright = String(fontSettings.copyright || ' ');
 	options.trademark = String(fontSettings.trademark || ' ');
-	options.weightClass = parseInt(fontSettings.weight);
+	options.weightClass = sanitizeInt(fontSettings.weight || 400, 0, 1000, 400);
 	// PANOSE is stored as a space-separated string of ten classification digits,
 	// but the OS/2 table requires exactly ten numbers. Normalize to a
 	// fixed-length numeric array so a malformed or short string can't produce an
@@ -679,8 +708,8 @@ function addNotdefToExport(options, compositeContext) {
 	const notdefGlyph = {
 		name: '.notdef',
 		unicode: 0,
-		advanceWidth: notdef.advanceWidth,
-		leftSideBearing: round(notdef.leftSideBearing),
+		advanceWidth: sanitizeInt(notdef.advanceWidth, 0, 65535, 0),
+		leftSideBearing: sanitizeInt(notdef.leftSideBearing, -32768, 32767, 0),
 		...buildGlyphOutline(notdef, compositeContext),
 	};
 
@@ -704,7 +733,7 @@ async function generateOneGlyph(currentExportItem, compositeContext) {
 	const num = currentExportItem.xc;
 
 	// Unicode
-	const thisUnicode = parseInt(num);
+	const thisUnicode = sanitizeUnicodeCodePoint(num, 0);
 	const thisIndex = getNextGlyphIndexNumber();
 
 	// Name
@@ -718,12 +747,12 @@ async function generateOneGlyph(currentExportItem, compositeContext) {
 	const thisGlyph = {
 		name: thisName,
 		unicode: thisUnicode,
-		advanceWidth: glyph.advanceWidth,
+		advanceWidth: sanitizeInt(glyph.advanceWidth, 0, 65535, 0),
 		// Explicitly set the left side bearing to the outline's xMin. FontFlux
 		// defaults a missing lsb to 0, which makes the hmtx lsb disagree with the
 		// glyf xMin; Windows then shifts the glyph by (xMin - lsb), visibly
 		// reducing spacing for glyphs that overhang left (e.g. j, J).
-		leftSideBearing: round(glyph.leftSideBearing),
+		leftSideBearing: sanitizeInt(glyph.leftSideBearing, -32768, 32767, 0),
 		...buildGlyphOutline(glyph, compositeContext),
 	};
 
@@ -758,15 +787,19 @@ async function generateOneLigature(currentExportItem, compositeContext) {
 
 	const thisLigature = {
 		name: generateLigatureExportName(liga),
-		advanceWidth: liga.advanceWidth,
-		leftSideBearing: round(liga.leftSideBearing),
+		advanceWidth: sanitizeInt(liga.advanceWidth, 0, 65535, 0),
+		leftSideBearing: sanitizeInt(liga.leftSideBearing, -32768, 32767, 0),
 		...buildGlyphOutline(liga, compositeContext),
 	};
 
 	// Add substitution info for FontFlux. Component references must match the
 	// exported glyph names exactly (uniXXXX), or the substitution won't resolve.
-	const componentNames = liga.gsub.map((unicode) => getUniqueGlyphName(unicode));
-	ligatureSubstitutions.push({ components: componentNames, ligature: thisLigature.name });
+	const componentNames = liga.gsub
+		.map((unicode) => getUniqueGlyphName(unicode))
+		.filter((name) => typeof name === 'string' && name.length > 0);
+	if (componentNames.length > 1) {
+		ligatureSubstitutions.push({ components: componentNames, ligature: thisLigature.name });
+	}
 
 	if (!compositeContext?.testing && isUIUpdateDue()) {
 		showToast('Exporting<br>' + liga.name, 999999);
@@ -785,9 +818,11 @@ async function generateOneLigature(currentExportItem, compositeContext) {
 function generateLigatureExportName(lig) {
 	let result = 'lig';
 
-	lig.gsub.forEach((char) => {
-		result += '.' + getUniqueGlyphName(char).replace(/^uni?/, '');
-	});
+	for (const char of lig.gsub || []) {
+		const glyphName = getUniqueGlyphName(char);
+		if (!glyphName) continue;
+		result += '.' + glyphName.replace(/^uni?/, '');
+	}
 
 	return result;
 }
@@ -802,8 +837,12 @@ function generateLigatureExportName(lig) {
  * @returns {String} - Unique glyph name
  */
 export function getUniqueGlyphName(unicode) {
-	const num = parseInt('' + unicode);
-	if (isNaN(num)) return 'name';
+	const value = unicode == null ? NaN : Number(unicode);
+	if (!Number.isFinite(value)) {
+		console.warn('Bad unicode for glyph name:', unicode, typeof unicode);
+		return null;
+	}
+	const num = Math.round(value);
 	const hex = num.toString(16).toUpperCase();
 	if (num <= 0xffff) return 'uni' + hex.padStart(4, '0');
 	return 'u' + hex.padStart(6, '0');
@@ -935,8 +974,8 @@ function ensureBuildingBlock(name, item, buildingBlocks) {
 	if (buildingBlocks.has(name)) return;
 	buildingBlocks.set(name, {
 		name: name,
-		advanceWidth: item.advanceWidth,
-		leftSideBearing: round(item.leftSideBearing),
+		advanceWidth: sanitizeInt(item.advanceWidth, 0, 65535, 0),
+		leftSideBearing: sanitizeInt(item.leftSideBearing, -32768, 32767, 0),
 		contours: glyphToContours(item),
 	});
 }

@@ -233,6 +233,9 @@ export function writeGposKernDataToFont(exportingFont, project) {
 	const keys = Object.keys(kerning);
 	if (keys.length === 0) return;
 
+	const availableGlyphNames = new Set(
+		(exportingFont?.glyphs || []).map((glyph) => glyph?.name).filter(Boolean)
+	);
 	const flatPairs = []; // single x single -> GPOS PairPos format 1
 	const classGroups = []; // multi-member side -> GPOS PairPos format 2
 
@@ -241,9 +244,17 @@ export function writeGposKernDataToFont(exportingFont, project) {
 		if (!group || !Array.isArray(group.leftGroup) || !Array.isArray(group.rightGroup)) continue;
 		if (typeof group.value !== 'number' || !group.value) continue;
 
-		// Hex code points -> uniXXXX export glyph names (matching addGlyph).
-		const left = group.leftGroup.map((hex) => getUniqueGlyphName(hex));
-		const right = group.rightGroup.map((hex) => getUniqueGlyphName(hex));
+		// Hex code points -> uniXXXX export glyph names (matching addGlyph), but
+		// only keep members that are actually present in the exported font. Glyphr
+		// Studio may carry kerning groups for glyphs that are not exported in the
+		// current project or have been filtered out by a range, and FontFlux throws
+		// on any unresolved name in the GPOS tables.
+		const left = group.leftGroup
+			.map((hex) => getUniqueGlyphName(hex))
+			.filter((name) => typeof name === 'string' && availableGlyphNames.has(name));
+		const right = group.rightGroup
+			.map((hex) => getUniqueGlyphName(hex))
+			.filter((name) => typeof name === 'string' && availableGlyphNames.has(name));
 		if (!left.length || !right.length) continue;
 
 		if (left.length === 1 && right.length === 1) {
