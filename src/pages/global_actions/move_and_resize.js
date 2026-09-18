@@ -113,7 +113,7 @@ export function makeCard_ScaleHorizontal() {
 		className: 'settings-table',
 		innerHTML: `
 			<span><input id="scaleHorizontalUpdateAdvanceWidth" type="checkbox" checked></span>
-			<label for="scaleHorizontalUpdateAdvanceWidth">Scale the item's advance width property</label>
+			<label for="scaleHorizontalUpdateAdvanceWidth">Scale the item's advance width and side bearings</label>
 		`,
 	});
 	card.appendChild(table);
@@ -142,7 +142,11 @@ export function makeCard_ScaleHorizontal() {
 					transformOrigin: 'baseline-left',
 					instanceIDsToSkip: otherScaledItems,
 				});
-				if (updateAdvanceWidth) glyph.advanceWidth = glyph.advanceWidth * scaleHorizontal;
+				if (updateAdvanceWidth) {
+					const oldLSB = glyph.leftSideBearing;
+					glyph.advanceWidth = glyph.advanceWidth * scaleHorizontal;
+					glyph.setGlyphPosition(oldLSB * scaleHorizontal);
+				}
 			},
 		});
 	});
@@ -259,7 +263,7 @@ export function makeCard_Resize() {
 		className: 'settings-table',
 		innerHTML: `
 			<span><input id="resizeUpdateAdvanceWidth" type="checkbox" checked></span>
-			<label for="resizeUpdateAdvanceWidth">Update the item's advance width property</label>
+			<label for="resizeUpdateAdvanceWidth">Maintain the item's right side bearing</label>
 			<span>&nbsp;</span>
 
 			<span><input id="resizeMaintainAspectRatio" type="checkbox"></span>
@@ -358,7 +362,7 @@ export function makeCard_Skew() {
 		className: 'settings-table',
 		innerHTML: `
 			<span><input id="skewAngleUpdateAdvanceWidth" type="checkbox" checked></span>
-			<label for="skewAngleUpdateAdvanceWidth">Also update the item's advance width property</label>
+			<label for="skewAngleUpdateAdvanceWidth">Maintain the item's right side bearing</label>
 		`,
 	});
 	card.appendChild(table);
