@@ -296,6 +296,24 @@ export function remove(base = '', searchTerm = '') {
 }
 
 /**
+ * Adds the Zero Width Non-Joiner character between every character
+ * in a string.	This is useful for not triggering Ligatures in UI text.
+ * @param {String} text - input string
+ * @returns {String}
+ */
+export function addZWNJCharacters(text = '') {
+	const textArr = [...text];
+	if (textArr.length < 2) return text;
+	let result = '';
+	for (let i = 0; i < textArr.length; i++) {
+		result += textArr[i];
+		result += '\u200C';
+	}
+	return result;
+}
+
+
+/**
  * Converts camelCaseString to kebab-case-string
  * @param {String} camel - string to convert
  * @returns {String}

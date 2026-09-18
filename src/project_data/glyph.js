@@ -336,6 +336,7 @@ export class Glyph extends GlyphElement {
 				suffixArr.forEach((char) => {
 					if (char.length === 1) name += char;
 					else name += hexesToChars(char);
+					name += '\u200C';
 				});
 			} else if (this.id.startsWith('comp-')) {
 				let suffix = remove(this.id, 'comp-');

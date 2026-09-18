@@ -24,6 +24,7 @@ import {
 	rad,
 	radiansToNiceAngle,
 	remove,
+	addZWNJCharacters,
 	rotate,
 	round,
 	snapRadiansToDegrees,
@@ -216,6 +217,21 @@ describe('Common Functions', () => {
 		const result = remove(base, searchTerm);
 
 		expect(result).toBe('1234564');
+	});
+
+	// Test for addZWNJCharacters function
+	it('addZWNJCharacters should add ZWNJ characters to a string', () => {
+		const input = 'abc';
+		const result = addZWNJCharacters(input);
+
+		expect(result.length).toBe(6); // Each character should be followed by a ZWNJ
+		expect(result).toBe('a\u200Cb\u200Cc\u200C'); // Check the actual string with ZWNJ characters
+
+		// Test surrogate pair strings
+		const surrogateInput = '𐍈𐍈'; // A character represented by a surrogate pair
+		const surrogateResult = addZWNJCharacters(surrogateInput);
+		expect([...surrogateResult].length).toBe(4); // Surrogate pair should be followed by a ZWNJ
+		expect(surrogateResult).toBe('𐍈\u200C𐍈\u200C'); // Check the actual string with ZWNJ characters
 	});
 
 	// Test for caseCamelToKebab function

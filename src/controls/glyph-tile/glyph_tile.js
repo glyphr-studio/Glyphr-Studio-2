@@ -1,7 +1,7 @@
 import { getCurrentProject } from '../../app/main.js';
 import { hexesToChars } from '../../common/character_ids.js';
 import { makeElement } from '../../common/dom.js';
-import { remove } from '../../common/functions.js';
+import { addZWNJCharacters, remove } from '../../common/functions.js';
 import { isWhitespace } from '../../lib/unicode/unicode_names.js';
 import { getItemNameWithFallback } from '../../pages/characters.js';
 import style from './glyph-tile.css?inline';
@@ -98,8 +98,16 @@ export class GlyphTile extends HTMLElement {
 		}
 
 		this.name = makeElement({ className: 'name' });
-		if (chars) this.name.innerHTML = displayedItemID === 'glyph-0x20' ? 'Space' : chars;
-		else this.name.innerHTML = name.replaceAll('Component ', 'comp-');
+		if (chars) {
+			if (displayedItemID === 'glyph-0x20') {
+				this.name.innerHTML = 'Space';
+			} else {
+				this.name.innerHTML = addZWNJCharacters(chars);
+			}
+		} else {
+			this.name.innerHTML = name.replaceAll('Component ', 'comp-');
+		}
+
 
 		// Put it all together
 		const shadow = this.attachShadow({ mode: 'open' });

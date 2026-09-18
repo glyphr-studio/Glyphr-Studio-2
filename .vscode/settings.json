@@ -131,7 +131,8 @@
 		"xlink",
 		"xlock",
 		"xmlns",
-		"ylock"
+		"ylock",
+		"ZWNJ"
 	],
 	"vitest.commandLine": "npx vitest watch --environment=jsdom",
 	"testing.automaticallyOpenPeekView": "never"
