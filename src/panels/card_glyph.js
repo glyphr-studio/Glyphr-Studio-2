@@ -1,6 +1,8 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { decToHex } from '../common/character_ids.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { makeIcon } from '../common/graphics.js';
+import { makeCharChip } from '../pages/kerning.js';
 import { makeActionsArea_Glyph, makeActionsArea_Universal } from './actions.js';
 import {
 	dimSplit,
@@ -18,9 +20,9 @@ import {
 // --------------------------------------------------------------
 
 export function makeCard_glyphAttributes(glyph) {
-	// log(`makeCard_glyphAttributes`, 'start');
-	// log(`glyph.id: ${glyph.id}`);
-
+	log(`makeCard_glyphAttributes`, 'start');
+	log(`glyph.id: ${glyph.id}`);
+	log(glyph);
 	// `ident` is a unique ID per object for debugging
 	let glyphCard = makeElement({
 		tag: 'div',
@@ -28,6 +30,22 @@ export function makeCard_glyphAttributes(glyph) {
 		innerHTML: `<h3>${glyph.displayType} ${glyph.ident || ''}</h3>`,
 	});
 
+	// Ligature source characters
+	if (glyph.gsub?.length) {
+		let ligatureSourceLabel = makeSingleLabel('source characters');
+		let ligatureSourceChars = makeElement();
+		glyph.gsub.forEach((char) => {
+			const charHex = decToHex(char);
+			let charSpan;
+			if (charHex !== false) {
+				charSpan = makeCharChip(charHex);
+				ligatureSourceChars.appendChild(charSpan);
+			}
+		});
+		addAsChildren(glyphCard, [ligatureSourceLabel, ligatureSourceChars]);
+	}
+
+	// Advance width
 	let advanceWidthLabel = makeSingleLabel('advance width');
 	let halfSizeAdvanceWidthInput = makeElement({ tag: 'div', className: 'doubleInput' });
 	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentItem', 'input-number');
@@ -107,7 +125,7 @@ export function makeCard_glyphAttributes(glyph) {
 	addAsChildren(glyphCard, makeActionsArea_Glyph());
 	// log(`returning:`);
 	// log(glyphCard);
-	// log(`makeCard_glyphAttributes`, 'end');
+	log(`makeCard_glyphAttributes`, 'end');
 	return glyphCard;
 }
 
