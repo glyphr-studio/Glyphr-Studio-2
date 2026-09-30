@@ -35,8 +35,6 @@ export class GlyphrStudioProject {
 				latestVersion: false,
 				initialVersion: false,
 				id: false,
-				exportComponentsAsComposites: true,
-				importComponentsFromComposites: true,
 				// Preferred font export format ('otf', 'ttf', 'woff', 'woff2').
 				// New projects default to OTF; importing a font file overwrites
 				// this with the format that was imported, so the Ctrl+E shortcut
@@ -62,6 +60,8 @@ export class GlyphrStudioProject {
 				moveShapesOnSVGDragDrop: false,
 				autoSideBearingsOnSVGDragDrop: 50,
 				autoRightBearingOnFirstShape: 50,
+				exportComponentsAsComposites: true,
+				importComponentsFromComposites: true,
 				highlightPointsNearPoints: 2,
 				highlightPointsNearHandles: 2,
 				highlightPointsNearXZero: 2,

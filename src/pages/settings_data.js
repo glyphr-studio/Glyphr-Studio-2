@@ -22,16 +22,6 @@ export default {
 			description: `A unique ID used to identify this project.`,
 			type: `Read only`,
 		},
-		exportComponentsAsComposites: {
-			label: `Export components as composite glyphs`,
-			description: `When checked, characters that are built entirely from Components (using pure-position moves, with no resizing, rotating, or flipping) are exported as TrueType composite glyphs. This preserves the component structure so the font can round-trip back into Glyphr Studio with its components intact. When unchecked, these characters are flattened into plain outlines on export.<br><br>Note: This only applies to TrueType-flavored formats (.ttf, .woff, .woff2). OpenType/CFF (.otf) does not support composite glyphs, so components are always flattened for that format. Characters using resized, rotated, or flipped components are always flattened as well.`,
-			type: `Boolean`,
-		},
-		importComponentsFromComposites: {
-			label: `Import composite glyphs as components`,
-			description: `When checked, TrueType composite glyphs (like accented letters, which reference other glyphs at an x/y offset) are imported as Glyphr Studio Components and Component Instances. A shared Component Root is created once for each referenced base glyph and re-used (linked) by every character that needs it. When unchecked, composite glyphs are flattened into plain outlines on import.<br><br>Note: Only pure-position composites qualify. Composite components that are scaled, rotated, or use point-matching are always flattened.`,
-			type: `Boolean`,
-		},
 	},
 	font: {
 		family: {
@@ -208,7 +198,7 @@ export default {
 			label: `Unlink component instances`,
 			description: `When selected, this option will unlink component instances and turn them into normal paths if their component root is deleted (the glyph will look the same, but some component instances will end up as stand-alone path objects).<br>If this option is unselected, component instances will be deleted when their component root is deleted (the glyph will look different because it will have less shapes).`,
 			type: `Boolean`,
-    },
+		},
 		canvasDisplayModeFilled: {
 			label: 'Canvas display mode "Filled"',
 			description: `For shapes on the edit canvas, when the display mode is "Filled" the shapes will be shown as filled with black, similar to how they will appear in a text editor. When the display mode is "Outline" (or unselected), the shapes will be shown as outlines, which may help when editing complex shapes.<br><br>You can toggle this setting directly on the edit canvas, next to the lower-right view controls.<br><br>Clockwise paths will be shown as a slightly lighter blue outline than their counter-clockwise counterparts. Component Instances will be outlined in dark green.`,
@@ -272,6 +262,16 @@ export default {
 			<br><br>
 			Set this value to -1 to disable it.`,
 			type: `Em`,
+		},
+		exportComponentsAsComposites: {
+			label: `Export components as composite glyphs`,
+			description: `When checked, characters that are built entirely from Components (using pure-position moves, with no resizing, rotating, or flipping) are exported as TrueType composite glyphs. This preserves the component structure so the font can round-trip back into Glyphr Studio with its components intact. When unchecked, these characters are flattened into plain outlines on export.<br><br>Note: This only applies to TrueType-flavored formats (.ttf, .woff, .woff2). OpenType/CFF (.otf) does not support composite glyphs, so components are always flattened for that format. Characters using resized, rotated, or flipped components are always flattened as well.`,
+			type: `Boolean`,
+		},
+		importComponentsFromComposites: {
+			label: `Import composite glyphs as components`,
+			description: `When checked, TrueType composite glyphs (like accented letters, which reference other glyphs at an x/y offset) are imported as Glyphr Studio Components and Component Instances. A shared Component Root is created once for each referenced base glyph and re-used (linked) by every character that needs it. When unchecked, composite glyphs are flattened into plain outlines on import.<br><br>Note: Only pure-position composites qualify. Composite components that are scaled, rotated, or use point-matching are always flattened.`,
+			type: `Boolean`,
 		},
 		highlightPointsNearPoints: {
 			label: `Highlight points that are near other points`,

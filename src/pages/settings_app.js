@@ -58,6 +58,8 @@ export function makeSettingsTabContentApp() {
 		makeOneSettingsRow('app', 'moveShapesOnSVGDragDrop'),
 		makeOneSettingsRow('app', 'autoSideBearingsOnSVGDragDrop'),
 		makeOneSettingsRow('app', 'autoRightBearingOnFirstShape'),
+		makeOneSettingsRow('app', 'exportComponentsAsComposites'),
+		makeOneSettingsRow('app', 'importComponentsFromComposites'),
 		textToNode('<br>'),
 		textToNode('<h3>Quality checks</h3>'),
 		makeOneSettingsRow('app', 'highlightPointsNearPoints'),
