@@ -52,14 +52,17 @@ export function makeEditToolsButtons() {
 
 	if (editor.selectedTool !== 'pathEdit' && hasComponentInstance) {
 		toolButtonData.pathEdit.disabled = true;
+		// log(`DISABLE pathEdit - hasComponentInstance`);
 	}
 
 	if (editor.selectedTool !== 'pathAddPoint' && hasComponentInstance) {
 		toolButtonData.pathAddPoint.disabled = true;
+		// log(`DISABLE pathAddPoint - hasComponentInstance`);
 	}
 
 	if (editor.multiSelect.shapes.count > 1) {
 		toolButtonData.pathAddPoint.disabled = true;
+		// log(`DISABLE pathAddPoint - multiSelect > 1`);
 	}
 
 	// Make all the new buttons
@@ -70,16 +73,24 @@ export function makeEditToolsButtons() {
 
 		let isSelected = editor.selectedTool === buttonName;
 
+		let isDisabled = toolButtonData[buttonName].disabled;
+
+		let toolButtonSVG = makeToolButtonSVG({
+			name: buttonName,
+			selected: isSelected,
+			disabled: isDisabled,
+		});
+		// log(`\n⮟toolButtonSVG⮟`);
+		// log(toolButtonSVG);
+
 		let newToolButton = makeElement({
 			tag: 'button',
 			title: toolButtonData[buttonName].title,
 			className: 'editor-page__tool',
-			innerHTML: makeToolButtonSVG({
-				name: buttonName,
-				selected: isSelected,
-				disabled: toolButtonData[buttonName].disabled,
-			}),
+			innerHTML: toolButtonSVG,
 		});
+
+		if (isDisabled) newToolButton.setAttribute('disabled', 'disabled');
 
 		newToolButton.addEventListener('click', () => selectTool(buttonName));
 
@@ -96,6 +107,8 @@ export function makeEditToolsButtons() {
 		});
 
 		toolButtonElements[buttonName] = newToolButton;
+		// log(`\n⮟newToolButton⮟`);
+		// log(newToolButton);
 	});
 
 	// Put it all together
@@ -543,7 +556,7 @@ export function isPointNearShapeEdge(shape, cx, cy, thickness = 10) {
 }
 
 /**
- * Detects if the mosue is over a side bearing
+ * Detects if the mouse is over a side bearing
  * @param {Number} cx - canvas X value
  * @param {Number} cy - canvas Y value
  * @param {Glyph | Object} item - thing to get the side bearing from
@@ -589,8 +602,8 @@ export function makeToolButtonSVG(oa) {
 		colorOutline = accentColors.gray.l10;
 		colorFill = 'white';
 	} else if (oa.disabled) {
-		colorOutline = accentColors.gray.l40;
-		colorFill = accentColors.gray.l30;
+		colorOutline = accentColors.gray.l80;
+		colorFill = accentColors.gray.l90;
 	}
 
 	let innerHTML = '';

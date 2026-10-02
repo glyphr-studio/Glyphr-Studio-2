@@ -132,6 +132,9 @@ export function makePage_Characters() {
 				/** @type {EditCanvas} */
 				const canvas = editor.editCanvas;
 				if (canvas.redraw) canvas.redraw('subscription:simpleRedraws');
+				let toolsArea = content.querySelector('.editor-page__tools-area');
+				toolsArea.innerHTML = '';
+				addAsChildren(toolsArea, makeEditToolsButtons());
 			},
 		});
 	});

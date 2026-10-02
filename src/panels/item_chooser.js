@@ -390,25 +390,25 @@ function makeKernSortControl() {
 	});
 
 	sortControl.addEventListener('click', () => {
-		log(`sortControl CLICK`, 'start');
+		// log(`sortControl CLICK`, 'start');
 		const newSelection = document
 			.getElementById('kern-group-chooser__sort-control')
 			.getAttribute('selected-id');
-		log(`newSelection: ${newSelection}`);
+		// log(`newSelection: ${newSelection}`);
 		getCurrentProjectEditor().kernGroupListSortBy = newSelection;
 		updateKernGroupChooserList();
-		log(`sortControl CLICK`, 'end');
+		// log(`sortControl CLICK`, 'end');
 	});
 
 	return sortControl;
 }
 
 function updateKernGroupChooserList() {
-	log(`updateKernGroupChooserList`, 'start');
+	// log(`updateKernGroupChooserList`, 'start');
 	const list = document.querySelector('.kern-group-chooser__list');
 	list.innerHTML = '';
 	list.appendChild(makeKernGroupChooserList());
-	log(`updateKernGroupChooserList`, 'end');
+	// log(`updateKernGroupChooserList`, 'end');
 }
 
 // --------------------------------------------------------------

@@ -256,7 +256,7 @@ function ioSVG_makeOneGlyph(gl, id, tag = 'glyph') {
 
 	let exportName = gl.name;
 	exportName = exportName.replace(/ /g, '_');
-	log(`exportName: ${exportName}`);
+	// log(`exportName: ${exportName}`);
 
 	if (tag === 'missing-glyph') {
 		con += ` horiz-adv-x="${gl.advanceWidth}" `;
