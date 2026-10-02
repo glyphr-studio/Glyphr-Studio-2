@@ -743,11 +743,12 @@ function enableCharacterRange(range) {
 }
 
 function sanitizeUnicodeInput(inputString) {
-	let sanString = inputString.replace(/U\+/gi, '0x');
+	let normalizedString = inputString.normalize('NFKC');
+	let sanString = normalizedString.replace(/U\+/gi, '0x');
 	let sanInt = parseInt(sanString);
 
 	if (!isNaN(sanInt)) return decToHex(Math.abs(sanInt));
-	else return inputString;
+	else return normalizedString;
 }
 
 export function sortCharacterRanges() {
