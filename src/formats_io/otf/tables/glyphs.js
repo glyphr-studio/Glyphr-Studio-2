@@ -172,7 +172,7 @@ function importOneGlyph(
  * @returns {Boolean} - true if the glyph should become Component Instances
  */
 function shouldImportAsComponents(glyph, project, importedFont) {
-	if (project?.settings?.project?.importComponentsFromComposites === false) return false;
+	if (project?.settings?.app?.importComponentsFromComposites === false) return false;
 	if (!glyph || !glyph.components || glyph.components.length === 0) return false;
 	if (!importedFont || !Array.isArray(importedFont.glyphs)) return false;
 

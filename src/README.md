@@ -4,8 +4,10 @@
 We have adopted Vite for all the things. After you clone the `Glyphr-Studio-2`
 repository and navigate to that directory, just do a `npm install --include-dev`
 to get up to date, then using the `npm run dev` command will start the Vite dev
-server. `npm run test` will run Vitest, although features may be developed
-before their tests are.
+server. Tests use Vitest 5, which requires Node.js 22.12+ (22.x), 24.x, or
+26+. `npm run test` runs in watch mode; `npx vitest run` runs the suite once.
+Features may be developed before their tests are. The test configuration
+explicitly disables automatic mock clearing to preserve the Vitest 4 behavior.
 
 ## Codebase organization
 There are two main areas of code in Glyphr Studio v2 -

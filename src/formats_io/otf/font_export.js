@@ -96,7 +96,7 @@ export async function ioFont_exportFont(suffix = 'otf', testing = false) {
 	// the setting is ignored there and components are always flattened.
 	const isTrueTypeFlavor = suffix === 'ttf' || suffix === 'woff' || suffix === 'woff2';
 	const exportComposites =
-		isTrueTypeFlavor && !!project?.settings?.project?.exportComponentsAsComposites;
+		isTrueTypeFlavor && !!project?.settings?.app?.exportComponentsAsComposites;
 
 	// Names of every character that will be exported, so a composite's component
 	// reference can tell whether its linked character is already present in the

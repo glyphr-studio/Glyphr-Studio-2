@@ -134,6 +134,7 @@
 		"ylock",
 		"ZWNJ"
 	],
-	"vitest.commandLine": "npx vitest watch --environment=jsdom",
+	"vitest.rootConfig": "vitest.config.js",
+	"vitest.shellType": "child_process",
 	"testing.automaticallyOpenPeekView": "never"
 }

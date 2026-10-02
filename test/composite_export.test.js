@@ -27,11 +27,10 @@ function makeComponentProjectText() {
 				latestVersion: '2.5.0',
 				initialVersion: '2.5.0',
 				id: 'g2_COMPTEST',
-				exportComponentsAsComposites: true,
 				characterRanges: [{ name: 'Basic Latin', begin: '0x20', end: '0x7F' }],
 			},
 			font: { family: 'CompTest', upm: 1000, ascent: 800, descent: -200 },
-			app: { exportUneditedItems: true },
+			app: { exportUneditedItems: true, exportComponentsAsComposites: true },
 		},
 		glyphs: {
 			'glyph-0x69': {
@@ -80,7 +79,7 @@ function findGlyph(font, unicode) {
 describe('Composite Glyph Export', () => {
 	it('exports component-built glyphs as TrueType composites when setting is ON', async () => {
 		const project = importGlyphrProjectFromText(makeComponentProjectText());
-		expect(project.settings.project.exportComponentsAsComposites).toBe(true);
+		expect(project.settings.app.exportComponentsAsComposites).toBe(true);
 
 		const font = await exportAndOpen(project);
 		const i = findGlyph(font, 0x69);
@@ -98,7 +97,7 @@ describe('Composite Glyph Export', () => {
 
 	it('flattens component-built glyphs to outlines when setting is OFF', async () => {
 		const project = importGlyphrProjectFromText(makeComponentProjectText());
-		project.settings.project.exportComponentsAsComposites = false;
+		project.settings.app.exportComponentsAsComposites = false;
 
 		const font = await exportAndOpen(project);
 		const i = findGlyph(font, 0x69);
@@ -114,7 +113,7 @@ describe('Composite Glyph Export', () => {
 
 	it('always flattens for OTF/CFF even when setting is ON', async () => {
 		const project = importGlyphrProjectFromText(makeComponentProjectText());
-		expect(project.settings.project.exportComponentsAsComposites).toBe(true);
+		expect(project.settings.app.exportComponentsAsComposites).toBe(true);
 		const editor = new ProjectEditor({ project });
 		setCurrentProjectEditor(editor);
 		// OTF/CFF cannot store composites, so the setting is ignored and the

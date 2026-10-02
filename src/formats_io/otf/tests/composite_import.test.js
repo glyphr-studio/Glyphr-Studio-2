@@ -2,7 +2,9 @@ import { FontFlux } from 'font-flux-js';
 import fs from 'fs';
 import path from 'path';
 import { describe, expect, it } from 'vitest';
+import { GlyphrStudioProject } from '../../../project_data/glyphr_studio_project.js';
 import { ioFont_importFont } from '../font_import.js';
+import { importGlyphs } from '../tables/glyphs.js';
 
 function bbox(contours) {
 	let xMin = Infinity,
@@ -20,6 +22,35 @@ function bbox(contours) {
 }
 
 describe('Inter composite glyph import (correctness)', () => {
+	it.each([true, false])(
+		'respects settings.app.importComponentsFromComposites = %s',
+		async (importAsComponents) => {
+			const filePath = path.resolve(
+				__dirname,
+				'../../../../test/sample fonts/Inter_18pt-Regular.ttf'
+			);
+			const fontBuffer = fs.readFileSync(filePath);
+			const loadResult = FontFlux.open(new Uint8Array(fontBuffer).buffer);
+			const project = new GlyphrStudioProject();
+			project.settings.app.importComponentsFromComposites = importAsComponents;
+
+			const glyphs = await importGlyphs(
+				loadResult.glyphs.filter((glyph) => glyph.unicode === 0x69),
+				project,
+				loadResult
+			);
+			const i = glyphs['glyph-0x69'];
+			expect(i.shapes.length).toBe(2);
+			for (const shape of i.shapes) {
+				expect(shape.objType).toBe(importAsComponents ? 'ComponentInstance' : 'Path');
+			}
+			expect(Object.keys(project.components).length).toBe(importAsComponents ? 2 : 0);
+			expect(i.advanceWidth).toBe(480);
+			const truth = bbox(loadResult.getGlyphContours('i'));
+			expect(Math.abs(i.maxes.xMax - i.maxes.xMin - truth.w)).toBeLessThan(2);
+		}
+	);
+
 	it('imports i/j with the CORRECT outlines (by-name decomposition)', async () => {
 		const filePath = path.resolve(
 			__dirname,
