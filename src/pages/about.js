@@ -307,7 +307,7 @@ function makeFamilyInfo() {
 					Convert fonts to JSON, make edits, then convert them back!
 					Font Flux JS is a JavaScript library for parsing OpenType/TrueType font binaries into structured JSON, then exporting that JSON back into a valid font binary. Every table is fully parsed into human-readable fields!
 					<br/><br/>
-					<a href="https://www.glyphrstudio.com/font-flux-js" target="_blank">glyphrstudio.com/font-flux-js</a>
+					<a href="https://www.glyphrstudio.com/fontfluxjs" target="_blank">glyphrstudio.com/fontfluxjs</a>
 					<br/>
 					<a href="https://www.github.com/mattlag/font-flux-js" target="_blank">github.com/mattlag/font-flux-js</a>
 				</p>
