@@ -7,6 +7,7 @@ export default tseslint.config(
 	{
 		ignores: [
 			'**/*.test.js',
+			'src/lib/font-flux-js.js',
 			'dev/lib/**',
 			'dev/samples/**',
 			'dev/io/**',

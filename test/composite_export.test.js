@@ -1,4 +1,4 @@
-import { FontFlux } from 'font-flux-js';
+import { FontFlux } from '../src/lib/font-flux-js.js';
 import { describe, expect, it } from 'vitest';
 import { setCurrentProjectEditor } from '../src/app/main.js';
 import { ioFont_exportFont } from '../src/formats_io/otf/font_export.js';

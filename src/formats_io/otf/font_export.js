@@ -1,4 +1,4 @@
-import { FontFlux, initWoff2 } from 'font-flux-js';
+import { FontFlux, initWoff2 } from '../../lib/font-flux-js.js';
 import { getCurrentProject } from '../../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../../common/character_ids.js';
 import { isUIUpdateDue, pause, resetUIUpdateThrottle, round } from '../../common/functions.js';

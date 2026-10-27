@@ -50,7 +50,7 @@
 	"dependencies": {
 		"@mattlag/xmltojson": "^2.0.2",
 		"bezier-boolean": "^1.0.6",
-		"eslint": "^10.8.0",
-		"font-flux-js": "file:vendor/font-flux-js"
+		"brotli-wasm": "^3.0.1",
+		"eslint": "^10.8.0"
 	}
 }

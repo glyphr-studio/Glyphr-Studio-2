@@ -1,4 +1,4 @@
-import { FontFlux } from 'font-flux-js';
+import { FontFlux } from '../../lib/font-flux-js.js';
 import {
 	getGlyphrStudioApp,
 	getProjectEditorImportTarget,

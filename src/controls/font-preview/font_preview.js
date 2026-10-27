@@ -1,5 +1,5 @@
 /* global Buffer */
-import { FontFlux } from 'font-flux-js';
+import { FontFlux } from '../../lib/font-flux-js.js';
 import { getCurrentProject } from '../../app/main.js';
 import { charToHex } from '../../common/character_ids.js';
 import { makeElement } from '../../common/dom.js';
