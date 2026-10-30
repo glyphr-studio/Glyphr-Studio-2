@@ -1,0 +1,12 @@
+export { unicodeVersion, unicodeReleaseDate, unicodeDefinitionSchemaVersion, unicodeNamedCharacterCount, unicodeBlockCount, unicodeSources } from './unicode_metadata.js';
+export { normalizeCodePoint, decToHex } from './unicode_ids.js';
+export { getUnicodeName, iterateUnicodeNames, isControlChar } from './unicode_names.js';
+export { unicodeNamesBMP } from './unicode_names_0_bmp.js';
+export { unicodeNamesSMP } from './unicode_names_1_smp.js';
+export { unicodeNameRanges } from './unicode_name_ranges.js';
+export { unicodeBlocksBMP, unicodeBlocksBMPUnallocated } from './unicode_blocks_0_bmp.js';
+export { unicodeBlocksSMP, unicodeBlocksSMPUnallocated } from './unicode_blocks_1_smp.js';
+export { unicodeBlocksSIP, unicodeBlocksSIPUnallocated } from './unicode_blocks_2_sip.js';
+export { unicodeBlocksTIP, unicodeBlocksTIPUnallocated } from './unicode_blocks_3_tip.js';
+export { unicodeBlocksOther, unicodeBlocksOtherUnallocated } from './unicode_blocks_other.js';
+export { unicodeBlocks, unicodeUnallocatedBlocks, getParentRange, getUnicodeBlockByName, isCharInRange, isStandardUnicodeRange } from './unicode_blocks.js';

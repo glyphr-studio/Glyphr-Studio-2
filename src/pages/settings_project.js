@@ -12,6 +12,7 @@ import { unicodeBlocksBMP } from '../lib/unicode/unicode_blocks_0_bmp.js';
 import { unicodeBlocksSMP } from '../lib/unicode/unicode_blocks_1_smp.js';
 import { unicodeBlocksSIP } from '../lib/unicode/unicode_blocks_2_sip.js';
 import { unicodeBlocksTIP } from '../lib/unicode/unicode_blocks_3_tip.js';
+import { unicodeBlocksOther } from '../lib/unicode/unicode_blocks_other.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { makeDirectCheckbox } from '../panels/cards';
 import { CharacterRange } from '../project_data/character_range.js';
@@ -793,6 +794,7 @@ function showUnicodeCharacterRangeDialog() {
 	unicodeBlocksSMP.forEach(processOneBlock);
 	unicodeBlocksSIP.forEach(processOneBlock);
 	unicodeBlocksTIP.forEach(processOneBlock);
+	unicodeBlocksOther.forEach(processOneBlock);
 
 	function processOneBlock(block) {
 		rowWrapper = makeElement({

@@ -3,8 +3,9 @@ import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { clone, remove, round, trim } from '../common/functions.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { getParentRange } from '../lib/unicode/unicode_blocks.js';
+import { decToHex as standardDecToHex } from '../lib/unicode/unicode_definitions/index.js';
 import { getUnicodeName, getUnicodeShortName } from '../lib/unicode/unicode_names.js';
-import { unicodeNonCharPointNames } from '../lib/unicode/unicode_names_0_bmp.js';
+import { unicodeNonCharPointNames } from '../lib/unicode/unicode_overlays.js';
 import { makeComponentID } from '../pages/components.js';
 import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
@@ -456,7 +457,9 @@ export class GlyphrStudioProject {
 		newParentRange.count = 1;
 		if (createAsHidden) newParentRange.enabled = false;
 		projectRanges.push(newParentRange);
-		if (unicodeNonCharPointNames[id] && id !== 0) this.settings.app.showNonCharPoints = true;
+		if (unicodeNonCharPointNames[standardDecToHex(id)] && id !== 0) {
+			this.settings.app.showNonCharPoints = true;
+		}
 		// log(`createRangeForHex`, 'end');
 	}
 

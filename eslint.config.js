@@ -8,6 +8,7 @@ export default tseslint.config(
 		ignores: [
 			'**/*.test.js',
 			'src/lib/font-flux-js.js',
+			'src/lib/unicode/unicode_definitions/generate.cjs',
 			'dev/lib/**',
 			'dev/samples/**',
 			'dev/io/**',

@@ -8,6 +8,10 @@ import {
 	isStandardUnicodeRange,
 	unicodeNonCharPoints,
 } from '../unicode_blocks.js';
+import {
+	unicodeBlocks,
+	unicodeUnallocatedBlocks,
+} from '../unicode_definitions/index.js';
 
 describe('Unicode Blocks - getUnicodeBlockByName', () => {
 	it('getUnicodeBlockByName - finds Basic Latin block', () => {
@@ -129,6 +133,7 @@ describe('Unicode Blocks - isControlChar', () => {
 
 	it('isControlChar - DEL character is control char', () => {
 		expect(isControlChar(0x001f)).toBe(true);
+		expect(isControlChar(0x007f)).toBe(true);
 	});
 
 	it('isControlChar - Latin-1 Supplement control characters', () => {
@@ -141,16 +146,68 @@ describe('Unicode Blocks - isControlChar', () => {
 		expect(isControlChar(0x0020)).toBe(false);
 	});
 
-	it('isControlChar - regular ASCII letter is not control char', () => {
+	it('isControlChar - regular ASCII letter is not a control char', () => {
 		expect(isControlChar(0x0041)).toBe(false);
 	});
 
-	it('isControlChar - number is not control char', () => {
+	it('isControlChar - number is not a control char', () => {
 		expect(isControlChar(0x0030)).toBe(false);
 	});
 
-	it('isControlChar - emoji is not control char', () => {
+	it('isControlChar - emoji is not a control char', () => {
 		expect(isControlChar(0x1f600)).toBe(false);
+	});
+});
+
+describe('Unicode 18 block definitions', () => {
+	it('retains the Glyphr Studio Latin display subdivisions', () => {
+		expect(getParentRange(0x0000)).toEqual({
+			begin: 0x0000,
+			end: 0x001f,
+			name: 'Basic Latin Controls',
+		});
+		expect(getParentRange(0x0020)).toEqual({
+			begin: 0x0020,
+			end: 0x007f,
+			name: 'Basic Latin',
+		});
+		expect(getParentRange(0x0080)).toEqual({
+			begin: 0x0080,
+			end: 0x009f,
+			name: 'Latin-1 Supplement Controls',
+		});
+		expect(getParentRange(0x00a0)).toEqual({
+			begin: 0x00a0,
+			end: 0x00ff,
+			name: 'Latin-1 Supplement',
+		});
+	});
+
+	it('finds official blocks and parent ranges across all planes', () => {
+		expect(getUnicodeBlockByName('Variation Selectors Supplement')).toMatchObject({
+			begin: 0xe0100,
+			end: 0xe01ef,
+		});
+		expect(getUnicodeBlockByName('Tags')).toMatchObject({
+			begin: 0xe0000,
+			end: 0xe007f,
+		});
+		expect(getParentRange(0xe0001).name).toBe('Tags');
+		expect(getParentRange(0xe0100).name).toBe('Variation Selectors Supplement');
+		expect(getParentRange(0xf0000).name).toBe('Supplementary Private Use Area-A');
+		expect(getParentRange(0x100000).name).toBe('Supplementary Private Use Area-B');
+		expect(getParentRange(0x40000)).toMatchObject({
+			begin: 0x40000,
+		});
+	});
+
+	it('returns current Unicode 18 blocks and generated gap ranges without overlap', () => {
+		expect(unicodeBlocks).toHaveLength(353);
+		for (const gap of unicodeUnallocatedBlocks) {
+			for (const block of unicodeBlocks) {
+				expect(gap.end < block.begin || gap.begin > block.end).toBe(true);
+			}
+		}
 	});
 });
 

@@ -137,6 +137,55 @@ describe('GlyphrStudioProject Tests', () => {
 		expect(itemName).toBe('a');
 	});
 
+	it('keeps saved glyph names and custom ranges while supporting unnamed private-use glyphs', () => {
+		const customRange = {
+			name: 'Designer private-use range',
+			begin: '0xE000',
+			end: '0xE001',
+			enabled: false,
+		};
+		const project = new GlyphrStudioProject({
+			...mockProjectData,
+			settings: {
+				...mockProjectData.settings,
+				project: {
+					...mockProjectData.settings.project,
+					characterRanges: [customRange],
+				},
+			},
+			glyphs: {
+				'glyph-0xE000': {
+					id: 'glyph-0xE000',
+					name: 'Designer-authored glyph name',
+				},
+			},
+		});
+
+		expect(project.getItemName('glyph-0xE000', true)).toBe('U+E000');
+		expect(project.save().settings.project.characterRanges[0]).toEqual({
+			name: customRange.name,
+			begin: '0xE000',
+			end: '0xE001',
+			enabled: false,
+		});
+		expect(project.glyphs['glyph-0xE000'].name).toBe('Designer-authored glyph name');
+	});
+
+	it('uses Unicode 18 parent ranges and preserves Glyphr control visibility', () => {
+		const project = new GlyphrStudioProject(mockProjectData);
+		project.createRangeForHex(0x001f);
+
+		expect(project.settings.project.characterRanges.at(-1)).toMatchObject({
+			name: 'Basic Latin Controls',
+			begin: 0,
+			end: 0x1f,
+		});
+		expect(project.settings.app.showNonCharPoints).toBe(true);
+
+		project.createRangeForHex(0x40000);
+		expect(project.settings.project.characterRanges.at(-1).begin).toBe(0x40000);
+	});
+
 	// Test the makeItemThumbnail method of GlyphrStudioProject class
 	it('GlyphrStudioProject makeItemThumbnail should generate an SVG thumbnail for an item', ({
 		expect,

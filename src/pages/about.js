@@ -8,6 +8,7 @@ import fam_ffjs from '../common/graphics/fam_ffjs.png';
 import fam_un from '../common/graphics/fam_un.png';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import { TabControl } from '../controls/tabs/tab_control.js';
+import { unicodeReleaseDate, unicodeVersion } from '../lib/unicode/unicode_definitions/index.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
@@ -138,6 +139,14 @@ function makeLicenseInfo() {
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
 			<br>
 			Copyright © 2026, Matthew LaGrandeur
+		</div>
+
+		<br><br>
+		<h2>Unicode Standard</h2>
+		<div class="page__card">
+			<h3>Unicode definitions</h3>
+			<label>Version:</label> ${unicodeVersion}<br>
+			<label>Published:</label> ${unicodeReleaseDate}
 		</div>
 	`,
 	});

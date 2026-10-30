@@ -1,9 +1,12 @@
 // import { log } from '../app/main.js';
 import { validateAsHex } from '../../common/character_ids.js';
-import { parseNumber } from '../../common/functions.js';
-import { getParentRange } from './unicode_blocks.js';
-import { unicodeNamesBMP, unicodeNonCharPointNames } from './unicode_names_0_bmp.js';
-import { unicodeNamesSMP } from './unicode_names_1_smp.js';
+import {
+	decToHex as standardDecToHex,
+	getUnicodeName as getStandardUnicodeName,
+	isControlChar as isStandardControlChar,
+	normalizeCodePoint,
+} from './unicode_definitions/index.js';
+import { unicodeNonCharPointNames, unicodeNullDisplayName } from './unicode_overlays.js';
 
 /**
  * Gets the name of a Unicode character
@@ -14,40 +17,22 @@ export function getUnicodeName(id) {
 	// log('getUnicodeName', 'start');
 	// log('passed ' + id);
 
-	let name = '';
-	let chn = 0;
-	let codePoint = validateAsHex('' + id);
-	let codePointSuffix = '[no id]';
-	if (codePoint) {
-		codePointSuffix = codePoint.substring(2);
-		chn = parseNumber(codePoint);
-	}
-
-	if (!codePoint || codePointSuffix === '[no id]' || isNaN(chn)) {
+	const point = normalizeCodePoint(id);
+	if (point === undefined) {
 		console.warn(`Could not get Unicode name for invalid code point: ${id}`);
 		return '[name not found]';
 	}
-	// log('normalized ' + codePoint);
+	if (point === 0) return unicodeNullDisplayName;
 
-	if ((chn >= 0x4e00 && chn < 0xa000) || (chn >= 0x20000 && chn < 0x323af)) {
-		name = `CJK Unified Ideograph ${codePointSuffix}`;
-	} else if (chn < 0xffff) {
-		name = unicodeNamesBMP[codePoint] || unicodeNonCharPointNames[codePoint] || '';
-	} else if (chn >= 0x18b00 && chn <= 0x18cd5) {
-		name = `Khitan Small Script Character ${codePointSuffix}`;
-	} else if (chn >= 0x18800 && chn <= 0x18aff) {
-		name = `Tangut Component ${chn - 0x18800 + 1}`;
-	} else if (chn >= 0x1b170 && chn <= 0x1b2fb) {
-		name = `Nushu Character ${codePointSuffix}`;
-	} else if (chn < 0x1fbf9) {
-		name = unicodeNamesSMP[codePoint] || '';
-	} else if (chn < 0x1ffff) {
-		let block = getParentRange(parseNumber(id));
-		if (block) name = `${block.name} ${codePointSuffix}`;
+	const standardName = getStandardUnicodeName(point);
+	if (standardName) return standardName;
+
+	const normalizedID = standardDecToHex(point);
+	if (isStandardControlChar(point) && unicodeNonCharPointNames[normalizedID]) {
+		return unicodeNonCharPointNames[normalizedID];
 	}
 
-	// Default name is just the Unicode code point ID
-	if (name === '') name = `U+${codePointSuffix.toUpperCase()}`;
+	const name = `U+${point.toString(16).toUpperCase()}`;
 
 	// log(`name: ${name}`);
 	// log('getUnicodeName', 'end');

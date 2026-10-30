@@ -1,0 +1,10 @@
+{
+	"name": "unicode-definitions",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"generate": "node generate.cjs",
+		"check": "node generate.cjs --check",
+		"test": "node --test tests/unicode_definitions.test.js"
+	}
+}

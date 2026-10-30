@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import {
+	getUnicodeName as getStandardUnicodeName,
+	isControlChar as isStandardControlChar,
+} from '../unicode_definitions/index.js';
 import {
 	getUnicodeName,
 	getUnicodeShortName,
@@ -8,72 +12,70 @@ import {
 } from '../unicode_names.js';
 
 describe('Unicode Names - getUnicodeName', () => {
-	it('getUnicodeName - basic ASCII character', () => {
-		expect(getUnicodeName('0x41')).toBe('Latin Capital Letter A');
-	});
-
-	it('getUnicodeName - lowercase letter', () => {
-		expect(getUnicodeName('0x61')).toBe('Latin Small Letter A');
-	});
-
-	it('getUnicodeName - number as hex string', () => {
-		expect(getUnicodeName('0x41')).toBe('Latin Capital Letter A');
-	});
-
-	it('getUnicodeName - special character', () => {
-		expect(getUnicodeName('0x21')).toBe('Exclamation mark');
-	});
-
-	it('getUnicodeName - space character', () => {
-		expect(getUnicodeName('0x20')).toBe('Space');
-	});
-
-	it('getUnicodeName - emoji (surrogate pair)', () => {
-		expect(getUnicodeName('0x1F600')).toBe('Grinning Face');
-	});
-
-	it('getUnicodeName - CJK character in BMP', () => {
-		expect(getUnicodeName('0x4E00')).toBe('CJK Unified Ideograph 4E00');
-	});
-
-	it('getUnicodeName - CJK character in SMP', () => {
-		expect(getUnicodeName('0x20000')).toBe('CJK Unified Ideograph 20000');
-	});
-
-	it('getUnicodeName - Khitan Small Script', () => {
-		expect(getUnicodeName('0x18B00')).toBe('Khitan Small Script Character 18B00');
-	});
-
-	it('getUnicodeName - Tangut Component', () => {
-		expect(getUnicodeName('0x18800')).toBe('Tangut Component 1');
-	});
-
-	it('getUnicodeName - Nushu Character', () => {
-		expect(getUnicodeName('0x1B170')).toBe('Nushu Character 1B170');
-	});
-
-	it('getUnicodeName - character with no defined name falls back to code point', () => {
-		expect(getUnicodeName('0x1FC00')).toContain('U+1FC00');
-	});
-
-	it('getUnicodeName - invalid input returns name not found', () => {
-		expect(getUnicodeName('invalid')).toBe('[name not found]');
-	});
-
-	it('getUnicodeName - null input', () => {
-		expect(getUnicodeName(null)).toBe('[name not found]');
-	});
-
-	it('getUnicodeName - Greek letter', () => {
+	it('returns exact standard names for normalized IDs', () => {
+		for (const input of ['0x41', '0x0041', 65]) {
+			expect(getStandardUnicodeName(input)).toBe('LATIN CAPITAL LETTER A');
+			expect(getUnicodeName(input)).toBe('LATIN CAPITAL LETTER A');
+		}
+		expect(getUnicodeName('0x61')).toBe('LATIN SMALL LETTER A');
+		expect(getUnicodeName('0x21')).toBe('EXCLAMATION MARK');
+		expect(getUnicodeName('0x20')).toBe('SPACE');
+		expect(getUnicodeName('0x1F600')).toBe('GRINNING FACE');
 		expect(getUnicodeName('0x3B1')).toBe('GREEK SMALL LETTER ALPHA');
-	});
-
-	it('getUnicodeName - currency symbol', () => {
 		expect(getUnicodeName('0x20AC')).toBe('EURO SIGN');
+		expect(getUnicodeName('0x221E')).toBe('INFINITY');
 	});
 
-	it('getUnicodeName - mathematical symbol', () => {
-		expect(getUnicodeName('0x221E')).toBe('INFINITY');
+	it('uses assigned Unicode 18 algorithmic names and exact boundaries', () => {
+		const cases = [
+			['0x18800', 'TANGUT COMPONENT-001'],
+			['0x2F800', 'CJK COMPATIBILITY IDEOGRAPH-2F800'],
+			['0x323AF', 'CJK UNIFIED IDEOGRAPH-323AF'],
+			['0x323B0', 'CJK UNIFIED IDEOGRAPH-323B0'],
+			['0x3D000', 'SMALL SEAL CHARACTER-3D000'],
+			['0xE0001', 'LANGUAGE TAG'],
+			['0xE0100', 'VARIATION SELECTOR-17'],
+			['0xE01EF', 'VARIATION SELECTOR-256'],
+		];
+		for (const [input, name] of cases) {
+			expect(getStandardUnicodeName(input)).toBe(name);
+			expect(getUnicodeName(input)).toBe(name);
+		}
+	});
+
+	it('does not fabricate names for unassigned or private-use code points', () => {
+		for (const input of ['0x2A6E0', '0x3347A', '0x3FC40', '0xE000', '0xF0000', '0x100000']) {
+			expect(getStandardUnicodeName(input)).toBeUndefined();
+			expect(getUnicodeName(input)).toBe(`U+${Number(input).toString(16).toUpperCase()}`);
+		}
+	});
+
+	it('keeps friendly control labels outside the standard name data', () => {
+		const cases = [
+			['0x0', '.null'],
+			['0x7F', 'Delete'],
+			['0x9F', 'Application Program Command'],
+		];
+		for (const [input, label] of cases) {
+			expect(isStandardControlChar(input)).toBe(true);
+			expect(getStandardUnicodeName(input)).toBeUndefined();
+			expect(getUnicodeName(input)).toBe(label);
+		}
+	});
+
+	it('preserves the U+ fallback for unnamed code points', () => {
+		for (const input of ['0x2A6E0', '0x3347A', '0x3FC40', '0xE000', '0xF0000', '0x100000']) {
+			expect(getUnicodeName(input).startsWith('U+')).toBe(true);
+		}
+	});
+
+	it('warns and returns the legacy message for invalid code points', () => {
+		const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		for (const input of ['invalid', null, -1, 0.5, 0x110000]) {
+			expect(getUnicodeName(input)).toBe('[name not found]');
+		}
+		expect(warning).toHaveBeenCalledTimes(5);
+		warning.mockRestore();
 	});
 });
 
@@ -130,6 +132,11 @@ describe('Unicode Names - getUnicodeShortName', () => {
 
 	it('getUnicodeShortName - number input', () => {
 		expect(getUnicodeShortName(65)).toBe('A');
+	});
+
+	it('getUnicodeShortName - derives a bounded label from the exact standard name', () => {
+		expect(getUnicodeShortName('0x18800')).toBe('TANGUTCOMPONENT-001');
+		expect(getUnicodeShortName('0xE0100')).toBe('VARIATIONSELECTOR-17');
 	});
 });
 

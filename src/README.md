@@ -24,6 +24,7 @@ each with an associated set of directories. Those two main areas are:
   there's a whole bunch of other UI stuff that's needed to manipulate
   that data in a way that's easy and slick. That's where the App comes in.
 
+
 ### Gotta keep 'em separated
 
 Glyphr Studio v1 was kind of a huge mess. Pieces of the UI would directly
