@@ -454,6 +454,7 @@ span.spacer {
 	grid-template-columns: 4fr 1fr 1fr 1fr 1fr;
 	column-gap: 5px;
 	row-gap: 5px;
+	align-content: start;
 	max-height: calc(100vh - 300px);
 	min-height: 100px;
 	overflow-y: auto;
@@ -486,7 +487,7 @@ span.spacer {
 
 .glyph-range-chooser__wrapper {
 	display: grid;
-	grid-template-columns: 1fr 2fr;
+	grid-template-columns: 2fr 1fr;
 	grid-template-rows: min-content min-content max-content;
 	margin: 0px 0px 0px 20px;
 	column-gap: 40px;
@@ -494,6 +495,31 @@ span.spacer {
 
 .glyph-range-chooser__wrapper h1 {
 	grid-column: -1 / 1;
+}
+
+.glyph-range-chooser__controls {
+	grid-column: -1 / 1;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 4px 0px 10px 0px;
+}
+
+.glyph-range-chooser__search {
+	flex: 1;
+	min-width: 0;
+	height: 28px;
+	padding: 4px 8px;
+	border: 1px solid var(--enabled-restingLight-border);
+	border-radius: 4px;
+	background-color: var(--enabled-restingLight-background);
+	color: var(--enabled-resting-text);
+}
+
+.glyph-range-chooser__controls option-toggle {
+	display: block;
+	width: 180px;
+	flex: 0 0 180px;
 }
 
 .glyph-range-chooser__preview {
@@ -516,8 +542,9 @@ span.spacer {
 	display: grid;
 	grid-template-columns: 5fr 1fr 1fr;
 	column-gap: 0px;
-	row-gap: 8px;
-	height: calc(100vh - 220px);
+	row-gap: 6px;
+	align-content: start;
+	height: calc(100vh - 300px);
 	overflow-y: auto;
 	padding-right: 20px;
 	margin-bottom: 10px;
@@ -527,9 +554,32 @@ span.spacer {
 	grid-column: 1 / -1;
 }
 
+.glyph-range-chooser__group,
+.glyph-range-chooser__category,
+.glyph-range-chooser__empty {
+	grid-column: 1 / -1;
+}
+
+.glyph-range-chooser__group {
+	padding-top: 10px;
+	border-bottom: 1px solid var(--disabled-border);
+}
+
+.glyph-range-chooser__category {
+	padding-left: 4px;
+	margin-bottom: 0px;
+	margin-top: 8px;
+	margin-left: 0px;
+	font-size: 1.2em;
+}
+
 .glyph-range-chooser__list-area span {
 	line-height: 20px;
 	padding: 6px 10px 2px 4px;
+}
+
+.glyph-range-chooser__empty {
+	color: var(--enabled-restingLight-lightText);
 }
 
 .glyph-range-chooser__preview-tile {

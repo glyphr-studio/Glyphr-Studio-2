@@ -12,6 +12,7 @@ import { unicodeBlocksBMP } from '../lib/unicode/unicode_blocks_0_bmp.js';
 import { unicodeBlocksSMP } from '../lib/unicode/unicode_blocks_1_smp.js';
 import { unicodeBlocksSIP } from '../lib/unicode/unicode_blocks_2_sip.js';
 import { unicodeBlocksTIP } from '../lib/unicode/unicode_blocks_3_tip.js';
+import { unicodeBlocksOrganized } from '../lib/unicode/unicode_blocks_organized.js';
 import { unicodeBlocksOther } from '../lib/unicode/unicode_blocks_other.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { makeDirectCheckbox } from '../panels/cards';
@@ -766,18 +767,30 @@ function showUnicodeCharacterRangeDialog() {
 		className: 'glyph-range-chooser__wrapper',
 		innerHTML: `
 			<h1>Add character ranges from Unicode</h1>
-			<h3>Preview</h3>
+			<div class="glyph-range-chooser__controls">
+				<input
+					class="glyph-range-chooser__search"
+					type="search"
+					placeholder="Search ranges..."
+					aria-label="Search character ranges"
+				/>
+				<option-toggle selected-value="sorted" selected-name="Sorted ranges">
+					<option value="sorted">Sorted ranges</option>
+					<option value="grouped">Grouped ranges</option>
+				</option-toggle>
+			</div>
 			<h3>Blocks</h3>
+			<h3>Preview</h3>
+			<div class="glyph-range-chooser__list-area"></div>
 			<div class="glyph-range-chooser__preview-area">
 				<div class="glyph-range-chooser__preview">
-					Select a character range from the right to preview it here.
+					Select a character range from the left to preview it here.
 				</div>
 				<h4 id="glyph-range-chooser__preview-selected"></h4>
 				<span id="glyph-range-chooser__add-button-wrapper">
 					<fancy-button disabled id="glyph-range-chooser__add-button">Add range to project</fancy-button>
 				</span>
 			</div>
-			<div class="glyph-range-chooser__list-area"></div>
 		`,
 	});
 
@@ -789,30 +802,107 @@ function showUnicodeCharacterRangeDialog() {
 		textToNode('<span class="list__column-header">End</span>'),
 	]);
 
-	let rowWrapper;
-	unicodeBlocksBMP.forEach(processOneBlock);
-	unicodeBlocksSMP.forEach(processOneBlock);
-	unicodeBlocksSIP.forEach(processOneBlock);
-	unicodeBlocksTIP.forEach(processOneBlock);
-	unicodeBlocksOther.forEach(processOneBlock);
+	const sortedRanges = [
+		...unicodeBlocksBMP,
+		...unicodeBlocksSMP,
+		...unicodeBlocksSIP,
+		...unicodeBlocksTIP,
+		...unicodeBlocksOther,
+	];
+	const searchInput = content.querySelector('.glyph-range-chooser__search');
+	const viewToggle = content.querySelector('option-toggle');
 
-	function processOneBlock(block) {
-		rowWrapper = makeElement({
+	searchInput.addEventListener('input', renderRanges);
+	viewToggle.addEventListener('change', renderRanges);
+
+	function addRangeRow(range) {
+		const rowWrapper = makeElement({
 			className: 'list__row-wrapper__selectable',
 			onClick: () => {
-				previewCharacterRange(block);
+				previewCharacterRange(range);
 			},
 		});
 
-		addAsChildren(rowWrapper, [
-			textToNode(`<span>${block.name}</span>`),
-			textToNode(`<code>${decToHex(block.begin)}</code>`),
-			textToNode(`<code>${decToHex(block.end)}</code>`),
-		]);
+		const name = makeElement();
+		name.textContent = range.name;
+		const start = makeElement({ tag: 'code' });
+		start.textContent = '' + decToHex(range.begin);
+		const end = makeElement({ tag: 'code' });
+		end.textContent = '' + decToHex(range.end);
+		addAsChildren(rowWrapper, [name, start, end]);
 
 		addAsChildren(listArea, rowWrapper);
 	}
 
+	function renderRanges() {
+		listArea.replaceChildren(
+			textToNode('<span class="list__column-header">Range name</span>'),
+			textToNode('<span class="list__column-header">Start</span>'),
+			textToNode('<span class="list__column-header">End</span>')
+		);
+
+		const query = /** @type {HTMLInputElement} */ (searchInput).value.trim().toLocaleLowerCase();
+		const matchesQuery = (range, labels = []) => {
+			if (!query) return true;
+			const searchable = [range.name, ...labels, decToHex(range.begin), decToHex(range.end)]
+				.join(' ')
+				.replaceAll('&amp;', '&')
+				.toLocaleLowerCase();
+			return searchable.includes(query);
+		};
+
+		if (viewToggle.getAttribute('selected-value') === 'grouped') {
+			Object.entries(unicodeBlocksOrganized).forEach(([groupName, categories]) => {
+				const groupMatches = groupName.replaceAll('&amp;', '&').toLocaleLowerCase().includes(query);
+				const visibleCategories = Object.entries(categories)
+					.map(([categoryName, value]) => {
+						const ranges = Array.isArray(value) ? value : [value];
+						return {
+							categoryName,
+							hideHeading: ranges.length === 1 && ranges[0].name === categoryName,
+							ranges: ranges.filter(
+								(range) =>
+									groupMatches ||
+									categoryName.replaceAll('&amp;', '&').toLocaleLowerCase().includes(query) ||
+									matchesQuery(range, [groupName, categoryName])
+							),
+						};
+					})
+					.filter((category) => category.ranges.length);
+
+				if (!visibleCategories.length) return;
+
+				const groupHeader = makeElement({ tag: 'h3', className: 'glyph-range-chooser__group' });
+				groupHeader.textContent = groupName.replaceAll('&amp;', '&');
+				listArea.appendChild(groupHeader);
+
+				visibleCategories.forEach(({ categoryName, hideHeading, ranges }) => {
+					if (!hideHeading) {
+						const categoryHeader = makeElement({
+							tag: 'h4',
+							className: 'glyph-range-chooser__category',
+						});
+						categoryHeader.textContent = categoryName.replaceAll('&amp;', '&');
+						listArea.appendChild(categoryHeader);
+					}
+					ranges.forEach(addRangeRow);
+				});
+			});
+		} else {
+			sortedRanges.filter((range) => matchesQuery(range)).forEach(addRangeRow);
+		}
+
+		if (listArea.childElementCount === 3) {
+			const emptyMessage = makeElement({
+				tag: 'span',
+				className: 'glyph-range-chooser__empty',
+				content: 'No matching ranges',
+			});
+			listArea.appendChild(emptyMessage);
+		}
+	}
+
+	renderRanges();
 	showModalDialog(content);
 }
 
