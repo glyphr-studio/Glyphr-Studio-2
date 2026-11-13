@@ -24,15 +24,15 @@ import {
 // Delete selected path / point
 // --------------------------------------------------------------
 
-export function deleteSelectedPaths() {
+export function deleteSelectedPaths(historyAction = 'Deleted') {
 	const editor = getCurrentProjectEditor();
 	let msShapes = editor.multiSelect.shapes;
 
 	let historyTitle;
 	if (msShapes.length > 1) {
-		historyTitle = `Deleted ${msShapes.length} paths`;
+		historyTitle = `${historyAction} ${msShapes.length} paths`;
 	} else {
-		historyTitle = `Deleted path: ${msShapes.singleton.name}`;
+		historyTitle = `${historyAction} path: ${msShapes.singleton.name}`;
 	}
 
 	msShapes.deleteShapes();

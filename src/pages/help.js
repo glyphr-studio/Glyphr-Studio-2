@@ -286,6 +286,7 @@ export function makeKeyboardShortcutReference() {
 
 	// Editing
 	makeOneHeader('Editing');
+	makeOneRow(['Ctrl', 'X'], `Cut the selected shapes`);
 	makeOneRow(['Ctrl', 'C'], `Copy the selected shapes`);
 	makeOneRow(
 		['Ctrl', 'V'],

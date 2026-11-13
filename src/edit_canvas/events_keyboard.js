@@ -337,6 +337,16 @@ export function handleKeyPress(event) {
 		}
 	}
 
+	// Ctrl+X - cut
+	if (ehd.isCtrlDown && key === 'x') {
+		if (editMode === 'arrow') {
+			cancelDefaultEventActions(event);
+			clipboardCopy();
+			// deleteSelectedPoints();
+			deleteSelectedPaths('Cut');
+		}
+	}
+
 	// Ctrl+C - copy
 	if (ehd.isCtrlDown && key === 'c') {
 		cancelDefaultEventActions(event);
