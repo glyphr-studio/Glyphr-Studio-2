@@ -65,7 +65,7 @@ export async function ioSVG_importSVGfont(font, testing = false) {
 
 		if (glyph && glyph.attributes) {
 			const attributes = glyph.attributes;
-			const glyphName = attributes['glyph-name'];
+			const glyphName = attributes['glyph-name'] ?? '';
 
 			let uni = parseCharsInputAsHex(attributes.unicode);
 			if (attributes.unicode === ' ' || glyphName.toLowerCase() === 'space') {
