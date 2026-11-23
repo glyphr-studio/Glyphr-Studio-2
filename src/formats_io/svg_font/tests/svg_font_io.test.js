@@ -5,6 +5,22 @@ import sampleFile from './ObleggExtendedTest.svg?raw';
 import kernSampleFile from './SimpleProject_KernTest.svg?raw';
 
 describe('SVG Font', () => {
+	it('Import: Glyphs without a glyph-name attribute', async () => {
+		const font = XMLtoJSON(`
+			<svg xmlns="http://www.w3.org/2000/svg">
+				<defs>
+					<font id="UnnamedGlyphs" horiz-adv-x="1000">
+						<font-face font-family="Unnamed Glyphs" />
+						<glyph unicode="A" horiz-adv-x="500" d="M0 0 L100 0 L100 100 Z" />
+					</font>
+				</defs>
+			</svg>
+		`);
+		const result = await ioSVG_importSVGfont(font, true);
+
+		expect(result.glyphs['glyph-0x41'].advanceWidth).toBe(500);
+	});
+
 	it('Import: Oblegg Extended Test', async () => {
 		const result = await ioSVG_importSVGfont(XMLtoJSON(sampleFile), true);
 		expect(result).toBeTruthy();
